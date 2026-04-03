@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CNIB: The Missing 99%</title>
+<meta name="description" content="A 90-day project sprint to diagnose why CNIB reaches less than 1% of 1.5 million Canadians with sight loss, and begin closing the gap.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23FFF100'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='14' fill='%230D1117'%3ECNIB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
 <style>
@@ -31,6 +33,63 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+
+  /* ---- Accessibility ---- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .section { opacity: 1 !important; transform: none !important; }
+    .cover-logo, .cover-title, .cover-subtitle { opacity: 1 !important; transform: none !important; }
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: var(--yellow);
+    color: #0D1117;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 10000;
+    border-radius: 0 0 8px 8px;
+    text-decoration: none;
+    transition: top 0.2s;
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: 3px solid #0D1117;
+    outline-offset: 2px;
+  }
+
+  *:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (prefers-contrast: high) {
+    :root {
+      --text-dark: #FFFFFF;
+      --dim-dark: #CCCCCC;
+      --border-dark: rgba(255,255,255,0.4);
+    }
+    .card, .stat { border-width: 2px !important; }
+  }
 
   body {
     background: var(--bg-dark);
@@ -1042,27 +1101,32 @@
 </head>
 <body>
 
-<div id="progress"></div>
+<a href="#opportunity" class="skip-link">Skip to main content</a>
+
+<div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <!-- ===== YELLOW COVER ===== -->
+<header role="banner">
 <div class="cover" id="cover">
   <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg"
-       alt="CNIB" class="cover-logo"
+       alt="CNIB - Canadian National Institute for the Blind" class="cover-logo"
        onerror="this.outerHTML='<div style=&quot;font-family:Lilita One,sans-serif;font-size:54px;color:#0F0F0F;margin-bottom:48px;&quot;>CNIB</div>';">
   <div class="cover-title">The Missing <span class="cover-accent">99%</span></div>
   <div class="cover-subtitle">A 90-day project sprint to diagnose why CNIB reaches less than 1% of more than 1.5 million Canadians with sight loss, and begin closing the gap.</div>
 </div>
+</header>
 <div class="cover-fade"></div>
 
+<main id="main-content" role="main">
 <!-- ===== THE GAP (DARK) ===== -->
 <div class="mode-dark">
-<div class="section" id="opportunity">
+<div class="section" id="opportunity" role="region" aria-labelledby="heading-opportunity">
 <div class="wrap">
   <div class="label">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     The Gap
   </div>
-  <h2>The reach problem is well documented. The causes are not.</h2>
+  <h2 id="heading-opportunity">The reach problem is well documented. The causes are not.</h2>
   <p class="sub">CNIB's strategic plan, annual reports, and EY-audited financials all confirm the same picture: approximately 12,200 people served out of 1.5 million who could benefit. "The Way Forward" names this as a priority. What it does not yet contain is a detailed account of where and why people fall out of the system between first awareness and sustained engagement. That is the work this project sprint is designed to do.</p>
 
   <!-- Donut Chart + Peer Comparison -->
@@ -1138,13 +1202,13 @@
 
 <!-- ===== INITIAL HYPOTHESES (LIGHT) ===== -->
 <div class="mode-light">
-<div class="section" id="priorities">
+<div class="section" id="priorities" role="region" aria-labelledby="heading-priorities">
 <div class="wrap">
   <div class="label">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
     Initial Hypotheses
   </div>
-  <h2>Three places I believe the system is breaking down.</h2>
+  <h2 id="heading-priorities">Three places I believe the system is breaking down.</h2>
   <p class="sub">I created two programs at CNIB (the Venture Studio and the Know Your Rights podcast) and I am a member who lives with sight loss. Through that work, I watched how members move through the organization, where they get stuck, and where they quietly disappear. These hypotheses come from that firsthand exposure. They are starting points, not conclusions. The sprint is designed to validate or disprove each one.</p>
   <p class="sub" style="margin-top: 12px;">To be clear: this is an evaluation of the system-wide member journey, not of any individual program. My direct experience is concentrated in the entrepreneurship and advocacy segments. The discovery phase will include populations I have not worked with directly, including seniors, families, children, and deafblind members.</p>
 
@@ -1204,20 +1268,20 @@
 
 <!-- ===== THE APPROACH (DARK) ===== -->
 <div class="mode-dark">
-<div class="section" id="approach">
+<div class="section" id="approach" role="region" aria-labelledby="heading-approach">
 <div class="wrap">
   <div class="label">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     The Project Sprint
   </div>
-  <h2>90 days embedded with your team to validate these hypotheses and fix what we can.</h2>
+  <h2 id="heading-approach">90 days embedded with your team to validate these hypotheses and fix what we can.</h2>
   <p class="sub">This is not an advisory engagement that produces recommendations for someone else to implement. It is a project sprint: I work inside the building with your program leads and frontline staff, with access to program data and member records, and the output is both answers and working improvements. Three phases:</p>
 
   <!-- Timeline Visualization -->
   <div class="timeline">
     <div class="timeline-phase">
       <div class="timeline-dot">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
       <div class="timeline-week">Weeks 1–4</div>
       <div class="timeline-name">Discovery</div>
@@ -1225,7 +1289,7 @@
     </div>
     <div class="timeline-phase">
       <div class="timeline-dot">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
       </div>
       <div class="timeline-week">Weeks 5–9</div>
       <div class="timeline-name">Implementation</div>
@@ -1233,7 +1297,7 @@
     </div>
     <div class="timeline-phase">
       <div class="timeline-dot">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       </div>
       <div class="timeline-week">Weeks 10–12</div>
       <div class="timeline-name">Measurement</div>
@@ -1255,21 +1319,21 @@
   <div class="metric-cards">
     <div class="metric-card">
       <div class="metric-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </div>
       <h3>Where are people dropping off?</h3>
       <p>Quantified member journey with drop-off rates at every transition point.</p>
     </div>
     <div class="metric-card">
       <div class="metric-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <h3>Does at least one pilot measurably improve a metric?</h3>
       <p>ELT sponsor and I agree on the metric and target before the pilot begins.</p>
     </div>
     <div class="metric-card">
       <div class="metric-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
       </div>
       <h3>Can we project 12-month reach?</h3>
       <p>Evidence-based projection if roadmap recommendations are implemented. If no, the report will say so.</p>
@@ -1283,13 +1347,13 @@
 
 <!-- ===== DELIVERABLES (LIGHT) ===== -->
 <div class="mode-light">
-<div class="section" id="deliverables">
+<div class="section" id="deliverables" role="region" aria-labelledby="heading-deliverables">
 <div class="wrap">
   <div class="label">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     Engagement Deliverables
   </div>
-  <h2>Three outputs designed for immediate ELT action.</h2>
+  <h2 id="heading-deliverables">Three outputs designed for immediate ELT action.</h2>
 
   <div class="deliverable-list">
     <div class="deliverable-banner">
@@ -1325,13 +1389,13 @@
 
 <!-- ===== WHO I AM & WHY (DARK) ===== -->
 <div class="mode-dark">
-<div class="section" id="builder">
+<div class="section" id="builder" role="region" aria-labelledby="heading-builder">
 <div class="wrap">
   <div class="label">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     Who I Am & Why
   </div>
-  <h2>I don't need a ramp-up period. I'm already inside the organization.</h2>
+  <h2 id="heading-builder">I don't need a ramp-up period. I'm already inside the organization.</h2>
 
   <div class="builder-header">
     <div class="avatar">JC</div>
@@ -1407,8 +1471,10 @@
 </div>
 
 <div class="section-divider fade-dark-to-yellow"></div>
+</main>
 
 <!-- ===== YELLOW CTA FOOTER ===== -->
+<footer role="contentinfo">
 <div class="footer" id="next">
   <div class="footer-headline">Next Step</div>
   <div class="footer-sub">I would like to schedule a working session with you to walk through these hypotheses, discuss scope, and determine whether this sprint is the right fit for CNIB right now.</div>
@@ -1421,6 +1487,7 @@
     </div>
   </div>
 </div>
+</footer>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
