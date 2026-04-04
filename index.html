@@ -2177,17 +2177,28 @@ gsap.from('.track-item', {
   // ===== SECTION BUILDING =====
   function buildSectionsList() {
     sections = [];
-    const orderedEls = document.querySelectorAll('.cover-title, .cover-subtitle, h2, p.sub, .label, .donut-center .big, .donut-center .small, .peer-bar-header, .stat, .hyp-num, .hyp-tag, .hyp-title, .hyp-body, .flow-label, .card-label, .card-title, .card > p, .deliv-name, .deliv-desc, .step-num, .step-title, .step-desc, .builder-block h3, .builder-block p, .track-label, .track-value, .metric-card h3, .metric-card p, .timeline-phase, .callout, img[alt], .source');
+    const orderedEls = document.querySelectorAll('.cover-title, .cover-subtitle, h2, p.sub, .label, .donut-center .big, .donut-center .small, .peer-bar-header, .stat, .hyp-num, .hyp-tag, .hyp-title, .hyp-body, .flow-circle, .flow-label, .card-label, .card-title, .card > p, .deliv-name, .deliv-desc, .step-num, .step-title, .step-desc, .builder-block h3, .builder-block p, .track-label, .track-value, .metric-card h3, .metric-card p, .timeline-phase, .callout, img[alt], .source');
     orderedEls.forEach(el => {
       if (el.offsetParent !== null || el.closest('header')) sections.push(el);
     });
   }
 
   // ===== TEXT-TO-SPEECH =====
+  // Converts numbers to natural spoken English for TTS
+  function speakNumber(str) {
+    return str
+      .replace(/(\d+)\.(\d+)M/g, (_, a, b) => a + ' point ' + b + ' million')
+      .replace(/(\d+)\.(\d+)%/g, (_, a, b) => a + ' point ' + b + ' percent')
+      .replace(/(\d+)%/g, (_, a) => a + ' percent')
+      .replace(/\$(\d{1,3}(,\d{3})*)/g, (_, a) => a.replace(/,/g, ',') + ' dollars')
+      .replace(/\$(\d+\.?\d*)(M|B)/g, (_, a, u) => a + (u === 'M' ? ' million' : ' billion') + ' dollars')
+      .replace(/(\d+)x/g, (_, a) => a + ' times');
+  }
+
   function extractReadableText(element) {
     if (element.tagName === 'IMG' && element.alt) return 'Image: ' + element.alt;
 
-    // Stats with data attributes — read computed values
+    // Stats with data attributes — read as natural speech
     if (element.classList.contains('stat')) {
       const numEl = element.querySelector('.stat-num');
       const labelEl = element.querySelector('.stat-label');
@@ -2199,25 +2210,93 @@ gsap.from('.track-item', {
         if (count) {
           let value = parseFloat(count);
           if (value > 999 && numEl.getAttribute('data-comma') === 'true') value = value.toLocaleString('en-CA');
-          return prefix + value + suffix + ' ' + label;
+          let spoken = prefix + value + suffix;
+          spoken = speakNumber(spoken);
+          return spoken + '. ' + label + '.';
         }
       }
     }
 
-    // Peer bar headers — combine name and percentage
+    // Peer bar headers — describe as comparison data
     if (element.classList.contains('peer-bar-header')) {
       const name = element.querySelector('.name');
       const pct = element.querySelector('.pct');
-      return (name ? name.textContent.trim() : '') + ': ' + (pct ? pct.textContent.trim() : '');
+      const nameText = name ? name.textContent.trim() : '';
+      const pctText = pct ? speakNumber(pct.textContent.trim()) : '';
+      return nameText + ' reaches approximately ' + pctText + ' of their addressable population.';
     }
 
-    // Donut chart center
+    // Donut chart center — descriptive narration
     if (element.classList.contains('big') && element.closest('.donut-center')) {
-      return 'Chart showing ' + element.textContent.trim() + ' ' + (element.nextElementSibling ? element.nextElementSibling.textContent.trim() : '');
+      const val = speakNumber(element.textContent.trim());
+      return 'The donut chart shows that only ' + val + ' of Canadians with sight loss are currently reached by CNIB. This is the core gap this proposal addresses.';
     }
     if (element.classList.contains('small') && element.closest('.donut-center')) return '';
 
-    return element.textContent.trim();
+    // Flow diagram circles — describe the step, not just the number
+    if (element.classList.contains('flow-circle')) {
+      const label = element.nextElementSibling;
+      const labelText = label ? label.textContent.trim() : '';
+      const num = element.textContent.trim();
+      return 'Step ' + num + ': ' + labelText + '.';
+    }
+
+    // Flow labels — already read by flow-circle handler above
+    if (element.classList.contains('flow-label') && element.previousElementSibling?.classList.contains('flow-circle')) return '';
+
+    // Hypothesis numbers — describe as hypothesis with its tag
+    if (element.classList.contains('hyp-num')) {
+      const parent = element.closest('.hypothesis');
+      const tag = parent?.querySelector('.hyp-tag');
+      if (tag) {
+        return 'Hypothesis ' + element.textContent.trim() + ', ' + tag.textContent.trim() + '.';
+      }
+      return 'Hypothesis ' + element.textContent.trim() + '.';
+    }
+
+    // Hypothesis tags — already announced by hyp-num handler
+    if (element.classList.contains('hyp-tag')) return '';
+
+    // Step numbers in timeline — describe with context
+    if (element.classList.contains('step-num')) {
+      const parent = element.closest('.step') || element.parentElement;
+      const title = parent?.querySelector('.step-title');
+      if (title) return 'Step ' + element.textContent.trim() + ': ' + title.textContent.trim() + '.';
+      return 'Step ' + element.textContent.trim() + '.';
+    }
+
+    // Source citations — announce as citations
+    if (element.classList.contains('source')) {
+      return 'Source citation: ' + element.textContent.trim();
+    }
+
+    // Callout boxes — announce as key insight
+    if (element.classList.contains('callout')) {
+      return 'Key insight: ' + element.textContent.trim();
+    }
+
+    // Section labels (the small caps tags like "The Gap", "Engagement Deliverables")
+    if (element.classList.contains('label') && element.closest('.section')) {
+      return 'Section: ' + element.textContent.trim() + '.';
+    }
+
+    // Track labels and values in builder blocks
+    if (element.classList.contains('track-label')) {
+      const valueEl = element.nextElementSibling;
+      if (valueEl?.classList.contains('track-value')) {
+        return element.textContent.trim() + ': ' + speakNumber(valueEl.textContent.trim()) + '.';
+      }
+    }
+    if (element.classList.contains('track-value') && element.previousElementSibling?.classList.contains('track-label')) return '';
+
+    // Headings — read as-is for orientation
+    if (element.tagName === 'H2' || element.classList.contains('cover-title')) {
+      return element.textContent.trim();
+    }
+
+    // Default — run number cleanup on any remaining text
+    const raw = element.textContent.trim();
+    return raw.length > 0 ? speakNumber(raw) : '';
   }
 
   function getReadableContent() {
