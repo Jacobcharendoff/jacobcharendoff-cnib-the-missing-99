@@ -23,11 +23,11 @@
     --white: #FFFFFF;
     --text-dark: #C9D1D9;
     --text-light: #3D4551;
-    --dim-dark: #6E7681;
-    --dim-light: #8993A0;
+    --dim-dark: #7D8590;
+    --dim-light: #6B7385;
     --heading-dark: #FFFFFF;
     --heading-light: #0D1117;
-    --red: #D42E12;
+    --red: #E5533D;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
@@ -388,8 +388,8 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
   body.light-mode .shortcut-modal { background: var(--bg-card-light); border-color: var(--border-light); color: var(--text-light); }
-  .shortcut-modal h2 { font-size: 20px; color: var(--yellow); margin-bottom: 20px; font-family: var(--font); }
-  body.light-mode .shortcut-modal h2 { color: #9E7700; }
+  .shortcut-modal .shortcut-title { font-size: 20px; color: var(--yellow); margin-bottom: 20px; font-family: var(--font); font-weight: 700; }
+  body.light-mode .shortcut-modal .shortcut-title { color: #9E7700; }
   .shortcut-modal .shortcut-group { margin-bottom: 16px; }
   .shortcut-modal .shortcut-group-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim-dark); margin-bottom: 8px; }
   .shortcut-modal .shortcut-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
@@ -1470,7 +1470,7 @@
 
 <div class="shortcut-overlay" id="shortcut-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
   <div class="shortcut-modal">
-    <h2>Keyboard Shortcuts</h2>
+    <div class="shortcut-title" role="heading" aria-level="2">Keyboard Shortcuts</div>
     <div class="shortcut-group">
       <div class="shortcut-group-title">Navigation</div>
       <div class="shortcut-row"><span class="label">Next section</span><kbd>N</kbd></div>
@@ -2708,7 +2708,7 @@ gsap.from('.track-item', {
   @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
 </style>
 
-<button class="nav-agent-fab" id="agentFab" aria-label="Open CNIB Member Navigator prototype" title="CNIB Member Navigator">
+<button class="nav-agent-fab" id="agentFab" aria-label="Open CNIB Member Navigator prototype" aria-expanded="false" title="CNIB Member Navigator">
   <svg viewBox="0 0 24 24" fill="none" stroke="#0D1117" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 017 7c0 3-2 5.5-4 7l-1.5 1.5a2 2 0 01-3 0L9 16c-2-1.5-4-4-4-7a7 7 0 017-7z"/><circle cx="12" cy="9" r="1.5" fill="#0D1117"/><path d="M8 21h8" opacity="0.5"/></svg>
   <span class="badge" aria-hidden="true"></span>
 </button>
