@@ -2114,6 +2114,17 @@ gsap.from('.track-item', {
 
   // ===== CONSTANTS & CONFIG =====
   const STORAGE_KEY = 'a11y-preferences';
+
+  // ===== ELEVENLABS NEURAL TTS CONFIG =====
+  // Sign up free at elevenlabs.io > Profile > API Key
+  // Free tier: 10,000 chars/month - more than enough for demos
+  const ELEVENLABS_API_KEY = ''; // Paste your key here
+  const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // "Sarah" - warm, clear, natural female narrator
+  const ELEVENLABS_MODEL = 'eleven_turbo_v2'; // Low latency, high quality
+  const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1/text-to-speech/';
+  const USE_ELEVENLABS = ELEVENLABS_API_KEY.length > 0;
+
+  // Fallback: Web Speech API voice priority
   const VOICE_NAMES = [
         'Google UK English Female', 'Google US English', 'Google UK English Male',
         'Shelley', 'Sandy', 'Flo', 'Reed',
@@ -2157,6 +2168,8 @@ gsap.from('.track-item', {
   let isPaused = false;
   let currentUtterance = null;
   let synth = window.speechSynthesis;
+  let currentAudio = null; // For ElevenLabs audio element
+  let audioQueue = []; // Pre-fetched audio blobs for ElevenLabs
   let currentSectionIndex = -1;
   let sections = [];
   let voiceReady = false;
@@ -2358,10 +2371,91 @@ gsap.from('.track-item', {
     return sentences.map(s => s.trim()).filter(s => s.length > 0);
   }
 
+  // ===== ELEVENLABS TTS ENGINE =====
+  async function fetchElevenLabsAudio(text) {
+    const resp = await fetch(ELEVENLABS_ENDPOINT + ELEVENLABS_VOICE_ID, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+      body: JSON.stringify({
+        text: text,
+        model_id: ELEVENLABS_MODEL,
+        voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.4, use_speaker_boost: true }
+      })
+    });
+    if (!resp.ok) throw new Error('ElevenLabs API error: ' + resp.status);
+    return await resp.blob();
+  }
+
+  function playAudioBlob(blob) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.playbackRate = SPEED_LEVELS[speedLevel];
+      currentAudio = audio;
+      audio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; resolve(); };
+      audio.onerror = (e) => { URL.revokeObjectURL(url); currentAudio = null; reject(e); };
+      audio.play().catch(reject);
+    });
+  }
+
+  async function prefetchAudio(contentArray, startIdx, count) {
+    const end = Math.min(startIdx + count, contentArray.length);
+    for (let i = startIdx; i < end; i++) {
+      if (!audioQueue[i] && contentArray[i]) {
+        try { audioQueue[i] = await fetchElevenLabsAudio(contentArray[i].text); }
+        catch(e) { audioQueue[i] = null; }
+      }
+    }
+  }
+
+  async function speakElevenLabs() {
+    isSpeaking = true; isPaused = false; currentChunkIndex = 0;
+    currentContent = getReadableContent();
+    audioQueue = new Array(currentContent.length).fill(null);
+    speakBtn.style.display = 'none';
+    pauseBtn.style.display = 'flex';
+    stopBtn.style.display = 'flex';
+    pauseBtn.classList.add('active');
+    announce('Reading page with natural voice.');
+    prefetchAudio(currentContent, 0, 3);
+    await speakElevenLabsFromIndex(0);
+  }
+
+  async function speakElevenLabsFromIndex(idx) {
+    if (idx >= currentContent.length || !isSpeaking) { stopSpeaking(); return; }
+    currentChunkIndex = idx;
+    const { text, element } = currentContent[idx];
+    highlightElement(element);
+    prefetchAudio(currentContent, idx + 1, 2);
+    try {
+      let blob = audioQueue[idx];
+      if (!blob) blob = await fetchElevenLabsAudio(text);
+      if (!isSpeaking) return;
+      if (isPaused) {
+        await new Promise(resolve => {
+          const check = setInterval(() => {
+            if (!isPaused || !isSpeaking) { clearInterval(check); resolve(); }
+          }, 100);
+        });
+        if (!isSpeaking) return;
+      }
+      await playAudioBlob(blob);
+    } catch(e) { console.warn('ElevenLabs playback error, skipping segment:', e); }
+    highlightElement(null);
+    if (isSpeaking && !isPaused) await speakElevenLabsFromIndex(idx + 1);
+  }
+
+  // ===== UNIFIED SPEAK CONTROLS =====
   function speak() {
+    // Try ElevenLabs first
+    if (USE_ELEVENLABS) {
+      speakElevenLabs();
+      return;
+    }
+
+    // Fallback: Web Speech API
     if (!synth) { announce('Speech synthesis not available in this browser.'); return; }
     if (!voiceReady) {
-      // Try one more time
       selectVoice();
       if (!selectedVoice) { announce('Voice system loading, please try again.'); return; }
       voiceReady = true;
@@ -2404,15 +2498,24 @@ gsap.from('.track-item', {
   }
 
   function pauseSpeaking() {
-    if (!synth) return;
     isPaused = !isPaused;
+    if (USE_ELEVENLABS && currentAudio) {
+      if (isPaused) { currentAudio.pause(); pauseBtn.classList.remove('active'); announce('Paused.'); }
+      else { currentAudio.play(); pauseBtn.classList.add('active'); announce('Resumed.'); }
+      return;
+    }
+    if (!synth) return;
     if (isPaused) { synth.pause(); pauseBtn.classList.remove('active'); announce('Paused.'); }
     else { synth.resume(); pauseBtn.classList.add('active'); announce('Resumed.'); }
   }
 
   function stopSpeaking() {
-    if (synth) synth.cancel();
     isSpeaking = false; isPaused = false; currentUtterance = null;
+    // Stop ElevenLabs audio
+    if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
+    audioQueue = [];
+    // Stop Web Speech API
+    if (synth) synth.cancel();
     speakBtn.style.display = 'flex';
     pauseBtn.style.display = 'none';
     stopBtn.style.display = 'none';
@@ -2478,17 +2581,33 @@ gsap.from('.track-item', {
 
   function skipBack() {
     if (!isSpeaking || currentContent.length === 0) return;
-    synth.cancel();
-    currentChunkIndex = Math.max(0, currentChunkIndex - 3);
-    speakFromIndex(currentChunkIndex);
+    const newIdx = Math.max(0, currentChunkIndex - 3);
+    if (USE_ELEVENLABS) {
+      if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
+      isSpeaking = true; isPaused = false;
+      currentChunkIndex = newIdx;
+      speakElevenLabsFromIndex(newIdx);
+    } else {
+      synth.cancel();
+      currentChunkIndex = newIdx;
+      speakFromIndex(newIdx);
+    }
     announce('Skipped back.');
   }
 
   function skipForward() {
     if (!isSpeaking || currentContent.length === 0) return;
-    synth.cancel();
-    currentChunkIndex = Math.min(currentContent.length - 1, currentChunkIndex + 3);
-    speakFromIndex(currentChunkIndex);
+    const newIdx = Math.min(currentContent.length - 1, currentChunkIndex + 3);
+    if (USE_ELEVENLABS) {
+      if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
+      isSpeaking = true; isPaused = false;
+      currentChunkIndex = newIdx;
+      speakElevenLabsFromIndex(newIdx);
+    } else {
+      synth.cancel();
+      currentChunkIndex = newIdx;
+      speakFromIndex(newIdx);
+    }
     announce('Skipped forward.');
   }
 
