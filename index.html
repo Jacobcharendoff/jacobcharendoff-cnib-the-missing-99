@@ -1522,8 +1522,8 @@
   <p class="sub">CNIB's strategic plan, annual reports, and EY-audited financials all confirm the same picture: approximately 12,200 people served out of 1.5 million who could benefit. "The Way Forward" names this as a priority. What it does not yet contain is a detailed account of where and why people fall out of the system between first awareness and sustained engagement. That is the work this project sprint is designed to do.</p>
 
   <!-- Donut Chart + Peer Comparison -->
-  <div class="donut-wrap">
-    <div class="donut-chart">
+  <div class="donut-wrap" aria-label="Chart showing 0.82 percent of Canadians with sight loss are reached by CNIB. No blindness organization globally has exceeded single-digit reach.">
+    <div class="donut-chart" aria-hidden="true">
       <svg width="180" height="180" viewBox="0 0 180 180">
         <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="14"/>
         <circle cx="90" cy="90" r="72" fill="none" stroke="var(--yellow)" stroke-width="14"
@@ -1534,31 +1534,31 @@
         <div class="small">Reached</div>
       </div>
     </div>
-    <div class="peer-bars">
-      <div class="peer-bar-item">
+    <div class="peer-bars" role="list" aria-label="Peer organization reach comparison">
+      <div class="peer-bar-item" role="listitem" aria-label="CNIB Canada: 0.82 percent reach">
         <div class="peer-bar-header">
           <span class="name">CNIB (Canada)</span>
           <span class="pct" style="color: var(--yellow);">0.82%</span>
         </div>
-        <div class="peer-bar-track">
+        <div class="peer-bar-track" aria-hidden="true">
           <div class="peer-bar-fill yellow" style="width: 16.4%;"></div>
         </div>
       </div>
-      <div class="peer-bar-item">
+      <div class="peer-bar-item" role="listitem" aria-label="Vision Australia: approximately 2.5 percent reach">
         <div class="peer-bar-header">
           <span class="name">Vision Australia</span>
           <span class="pct">~2.5%</span>
         </div>
-        <div class="peer-bar-track">
+        <div class="peer-bar-track" aria-hidden="true">
           <div class="peer-bar-fill dim" style="width: 50%;"></div>
         </div>
       </div>
-      <div class="peer-bar-item">
+      <div class="peer-bar-item" role="listitem" aria-label="RNIB UK: approximately 5 percent reach">
         <div class="peer-bar-header">
           <span class="name">RNIB (UK)</span>
           <span class="pct">~5%</span>
         </div>
-        <div class="peer-bar-track">
+        <div class="peer-bar-track" aria-hidden="true">
           <div class="peer-bar-fill dim" style="width: 100%;"></div>
         </div>
       </div>
@@ -2967,6 +2967,8 @@ gsap.from('.track-item', {
   function addMsg(type, html) {
     const div = document.createElement('div');
     div.className = 'agent-msg ' + type;
+    div.setAttribute('role', 'group');
+    div.setAttribute('aria-label', type === 'bot' ? 'Navigator response' : 'Your question');
     div.innerHTML = html.replace(/\n/g, '<br>');
     body.appendChild(div);
     body.scrollTop = body.scrollHeight;
@@ -2990,7 +2992,9 @@ gsap.from('.track-item', {
     const div = document.createElement('div');
     div.className = 'agent-msg bot';
     div.id = 'typingIndicator';
-    div.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+    div.setAttribute('role', 'status');
+    div.setAttribute('aria-label', 'Navigator is thinking');
+    div.innerHTML = '<div class="typing-indicator" aria-hidden="true"><span></span><span></span><span></span></div>';
     body.appendChild(div);
     body.scrollTop = body.scrollHeight;
     return div;
