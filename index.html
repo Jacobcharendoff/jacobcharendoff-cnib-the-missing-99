@@ -83,6 +83,14 @@
   }
 
   /* ---- Accessibility Toolbar ---- */
+  :root {
+    --a11y-font-size-80: 80%;
+    --a11y-font-size-100: 100%;
+    --a11y-font-size-120: 120%;
+    --a11y-font-size-140: 140%;
+    --a11y-font-size-160: 160%;
+  }
+
   .a11y-bar {
     position: fixed;
     top: 50%;
@@ -92,18 +100,52 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    background: rgba(13,17,23,0.92);
+    background: rgba(13,17,23,0.95);
     backdrop-filter: blur(12px);
     border-radius: 12px 0 0 12px;
     border: 1px solid rgba(255,241,0,0.15);
     border-right: none;
     padding: 8px 6px;
     box-shadow: -4px 0 24px rgba(0,0,0,0.3);
-    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .a11y-bar.collapsed { transform: translateY(-50%) translateX(calc(100% - 36px)); }
+
+  .a11y-bar.collapsed {
+    transform: translateY(-50%) translateX(calc(100% - 36px));
+  }
+
+  .a11y-bar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .a11y-bar-group + .a11y-bar-group {
+    margin-top: 4px;
+  }
+
+  .a11y-divider {
+    width: 24px;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 4px auto 4px;
+  }
+
+  .a11y-group-label {
+    font-size: 7px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: rgba(255,241,0,0.45);
+    text-align: center;
+    padding: 3px 0;
+    font-family: var(--font);
+    font-weight: 600;
+    line-height: 1;
+  }
+
   .a11y-bar button {
-    width: 36px; height: 36px;
+    width: 36px;
+    height: 36px;
     border: none;
     border-radius: 8px;
     background: transparent;
@@ -112,95 +154,201 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    transition: background 0.15s, color 0.15s;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.15s ease-out, color 0.15s ease-out, box-shadow 0.15s ease-out;
     position: relative;
     flex-shrink: 0;
+    font-family: var(--font);
+    padding: 0;
   }
-  .a11y-bar button:hover { background: rgba(255,241,0,0.12); color: var(--yellow); }
-  .a11y-bar button.active { background: var(--yellow); color: #0D1117; }
-  .a11y-bar button svg { width: 18px; height: 18px; pointer-events: none; }
-  .a11y-bar .a11y-divider { width: 24px; height: 1px; background: rgba(255,255,255,0.08); margin: 4px auto; }
-  .a11y-bar .a11y-label {
-    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: rgba(255,241,0,0.5); text-align: center; padding: 4px 0 2px; font-family: var(--font);
+
+  .a11y-bar button:hover {
+    background: rgba(255,241,0,0.12);
+    color: var(--yellow);
   }
-  .a11y-tooltip {
+
+  .a11y-bar button:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  .a11y-bar button.active {
+    background: var(--yellow);
+    color: #0D1117;
+    font-weight: 600;
+  }
+
+  .a11y-bar button:active {
+    transform: scale(0.95);
+  }
+
+  .a11y-bar button svg {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .a11y-bar button .a11y-tooltip {
     position: absolute;
-    right: 44px; top: 50%;
+    right: 44px;
+    top: 50%;
     transform: translateY(-50%);
     background: #0D1117;
     color: #FFF;
     font-size: 11px;
-    padding: 5px 10px;
+    font-weight: 500;
+    padding: 6px 12px;
     border-radius: 6px;
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s ease-out;
     font-family: var(--font);
-    border: 1px solid rgba(255,241,0,0.15);
+    border: 1px solid rgba(255,241,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
-  .a11y-bar button:hover .a11y-tooltip { opacity: 1; }
+
+  .a11y-bar button:hover .a11y-tooltip {
+    opacity: 1;
+  }
+
+  .a11y-bar button .a11y-state-label {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: var(--yellow);
+    color: #0D1117;
+    font-size: 8px;
+    font-weight: 700;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    line-height: 1;
+  }
+
   .a11y-reading-guide {
     position: fixed;
-    left: 0; right: 0;
-    height: 40px;
-    border-top: 2px solid var(--yellow);
-    border-bottom: 2px solid var(--yellow);
-    background: rgba(255,241,0,0.06);
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 50px;
+    border-top: 3px solid var(--yellow);
+    border-bottom: 3px solid var(--yellow);
+    background: rgba(255,241,0,0.08);
     pointer-events: none;
     z-index: 9998;
     display: none;
-    transition: top 0.05s linear;
+    transition: top 0.04s linear, height 0.2s ease-out;
+    box-shadow: 0 0 12px rgba(255,241,0,0.15);
   }
+
+  [data-a11y-highlight] {
+    border-left: 3px solid var(--yellow) !important;
+    padding-left: 8px !important;
+    background: rgba(255,241,0,0.06) !important;
+    transition: all 0.15s ease-out;
+  }
+
+  body.a11y-font-100 { font-size: 100% !important; }
+  body.a11y-font-120 { font-size: 120% !important; }
+  body.a11y-font-140 { font-size: 140% !important; }
+  body.a11y-font-160 { font-size: 160% !important; }
+
+  body.a11y-dyslexia {
+    --font: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', sans-serif !important;
+  }
+
   body.a11y-dyslexia * {
     font-family: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', sans-serif !important;
-    letter-spacing: 0.05em !important;
-    word-spacing: 0.15em !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.2em !important;
+    line-height: 2.0 !important;
   }
-  body.a11y-large-text { font-size: 120% !important; }
-  body.a11y-xl-text { font-size: 140% !important; }
+
   body.a11y-high-contrast {
     --text-dark: #FFFFFF !important;
     --dim-dark: #FFFFFF !important;
     --bg-dark: #000000 !important;
     --bg-card-dark: #000000 !important;
     --border-dark: #FFF100 !important;
+    --text-light: #000000 !important;
+    --dim-light: #000000 !important;
+    --bg-light: #FFFFFF !important;
+    --bg-card-light: #FFFFFF !important;
+    --border-light: #000000 !important;
+    --heading-dark: #FFFFFF !important;
+    --heading-light: #000000 !important;
   }
+
+  body.a11y-high-contrast .a11y-bar {
+    background: #000000 !important;
+    border: 2px solid #FFF100 !important;
+    box-shadow: -4px 0 8px rgba(0,0,0,0.8) !important;
+  }
+  body.a11y-high-contrast .a11y-bar button { color: #FFFFFF !important; background: transparent !important; }
+  body.a11y-high-contrast .a11y-bar button:hover { background: #FFF100 !important; color: #000000 !important; }
+  body.a11y-high-contrast .a11y-bar button.active { background: #FFF100 !important; color: #000000 !important; }
+
   body.a11y-high-contrast .mode-light {
     background: #FFFFFF !important;
     color: #000000 !important;
   }
-  body.a11y-high-contrast .mode-light * {
-    color: #000000 !important;
-    border-color: #000000 !important;
-  }
-  body.a11y-high-contrast .mode-light .label { color: #000 !important; }
-  @media (max-width: 600px) {
+  body.a11y-high-contrast .mode-light * { color: #000000 !important; border-color: #000000 !important; background: transparent !important; }
+  body.a11y-high-contrast .mode-light .label { color: #000000 !important; background: #FFFFFF !important; border: 2px solid #000000 !important; }
+  body.a11y-high-contrast .mode-light .card { border: 2px solid #000000 !important; background: #FFFFFF !important; }
+  body.a11y-high-contrast .mode-light .stat { border: 2px solid #000000 !important; background: #FFFFFF !important; }
+
+  body.a11y-high-contrast .mode-dark { background: #000000 !important; color: #FFFFFF !important; }
+  body.a11y-high-contrast .mode-dark * { color: #FFFFFF !important; border-color: #FFF100 !important; }
+  body.a11y-high-contrast .mode-dark .label { color: #FFF100 !important; background: transparent !important; border: none !important; }
+  body.a11y-high-contrast .mode-dark .card { border: 2px solid #FFF100 !important; background: #000000 !important; }
+  body.a11y-high-contrast .mode-dark .stat { border: 2px solid #FFF100 !important; background: #000000 !important; }
+
+  @media (max-width: 768px) {
     .a11y-bar {
-      top: auto; bottom: 0; right: 0; left: 0;
+      position: fixed; bottom: 0; top: auto; left: 0; right: 0;
       transform: none;
       flex-direction: row;
-      border-radius: 12px 12px 0 0;
+      border-radius: 16px 16px 0 0;
       border: 1px solid rgba(255,241,0,0.15);
       border-bottom: none;
       justify-content: center;
-      padding: 6px 8px;
+      padding: 6px 8px; gap: 4px;
     }
-    .a11y-bar.collapsed { transform: translateY(calc(100% - 36px)); }
-    .a11y-label { display: none; }
-    .a11y-divider { width: 1px !important; height: 24px !important; margin: 0 4px !important; }
-    .a11y-tooltip { display: none; }
+    .a11y-bar.collapsed { transform: translateY(calc(100% - 48px)); }
+    .a11y-bar-group { flex-direction: row; gap: 2px; }
+    .a11y-bar-group + .a11y-bar-group { margin-top: 0; margin-left: 4px; border-left: 1px solid rgba(255,255,255,0.08); padding-left: 4px; }
+    .a11y-group-label { display: none; }
+    .a11y-divider { display: none; }
+    .a11y-bar button .a11y-tooltip { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .a11y-bar button { width: 32px; height: 32px; font-size: 11px; }
+    .a11y-bar button svg { width: 16px; height: 16px; }
   }
 
   @media (prefers-contrast: high) {
     :root {
       --text-dark: #FFFFFF;
-      --dim-dark: #CCCCCC;
-      --border-dark: rgba(255,255,255,0.4);
+      --dim-dark: #FFFFFF;
+      --border-dark: rgba(255,255,255,0.6);
+      --text-light: #000000;
+      --dim-light: #000000;
+      --border-light: rgba(0,0,0,0.8);
     }
     .card, .stat { border-width: 2px !important; }
+    .a11y-bar { border-width: 2px !important; }
+    .a11y-bar button:focus-visible { outline-width: 3px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .a11y-bar, .a11y-bar button, .a11y-reading-guide, [data-a11y-highlight] { transition: none !important; }
   }
 
   body {
@@ -1217,44 +1365,61 @@
 
 <!-- ===== ACCESSIBILITY TOOLBAR ===== -->
 <nav class="a11y-bar" role="toolbar" aria-label="Accessibility controls">
-  <div class="a11y-label">Access</div>
-  <button id="a11y-toggle" aria-label="Collapse accessibility toolbar" title="Toggle toolbar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-    <span class="a11y-tooltip">Toggle toolbar</span>
+  <button id="a11y-toggle" aria-label="Collapse accessibility toolbar" title="Toggle toolbar (Alt+A)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 8v4M12 16h.01"/></svg>
+    <span class="a11y-tooltip">Toggle toolbar (Alt+A)</span>
   </button>
   <div class="a11y-divider"></div>
-  <button id="a11y-speak" aria-label="Read page aloud" title="Read aloud">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
-    <span class="a11y-tooltip">Read aloud</span>
-  </button>
-  <button id="a11y-stop" aria-label="Stop reading" title="Stop reading" style="display:none">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-    <span class="a11y-tooltip">Stop reading</span>
-  </button>
+  <div class="a11y-group-label">Read</div>
+  <div class="a11y-bar-group">
+    <button id="a11y-speak" aria-label="Read page aloud" title="Read aloud">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+      <span class="a11y-tooltip">Read aloud</span>
+    </button>
+    <button id="a11y-pause" aria-label="Pause reading" title="Pause" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+      <span class="a11y-tooltip">Pause / Resume</span>
+    </button>
+    <button id="a11y-stop" aria-label="Stop reading" title="Stop" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      <span class="a11y-tooltip">Stop reading</span>
+    </button>
+    <button id="a11y-speed" aria-label="Reading speed: 1.0x" title="Speed" data-speed="1.0x">
+      <span style="font-size:11px;font-weight:700;">1x</span>
+      <span class="a11y-tooltip">Change speed</span>
+    </button>
+    <button id="a11y-skip-back" aria-label="Skip back" title="Skip back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+      <span class="a11y-tooltip">Skip back</span>
+    </button>
+    <button id="a11y-skip-forward" aria-label="Skip forward" title="Skip forward">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+      <span class="a11y-tooltip">Skip forward</span>
+    </button>
+  </div>
   <div class="a11y-divider"></div>
-  <button id="a11y-font-up" aria-label="Increase text size" title="Larger text">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><text x="4" y="17" font-size="14" fill="currentColor" stroke="none" font-weight="700" font-family="sans-serif">A</text><line x1="18" y1="8" x2="18" y2="16"/><line x1="14" y1="12" x2="22" y2="12"/></svg>
-    <span class="a11y-tooltip">Larger text</span>
-  </button>
-  <button id="a11y-font-down" aria-label="Decrease text size" title="Smaller text">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><text x="5" y="17" font-size="12" fill="currentColor" stroke="none" font-weight="700" font-family="sans-serif">A</text><line x1="16" y1="12" x2="22" y2="12"/></svg>
-    <span class="a11y-tooltip">Smaller text</span>
-  </button>
-  <div class="a11y-divider"></div>
-  <button id="a11y-contrast" aria-label="Toggle high contrast" title="High contrast">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20z" fill="currentColor"/></svg>
-    <span class="a11y-tooltip">High contrast</span>
-  </button>
-  <button id="a11y-dyslexia" aria-label="Toggle dyslexia-friendly font" title="Dyslexia font">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><text x="3" y="18" font-size="16" fill="currentColor" stroke="none" font-weight="700" font-family="serif">Dy</text></svg>
-    <span class="a11y-tooltip">Dyslexia font</span>
-  </button>
-  <button id="a11y-guide" aria-label="Toggle reading guide" title="Reading guide">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="6" x2="22" y2="6"/><line x1="2" y1="18" x2="22" y2="18"/></svg>
-    <span class="a11y-tooltip">Reading guide</span>
-  </button>
+  <div class="a11y-group-label">View</div>
+  <div class="a11y-bar-group">
+    <button id="a11y-font" aria-label="Font size: 100%" title="Cycle font size" data-size="100%">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><text x="5" y="17" font-size="14" fill="currentColor" stroke="none" font-weight="700" font-family="sans-serif">A</text></svg>
+      <span class="a11y-tooltip">Cycle font size</span>
+    </button>
+    <button id="a11y-contrast" aria-label="Toggle high contrast" title="High contrast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20z" fill="currentColor"/></svg>
+      <span class="a11y-tooltip">High contrast</span>
+    </button>
+    <button id="a11y-dyslexia" aria-label="Toggle dyslexia-friendly font" title="Dyslexia font">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><text x="3" y="18" font-size="16" fill="currentColor" stroke="none" font-weight="700" font-family="serif">Dy</text></svg>
+      <span class="a11y-tooltip">Dyslexia font</span>
+    </button>
+    <button id="a11y-guide" aria-label="Toggle reading guide" title="Reading guide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="6" x2="22" y2="6"/><line x1="2" y1="18" x2="22" y2="18"/></svg>
+      <span class="a11y-tooltip">Reading guide</span>
+    </button>
+  </div>
 </nav>
 <div class="a11y-reading-guide" id="a11y-reading-guide"></div>
+<div id="a11y-live-region" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
@@ -1824,110 +1989,352 @@ gsap.from('.track-item', {
 
 // ===== ACCESSIBILITY TOOLBAR =====
 (function() {
+  'use strict';
+
+  // ===== CONSTANTS & CONFIG =====
+  const STORAGE_KEY = 'a11y-preferences';
+  const VOICE_NAMES = [
+    'Samantha', 'Karen', 'Daniel', 'Moira', 'Fiona',
+    'Google UK English Female', 'Google US English',
+    'Microsoft Zira', 'Microsoft David',
+    'Alex', 'Victoria', 'George', 'Bruce'
+  ];
+  const FONT_LEVELS = [
+    { class: '', label: '100%', size: 'a11y-font-100' },
+    { class: 'a11y-font-120', label: '120%', size: 'a11y-font-120' },
+    { class: 'a11y-font-140', label: '140%', size: 'a11y-font-140' },
+    { class: 'a11y-font-160', label: '160%', size: 'a11y-font-160' },
+  ];
+  const SPEED_LEVELS = [0.8, 1.0, 1.2, 1.5];
+  const READING_GUIDE_HEIGHT = 50;
+
+  // ===== DOM REFERENCES =====
   const bar = document.querySelector('.a11y-bar');
   const toggleBtn = document.getElementById('a11y-toggle');
   const speakBtn = document.getElementById('a11y-speak');
+  const pauseBtn = document.getElementById('a11y-pause');
   const stopBtn = document.getElementById('a11y-stop');
-  const fontUpBtn = document.getElementById('a11y-font-up');
-  const fontDownBtn = document.getElementById('a11y-font-down');
+  const speedBtn = document.getElementById('a11y-speed');
+  const fontBtn = document.getElementById('a11y-font');
   const contrastBtn = document.getElementById('a11y-contrast');
   const dyslexiaBtn = document.getElementById('a11y-dyslexia');
   const guideBtn = document.getElementById('a11y-guide');
-  const guideEl = document.getElementById('a11y-reading-guide');
+  const skipBackBtn = document.getElementById('a11y-skip-back');
+  const skipForwardBtn = document.getElementById('a11y-skip-forward');
+  const readingGuide = document.getElementById('a11y-reading-guide');
+  const liveRegion = document.getElementById('a11y-live-region');
 
-  let fontLevel = 0; // 0=normal, 1=large, 2=xl
+  // ===== STATE =====
+  let fontLevel = 0;
+  let speedLevel = 1;
+  let isContrastEnabled = false;
+  let isDyslexiaEnabled = false;
+  let isGuideEnabled = false;
+  let isSpeaking = false;
+  let isPaused = false;
+  let currentUtterance = null;
   let synth = window.speechSynthesis;
-  let speaking = false;
+  let currentSectionIndex = -1;
+  let sections = [];
+  let voiceReady = false;
+  let selectedVoice = null;
+  let currentContent = [];
+  let currentChunkIndex = 0;
 
-  // Toggle bar collapse
-  toggleBtn.addEventListener('click', () => {
-    bar.classList.toggle('collapsed');
-    toggleBtn.setAttribute('aria-label', bar.classList.contains('collapsed') ? 'Expand accessibility toolbar' : 'Collapse accessibility toolbar');
-  });
-
-  // Text-to-speech: read visible sections
-  function getReadableText() {
-    const sections = document.querySelectorAll('h2, p, .label, .stat-label, .stat-value, .card h3, .card p, .deliv-name, .deliv-desc, .builder-block h3, .builder-block p, .track-label, .track-value, .metric-card h3, .metric-card p');
-    let text = '';
-    sections.forEach(el => {
-      const t = el.textContent.trim();
-      if (t && el.offsetParent !== null) text += t + '. ';
-    });
-    return text;
+  // ===== INITIALIZATION =====
+  function init() {
+    loadPreferences();
+    if (synth && synth.getVoices().length > 0) { selectVoice(); voiceReady = true; }
+    if (synth) synth.addEventListener('voiceschanged', () => { selectVoice(); voiceReady = true; });
+    loadDyslexicFont();
+    buildSectionsList();
+    attachEventListeners();
+    announce('Accessibility toolbar ready. Use Alt+A to toggle.');
   }
 
-  speakBtn.addEventListener('click', () => {
-    if (!synth) return;
+  // ===== PREFERENCE MANAGEMENT =====
+  function loadPreferences() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const prefs = JSON.parse(stored);
+        if (prefs.fontLevel !== undefined && prefs.fontLevel < FONT_LEVELS.length) { fontLevel = prefs.fontLevel; applyFontLevel(); }
+        if (prefs.speedLevel !== undefined && prefs.speedLevel < SPEED_LEVELS.length) { speedLevel = prefs.speedLevel; updateSpeedDisplay(); }
+        if (prefs.contrast) { isContrastEnabled = false; toggleContrast(); }
+        if (prefs.dyslexia) { isDyslexiaEnabled = false; toggleDyslexia(); }
+        if (prefs.guide) { isGuideEnabled = false; toggleGuide(); }
+      }
+    } catch(e) { /* localStorage may be unavailable */ }
+  }
+
+  function savePreferences() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ fontLevel, speedLevel, contrast: isContrastEnabled, dyslexia: isDyslexiaEnabled, guide: isGuideEnabled }));
+    } catch(e) { /* localStorage may be unavailable */ }
+  }
+
+  function announce(text) {
+    if (!liveRegion) return;
+    liveRegion.textContent = '';
+    setTimeout(() => { liveRegion.textContent = text; }, 50);
+  }
+
+  // ===== VOICE SELECTION =====
+  function selectVoice() {
+    const voices = synth.getVoices();
+    if (voices.length === 0) return;
+    for (const name of VOICE_NAMES) {
+      const voice = voices.find(v => v.name.includes(name));
+      if (voice) { selectedVoice = voice; return; }
+    }
+    // Prefer English voices
+    const enVoice = voices.find(v => v.lang.startsWith('en'));
+    selectedVoice = enVoice || voices[0];
+  }
+
+  function loadDyslexicFont() {
+    const style = document.createElement('style');
+    style.textContent = "@font-face { font-family: 'OpenDyslexic'; src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/open-dyslexic-regular.otf') format('opentype'); font-weight: normal; font-style: normal; font-display: swap; } @font-face { font-family: 'OpenDyslexic'; src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/open-dyslexic-bold.otf') format('opentype'); font-weight: bold; font-style: normal; font-display: swap; }";
+    document.head.appendChild(style);
+  }
+
+  // ===== SECTION BUILDING =====
+  function buildSectionsList() {
+    sections = [];
+    const orderedEls = document.querySelectorAll('.cover-title, .cover-subtitle, h2, p.sub, .label, .donut-center .big, .donut-center .small, .peer-bar-header, .stat, .hyp-num, .hyp-tag, .hyp-title, .hyp-body, .flow-label, .card-label, .card-title, .card > p, .deliv-name, .deliv-desc, .step-num, .step-title, .step-desc, .builder-block h3, .builder-block p, .track-label, .track-value, .metric-card h3, .metric-card p, .timeline-phase, .callout, img[alt], .source');
+    orderedEls.forEach(el => {
+      if (el.offsetParent !== null || el.closest('header')) sections.push(el);
+    });
+  }
+
+  // ===== TEXT-TO-SPEECH =====
+  function extractReadableText(element) {
+    if (element.tagName === 'IMG' && element.alt) return 'Image: ' + element.alt;
+
+    // Stats with data attributes — read computed values
+    if (element.classList.contains('stat')) {
+      const numEl = element.querySelector('.stat-num');
+      const labelEl = element.querySelector('.stat-label');
+      if (numEl) {
+        const count = numEl.getAttribute('data-count');
+        const suffix = numEl.getAttribute('data-suffix') || '';
+        const prefix = numEl.getAttribute('data-prefix') || '';
+        const label = labelEl ? labelEl.textContent.trim() : '';
+        if (count) {
+          let value = parseFloat(count);
+          if (value > 999 && numEl.getAttribute('data-comma') === 'true') value = value.toLocaleString('en-CA');
+          return prefix + value + suffix + ' ' + label;
+        }
+      }
+    }
+
+    // Peer bar headers — combine name and percentage
+    if (element.classList.contains('peer-bar-header')) {
+      const name = element.querySelector('.name');
+      const pct = element.querySelector('.pct');
+      return (name ? name.textContent.trim() : '') + ': ' + (pct ? pct.textContent.trim() : '');
+    }
+
+    // Donut chart center
+    if (element.classList.contains('big') && element.closest('.donut-center')) {
+      return 'Chart showing ' + element.textContent.trim() + ' ' + (element.nextElementSibling ? element.nextElementSibling.textContent.trim() : '');
+    }
+    if (element.classList.contains('small') && element.closest('.donut-center')) return '';
+
+    return element.textContent.trim();
+  }
+
+  function getReadableContent() {
+    return sections.map((el, i) => {
+      const text = extractReadableText(el);
+      return text && text.length > 0 ? { text, element: el, index: i } : null;
+    }).filter(Boolean);
+  }
+
+  function chunkText(text) {
+    const sentences = text.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [text];
+    return sentences.map(s => s.trim()).filter(s => s.length > 0);
+  }
+
+  function speak() {
+    if (!synth) { announce('Speech synthesis not available in this browser.'); return; }
+    if (!voiceReady) {
+      // Try one more time
+      selectVoice();
+      if (!selectedVoice) { announce('Voice system loading, please try again.'); return; }
+      voiceReady = true;
+    }
     synth.cancel();
-    const text = getReadableText();
-    if (!text) return;
-    // Split into chunks under 200 chars for better browser compatibility
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-    let i = 0;
-    function speakNext() {
-      if (i >= sentences.length) { stopSpeaking(); return; }
-      const utt = new SpeechSynthesisUtterance(sentences[i].trim());
-      utt.rate = 0.95;
-      utt.pitch = 1;
-      utt.onend = () => { i++; speakNext(); };
-      utt.onerror = () => { i++; speakNext(); };
+    isSpeaking = true;
+    isPaused = false;
+    currentChunkIndex = 0;
+    currentContent = getReadableContent();
+
+    speakBtn.style.display = 'none';
+    pauseBtn.style.display = 'flex';
+    stopBtn.style.display = 'flex';
+    pauseBtn.classList.add('active');
+    announce('Reading page content.');
+    speakFromIndex(0);
+  }
+
+  function speakFromIndex(idx) {
+    if (idx >= currentContent.length || !isSpeaking) { stopSpeaking(); return; }
+    currentChunkIndex = idx;
+    const { text, element } = currentContent[idx];
+    const chunks = chunkText(text);
+    let ci = 0;
+
+    function playChunk() {
+      if (ci >= chunks.length || !isSpeaking) { highlightElement(null); speakFromIndex(idx + 1); return; }
+      highlightElement(element);
+      const utt = new SpeechSynthesisUtterance(chunks[ci]);
+      utt.rate = SPEED_LEVELS[speedLevel] * 0.92;
+      utt.pitch = 1.05;
+      utt.volume = 1;
+      if (selectedVoice) utt.voice = selectedVoice;
+      utt.onend = () => { ci++; if (isSpeaking && !isPaused) playChunk(); };
+      utt.onerror = () => { ci++; if (isSpeaking && !isPaused) playChunk(); };
+      currentUtterance = utt;
       synth.speak(utt);
     }
-    speaking = true;
-    speakBtn.style.display = 'none';
-    stopBtn.style.display = 'flex';
-    stopBtn.classList.add('active');
-    speakNext();
-  });
+    playChunk();
+  }
+
+  function pauseSpeaking() {
+    if (!synth) return;
+    isPaused = !isPaused;
+    if (isPaused) { synth.pause(); pauseBtn.classList.remove('active'); announce('Paused.'); }
+    else { synth.resume(); pauseBtn.classList.add('active'); announce('Resumed.'); }
+  }
 
   function stopSpeaking() {
     if (synth) synth.cancel();
-    speaking = false;
-    stopBtn.style.display = 'none';
-    stopBtn.classList.remove('active');
+    isSpeaking = false; isPaused = false; currentUtterance = null;
     speakBtn.style.display = 'flex';
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
+    highlightElement(null);
+    announce('Stopped.');
   }
-  stopBtn.addEventListener('click', stopSpeaking);
 
-  // Font size
-  fontUpBtn.addEventListener('click', () => {
-    if (fontLevel < 2) fontLevel++;
+  function highlightElement(element) {
+    document.querySelectorAll('[data-a11y-highlight]').forEach(el => { el.removeAttribute('data-a11y-highlight'); el.style.borderLeft = ''; el.style.paddingLeft = ''; el.style.background = ''; });
+    if (!element) return;
+    element.setAttribute('data-a11y-highlight', 'true');
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function updateSpeedDisplay() {
+    const s = SPEED_LEVELS[speedLevel];
+    if (speedBtn) { speedBtn.querySelector('span:first-child').textContent = s + 'x'; speedBtn.setAttribute('aria-label', 'Reading speed: ' + s + 'x'); }
+  }
+
+  function changeSpeed() {
+    speedLevel = (speedLevel + 1) % SPEED_LEVELS.length;
+    updateSpeedDisplay();
+    savePreferences();
+    announce('Speed: ' + SPEED_LEVELS[speedLevel] + 'x.');
+  }
+
+  function changeFont() {
+    fontLevel = (fontLevel + 1) % FONT_LEVELS.length;
     applyFontLevel();
-  });
-  fontDownBtn.addEventListener('click', () => {
-    if (fontLevel > 0) fontLevel--;
-    applyFontLevel();
-  });
+    savePreferences();
+    announce('Font size: ' + FONT_LEVELS[fontLevel].label + '.');
+  }
+
   function applyFontLevel() {
-    document.body.classList.remove('a11y-large-text', 'a11y-xl-text');
-    if (fontLevel === 1) document.body.classList.add('a11y-large-text');
-    if (fontLevel === 2) document.body.classList.add('a11y-xl-text');
-    fontUpBtn.classList.toggle('active', fontLevel > 0);
-    fontDownBtn.classList.remove('active');
+    document.body.classList.remove(...FONT_LEVELS.map(f => f.size));
+    if (fontLevel > 0) document.body.classList.add(FONT_LEVELS[fontLevel].size);
+    if (fontBtn) { fontBtn.classList.toggle('active', fontLevel > 0); fontBtn.setAttribute('aria-label', 'Font size: ' + FONT_LEVELS[fontLevel].label); }
   }
 
-  // High contrast
-  contrastBtn.addEventListener('click', () => {
-    document.body.classList.toggle('a11y-high-contrast');
-    contrastBtn.classList.toggle('active');
-  });
+  function toggleContrast() {
+    isContrastEnabled = !isContrastEnabled;
+    document.body.classList.toggle('a11y-high-contrast', isContrastEnabled);
+    contrastBtn.classList.toggle('active', isContrastEnabled);
+    savePreferences();
+    announce(isContrastEnabled ? 'High contrast enabled.' : 'High contrast disabled.');
+  }
 
-  // Dyslexia font
-  dyslexiaBtn.addEventListener('click', () => {
-    document.body.classList.toggle('a11y-dyslexia');
-    dyslexiaBtn.classList.toggle('active');
-  });
+  function toggleDyslexia() {
+    isDyslexiaEnabled = !isDyslexiaEnabled;
+    document.body.classList.toggle('a11y-dyslexia', isDyslexiaEnabled);
+    dyslexiaBtn.classList.toggle('active', isDyslexiaEnabled);
+    savePreferences();
+    announce(isDyslexiaEnabled ? 'Dyslexia-friendly font enabled.' : 'Dyslexia-friendly font disabled.');
+  }
 
-  // Reading guide
-  let guideActive = false;
-  guideBtn.addEventListener('click', () => {
-    guideActive = !guideActive;
-    guideEl.style.display = guideActive ? 'block' : 'none';
-    guideBtn.classList.toggle('active', guideActive);
-  });
-  document.addEventListener('mousemove', (e) => {
-    if (guideActive) guideEl.style.top = (e.clientY - 20) + 'px';
-  });
+  function toggleGuide() {
+    isGuideEnabled = !isGuideEnabled;
+    readingGuide.style.display = isGuideEnabled ? 'block' : 'none';
+    guideBtn.classList.toggle('active', isGuideEnabled);
+    savePreferences();
+    announce(isGuideEnabled ? 'Reading guide enabled.' : 'Reading guide disabled.');
+  }
+
+  function skipBack() {
+    if (!isSpeaking || currentContent.length === 0) return;
+    synth.cancel();
+    currentChunkIndex = Math.max(0, currentChunkIndex - 3);
+    speakFromIndex(currentChunkIndex);
+    announce('Skipped back.');
+  }
+
+  function skipForward() {
+    if (!isSpeaking || currentContent.length === 0) return;
+    synth.cancel();
+    currentChunkIndex = Math.min(currentContent.length - 1, currentChunkIndex + 3);
+    speakFromIndex(currentChunkIndex);
+    announce('Skipped forward.');
+  }
+
+  function toggleToolbar() {
+    bar.classList.toggle('collapsed');
+    toggleBtn.setAttribute('aria-label', bar.classList.contains('collapsed') ? 'Expand accessibility toolbar' : 'Collapse accessibility toolbar');
+  }
+
+  // ===== EVENT LISTENERS =====
+  function attachEventListeners() {
+    if (toggleBtn) toggleBtn.addEventListener('click', toggleToolbar);
+    if (speakBtn) speakBtn.addEventListener('click', speak);
+    if (pauseBtn) pauseBtn.addEventListener('click', pauseSpeaking);
+    if (stopBtn) stopBtn.addEventListener('click', stopSpeaking);
+    if (speedBtn) speedBtn.addEventListener('click', changeSpeed);
+    if (fontBtn) fontBtn.addEventListener('click', changeFont);
+    if (contrastBtn) contrastBtn.addEventListener('click', toggleContrast);
+    if (dyslexiaBtn) dyslexiaBtn.addEventListener('click', toggleDyslexia);
+    if (guideBtn) guideBtn.addEventListener('click', toggleGuide);
+    if (skipBackBtn) skipBackBtn.addEventListener('click', skipBack);
+    if (skipForwardBtn) skipForwardBtn.addEventListener('click', skipForward);
+
+    document.addEventListener('mousemove', (e) => { if (isGuideEnabled && readingGuide) readingGuide.style.top = (e.clientY - READING_GUIDE_HEIGHT / 2) + 'px'; });
+    document.addEventListener('focusin', (e) => {
+      if (isGuideEnabled && readingGuide && e.target.getBoundingClientRect) {
+        const r = e.target.getBoundingClientRect();
+        readingGuide.style.top = (r.top - READING_GUIDE_HEIGHT / 2 + r.height / 2) + 'px';
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if ((e.altKey || e.metaKey) && e.key.toLowerCase() === 'a') { e.preventDefault(); toggleToolbar(); }
+      if (e.key === 'Escape' && !bar.classList.contains('collapsed')) toggleToolbar();
+    });
+
+    // Arrow key nav within toolbar
+    const buttons = Array.from(bar.querySelectorAll('button'));
+    buttons.forEach((btn, idx) => {
+      btn.addEventListener('keydown', (e) => {
+        let ni = idx;
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { ni = (idx + 1) % buttons.length; e.preventDefault(); }
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { ni = (idx - 1 + buttons.length) % buttons.length; e.preventDefault(); }
+        if (ni !== idx) buttons[ni].focus();
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 </body>
