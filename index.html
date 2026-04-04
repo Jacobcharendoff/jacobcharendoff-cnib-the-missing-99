@@ -2827,7 +2827,7 @@ gsap.from('.track-item', {
 })();
 </script>
 
-<!-- ===== CNIB MEMBER NAVIGATOR — AI AGENT PROTOTYPE ===== -->
+<!-- ===== CNIB MEMBER NAVIGATOR — AI AGENT PROTOTYPE v2 ===== -->
 <style>
   .nav-agent-fab {
     position: fixed;
@@ -2858,17 +2858,59 @@ gsap.from('.track-item', {
     background: var(--red);
     border-radius: 50%;
     border: 2px solid var(--bg-dark);
+    animation: badgePulse 2s ease-in-out infinite;
   }
+  @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
   .nav-agent-fab.open { transform: rotate(45deg); }
   .nav-agent-fab.open .badge { display: none; }
+
+  /* Proactive nudge tooltip */
+  .agent-nudge {
+    position: fixed;
+    bottom: 92px;
+    left: 28px;
+    z-index: 9997;
+    background: var(--bg-dark);
+    border: 1px solid rgba(255,241,0,0.3);
+    border-radius: 12px;
+    padding: 10px 14px;
+    max-width: 280px;
+    font-size: 13px;
+    color: var(--text-dark);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    line-height: 1.5;
+  }
+  .agent-nudge.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .agent-nudge::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: var(--bg-dark);
+    border-right: 1px solid rgba(255,241,0,0.3);
+    border-bottom: 1px solid rgba(255,241,0,0.3);
+    transform: rotate(45deg);
+  }
+  .agent-nudge strong { color: var(--yellow); }
 
   .nav-agent {
     position: fixed;
     bottom: 96px;
     left: 28px;
     z-index: 9997;
-    width: min(400px, calc(100vw - 56px));
-    max-height: min(560px, calc(100vh - 140px));
+    width: min(420px, calc(100vw - 56px));
+    max-height: min(600px, calc(100vh - 140px));
     background: #0D1117;
     border: 1px solid rgba(255,241,0,0.2);
     border-radius: 16px;
@@ -2918,8 +2960,13 @@ gsap.from('.track-item', {
     margin: 2px 0 0;
     line-height: 1.3;
   }
-  .nav-agent-header .proto-badge {
+  .nav-agent-header .agent-controls {
     margin-left: auto;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .nav-agent-header .proto-badge {
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -2930,6 +2977,23 @@ gsap.from('.track-item', {
     border-radius: 4px;
     white-space: nowrap;
   }
+  .agent-voice-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,241,0,0.2);
+    background: transparent;
+    color: var(--dim-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .agent-voice-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .agent-voice-btn.active { background: rgba(255,241,0,0.15); color: var(--yellow); border-color: var(--yellow); }
+  .agent-voice-btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+  .agent-voice-btn svg { width: 14px; height: 14px; }
 
   .nav-agent-body {
     flex: 1;
@@ -2941,6 +3005,34 @@ gsap.from('.track-item', {
     scrollbar-width: thin;
     scrollbar-color: rgba(255,241,0,0.2) transparent;
   }
+
+  /* Persona mode banner */
+  .persona-banner {
+    background: linear-gradient(135deg, rgba(255,241,0,0.08), rgba(255,241,0,0.02));
+    border: 1px solid rgba(255,241,0,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: agentFadeIn 0.3s ease;
+  }
+  .persona-banner .persona-icon { font-size: 20px; flex-shrink: 0; }
+  .persona-banner .persona-text strong { color: var(--yellow); }
+  .persona-banner .exit-persona {
+    margin-left: auto;
+    background: none;
+    border: 1px solid rgba(255,241,0,0.2);
+    color: var(--dim-dark);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .persona-banner .exit-persona:hover { border-color: var(--yellow); color: var(--yellow); }
 
   .agent-msg {
     max-width: 92%;
@@ -2963,7 +3055,38 @@ gsap.from('.track-item', {
     align-self: flex-end;
     color: var(--white);
   }
+  .agent-msg.system {
+    background: linear-gradient(135deg, rgba(255,241,0,0.06), rgba(255,241,0,0.02));
+    border: 1px solid rgba(255,241,0,0.15);
+    align-self: center;
+    text-align: center;
+    font-size: 12px;
+    color: var(--dim-dark);
+    max-width: 100%;
+  }
   .agent-msg strong { color: var(--yellow); font-weight: 600; }
+  .agent-msg .nav-link {
+    color: var(--yellow);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .agent-msg .nav-link:hover { opacity: 0.8; }
+
+  /* Persona step styling */
+  .agent-msg.persona-step {
+    border-left: 3px solid var(--yellow);
+    background: rgba(255,241,0,0.04);
+  }
+  .agent-msg .step-label {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 4px;
+  }
 
   .agent-suggestions {
     display: flex;
@@ -3044,28 +3167,44 @@ gsap.from('.track-item', {
   .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
   .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
+
+  /* Section highlight when agent navigates to it */
+  .agent-highlight-section {
+    outline: 2px solid var(--yellow) !important;
+    outline-offset: 4px;
+    animation: agentHighlight 2s ease-out forwards;
+  }
+  @keyframes agentHighlight { 0% { outline-color: var(--yellow); } 100% { outline-color: transparent; } }
 </style>
 
-<button class="nav-agent-fab" id="agentFab" aria-label="Open CNIB Member Navigator prototype" aria-expanded="false" title="CNIB Member Navigator">
+<!-- Proactive nudge tooltip -->
+<div class="agent-nudge" id="agentNudge" role="status" aria-live="polite"></div>
+
+<button class="nav-agent-fab" id="agentFab" aria-label="Open CNIB Member Navigator" aria-expanded="false" title="CNIB Member Navigator (Esc to toggle)">
   <svg viewBox="0 0 24 24" fill="none" stroke="#0D1117" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 017 7c0 3-2 5.5-4 7l-1.5 1.5a2 2 0 01-3 0L9 16c-2-1.5-4-4-4-7a7 7 0 017-7z"/><circle cx="12" cy="9" r="1.5" fill="#0D1117"/><path d="M8 21h8" opacity="0.5"/></svg>
   <span class="badge" aria-hidden="true"></span>
 </button>
 
-<div class="nav-agent" id="agentPanel" role="dialog" aria-label="CNIB Member Navigator prototype" aria-modal="false">
+<div class="nav-agent" id="agentPanel" role="dialog" aria-label="CNIB Member Navigator" aria-modal="false">
   <div class="nav-agent-header">
     <div class="agent-avatar" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0D1117" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="9" r="3"/><path d="M12 2a7 7 0 017 7c0 3-2 5.5-4 7l-1.5 1.5a2 2 0 01-3 0L9 16c-2-1.5-4-4-7a7 7 0 017-7z"/></svg>
     </div>
     <div class="agent-info">
       <h3>CNIB Member Navigator</h3>
-      <p>Prototype — built during proposal preparation</p>
+      <p>AI-powered prototype — voice enabled</p>
     </div>
-    <span class="proto-badge">Prototype</span>
+    <div class="agent-controls">
+      <button class="agent-voice-btn" id="agentVoiceToggle" aria-label="Toggle voice responses" title="Toggle voice responses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+      </button>
+      <span class="proto-badge">Prototype</span>
+    </div>
   </div>
   <div class="nav-agent-body" id="agentBody" aria-live="polite" aria-relevant="additions">
   </div>
   <div class="nav-agent-input">
-    <input type="text" id="agentInput" placeholder="Ask about this proposal or the sector..." aria-label="Ask the navigator a question">
+    <input type="text" id="agentInput" placeholder="Ask me anything, or say 'be Maria'..." aria-label="Ask the navigator a question">
     <button id="agentSend" aria-label="Send question">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0D1117" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
@@ -3078,27 +3217,27 @@ gsap.from('.track-item', {
   const KB = {
     proposal: {
       title: "The Missing 99% — A 90-Day Project Sprint",
-      summary: "A 90-day project sprint to diagnose why CNIB reaches less than 1% of 1.5 million Canadians with sight loss and begin closing the gap. Three phases: Discovery (weeks 1–4), Implementation (weeks 5–9), Measurement (weeks 10–12).",
+      summary: "A 90-day project sprint to diagnose why CNIB reaches less than 1% of 1.5 million Canadians with sight loss and begin closing the gap. Three phases: Discovery (weeks 1-4), Implementation (weeks 5-9), Measurement (weeks 10-12).",
       investment: "$60,000 total — $20,000/month for 3 months. Includes all deliverables, interviews, pilot implementation, and final ELT presentation. No additional fees.",
       deliverables: [
         "1. Complete member journey map — a documented end-to-end view of the member experience from first contact through sustained engagement, identifying entry points, drop-off stages, and gaps between programs.",
         "2. Implemented pilots with measured outcomes — one to two targeted improvements deployed during the engagement with baseline and post-implementation metrics.",
         "3. Prioritized 12-month roadmap — organized by impact and feasibility, with specific recommendations for ELT action."
       ],
-      timeline: "Phase 1 Discovery (weeks 1–4): Stakeholder interviews, member journey mapping, documenting what has been tried. Phase 2 Implementation (weeks 5–9): ELT sponsor decides what gets built; one to two high-impact pilots deployed. Phase 3 Measurement (weeks 10–12): Formal ELT presentation with findings, pilot outcomes, and 12-month roadmap.",
+      timeline: "Phase 1 Discovery (weeks 1-4): Stakeholder interviews, member journey mapping, documenting what has been tried. Phase 2 Implementation (weeks 5-9): ELT sponsor decides what gets built; one to two high-impact pilots deployed. Phase 3 Measurement (weeks 10-12): Formal ELT presentation with findings, pilot outcomes, and 12-month roadmap.",
       success: "Three questions answered with data that did not exist before: (1) Where are people dropping off? (2) Does at least one pilot measurably improve a metric? (3) Can we project 12-month reach?",
       assumptions: "Requires access to program-level data and CRM systems, direct access to frontline staff and community members, and a designated ELT sponsor. If data infrastructure is less mature than expected, flagged by week 3 with revised timeline."
     },
     hypotheses: [
-      { tag: "Discovery", title: "CNIB has no systematic way to reach people at the moment of diagnosis.", detail: "The 12,300 people served are largely self-selecting. No structured referral protocol with eye care providers, no post-diagnosis digital intake pathway, no mechanism to measure how many fall through the gap. The rebrand will help but only if there is an acquisition system behind it." },
-      { tag: "Retention", title: "People who engage with one program rarely move to another.", detail: "Vision Mate (1,488 participants) and Mentor Match (200+ pairs) work well in isolation but there is no systematic connection between programs. CNIB Connects was paused — the problem has been recognized but not yet solved. Members repeatedly said they had no idea other CNIB services existed." },
-      { tag: "Scale", title: "Foundation revenue is flat while program costs grow.", detail: "Operating deficit widened from $3.2M to $7.2M. At $5,072 per person served, reaching even 5% of the addressable market would cost multiples of the current budget. Technology, AI, and process redesign are the only path where the economics work. CNIB has 3,000+ volunteers — latent capacity that could be activated." }
+      { tag: "Discovery", title: "CNIB has no systematic way to reach people at the moment of diagnosis.", detail: "The 12,300 people served are largely self-selecting. No structured referral protocol with eye care providers, no post-diagnosis digital intake pathway, no mechanism to measure how many fall through the gap. The rebrand will help but only if there is an acquisition system behind it.", section: "priorities" },
+      { tag: "Retention", title: "People who engage with one program rarely move to another.", detail: "Vision Mate (1,488 participants) and Mentor Match (200+ pairs) work well in isolation but there is no systematic connection between programs. CNIB Connects was paused — the problem has been recognized but not yet solved. Members repeatedly said they had no idea other CNIB services existed.", section: "priorities" },
+      { tag: "Scale", title: "Foundation revenue is flat while program costs grow.", detail: "Operating deficit widened from $3.2M to $7.2M. At $5,072 per person served, reaching even 5% of the addressable market would cost multiples of the current budget. Technology, AI, and process redesign are the only path where the economics work. CNIB has 3,000+ volunteers — latent capacity that could be activated.", section: "priorities" }
     ],
     stats: {
       addressable: "1.5 million Canadians with sight loss (some CNIB publications cite 2.2M with broader definition)",
       served: "12,227 people currently served (FY2025 audited)",
       reach: "0.82% reach rate (or 0.56% using the 2.2M figure)",
-      cost: "$5,072 cost per person served ($62M program spend ÷ 12,227)",
+      cost: "$5,072 cost per person served ($62M program spend / 12,227)",
       deficit: "Operating deficit widened from $3.2M (FY2024) to $7.2M (FY2025)",
       revenue: "Donation and fundraising revenue declined slightly to $33.4M; expenses grew 6.7% to $94M",
       volunteers: "3,000+ active volunteers",
@@ -3112,7 +3251,7 @@ gsap.from('.track-item', {
       insight: "No blindness organization globally has cracked past single-digit reach. The ceiling suggests closing the gap requires a fundamentally different approach, not incremental improvements."
     },
     jacob: {
-      bio: "Jacob Charendoff is an active CNIB member who lives with vision loss. He created two CNIB programs: the Venture Studio (entrepreneurship accelerator, 20 sessions, Oct 2025–May 2026) and the Know Your Rights podcast (9 episodes, Law Society of Ontario EDI credit, covered by LawNow Magazine). Bilingual (EN/FR).",
+      bio: "Jacob Charendoff is an active CNIB member who lives with vision loss. He created two CNIB programs: the Venture Studio (entrepreneurship accelerator, 20 sessions, Oct 2025 - May 2026) and the Know Your Rights podcast (9 episodes, Law Society of Ontario EDI credit, covered by LawNow Magazine). Bilingual (EN/FR).",
       track: "Career highlights: Head of Revenue at Verifast (B2B SaaS, $36M ARR, cut handoff time from 48h to 12h), Co-Founder of The Rig Doctor (D2C, $3.5M revenue, 4x EBITDA exit), VP Revenue at Berman Family Office ($22.5M annual revenue, $28M+ combined exits).",
       approach: "Solo engagement with full-time attention. Does interviews, analysis, and implementation directly. Not an advisory engagement — a project sprint working inside the building."
     },
@@ -3125,47 +3264,207 @@ gsap.from('.track-item', {
     },
     memberScenarios: [
       {
+        id: "maria",
         name: "Maria, 58, Mississauga",
+        emoji: "👩‍🦳",
         situation: "Just diagnosed with age-related macular degeneration. Scared, doesn't identify as 'blind.' Never heard of CNIB.",
         currentJourney: "Ophthalmologist gives diagnosis but no referral. Maria searches online — finds medical information, not support services. Feels isolated. Six months later, still hasn't connected with any resources.",
-        withAgent: "An AI navigator, embedded in a post-diagnosis digital pathway, reaches Maria within days. It explains her condition in plain language, introduces assistive features already on her iPhone, connects her with a Vision Mate peer mentor who went through the same diagnosis, and schedules a call with the CNIB tech lending library. Maria doesn't have to identify as 'blind' to get help — the agent meets her where she is."
+        withAgent: "An AI navigator, embedded in a post-diagnosis digital pathway, reaches Maria within days. It explains her condition in plain language, introduces assistive features already on her iPhone, connects her with a Vision Mate peer mentor who went through the same diagnosis, and schedules a call with the CNIB tech lending library. Maria doesn't have to identify as 'blind' to get help — the agent meets her where she is.",
+        steps: [
+          { label: "Day 1 — Diagnosis", text: "Hi Maria. I know this is a lot to take in. You've just been told you have age-related macular degeneration. I want you to know: this doesn't mean you're going blind tomorrow, and you're not alone. Over 1.5 million Canadians live with sight loss, and there are people and tools ready to help — starting right now." },
+          { label: "Day 1 — Immediate help", text: "First things first. Your iPhone already has features that can help you today. Would you like me to walk you through turning on larger text and the built-in magnifier? Most people don't know these exist, and they make an immediate difference." },
+          { label: "Day 3 — Peer connection", text: "Maria, I'd like to introduce you to someone. Sarah is 62, lives in Oakville, and was diagnosed with the same condition two years ago. She volunteers with our Vision Mate program and has offered to chat with you by phone whenever you're ready. No pressure — this is just one person who understands what you're going through." },
+          { label: "Week 2 — Technology", text: "I noticed you've been using the magnifier feature every day — that's great. The CNIB tech lending library has devices you can try for free, including a portable magnifier that's much more powerful than your phone. Want me to schedule a call with them? They can mail one to you." },
+          { label: "Month 2 — Expanding support", text: "Maria, you mentioned you've been worried about reading to your grandchildren. There's an app called Voice Dream that reads any book aloud with a natural voice. And our Come Cook With Me program helps people adapt their kitchen routines. You don't have to figure this out alone — I'll keep finding the right resources as your needs evolve." }
+        ]
       },
       {
+        id: "david",
         name: "David, 34, Montreal",
+        emoji: "👨‍💼",
         situation: "Has been a Vision Mate participant for 8 months. Wants to start a business but doesn't know CNIB has an entrepreneurship program.",
         currentJourney: "David's Vision Mate experience has been positive but exists in isolation. No one has mentioned the Venture Studio, employment services, or assistive technology resources. He considers leaving CNIB because he thinks he's 'graduated' from what they offer.",
-        withAgent: "The navigator proactively surfaces the Venture Studio based on David's expressed interests. It connects him to employment resources, introduces him to a mentor who has built a business with sight loss, and keeps him engaged across multiple programs. David goes from a single-program participant to an active, multi-program member."
+        withAgent: "The navigator proactively surfaces the Venture Studio based on David's expressed interests. It connects him to employment resources, introduces him to a mentor who has built a business with sight loss, and keeps him engaged across multiple programs. David goes from a single-program participant to an active, multi-program member.",
+        steps: [
+          { label: "Month 8 — Proactive outreach", text: "Hey David. I noticed you've been in Vision Mate for eight months now and things are going well. You mentioned to your mentor last week that you've been thinking about starting a business. I wanted to flag something — CNIB has an entrepreneurship accelerator called the Venture Studio. Interested?" },
+          { label: "Month 8 — Connection", text: "The Venture Studio runs 20 sessions, and the current cohort just started. I've also found two other CNIB members who've launched businesses — one runs a consulting practice in Toronto, the other started a tech company in Vancouver. Want me to connect you?" },
+          { label: "Month 9 — Tech enablement", text: "David, for your business plan work, have you tried JAWS or NVDA screen readers with Excel? The CNIB tech team can set you up with the right tools for financial modeling. They also have a lending library if you want to try before you commit." },
+          { label: "Month 11 — Cross-program", text: "Your Venture Studio pitch is next week — exciting. Quick thought: CNIB's employment services team has contacts at BDC and Futurpreneur who specifically want to support entrepreneurs with disabilities. Want me to set up introductions for after your pitch?" }
+        ]
       },
       {
-        name: "Families — Parents of a newly diagnosed child",
+        id: "family",
+        name: "The Nguyens — Parents of a newly diagnosed child",
+        emoji: "👨‍👩‍👧",
         situation: "Their 6-year-old has just been diagnosed with a genetic eye condition. They're overwhelmed and don't know what support exists.",
         currentJourney: "Parents search frantically. They find medical information but not peer support. They don't know about CNIB's family programs, assistive technology for children, or educational advocacy support. They feel alone.",
-        withAgent: "The navigator connects the family immediately: introduces them to other parents in similar situations, explains what educational accommodations their child is entitled to, connects them with CNIB's children and youth programs, and provides ongoing guidance as their child grows. It becomes a persistent, trusted guide through every life stage."
+        withAgent: "The navigator connects the family immediately: introduces them to other parents in similar situations, explains what educational accommodations their child is entitled to, connects them with CNIB's children and youth programs, and provides ongoing guidance as their child grows. It becomes a persistent, trusted guide through every life stage.",
+        steps: [
+          { label: "Day 1 — First contact", text: "Hi, I'm the CNIB Navigator. I understand your daughter Lily has just been diagnosed with Stargardt disease. I know you have a lot of questions, and I want to help you find answers at your pace. The most important thing right now: Lily is going to be okay, and there is a community ready to support your family." },
+          { label: "Day 2 — Parent connection", text: "I'd like to connect you with the Tran family in Markham. Their son was diagnosed with the same condition three years ago. They've been through the school accommodation process and the emotional journey, and they're happy to talk. Sometimes the most helpful thing is just knowing someone who gets it." },
+          { label: "Week 2 — School rights", text: "Let's talk about Lily's school. Under Ontario's Education Act, she's entitled to accommodations including large-print materials, preferential seating, and assistive technology. I can help you write a letter to her school requesting an IPRC meeting. Would that be helpful?" },
+          { label: "Month 2 — Youth programs", text: "CNIB has summer camps and weekend programs designed for kids like Lily, where she can meet other children with sight loss and build confidence. The next camp registration opens in April. And there's an iPad program specifically for kids — the tech team can configure one with the right accessibility settings for her." },
+          { label: "Year 1 — Ongoing guide", text: "Happy anniversary, Nguyens. Lily's had an amazing year — she's thriving at school with her new iPad and she loved camp. As she gets older, different needs will come up: teen programs, career exploration, driver's license alternatives. I'll be here for all of it. This isn't a one-time service — it's a lifelong relationship." }
+        ]
       }
-    ]
+    ],
+    // Section navigation map
+    sectionMap: {
+      "opportunity": { id: "opportunity", label: "The Reach Problem" },
+      "reach": { id: "opportunity", label: "The Reach Problem" },
+      "problem": { id: "opportunity", label: "The Reach Problem" },
+      "gap": { id: "opportunity", label: "The Reach Problem" },
+      "hypotheses": { id: "priorities", label: "Three Hypotheses" },
+      "priorities": { id: "priorities", label: "Three Hypotheses" },
+      "breaking": { id: "priorities", label: "Three Hypotheses" },
+      "approach": { id: "approach", label: "90-Day Approach" },
+      "sprint": { id: "approach", label: "90-Day Approach" },
+      "90 day": { id: "approach", label: "90-Day Approach" },
+      "phases": { id: "approach", label: "90-Day Approach" },
+      "deliverables": { id: "deliverables", label: "Deliverables" },
+      "outputs": { id: "deliverables", label: "Deliverables" },
+      "builder": { id: "builder", label: "About Jacob" },
+      "jacob": { id: "builder", label: "About Jacob" },
+      "who built": { id: "builder", label: "About Jacob" }
+    }
   };
+
+  // ===== STATE =====
+  let isOpen = false;
+  let hasOpened = false;
+  let voiceEnabled = false;
+  let activePersona = null; // null or {id, stepIndex}
+  let lastNudgeSection = null;
+  let nudgeTimeout = null;
+  let lastScrollY = 0;
+
+  // ===== DOM REFS =====
+  const fab = document.getElementById('agentFab');
+  const panel = document.getElementById('agentPanel');
+  const agentBody = document.getElementById('agentBody');
+  const input = document.getElementById('agentInput');
+  const sendBtn = document.getElementById('agentSend');
+  const voiceToggle = document.getElementById('agentVoiceToggle');
+  const nudgeEl = document.getElementById('agentNudge');
+
+  // ===== NAVIGATION ENGINE =====
+  function navigateToSection(sectionId) {
+    const el = document.getElementById(sectionId);
+    if (!el) return false;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.classList.add('agent-highlight-section');
+    setTimeout(() => el.classList.remove('agent-highlight-section'), 2500);
+    return true;
+  }
+
+  function getCurrentSection() {
+    const sections = document.querySelectorAll('.section[id]');
+    const scrollY = window.scrollY + window.innerHeight * 0.3;
+    let current = null;
+    sections.forEach(sec => {
+      if (sec.offsetTop <= scrollY) current = sec.id;
+    });
+    return current;
+  }
+
+  // ===== VOICE OUTPUT =====
+  function speakAgentResponse(text) {
+    if (!voiceEnabled) return;
+    // Strip HTML tags for speech
+    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/•/g, '').trim();
+    // Use the page's TTS if available
+    if (typeof window.speakNumber === 'function') {
+      // Use Web Speech API directly for agent responses
+      const synth = window.speechSynthesis;
+      if (synth) {
+        synth.cancel();
+        const utt = new SpeechSynthesisUtterance(plainText);
+        utt.rate = 1.0;
+        utt.pitch = 1.05;
+        utt.volume = 1;
+        synth.speak(utt);
+      }
+    } else {
+      const synth = window.speechSynthesis;
+      if (synth) {
+        synth.cancel();
+        const utt = new SpeechSynthesisUtterance(plainText);
+        utt.rate = 1.0;
+        synth.speak(utt);
+      }
+    }
+  }
 
   // ===== RESPONSE ENGINE =====
   function findAnswer(query) {
     const q = query.toLowerCase().trim();
 
+    // ===== NAVIGATION COMMANDS =====
+    const navMatch = q.match(/(?:go to|take me to|show me|navigate to|scroll to|jump to)\s+(?:the\s+)?(.+)/);
+    if (navMatch) {
+      const target = navMatch[1].toLowerCase();
+      for (const [key, sec] of Object.entries(KB.sectionMap)) {
+        if (target.includes(key)) {
+          navigateToSection(sec.id);
+          return { text: "Navigating to <strong>" + sec.label + "</strong>. <span class='nav-link' onclick='document.getElementById(\"" + sec.id + "\").scrollIntoView({behavior:\"smooth\",block:\"start\"})'>Click here</span> if you're not there yet.", suggestions: ["Summarize this section", "What should I know about this?"] };
+        }
+      }
+      return { text: "I couldn't find that section. Try: <span class='nav-link' onclick='document.getElementById(\"opportunity\").scrollIntoView({behavior:\"smooth\"})'>The Reach Problem</span>, <span class='nav-link' onclick='document.getElementById(\"priorities\").scrollIntoView({behavior:\"smooth\"})'>Three Hypotheses</span>, <span class='nav-link' onclick='document.getElementById(\"approach\").scrollIntoView({behavior:\"smooth\"})'>90-Day Approach</span>, <span class='nav-link' onclick='document.getElementById(\"deliverables\").scrollIntoView({behavior:\"smooth\"})'>Deliverables</span>, or <span class='nav-link' onclick='document.getElementById(\"builder\").scrollIntoView({behavior:\"smooth\"})'>About Jacob</span>.", suggestions: [] };
+    }
+
+    // ===== PERSONA MODE =====
+    if (/^be\s+(maria|david|family|nguyen|parent)/i.test(q) || /^(start|enter|begin)\s+(maria|david|family|nguyen|parent)/i.test(q) || /experience\s+as\s+(maria|david|family|nguyen)/i.test(q)) {
+      const personaMatch = q.match(/maria|david|family|nguyen|parent/i);
+      let persona = KB.memberScenarios[0];
+      if (/david/i.test(personaMatch[0])) persona = KB.memberScenarios[1];
+      if (/family|nguyen|parent/i.test(personaMatch[0])) persona = KB.memberScenarios[2];
+      activePersona = { id: persona.id, stepIndex: 0 };
+      return startPersonaMode(persona);
+    }
+
+    // If in persona mode and user says "next" or "continue"
+    if (activePersona && /^(next|continue|go on|what happens|then what|keep going|more|and then)/.test(q)) {
+      return advancePersona();
+    }
+
+    // Exit persona
+    if (activePersona && /^(exit|stop|leave|quit|back|end|normal)/.test(q)) {
+      return exitPersona();
+    }
+
+    // ===== CONTEXT-AWARE: What am I looking at? =====
+    if (/what('s| is| am i).*(looking at|reading|see|this section|this part|current)/i.test(q) || /where am i/i.test(q)) {
+      const sec = getCurrentSection();
+      const contextMap = {
+        opportunity: "You're in the <strong>Reach Problem</strong> section. This lays out the core data: CNIB serves 12,227 people out of 1.5 million Canadians with sight loss — less than 1% reach. The question isn't whether the gap exists (it does). The question is why.",
+        priorities: "You're looking at the <strong>Three Hypotheses</strong>. These are the three places I believe the system is breaking down: discovery (people never find CNIB), retention (those who do find it get stuck in one program), and scale (the economics don't work without technology).",
+        approach: "You're in the <strong>90-Day Approach</strong> section. Three phases: four weeks of discovery and stakeholder interviews, five weeks of building and testing pilots, three weeks of measuring and presenting to the ELT.",
+        deliverables: "You're looking at the <strong>Deliverables</strong>. Three concrete outputs: a member journey map, implemented pilots with measured results, and a prioritized 12-month roadmap for the executive team.",
+        builder: "You're in the <strong>About Jacob</strong> section. This covers why I'm the right person for this work — CNIB member, creator of two CNIB programs, and a professional track record in growth systems and revenue operations."
+      };
+      const explanation = contextMap[sec] || "You're at the top of the proposal. Scroll down to explore the reach problem, hypotheses, approach, and deliverables.";
+      return { text: explanation, suggestions: ["Tell me more about this section", "Take me to the next section"] };
+    }
+
     // Greetings
     if (/^(hi|hello|hey|good morning|good afternoon)\b/.test(q)) {
-      return { text: "Hello! I'm a prototype of what a CNIB member-facing AI navigator could look like. I can help you explore this proposal, dive into the sector research behind it, or walk through what this kind of agent could mean for a real member. What interests you?", suggestions: ["Summarize the proposal", "Show me the financials", "What would this mean for a new member?"] };
+      return { text: "Hello! I'm a prototype of what a <strong>CNIB member-facing AI navigator</strong> could be. I can do a few things most chatbots can't:\n\n<strong>Navigate</strong> — say \"take me to the deliverables\" and I'll scroll you there.\n<strong>Simulate</strong> — say \"be Maria\" to experience this proposal from a real member's perspective.\n<strong>Explain</strong> — ask me about any section and I'll give you the context behind the numbers.\n\nWhat would you like to explore?", suggestions: ["Be Maria", "Take me to the hypotheses", "What am I looking at?"] };
     }
 
     // Proposal summary
     if (/summar|overview|what('s| is) this|about|proposal|pitch|what are you proposing/.test(q)) {
-      return { text: KB.proposal.summary + "\n\n<strong>Investment:</strong> " + KB.proposal.investment, suggestions: ["What are the deliverables?", "What are the three hypotheses?", "Who is Jacob?"] };
+      return { text: KB.proposal.summary + "\n\n<strong>Investment:</strong> " + KB.proposal.investment, suggestions: ["What are the deliverables?", "What are the three hypotheses?", "Be Maria — show me what this means"] };
     }
 
     // Deliverables
     if (/deliverable|output|what do (we|they|i) get|what('s| is) included/.test(q)) {
+      navigateToSection('deliverables');
       return { text: "<strong>Three deliverables:</strong>\n\n" + KB.proposal.deliverables.join("\n\n"), suggestions: ["What's the timeline?", "What does success look like?", "How much does it cost?"] };
     }
 
     // Timeline / phases
     if (/timeline|phase|week|schedule|how long|90.day|duration/.test(q)) {
+      navigateToSection('approach');
       return { text: KB.proposal.timeline, suggestions: ["What are the deliverables?", "What assumptions are built in?"] };
     }
 
@@ -3181,6 +3480,7 @@ gsap.from('.track-item', {
 
     // Hypotheses
     if (/hypothes|three (places|problems|issues)|breaking down|what('s| is) wrong|diagnos/.test(q)) {
+      navigateToSection('priorities');
       let text = "<strong>Three hypotheses this sprint will validate:</strong>\n\n";
       KB.hypotheses.forEach(h => { text += "<strong>" + h.tag + ":</strong> " + h.title + "\n\n"; });
       return { text, suggestions: ["Tell me about the discovery gap", "Tell me about retention", "Tell me about the scale problem"] };
@@ -3189,13 +3489,13 @@ gsap.from('.track-item', {
     // Discovery hypothesis
     if (/discover|diagnosis|referral|find|awareness|ophthalmol|acquisition|rebrand/.test(q)) {
       const h = KB.hypotheses[0];
-      return { text: "<strong>" + h.tag + ":</strong> " + h.title + "\n\n" + h.detail, suggestions: ["Tell me about retention", "What would this mean for a new member?"] };
+      return { text: "<strong>" + h.tag + ":</strong> " + h.title + "\n\n" + h.detail, suggestions: ["Tell me about retention", "Be Maria — experience this firsthand"] };
     }
 
     // Retention hypothesis
     if (/retention|program|vision mate|mentor|connect|drop.off|stay|engage/.test(q)) {
       const h = KB.hypotheses[1];
-      return { text: "<strong>" + h.tag + ":</strong> " + h.title + "\n\n" + h.detail, suggestions: ["Tell me about the scale problem", "Show me a member scenario"] };
+      return { text: "<strong>" + h.tag + ":</strong> " + h.title + "\n\n" + h.detail, suggestions: ["Tell me about the scale problem", "Be David — experience this firsthand"] };
     }
 
     // Scale hypothesis
@@ -3206,35 +3506,34 @@ gsap.from('.track-item', {
 
     // Stats / numbers
     if (/stat|number|data|how many|served|reach|penetration|addressable|market/.test(q)) {
-      return { text: "<strong>Key data points:</strong>\n\n• Addressable market: " + KB.stats.addressable + "\n• Currently served: " + KB.stats.served + "\n• Reach: " + KB.stats.reach + "\n• Cost per person: " + KB.stats.cost + "\n• Operating deficit: " + KB.stats.deficit + "\n• Volunteers: " + KB.stats.volunteers, suggestions: ["How does this compare to peers?", "What are the hypotheses?"] };
+      navigateToSection('opportunity');
+      return { text: "<strong>Key data points:</strong>\n\n- Addressable market: " + KB.stats.addressable + "\n- Currently served: " + KB.stats.served + "\n- Reach: " + KB.stats.reach + "\n- Cost per person: " + KB.stats.cost + "\n- Operating deficit: " + KB.stats.deficit + "\n- Volunteers: " + KB.stats.volunteers, suggestions: ["How does this compare to peers?", "What are the hypotheses?"] };
     }
 
     // Peer comparison
     if (/peer|compar|rnib|vision australia|other org|benchmark|global/.test(q)) {
-      return { text: "<strong>Peer reach comparison:</strong>\n\n• " + KB.peers.cnib + "\n• " + KB.peers.visionAustralia + "\n• " + KB.peers.rnib + "\n\n" + KB.peers.insight, suggestions: ["What's driving the gap?", "Tell me about the scale problem"] };
+      return { text: "<strong>Peer reach comparison:</strong>\n\n- " + KB.peers.cnib + "\n- " + KB.peers.visionAustralia + "\n- " + KB.peers.rnib + "\n\n" + KB.peers.insight, suggestions: ["What's driving the gap?", "Tell me about the scale problem"] };
     }
 
     // Jacob / who
     if (/jacob|who (is|are you|built|created)|about (the|this) person|charendoff|builder|credential/.test(q)) {
+      navigateToSection('builder');
       return { text: KB.jacob.bio + "\n\n<strong>Professional track record:</strong> " + KB.jacob.track + "\n\n<strong>Engagement model:</strong> " + KB.jacob.approach, suggestions: ["What programs did he create at CNIB?", "Summarize the proposal"] };
     }
 
-    // Member scenarios
-    if (/member|scenario|maria|david|famil|child|parent|what would|new member|newly diagnos|experience|feel like|walk.through|demo|example|preview|show me/.test(q)) {
-      // Pick the most relevant scenario
-      let scenario = KB.memberScenarios[0]; // default: Maria
-      if (/david|business|entrepreneur|venture|vision mate|retain/.test(q)) scenario = KB.memberScenarios[1];
-      if (/famil|child|parent|kid|school|young/.test(q)) scenario = KB.memberScenarios[2];
-
-      return {
-        text: "<strong>Member scenario: " + scenario.name + "</strong>\n\n<strong>Situation:</strong> " + scenario.situation + "\n\n<strong>Today's experience:</strong> " + scenario.currentJourney + "\n\n<strong>With an AI navigator:</strong> " + scenario.withAgent,
-        suggestions: KB.memberScenarios.filter(s => s !== scenario).map(s => "Show me " + s.name.split(",")[0] + "'s scenario").concat(["How would this scale?"])
-      };
+    // Member scenarios (non-persona mode — just description)
+    if (/member|scenario|what would|new member|newly diagnos|experience|feel like|walk.through|demo|example|preview/.test(q)) {
+      return { text: "I can do something better than describe a scenario — I can <strong>simulate one</strong>. Say one of these to step into a member's shoes:\n\n<strong>\"Be Maria\"</strong> — a 58-year-old just diagnosed with macular degeneration\n<strong>\"Be David\"</strong> — a 34-year-old Vision Mate participant who wants to start a business\n<strong>\"Be the Nguyen family\"</strong> — parents of a newly diagnosed 6-year-old\n\nI'll walk you through what their experience would look like with an AI navigator, step by step.", suggestions: ["Be Maria", "Be David", "Be the Nguyen family"] };
     }
+
+    // Maria/David/Family direct name mentions
+    if (/^maria/.test(q)) { activePersona = { id: "maria", stepIndex: 0 }; return startPersonaMode(KB.memberScenarios[0]); }
+    if (/^david/.test(q)) { activePersona = { id: "david", stepIndex: 0 }; return startPersonaMode(KB.memberScenarios[1]); }
+    if (/^(family|nguyen|parent)/.test(q)) { activePersona = { id: "family", stepIndex: 0 }; return startPersonaMode(KB.memberScenarios[2]); }
 
     // AI / technology
     if (/\bai\b|artificial|technology|agent|tool|assistive|be my eyes|seeing ai|aira/.test(q)) {
-      return { text: "<strong>The AI landscape for sight loss:</strong>\n\n" + KB.sector.aiTools + "\n\nThis navigator you're interacting with right now is a small-scale prototype of that concept — an AI agent that helps someone navigate a complex information space (in this case, a proposal). Now imagine this applied to CNIB's full service ecosystem: 15+ programs, multiple pathways, personalized to each member's life stage and needs.", suggestions: ["What would this mean for a new member?", "Tell me about the scale problem"] };
+      return { text: "<strong>The AI landscape for sight loss:</strong>\n\n" + KB.sector.aiTools + "\n\nThis navigator you're using right now is a prototype of that concept. Say <strong>\"be Maria\"</strong> to experience what a full member-facing version could feel like — walking a newly diagnosed person from fear to confidence, step by step.", suggestions: ["Be Maria", "Tell me about the scale problem"] };
     }
 
     // Legislation / accessibility law
@@ -3244,7 +3543,7 @@ gsap.from('.track-item', {
 
     // Employment
     if (/employ|job|work|career|hire|unemploy/.test(q)) {
-      return { text: KB.sector.employment, suggestions: ["What does vision loss cost Canada?", "Show me a member scenario"] };
+      return { text: KB.sector.employment, suggestions: ["What does vision loss cost Canada?", "Be David — see the employment connection"] };
     }
 
     // Cost to Canada
@@ -3259,12 +3558,12 @@ gsap.from('.track-item', {
 
     // CNIB Connects
     if (/connects|paused|previous|tried before|failed/.test(q)) {
-      return { text: "CNIB Connects was a previous digital engagement platform designed to help members discover and move between programs. It has been paused — which suggests the cross-program connection problem has been recognized before, but the solution hasn't landed yet. This sprint is designed to understand why and find what works.", suggestions: ["Tell me about retention", "What are the deliverables?"] };
+      return { text: "CNIB Connects was a previous digital engagement platform designed to help members discover and move between programs. It has been paused — which suggests the cross-program connection problem has been recognized before, but the solution hasn't landed yet. This sprint is designed to understand why and find what works.", suggestions: ["Tell me about retention", "Be David — see the cross-program gap"] };
     }
 
     // Venture Studio
     if (/venture|accelerator|entrepreneur/.test(q)) {
-      return { text: "The Venture Studio is an entrepreneurship accelerator for CNIB members that Jacob designed, pitched, and built from the ground up. Originally scoped at 12 sessions, it was extended to 20 based on participant demand (Oct 2025 – May 2026). Running it revealed the operational gaps firsthand: no system to connect members to other CNIB services between sessions.", suggestions: ["Tell me about Know Your Rights", "Who is Jacob?"] };
+      return { text: "The Venture Studio is an entrepreneurship accelerator for CNIB members that Jacob designed, pitched, and built from the ground up. Originally scoped at 12 sessions, it was extended to 20 based on participant demand (Oct 2025 - May 2026). Running it revealed the operational gaps firsthand: no system to connect members to other CNIB services between sessions.", suggestions: ["Tell me about Know Your Rights", "Who is Jacob?"] };
     }
 
     // Know Your Rights
@@ -3272,58 +3571,191 @@ gsap.from('.track-item', {
       return { text: "Know Your Rights is a 9-episode CNIB Podcast Network series Jacob co-created and hosted. Each episode covers an area where Canadians with sight loss face discrimination. Every episode carries Law Society of Ontario EDI Professionalism credit and was covered by LawNow Magazine. After the final episode, there was no mechanism to follow up with listeners or connect them to services — content existed in isolation.", suggestions: ["Tell me about the Venture Studio", "Who is Jacob?"] };
     }
 
+    // What can you do?
+    if (/what can you|help|capabilities|features|commands/.test(q)) {
+      return { text: "<strong>Here's what I can do:</strong>\n\n<strong>Navigate</strong> — \"Take me to [section]\" scrolls you to any part of the proposal\n<strong>Simulate</strong> — \"Be Maria\" / \"Be David\" / \"Be the Nguyen family\" walks you through a member's experience step by step\n<strong>Explain</strong> — \"What am I looking at?\" gives context for whatever section you're reading\n<strong>Research</strong> — Ask about the data, peer comparisons, sector landscape, or Jacob's background\n<strong>Voice</strong> — Toggle the speaker icon to hear my responses read aloud", suggestions: ["Be Maria", "What am I looking at?", "Take me to the deliverables"] };
+    }
+
     // Catch-all
-    return { text: "I can help with questions about this proposal, the research behind it, or what an AI navigator could mean for CNIB members. Try asking about the deliverables, the three hypotheses, the financial data, peer comparisons, or ask me to walk through a member scenario.", suggestions: ["Summarize the proposal", "What are the key numbers?", "Walk me through a member scenario"] };
+    return { text: "I can help with questions about this proposal, navigate you to any section, or simulate a member experience. Try:\n\n<strong>\"Be Maria\"</strong> to experience the navigator as a new member\n<strong>\"Take me to the hypotheses\"</strong> to jump to a section\n<strong>\"What am I looking at?\"</strong> for context on the current section", suggestions: ["Be Maria", "Summarize the proposal", "What am I looking at?"] };
   }
 
-  // ===== UI ENGINE =====
-  const fab = document.getElementById('agentFab');
-  const panel = document.getElementById('agentPanel');
-  const body = document.getElementById('agentBody');
-  const input = document.getElementById('agentInput');
-  const sendBtn = document.getElementById('agentSend');
-  let isOpen = false;
-  let hasOpened = false;
+  // ===== PERSONA MODE ENGINE =====
+  function startPersonaMode(persona) {
+    const banner = createPersonaBanner(persona);
+    return {
+      text: "<span class='step-label'>PERSONA MODE</span>\n\nYou are now experiencing this proposal as <strong>" + persona.name + "</strong>. " + persona.emoji + "\n\n<strong>Their situation:</strong> " + persona.situation + "\n\n<strong>What happens today (no navigator):</strong> " + persona.currentJourney + "\n\nNow let me show you what happens <strong>with</strong> an AI navigator. Say <strong>\"next\"</strong> to advance through each step of the journey.",
+      suggestions: ["Next", "Exit persona mode"],
+      personaBanner: banner,
+      isPersonaStep: false
+    };
+  }
 
+  function advancePersona() {
+    if (!activePersona) return exitPersona();
+    const persona = KB.memberScenarios.find(s => s.id === activePersona.id);
+    if (!persona) return exitPersona();
+
+    const step = persona.steps[activePersona.stepIndex];
+    if (!step) return exitPersona();
+
+    activePersona.stepIndex++;
+    const hasMore = activePersona.stepIndex < persona.steps.length;
+
+    return {
+      text: "<span class='step-label'>" + step.label + "</span>\n\n" + step.text,
+      suggestions: hasMore ? ["Next", "Exit persona mode"] : ["Exit persona mode", "Try another persona", "What did I just experience?"],
+      isPersonaStep: true,
+      isLastStep: !hasMore
+    };
+  }
+
+  function exitPersona() {
+    const wasPersona = activePersona;
+    activePersona = null;
+    removePersonaBanner();
+
+    if (wasPersona) {
+      return { text: "<span class='step-label'>PERSONA MODE ENDED</span>\n\nYou just experienced what a CNIB AI navigator could feel like from a real member's perspective. Every step you saw — the proactive outreach, the peer connections, the cross-program discovery, the life-stage awareness — that's what this proposal is designed to build.\n\nThe key difference: instead of members having to find services, the navigator finds them.", suggestions: ["Be David", "Be the Nguyen family", "Summarize the proposal", "Take me to the approach"] };
+    }
+    return { text: "You're not in persona mode. Want to try one?", suggestions: ["Be Maria", "Be David", "Be the Nguyen family"] };
+  }
+
+  function createPersonaBanner(persona) {
+    return '<span class="persona-icon">' + persona.emoji + '</span><span class="persona-text">Experiencing as <strong>' + persona.name + '</strong></span><button class="exit-persona" onclick="document.getElementById(\'agentInput\').value=\'exit\';document.getElementById(\'agentSend\').click()">Exit</button>';
+  }
+
+  function showPersonaBanner(html) {
+    removePersonaBanner();
+    const banner = document.createElement('div');
+    banner.className = 'persona-banner';
+    banner.id = 'personaBannerEl';
+    banner.innerHTML = html;
+    agentBody.insertBefore(banner, agentBody.firstChild);
+  }
+
+  function removePersonaBanner() {
+    const existing = document.getElementById('personaBannerEl');
+    if (existing) existing.remove();
+  }
+
+  // ===== PROACTIVE NUDGES =====
+  const nudgeMap = {
+    opportunity: { text: "I see you're reading about the reach gap. Want me to explain what's driving it?", query: "What's driving the gap?" },
+    priorities: { text: "You're looking at the three hypotheses. Want to experience one from a member's perspective?", query: "Be Maria" },
+    approach: { text: "Reading the 90-day plan? I can break down what each phase delivers.", query: "What's the timeline?" },
+    deliverables: { text: "These are the three outputs. Want me to explain how they connect?", query: "What are the deliverables?" },
+    builder: { text: "Want to know more about Jacob's CNIB programs?", query: "What programs did he create at CNIB?" }
+  };
+
+  function checkScrollNudge() {
+    if (isOpen || activePersona) return; // Don't nudge if agent is open or in persona mode
+    const sec = getCurrentSection();
+    if (sec && sec !== lastNudgeSection && nudgeMap[sec]) {
+      lastNudgeSection = sec;
+      showNudge(nudgeMap[sec]);
+    }
+  }
+
+  function showNudge(nudge) {
+    if (nudgeTimeout) clearTimeout(nudgeTimeout);
+    nudgeEl.innerHTML = '<strong>Navigator:</strong> ' + nudge.text;
+    nudgeEl.classList.add('visible');
+    nudgeEl.onclick = () => {
+      hideNudge();
+      if (!isOpen) toggle();
+      setTimeout(() => handleQuery(nudge.query), 400);
+    };
+    nudgeTimeout = setTimeout(hideNudge, 8000);
+  }
+
+  function hideNudge() {
+    nudgeEl.classList.remove('visible');
+    nudgeEl.onclick = null;
+    if (nudgeTimeout) { clearTimeout(nudgeTimeout); nudgeTimeout = null; }
+  }
+
+  // Throttled scroll listener for nudges
+  let scrollTick = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTick) {
+      scrollTick = true;
+      requestAnimationFrame(() => {
+        checkScrollNudge();
+        scrollTick = false;
+      });
+    }
+  });
+
+  // ===== UI ENGINE =====
   function toggle() {
     isOpen = !isOpen;
     fab.classList.toggle('open', isOpen);
     panel.classList.toggle('open', isOpen);
-    fab.setAttribute('aria-expanded', isOpen);
+    fab.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen) hideNudge();
     if (isOpen && !hasOpened) {
       hasOpened = true;
       showWelcome();
     }
-    if (isOpen) setTimeout(() => input.focus(), 300);
+    if (isOpen) {
+      setTimeout(() => {
+        input.focus();
+        // Trap focus inside panel when open
+        panel.addEventListener('keydown', trapFocus);
+      }, 300);
+    } else {
+      panel.removeEventListener('keydown', trapFocus);
+      fab.focus();
+    }
+  }
+
+  // Focus trapping for accessibility
+  function trapFocus(e) {
+    if (e.key !== 'Tab') return;
+    const focusable = panel.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])');
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
   }
 
   function showWelcome() {
-    addMsg("bot", "Hi — I'm a prototype of what a <strong>CNIB member-facing AI navigator</strong> could feel like. I was built during the preparation of this proposal to give you a small taste of the concept.\n\nI can answer questions about the proposal, share the sector research behind it, or walk you through what this kind of agent could mean for a real CNIB member.\n\nWhat would you like to explore?");
-    addSuggestions(["Summarize the proposal", "Show me the key numbers", "What would this mean for a new member?"]);
+    addMsg("bot", "Hi — I'm a prototype of what a <strong>CNIB member-facing AI navigator</strong> could feel like.\n\nI'm not a typical chatbot. I can:\n\n<strong>Navigate</strong> you through this proposal — \"take me to the deliverables\"\n<strong>Simulate</strong> a member's experience — \"be Maria\" to walk through a real journey\n<strong>Explain</strong> what you're reading — \"what am I looking at?\"\n\nThis is what Angela's AI vision could feel like at scale. Try it.");
+    addSuggestions(["Be Maria", "What am I looking at?", "Summarize the proposal"]);
   }
 
-  function addMsg(type, html) {
+  function addMsg(type, html, extraClass) {
     const div = document.createElement('div');
-    div.className = 'agent-msg ' + type;
-    div.setAttribute('role', 'group');
-    div.setAttribute('aria-label', type === 'bot' ? 'Navigator response' : 'Your question');
+    div.className = 'agent-msg ' + type + (extraClass ? ' ' + extraClass : '');
+    div.setAttribute('role', type === 'bot' ? 'article' : 'group');
+    div.setAttribute('aria-label', type === 'bot' ? 'Navigator response' : type === 'system' ? 'System message' : 'Your question');
+    div.setAttribute('tabindex', '-1');
     div.innerHTML = html.replace(/\n/g, '<br>');
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
+    agentBody.appendChild(div);
+    agentBody.scrollTop = agentBody.scrollHeight;
+    // Announce to screen reader
+    div.focus({ preventScroll: true });
     return div;
   }
 
   function addSuggestions(items) {
     const wrap = document.createElement('div');
     wrap.className = 'agent-suggestions';
-    items.forEach(text => {
+    wrap.setAttribute('role', 'group');
+    wrap.setAttribute('aria-label', 'Suggested actions');
+    items.forEach((text, i) => {
       const btn = document.createElement('button');
       btn.textContent = text;
+      btn.setAttribute('aria-label', 'Ask: ' + text);
       btn.addEventListener('click', () => handleQuery(text));
       wrap.appendChild(btn);
     });
-    body.appendChild(wrap);
-    body.scrollTop = body.scrollHeight;
+    agentBody.appendChild(wrap);
+    agentBody.scrollTop = agentBody.scrollHeight;
   }
 
   function showTyping() {
@@ -3333,26 +3765,44 @@ gsap.from('.track-item', {
     div.setAttribute('role', 'status');
     div.setAttribute('aria-label', 'Navigator is thinking');
     div.innerHTML = '<div class="typing-indicator" aria-hidden="true"><span></span><span></span><span></span></div>';
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
+    agentBody.appendChild(div);
+    agentBody.scrollTop = agentBody.scrollHeight;
     return div;
   }
 
   function handleQuery(text) {
     // Remove old suggestions
-    body.querySelectorAll('.agent-suggestions').forEach(el => el.remove());
+    agentBody.querySelectorAll('.agent-suggestions').forEach(el => el.remove());
 
     addMsg('user', text);
 
     const typing = showTyping();
 
-    // Simulate brief "thinking" delay for realism
-    const delay = 400 + Math.random() * 600;
+    // Simulate brief "thinking" delay
+    const delay = 300 + Math.random() * 500;
     setTimeout(() => {
       typing.remove();
       const answer = findAnswer(text);
-      addMsg('bot', answer.text);
-      if (answer.suggestions) addSuggestions(answer.suggestions);
+
+      // Show persona banner if entering persona mode
+      if (answer.personaBanner) {
+        showPersonaBanner(answer.personaBanner);
+      }
+
+      // Use persona-step class for persona journey steps
+      const msgClass = answer.isPersonaStep ? 'persona-step' : '';
+      const msgDiv = addMsg('bot', answer.text, msgClass);
+
+      if (answer.isLastStep) {
+        activePersona = null;
+        removePersonaBanner();
+        addMsg('system', 'Persona simulation complete. The navigator guided ' + (answer.text.includes('Maria') ? 'Maria' : answer.text.includes('David') ? 'David' : 'the family') + ' through every life stage — proactively, personally, persistently.');
+      }
+
+      if (answer.suggestions && answer.suggestions.length) addSuggestions(answer.suggestions);
+
+      // Voice output
+      speakAgentResponse(answer.text);
     }, delay);
   }
 
@@ -3363,11 +3813,28 @@ gsap.from('.track-item', {
     handleQuery(text);
   }
 
+  // ===== EVENT LISTENERS =====
   fab.addEventListener('click', toggle);
   sendBtn.addEventListener('click', send);
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); send(); }
+  });
 
-  // Close on Escape
+  // Voice toggle
+  voiceToggle.addEventListener('click', () => {
+    voiceEnabled = !voiceEnabled;
+    voiceToggle.classList.toggle('active', voiceEnabled);
+    voiceToggle.setAttribute('aria-pressed', String(voiceEnabled));
+    voiceToggle.setAttribute('aria-label', voiceEnabled ? 'Voice responses on — click to disable' : 'Voice responses off — click to enable');
+    if (voiceEnabled) {
+      addMsg('system', 'Voice responses enabled. I\'ll read my answers aloud.');
+    } else {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      addMsg('system', 'Voice responses disabled.');
+    }
+  });
+
+  // Escape / keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       const shortcutOverlay = document.getElementById('shortcut-overlay');
@@ -3384,12 +3851,14 @@ gsap.from('.track-item', {
     if (e.target.id === 'shortcut-overlay') e.target.classList.remove('visible');
   });
 
-  // Remove badge after 3 seconds if not opened
+  // Nudge click on fab area
+  nudgeEl.addEventListener('mouseenter', () => { if (nudgeTimeout) clearTimeout(nudgeTimeout); });
+
+  // Remove badge after 8 seconds if not opened
   setTimeout(() => {
     if (!hasOpened) {
       const badge = fab.querySelector('.badge');
-      if (badge) badge.style.transition = 'opacity 0.5s';
-      if (badge) setTimeout(() => badge.style.opacity = '0', 0);
+      if (badge) { badge.style.transition = 'opacity 0.5s'; setTimeout(() => badge.style.opacity = '0', 0); }
     }
   }, 8000);
 })();
