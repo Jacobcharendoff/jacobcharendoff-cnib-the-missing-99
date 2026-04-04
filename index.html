@@ -82,6 +82,118 @@
     border: 0;
   }
 
+  /* ---- Accessibility Toolbar ---- */
+  .a11y-bar {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 12px 0 0 12px;
+    border: 1px solid rgba(255,241,0,0.15);
+    border-right: none;
+    padding: 8px 6px;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.3);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .a11y-bar.collapsed { transform: translateY(-50%) translateX(calc(100% - 36px)); }
+  .a11y-bar button {
+    width: 36px; height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #C9D1D9;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .a11y-bar button:hover { background: rgba(255,241,0,0.12); color: var(--yellow); }
+  .a11y-bar button.active { background: var(--yellow); color: #0D1117; }
+  .a11y-bar button svg { width: 18px; height: 18px; pointer-events: none; }
+  .a11y-bar .a11y-divider { width: 24px; height: 1px; background: rgba(255,255,255,0.08); margin: 4px auto; }
+  .a11y-bar .a11y-label {
+    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,241,0,0.5); text-align: center; padding: 4px 0 2px; font-family: var(--font);
+  }
+  .a11y-tooltip {
+    position: absolute;
+    right: 44px; top: 50%;
+    transform: translateY(-50%);
+    background: #0D1117;
+    color: #FFF;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-family: var(--font);
+    border: 1px solid rgba(255,241,0,0.15);
+  }
+  .a11y-bar button:hover .a11y-tooltip { opacity: 1; }
+  .a11y-reading-guide {
+    position: fixed;
+    left: 0; right: 0;
+    height: 40px;
+    border-top: 2px solid var(--yellow);
+    border-bottom: 2px solid var(--yellow);
+    background: rgba(255,241,0,0.06);
+    pointer-events: none;
+    z-index: 9998;
+    display: none;
+    transition: top 0.05s linear;
+  }
+  body.a11y-dyslexia * {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', sans-serif !important;
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.15em !important;
+  }
+  body.a11y-large-text { font-size: 120% !important; }
+  body.a11y-xl-text { font-size: 140% !important; }
+  body.a11y-high-contrast {
+    --text-dark: #FFFFFF !important;
+    --dim-dark: #FFFFFF !important;
+    --bg-dark: #000000 !important;
+    --bg-card-dark: #000000 !important;
+    --border-dark: #FFF100 !important;
+  }
+  body.a11y-high-contrast .mode-light {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  body.a11y-high-contrast .mode-light * {
+    color: #000000 !important;
+    border-color: #000000 !important;
+  }
+  body.a11y-high-contrast .mode-light .label { color: #000 !important; }
+  @media (max-width: 600px) {
+    .a11y-bar {
+      top: auto; bottom: 0; right: 0; left: 0;
+      transform: none;
+      flex-direction: row;
+      border-radius: 12px 12px 0 0;
+      border: 1px solid rgba(255,241,0,0.15);
+      border-bottom: none;
+      justify-content: center;
+      padding: 6px 8px;
+    }
+    .a11y-bar.collapsed { transform: translateY(calc(100% - 36px)); }
+    .a11y-label { display: none; }
+    .a11y-divider { width: 1px !important; height: 24px !important; margin: 0 4px !important; }
+    .a11y-tooltip { display: none; }
+  }
+
   @media (prefers-contrast: high) {
     :root {
       --text-dark: #FFFFFF;
@@ -1103,6 +1215,47 @@
 
 <a href="#opportunity" class="skip-link">Skip to main content</a>
 
+<!-- ===== ACCESSIBILITY TOOLBAR ===== -->
+<nav class="a11y-bar" role="toolbar" aria-label="Accessibility controls">
+  <div class="a11y-label">Access</div>
+  <button id="a11y-toggle" aria-label="Collapse accessibility toolbar" title="Toggle toolbar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    <span class="a11y-tooltip">Toggle toolbar</span>
+  </button>
+  <div class="a11y-divider"></div>
+  <button id="a11y-speak" aria-label="Read page aloud" title="Read aloud">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+    <span class="a11y-tooltip">Read aloud</span>
+  </button>
+  <button id="a11y-stop" aria-label="Stop reading" title="Stop reading" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+    <span class="a11y-tooltip">Stop reading</span>
+  </button>
+  <div class="a11y-divider"></div>
+  <button id="a11y-font-up" aria-label="Increase text size" title="Larger text">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><text x="4" y="17" font-size="14" fill="currentColor" stroke="none" font-weight="700" font-family="sans-serif">A</text><line x1="18" y1="8" x2="18" y2="16"/><line x1="14" y1="12" x2="22" y2="12"/></svg>
+    <span class="a11y-tooltip">Larger text</span>
+  </button>
+  <button id="a11y-font-down" aria-label="Decrease text size" title="Smaller text">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><text x="5" y="17" font-size="12" fill="currentColor" stroke="none" font-weight="700" font-family="sans-serif">A</text><line x1="16" y1="12" x2="22" y2="12"/></svg>
+    <span class="a11y-tooltip">Smaller text</span>
+  </button>
+  <div class="a11y-divider"></div>
+  <button id="a11y-contrast" aria-label="Toggle high contrast" title="High contrast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20z" fill="currentColor"/></svg>
+    <span class="a11y-tooltip">High contrast</span>
+  </button>
+  <button id="a11y-dyslexia" aria-label="Toggle dyslexia-friendly font" title="Dyslexia font">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><text x="3" y="18" font-size="16" fill="currentColor" stroke="none" font-weight="700" font-family="serif">Dy</text></svg>
+    <span class="a11y-tooltip">Dyslexia font</span>
+  </button>
+  <button id="a11y-guide" aria-label="Toggle reading guide" title="Reading guide">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="6" x2="22" y2="6"/><line x1="2" y1="18" x2="22" y2="18"/></svg>
+    <span class="a11y-tooltip">Reading guide</span>
+  </button>
+</nav>
+<div class="a11y-reading-guide" id="a11y-reading-guide"></div>
+
 <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <!-- ===== YELLOW COVER ===== -->
@@ -1668,6 +1821,114 @@ gsap.from('.track-item', {
   ease: 'power3.out',
   scrollTrigger: { trigger: '.track-record', start: 'top 90%', once: true }
 });
+
+// ===== ACCESSIBILITY TOOLBAR =====
+(function() {
+  const bar = document.querySelector('.a11y-bar');
+  const toggleBtn = document.getElementById('a11y-toggle');
+  const speakBtn = document.getElementById('a11y-speak');
+  const stopBtn = document.getElementById('a11y-stop');
+  const fontUpBtn = document.getElementById('a11y-font-up');
+  const fontDownBtn = document.getElementById('a11y-font-down');
+  const contrastBtn = document.getElementById('a11y-contrast');
+  const dyslexiaBtn = document.getElementById('a11y-dyslexia');
+  const guideBtn = document.getElementById('a11y-guide');
+  const guideEl = document.getElementById('a11y-reading-guide');
+
+  let fontLevel = 0; // 0=normal, 1=large, 2=xl
+  let synth = window.speechSynthesis;
+  let speaking = false;
+
+  // Toggle bar collapse
+  toggleBtn.addEventListener('click', () => {
+    bar.classList.toggle('collapsed');
+    toggleBtn.setAttribute('aria-label', bar.classList.contains('collapsed') ? 'Expand accessibility toolbar' : 'Collapse accessibility toolbar');
+  });
+
+  // Text-to-speech: read visible sections
+  function getReadableText() {
+    const sections = document.querySelectorAll('h2, p, .label, .stat-label, .stat-value, .card h3, .card p, .deliv-name, .deliv-desc, .builder-block h3, .builder-block p, .track-label, .track-value, .metric-card h3, .metric-card p');
+    let text = '';
+    sections.forEach(el => {
+      const t = el.textContent.trim();
+      if (t && el.offsetParent !== null) text += t + '. ';
+    });
+    return text;
+  }
+
+  speakBtn.addEventListener('click', () => {
+    if (!synth) return;
+    synth.cancel();
+    const text = getReadableText();
+    if (!text) return;
+    // Split into chunks under 200 chars for better browser compatibility
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+    let i = 0;
+    function speakNext() {
+      if (i >= sentences.length) { stopSpeaking(); return; }
+      const utt = new SpeechSynthesisUtterance(sentences[i].trim());
+      utt.rate = 0.95;
+      utt.pitch = 1;
+      utt.onend = () => { i++; speakNext(); };
+      utt.onerror = () => { i++; speakNext(); };
+      synth.speak(utt);
+    }
+    speaking = true;
+    speakBtn.style.display = 'none';
+    stopBtn.style.display = 'flex';
+    stopBtn.classList.add('active');
+    speakNext();
+  });
+
+  function stopSpeaking() {
+    if (synth) synth.cancel();
+    speaking = false;
+    stopBtn.style.display = 'none';
+    stopBtn.classList.remove('active');
+    speakBtn.style.display = 'flex';
+  }
+  stopBtn.addEventListener('click', stopSpeaking);
+
+  // Font size
+  fontUpBtn.addEventListener('click', () => {
+    if (fontLevel < 2) fontLevel++;
+    applyFontLevel();
+  });
+  fontDownBtn.addEventListener('click', () => {
+    if (fontLevel > 0) fontLevel--;
+    applyFontLevel();
+  });
+  function applyFontLevel() {
+    document.body.classList.remove('a11y-large-text', 'a11y-xl-text');
+    if (fontLevel === 1) document.body.classList.add('a11y-large-text');
+    if (fontLevel === 2) document.body.classList.add('a11y-xl-text');
+    fontUpBtn.classList.toggle('active', fontLevel > 0);
+    fontDownBtn.classList.remove('active');
+  }
+
+  // High contrast
+  contrastBtn.addEventListener('click', () => {
+    document.body.classList.toggle('a11y-high-contrast');
+    contrastBtn.classList.toggle('active');
+  });
+
+  // Dyslexia font
+  dyslexiaBtn.addEventListener('click', () => {
+    document.body.classList.toggle('a11y-dyslexia');
+    dyslexiaBtn.classList.toggle('active');
+  });
+
+  // Reading guide
+  let guideActive = false;
+  guideBtn.addEventListener('click', () => {
+    guideActive = !guideActive;
+    guideEl.style.display = guideActive ? 'block' : 'none';
+    guideBtn.classList.toggle('active', guideActive);
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (guideActive) guideEl.style.top = (e.clientY - 20) + 'px';
+  });
+})();
 </script>
 </body>
 </html>
