@@ -363,6 +363,53 @@
 
   ::selection { background: rgba(255,241,0,0.2); color: #fff; }
 
+  /* ---- Keyboard Shortcut Help Modal ---- */
+  .shortcut-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 100000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    justify-content: center; align-items: center;
+  }
+  .shortcut-overlay.visible { display: flex; }
+  .shortcut-modal {
+    background: var(--bg-card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 16px;
+    padding: 32px 40px;
+    max-width: 520px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: var(--text-dark);
+    font-family: var(--font);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  body.light-mode .shortcut-modal { background: var(--bg-card-light); border-color: var(--border-light); color: var(--text-light); }
+  .shortcut-modal h2 { font-size: 20px; color: var(--yellow); margin-bottom: 20px; font-family: var(--font); }
+  body.light-mode .shortcut-modal h2 { color: #9E7700; }
+  .shortcut-modal .shortcut-group { margin-bottom: 16px; }
+  .shortcut-modal .shortcut-group-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim-dark); margin-bottom: 8px; }
+  .shortcut-modal .shortcut-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+  .shortcut-modal .shortcut-row .label { font-size: 14px; }
+  .shortcut-modal kbd {
+    display: inline-block;
+    background: rgba(255,241,0,0.12);
+    border: 1px solid rgba(255,241,0,0.25);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--yellow);
+    min-width: 28px;
+    text-align: center;
+  }
+  body.light-mode .shortcut-modal kbd { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.15); color: #6B5900; }
+  .shortcut-modal .shortcut-close { margin-top: 20px; text-align: center; font-size: 12px; color: var(--dim-dark); }
+
   /* ---- Progress Bar ---- */
   #progress {
     position: fixed; top: 0; left: 0;
@@ -1421,6 +1468,33 @@
 <div class="a11y-reading-guide" id="a11y-reading-guide"></div>
 <div id="a11y-live-region" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
+<div class="shortcut-overlay" id="shortcut-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+  <div class="shortcut-modal">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="shortcut-group">
+      <div class="shortcut-group-title">Navigation</div>
+      <div class="shortcut-row"><span class="label">Next section</span><kbd>N</kbd></div>
+      <div class="shortcut-row"><span class="label">Previous section</span><kbd>P</kbd></div>
+      <div class="shortcut-row"><span class="label">Open / close AI agent</span><kbd>Esc</kbd></div>
+    </div>
+    <div class="shortcut-group">
+      <div class="shortcut-group-title">Accessibility Toolbar</div>
+      <div class="shortcut-row"><span class="label">Toggle toolbar</span><kbd>Alt</kbd> + <kbd>A</kbd></div>
+      <div class="shortcut-row"><span class="label">Start / stop reading</span><kbd>Alt</kbd> + <kbd>R</kbd></div>
+      <div class="shortcut-row"><span class="label">Pause / resume reading</span><kbd>Alt</kbd> + <kbd>P</kbd></div>
+      <div class="shortcut-row"><span class="label">Cycle reading speed</span><kbd>Alt</kbd> + <kbd>S</kbd></div>
+    </div>
+    <div class="shortcut-group">
+      <div class="shortcut-group-title">Display</div>
+      <div class="shortcut-row"><span class="label">Cycle font size</span><kbd>Alt</kbd> + <kbd>F</kbd></div>
+      <div class="shortcut-row"><span class="label">Toggle high contrast</span><kbd>Alt</kbd> + <kbd>C</kbd></div>
+      <div class="shortcut-row"><span class="label">Toggle dyslexia font</span><kbd>Alt</kbd> + <kbd>D</kbd></div>
+      <div class="shortcut-row"><span class="label">Toggle reading guide</span><kbd>Alt</kbd> + <kbd>G</kbd></div>
+    </div>
+    <div class="shortcut-close">Press <kbd>?</kbd> or <kbd>Esc</kbd> to close</div>
+  </div>
+</div>
+
 <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <!-- ===== YELLOW COVER ===== -->
@@ -1493,20 +1567,20 @@
   </div>
 
   <div class="stats four">
-    <div class="stat">
-      <div class="stat-num yellow" data-count="1.5" data-suffix="M">0</div>
+    <div class="stat" aria-label="1.5 million Canadians with Sight Loss">
+      <div class="stat-num yellow" data-count="1.5" data-suffix="M" aria-hidden="true">0</div>
       <div class="stat-label">Canadians with Sight Loss</div>
     </div>
-    <div class="stat">
-      <div class="stat-num" data-count="12227" data-comma="true">0</div>
+    <div class="stat" aria-label="12,227 Currently Served">
+      <div class="stat-num" data-count="12227" data-comma="true" aria-hidden="true">0</div>
       <div class="stat-label">Currently Served</div>
     </div>
-    <div class="stat">
-      <div class="stat-num yellow" data-count="0.82" data-suffix="%">0</div>
+    <div class="stat" aria-label="0.82% Reach Today">
+      <div class="stat-num yellow" data-count="0.82" data-suffix="%" aria-hidden="true">0</div>
       <div class="stat-label">Reach Today</div>
     </div>
-    <div class="stat">
-      <div class="stat-num" data-prefix="$" data-count="5072" data-comma="true">0</div>
+    <div class="stat" aria-label="$5,072 Cost per Person Served">
+      <div class="stat-num" data-prefix="$" data-count="5072" data-comma="true" aria-hidden="true">0</div>
       <div class="stat-label">Cost per Person Served</div>
     </div>
   </div>
@@ -2292,7 +2366,38 @@ gsap.from('.track-item', {
     announce('Skipped forward.');
   }
 
-  function toggleToolbar() {
+  // ===== SECTION JUMP NAVIGATION (N/P keys) =====
+  let currentSectionIdx = -1;
+  function navigateSection(direction) {
+    const headings = Array.from(document.querySelectorAll('h2, .cover-title'));
+    const visible = headings.filter(el => el.offsetParent !== null || el.closest('header'));
+    if (visible.length === 0) return;
+
+    const scrollY = window.scrollY + window.innerHeight * 0.3;
+    let closestIdx = 0;
+    let closestDist = Infinity;
+    visible.forEach((el, i) => {
+      const dist = Math.abs(el.getBoundingClientRect().top + window.scrollY - scrollY);
+      if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+    });
+
+    let targetIdx = closestIdx + direction;
+    if (direction === 1 && visible[closestIdx].getBoundingClientRect().top < 50) {
+      targetIdx = closestIdx + 1;
+    }
+    if (direction === -1 && visible[closestIdx].getBoundingClientRect().top > -50) {
+      targetIdx = closestIdx - 1;
+    }
+
+    targetIdx = Math.max(0, Math.min(visible.length - 1, targetIdx));
+    visible[targetIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    visible[targetIdx].setAttribute('tabindex', '-1');
+    visible[targetIdx].focus({ preventScroll: true });
+    announce('Section: ' + visible[targetIdx].textContent.trim().substring(0, 60));
+    currentSectionIdx = targetIdx;
+  }
+
+    function toggleToolbar() {
     bar.classList.toggle('collapsed');
     toggleBtn.setAttribute('aria-label', bar.classList.contains('collapsed') ? 'Expand accessibility toolbar' : 'Collapse accessibility toolbar');
   }
@@ -2319,8 +2424,52 @@ gsap.from('.track-item', {
       }
     });
     document.addEventListener('keydown', (e) => {
-      if ((e.altKey || e.metaKey) && e.key.toLowerCase() === 'a') { e.preventDefault(); toggleToolbar(); }
+      const tag = (e.target.tagName || '').toLowerCase();
+      const isInput = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
+
+      // Alt/Meta shortcuts (work always)
+      if (e.altKey || e.metaKey) {
+        const k = e.key.toLowerCase();
+        if (k === 'a') { e.preventDefault(); toggleToolbar(); }
+        else if (k === 'r') { e.preventDefault(); speak(); }
+        else if (k === 'p') { e.preventDefault(); pauseSpeaking(); }
+        else if (k === 's') { e.preventDefault(); changeSpeed(); }
+        else if (k === 'f') { e.preventDefault(); changeFont(); }
+        else if (k === 'c') { e.preventDefault(); toggleContrast(); }
+        else if (k === 'd') { e.preventDefault(); toggleDyslexia(); }
+        else if (k === 'g') { e.preventDefault(); toggleGuide(); }
+        return;
+      }
+
+      // Escape closes toolbar
       if (e.key === 'Escape' && !bar.classList.contains('collapsed')) toggleToolbar();
+
+      // Skip if user is typing in input
+      if (isInput) return;
+
+      // ? key - toggle shortcut help overlay
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        e.preventDefault();
+        const overlay = document.getElementById('shortcut-overlay');
+        if (overlay) {
+          overlay.classList.toggle('visible');
+          if (overlay.classList.contains('visible')) {
+            announce('Keyboard shortcuts panel opened.');
+          } else {
+            announce('Keyboard shortcuts panel closed.');
+          }
+        }
+      }
+
+      // N/P - section jump navigation (works anytime)
+      if (e.key.toLowerCase() === 'n' && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        navigateSection(1);
+      }
+      if (e.key.toLowerCase() === 'p' && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        navigateSection(-1);
+      }
     });
 
     // Arrow key nav within toolbar
@@ -2878,7 +3027,19 @@ gsap.from('.track-item', {
 
   // Close on Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen) toggle();
+    if (e.key === 'Escape') {
+      const shortcutOverlay = document.getElementById('shortcut-overlay');
+      if (shortcutOverlay && shortcutOverlay.classList.contains('visible')) {
+        shortcutOverlay.classList.remove('visible');
+        return;
+      }
+      if (isOpen) toggle();
+    }
+  });
+
+  // Click outside shortcut overlay to close
+  document.getElementById('shortcut-overlay')?.addEventListener('click', (e) => {
+    if (e.target.id === 'shortcut-overlay') e.target.classList.remove('visible');
   });
 
   // Remove badge after 3 seconds if not opened
