@@ -2247,12 +2247,54 @@ gsap.from('.track-item', {
   // Converts numbers to natural spoken English for TTS
   function speakNumber(str) {
     return str
+      // Tilde/approximately
+      .replace(/~(\d)/g, 'approximately $1')
+      // Large currency: $5.2M
+      .replace(/\$(\d+)\.(\d+)(M|B)/g, (_, a, b, u) => a + ' point ' + b + (u === 'M' ? ' million' : ' billion') + ' dollars')
+      // Currency with commas: $5,072
+      .replace(/\$(\d{1,3}(,\d{3})*)/g, (_, a) => numberToWords(a) + ' dollars')
+      // Plain currency: $414
+      .replace(/\$(\d+)/g, (_, a) => numberToWords(a) + ' dollars')
+      // Decimal + M: 1.5M
       .replace(/(\d+)\.(\d+)M/g, (_, a, b) => a + ' point ' + b + ' million')
+      // Decimal percent: 0.82%
       .replace(/(\d+)\.(\d+)%/g, (_, a, b) => a + ' point ' + b + ' percent')
+      // Plain percent: 5%
       .replace(/(\d+)%/g, (_, a) => a + ' percent')
-      .replace(/\$(\d{1,3}(,\d{3})*)/g, (_, a) => a.replace(/,/g, ',') + ' dollars')
-      .replace(/\$(\d+\.?\d*)(M|B)/g, (_, a, u) => a + (u === 'M' ? ' million' : ' billion') + ' dollars')
-      .replace(/(\d+)x/g, (_, a) => a + ' times');
+      // Multiplier: 3x
+      .replace(/(\d+)x/g, (_, a) => a + ' times')
+      // Standalone comma numbers: 12,227
+      .replace(/\b(\d{1,3}(,\d{3})+)\b/g, (_, a) => numberToWords(a))
+      // Standalone decimals: 0.82
+      .replace(/(\d+)\.(\d+)/g, (_, a, b) => a + ' point ' + b);
+  }
+
+  // Convert number string to spoken words for natural TTS
+  function numberToWords(numStr) {
+    const n = parseInt(numStr.replace(/,/g, ''), 10);
+    if (isNaN(n)) return numStr;
+    if (n === 0) return 'zero';
+    const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+      'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+    const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    function chunk(num) {
+      if (num === 0) return '';
+      if (num < 20) return ones[num];
+      if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + ones[num % 10] : '');
+      if (num < 1000) return ones[Math.floor(num / 100)] + ' hundred' + (num % 100 ? ' ' + chunk(num % 100) : '');
+      return '';
+    }
+    const parts = [];
+    const scales = [[1000000000, 'billion'], [1000000, 'million'], [1000, 'thousand'], [1, '']];
+    let rem = n;
+    for (const [val, label] of scales) {
+      if (rem >= val) {
+        const q = Math.floor(rem / val);
+        rem = rem % val;
+        parts.push(chunk(q) + (label ? ' ' + label : ''));
+      }
+    }
+    return parts.join(' ').trim() || numStr;
   }
 
   function extractReadableText(element) {
@@ -2409,16 +2451,20 @@ gsap.from('.track-item', {
   }
 
   async function speakElevenLabs() {
-    isSpeaking = true; isPaused = false; currentChunkIndex = 0;
+    isSpeaking = true; isPaused = false;
     currentContent = getReadableContent();
+    const startIdx = findStartIndex(currentContent);
+    currentChunkIndex = startIdx;
     audioQueue = new Array(currentContent.length).fill(null);
+
     speakBtn.style.display = 'none';
     pauseBtn.style.display = 'flex';
     stopBtn.style.display = 'flex';
     pauseBtn.classList.add('active');
-    announce('Reading page with natural voice.');
-    prefetchAudio(currentContent, 0, 3);
-    await speakElevenLabsFromIndex(0);
+    announce('Reading from current position with natural voice.');
+
+    prefetchAudio(currentContent, startIdx, 3);
+    await speakElevenLabsFromIndex(startIdx);
   }
 
   async function speakElevenLabsFromIndex(idx) {
@@ -2426,10 +2472,13 @@ gsap.from('.track-item', {
     currentChunkIndex = idx;
     const { text, element } = currentContent[idx];
     highlightElement(element);
+
     prefetchAudio(currentContent, idx + 1, 2);
+
     try {
       let blob = audioQueue[idx];
       if (!blob) blob = await fetchElevenLabsAudio(text);
+
       if (!isSpeaking) return;
       if (isPaused) {
         await new Promise(resolve => {
@@ -2439,14 +2488,53 @@ gsap.from('.track-item', {
         });
         if (!isSpeaking) return;
       }
+
       await playAudioBlob(blob);
-    } catch(e) { console.warn('ElevenLabs playback error, skipping segment:', e); }
+    } catch(e) {
+      console.warn('ElevenLabs playback error, skipping segment:', e);
+    }
+
     highlightElement(null);
     if (isSpeaking && !isPaused) await speakElevenLabsFromIndex(idx + 1);
   }
 
+  // Find the content item closest to the user's current scroll position
+  function findStartIndex(contentArray) {
+    const scrollY = window.scrollY;
+    const viewportH = window.innerHeight;
+    const viewMid = scrollY + viewportH * 0.35;
+    let bestIdx = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < contentArray.length; i++) {
+      const rect = contentArray[i].element.getBoundingClientRect();
+      const elY = rect.top + scrollY;
+      const dist = Math.abs(elY - viewMid);
+      if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+    }
+    if (scrollY < 200) return 0;
+    return bestIdx;
+  }
+
+  // Chrome speechSynthesis keep-alive - prevents 15-second silent kill bug
+  let keepAliveTimer = null;
+  function startKeepAlive() {
+    stopKeepAlive();
+    keepAliveTimer = setInterval(() => {
+      if (synth && isSpeaking && !isPaused) {
+        synth.pause();
+        synth.resume();
+      }
+    }, 10000);
+  }
+  function stopKeepAlive() {
+    if (keepAliveTimer) { clearInterval(keepAliveTimer); keepAliveTimer = null; }
+  }
+
   // ===== UNIFIED SPEAK CONTROLS =====
   function speak() {
+    // Rebuild sections fresh before reading
+    buildSectionsList();
+
     // Try ElevenLabs first
     if (USE_ELEVENLABS) {
       speakElevenLabs();
@@ -2463,15 +2551,19 @@ gsap.from('.track-item', {
     synth.cancel();
     isSpeaking = true;
     isPaused = false;
-    currentChunkIndex = 0;
     currentContent = getReadableContent();
+
+    // Start from wherever the user is scrolled to
+    const startIdx = findStartIndex(currentContent);
+    currentChunkIndex = startIdx;
 
     speakBtn.style.display = 'none';
     pauseBtn.style.display = 'flex';
     stopBtn.style.display = 'flex';
     pauseBtn.classList.add('active');
-    announce('Reading page content.');
-    speakFromIndex(0);
+    startKeepAlive();
+    announce('Reading from current position.');
+    speakFromIndex(startIdx);
   }
 
   function speakFromIndex(idx) {
@@ -2511,6 +2603,7 @@ gsap.from('.track-item', {
 
   function stopSpeaking() {
     isSpeaking = false; isPaused = false; currentUtterance = null;
+    stopKeepAlive();
     // Stop ElevenLabs audio
     if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
     audioQueue = [];
