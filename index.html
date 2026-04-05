@@ -1574,6 +1574,56 @@
   }
   .agent-send-btn:hover { color: #FFF100; }
   .agent-send-btn svg { width: 18px; height: 18px; }
+  /* Begin gate — Apple-style interaction trigger */
+  .agent-begin-gate {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 20px; padding: 40px 0;
+    animation: chatFadeIn 1s cubic-bezier(0.4,0,0.2,1) 0.5s both;
+  }
+  .agent-begin-gate p {
+    font-size: 15px; color: rgba(255,255,255,0.5); text-align: center; line-height: 1.6;
+    max-width: 380px;
+  }
+  .agent-begin-btn {
+    background: #FFF100; color: #0B0E13; border: none;
+    padding: 14px 48px; border-radius: 40px;
+    font-size: 16px; font-weight: 600; font-family: var(--font);
+    cursor: pointer; letter-spacing: 0.3px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 4px 24px rgba(255,241,0,0.2);
+  }
+  .agent-begin-btn:hover {
+    transform: scale(1.04); box-shadow: 0 6px 32px rgba(255,241,0,0.3);
+  }
+  .agent-begin-btn:active { transform: scale(0.98); }
+
+  /* Speaking indicator — pulsing ring around voice button */
+  .agent-controls-row button.speaking {
+    animation: speakPulse 1.5s ease-in-out infinite;
+    border-color: rgba(255,241,0,0.5);
+    color: #FFF100;
+  }
+
+  /* Waveform indicator */
+  .iris-waveform {
+    display: flex; align-items: center; gap: 3px; height: 20px;
+    padding: 0 8px; opacity: 0; transition: opacity 0.3s ease;
+  }
+  .iris-waveform.active { opacity: 1; }
+  .iris-waveform span {
+    display: block; width: 3px; border-radius: 3px;
+    background: #FFF100; animation: wave 1.2s ease-in-out infinite;
+  }
+  .iris-waveform span:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .iris-waveform span:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+  .iris-waveform span:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+  .iris-waveform span:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+  .iris-waveform span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+  @keyframes wave {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+  }
+
   .a11y-panel {
     max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
     opacity: 0; width: 100%;
@@ -1826,7 +1876,13 @@
       <div class="agent-overlay-sub">A proposal for CNIB Foundation</div>
     </div>
     <div class="agent-overlay-chat">
-      <div id="overlayBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation"></div>
+      <div id="overlayBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation">
+        <!-- Begin gate — triggers user interaction to unlock audio -->
+        <div id="beginGate" class="agent-begin-gate">
+          <p>This proposal has a voice. Tap begin to let Iris walk you through it.</p>
+          <button id="beginBtn" class="agent-begin-btn">Begin</button>
+        </div>
+      </div>
 
       <div id="a11yPanel" class="a11y-panel">
         <div class="a11y-panel-inner">
@@ -1841,6 +1897,7 @@
         <button id="overlayVoiceToggle" class="active" aria-label="Voice on" aria-pressed="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
           Voice
+          <div id="irisWaveform" class="iris-waveform"><span></span><span></span><span></span><span></span><span></span></div>
         </button>
         <button id="a11yPanelToggle" aria-label="Accessibility settings" aria-pressed="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.5"/><path d="M12 7v6m-5-3.5L12 13l5-3.5M7 21l2.5-8M17 21l-2.5-8"/></svg>
@@ -2738,6 +2795,8 @@ gsap.from('.track-item', {
     isSpeakingAgent = on;
     if (speakIndicator) speakIndicator.classList.toggle('active', on);
     if (voiceToggle) voiceToggle.classList.toggle('speaking', on);
+    const waveform = document.getElementById('irisWaveform');
+    if (waveform) waveform.classList.toggle('active', on);
   }
 
   function stopAgentSpeaking() {
@@ -3479,12 +3538,53 @@ gsap.from('.track-item', {
     window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
   }
 
-  // Auto-start — Iris introduces herself
-  setTimeout(() => {
-    hasStartedOnboarding = true;
-    startOnboarding();
-    input.focus();
-  }, 1000);
+  // Begin gate — user interaction unlocks audio, then Iris starts
+  const beginBtn = document.getElementById('beginBtn');
+  const beginGate = document.getElementById('beginGate');
+
+  if (beginBtn && beginGate) {
+    // Hide input row until onboarding starts
+    const inputRow = document.querySelector('.agent-input-row');
+    const controlsRow = document.querySelector('.agent-controls-row');
+    const voiceHintEl = document.getElementById('voiceHint');
+    if (inputRow) inputRow.style.display = 'none';
+    if (controlsRow) controlsRow.style.display = 'none';
+    if (voiceHintEl) voiceHintEl.style.display = 'none';
+
+    beginBtn.addEventListener('click', () => {
+      // This click IS the user gesture — unlocks audio
+      // Prime the audio system with a silent utterance
+      const synth = window.speechSynthesis;
+      if (synth) {
+        const primer = new SpeechSynthesisUtterance('');
+        primer.volume = 0;
+        synth.speak(primer);
+      }
+
+      // Fade out the gate
+      beginGate.style.transition = 'opacity 0.4s ease';
+      beginGate.style.opacity = '0';
+      setTimeout(() => {
+        beginGate.remove();
+        // Show input and controls
+        if (inputRow) { inputRow.style.display = ''; inputRow.style.animation = 'chatFadeIn 0.5s ease both'; }
+        if (controlsRow) { controlsRow.style.display = ''; controlsRow.style.animation = 'chatFadeIn 0.5s ease both'; }
+        if (voiceHintEl) { voiceHintEl.style.display = ''; voiceHintEl.style.animation = 'hintFadeIn 1s ease 1s both'; }
+
+        // Now start onboarding — audio is unlocked
+        hasStartedOnboarding = true;
+        startOnboarding();
+        input.focus();
+      }, 400);
+    });
+  } else {
+    // Fallback if gate elements missing
+    setTimeout(() => {
+      hasStartedOnboarding = true;
+      startOnboarding();
+      input.focus();
+    }, 1000);
+  }
 })();
 
 </script>
