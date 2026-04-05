@@ -1480,9 +1480,124 @@
     transition: outline 0.3s ease;
   }
 
-  /* Make agent panel slightly larger for guided mode */
-  .agent-panel.open {
-    max-height: 70vh;
+  /* ===== AI NAVIGATOR STYLES ===== */
+  .nav-agent-fab {
+    position: fixed; bottom: 28px; left: 28px; width: 56px; height: 56px;
+    border-radius: 50%; background: #0D1117; color: #FFF100;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid rgba(255,241,0,0.3);
+  }
+  .nav-agent-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(0,0,0,0.4); }
+  .nav-agent-fab.open { background: #FFF100; color: #0D1117; }
+  .agent-nudge {
+    position: absolute; left: 68px; bottom: 8px;
+    background: #0D1117; color: #FFFDF5; font-size: 13px;
+    padding: 8px 14px; border-radius: 12px; white-space: nowrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .nav-agent-fab:not(.open) .agent-nudge { animation: nudgeFade 4s ease 2s forwards; }
+  @keyframes nudgeFade { 0%{opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
+  .nav-agent {
+    position: fixed; bottom: 96px; left: 28px; width: 380px;
+    max-height: 0; overflow: hidden; background: #0D1117;
+    border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    z-index: 9998; display: flex; flex-direction: column;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
+    opacity: 0; border: 1px solid rgba(255,241,0,0.15);
+  }
+  .agent-panel.open { max-height: 70vh; opacity: 1; }
+  .agent-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid rgba(255,241,0,0.1); flex-shrink: 0;
+  }
+  .agent-header-title {
+    display: flex; align-items: center; gap: 8px;
+    color: #FFF100; font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .agent-header-actions button {
+    background: none; border: none; color: rgba(255,255,255,0.5);
+    cursor: pointer; padding: 4px; border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+  }
+  .agent-header-actions button:hover,
+  .agent-header-actions button.active { color: #FFF100; background: rgba(255,241,0,0.1); }
+  .agent-body {
+    flex: 1; overflow-y: auto; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: 200px; max-height: calc(70vh - 120px);
+  }
+  .agent-body::-webkit-scrollbar { width: 4px; }
+  .agent-body::-webkit-scrollbar-thumb { background: rgba(255,241,0,0.2); border-radius: 4px; }
+  .agent-msg {
+    padding: 10px 14px; border-radius: 12px; font-size: 13.5px;
+    line-height: 1.65; max-width: 92%; animation: msgIn 0.25s ease;
+  }
+  @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .agent-msg.bot {
+    background: rgba(255,241,0,0.08); color: #FFFDF5;
+    border: 1px solid rgba(255,241,0,0.12); align-self: flex-start;
+  }
+  .agent-msg.user {
+    background: rgba(255,255,255,0.08); color: #FFFDF5;
+    align-self: flex-end; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .agent-msg.system {
+    background: transparent; color: rgba(255,255,255,0.5);
+    font-size: 12px; text-align: center; align-self: center; padding: 4px 10px;
+  }
+  .agent-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .agent-suggestions button {
+    background: rgba(255,241,0,0.1); border: 1px solid rgba(255,241,0,0.25);
+    color: #FFF100; font-size: 12px; padding: 6px 12px; border-radius: 20px;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+  }
+  .agent-suggestions button:hover { background: rgba(255,241,0,0.2); transform: scale(1.03); }
+  .agent-input-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px; border-top: 1px solid rgba(255,241,0,0.1); flex-shrink: 0;
+  }
+  .agent-input-row input {
+    flex: 1; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1); color: #FFFDF5;
+    padding: 10px 14px; border-radius: 10px; font-size: 13px;
+    outline: none; transition: border-color 0.2s; font-family: 'Inter', sans-serif;
+  }
+  .agent-input-row input:focus { border-color: rgba(255,241,0,0.4); }
+  .agent-input-row input::placeholder { color: rgba(255,255,255,0.3); }
+  .agent-send-btn, .agent-mic-btn {
+    background: none; border: none; color: rgba(255,241,0,0.6);
+    cursor: pointer; padding: 6px; border-radius: 8px;
+    transition: color 0.2s, background 0.2s; flex-shrink: 0;
+  }
+  .agent-send-btn:hover, .agent-mic-btn:hover { color: #FFF100; background: rgba(255,241,0,0.1); }
+  .agent-mic-btn.listening { color: #ff4444; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .agent-transcript { font-size: 11px; color: rgba(255,241,0,0.6); padding: 2px 6px; font-style: italic; }
+  .persona-banner {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,241,0,0.12); border: 1px solid rgba(255,241,0,0.3);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 4px;
+  }
+  .persona-icon { font-size: 20px; }
+  .persona-text { font-size: 12.5px; color: #FFFDF5; flex: 1; }
+  .exit-persona {
+    background: rgba(255,255,255,0.1); border: none; color: #FFFDF5;
+    font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  }
+  .exit-persona:hover { background: rgba(255,255,255,0.2); }
+  .step-label {
+    display: inline-block; background: rgba(255,241,0,0.15); color: #FFF100;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px;
+  }
+  @media (max-width: 768px) {
+    .nav-agent-fab { bottom: 16px; left: 16px; width: 48px; height: 48px; }
+    .nav-agent { bottom: 76px; left: 12px; right: 12px; width: auto; }
+    .agent-nudge { display: none; }
   }
 </style>
 </head>
@@ -1963,6 +2078,37 @@
 </div>
 </footer>
 
+<!-- ===== AI NAVIGATOR ===== -->
+<div id="agentFab" class="nav-agent-fab" role="button" aria-label="Open AI navigator" aria-expanded="false" tabindex="0">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="28" height="28"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  <span id="agentNudge" class="agent-nudge">Hi Angela — I can guide you through this</span>
+</div>
+
+<div id="agentPanel" class="nav-agent agent-panel" role="dialog" aria-label="CNIB Member Navigator" aria-modal="false">
+  <div class="agent-header">
+    <div class="agent-header-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>Member Navigator</span>
+    </div>
+    <div class="agent-header-actions">
+      <button id="agentVoiceToggle" aria-label="Voice responses off" aria-pressed="false" title="Toggle voice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="agentBody" class="agent-body" role="log" aria-live="polite" aria-label="Conversation"></div>
+  <div class="agent-input-row">
+    <button id="agentMic" class="agent-mic-btn" aria-label="Voice input" title="Speak">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+    </button>
+    <div id="agentTranscript" class="agent-transcript" style="display:none"></div>
+    <input id="agentInput" type="text" placeholder="Ask me anything about this proposal..." aria-label="Ask a question" autocomplete="off">
+    <button id="agentSend" class="agent-send-btn" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -2141,8 +2287,7 @@ gsap.from('.track-item', {
   scrollTrigger: { trigger: '.track-record', start: 'top 90%', once: true }
 });
 
-// ===== ACCESSIBILITY TOOLBAR =====
-(function() {  // ===== CNIB MEMBER NAVIGATOR =====
+// ===== CNIB MEMBER NAVIGATOR =====
 (function() {
   // ===== ENHANCED KNOWLEDGE BASE WITH COMPREHENSIVE INTELLIGENCE =====
   const KB = {
