@@ -351,7 +351,12 @@
 
   /* Agent panel */
   body.a11y-high-contrast .nav-agent { background: #000000 !important; border: 3px solid #FFF100 !important; }
-  body.a11y-high-contrast .agent-msg.bot { background: rgba(255,241,0,0.1) !important; border: 2px solid #FFF100 !important; }
+  body.a11y-high-contrast .agent-msg.bot { background: rgba(255,241,0,0.1) !important; border: 2px solid #FFF100 !important; 
+      animation: msgFadeIn 0.4s ease-out;}
+    @keyframes msgFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   body.a11y-high-contrast .agent-msg.user { background: rgba(255,241,0,0.2) !important; border: 2px solid #FFF100 !important; }
   body.a11y-high-contrast .nav-agent-fab { background: #FFF100 !important; color: #000000 !important; border: 3px solid #FFFFFF !important; }
 
@@ -1623,6 +1628,30 @@
     0%, 100% { transform: scaleY(0.4); }
     50% { transform: scaleY(1); }
   }
+    /* Iris thinking indicator — pulsing dots */
+    .iris-thinking {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 20px;
+      background: var(--bg-card-dark);
+      border-radius: 18px 18px 18px 4px;
+      margin: 8px 0;
+    }
+    .iris-thinking span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--yellow);
+      opacity: 0.3;
+      animation: thinkPulse 1.4s ease-in-out infinite;
+    }
+    .iris-thinking span:nth-child(2) { animation-delay: 0.2s; }
+    .iris-thinking span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinkPulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
 
   .a11y-panel {
     max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
@@ -2788,6 +2817,9 @@ gsap.from('.track-item', {
   // ===== VOICE OUTPUT (ElevenLabs + Web Speech Fallback) =====
   let agentAudio = null;
   let isSpeakingAgent = false;
+  let speechQueue = [];
+  let isSpeechQueueRunning = false;
+  let currentUtterance = null;
   const speakIndicator = document.getElementById('agentSpeakingIndicator');
   let elevenLabsReady = ELEVENLABS_CONFIG.enabled && ELEVENLABS_CONFIG.apiKey.length > 0;
 
@@ -2799,37 +2831,133 @@ gsap.from('.track-item', {
     if (waveform) waveform.classList.toggle('active', on);
   }
 
+  // Split text into natural sentence chunks for conversational pacing
+  function splitIntoSentences(text) {
+    // Split on sentence boundaries but keep the delimiter
+    const raw = text.match(/[^.!?]+[.!?]+[\s]*/g) || [text];
+    // Merge very short fragments with previous sentence
+    const merged = [];
+    for (const s of raw) {
+      const trimmed = s.trim();
+      if (!trimmed) continue;
+      if (merged.length > 0 && trimmed.split(/\s+/).length < 4) {
+        merged[merged.length - 1] += ' ' + trimmed;
+      } else {
+        merged.push(trimmed);
+      }
+    }
+    return merged.length > 0 ? merged : [text];
+  }
+
   function stopAgentSpeaking() {
+    // Clear the sentence queue
+    speechQueue = [];
+    isSpeechQueueRunning = false;
+    currentUtterance = null;
     showSpeaking(false);
     if (agentAudio) { agentAudio.pause(); agentAudio.currentTime = 0; agentAudio = null; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
+  // ElevenLabs streaming TTS
   async function elevenLabsSpeak(text) {
     const cfg = ELEVENLABS_CONFIG;
     const resp = await fetch(cfg.endpoint + cfg.voiceId + '?output_format=mp3_44100_128', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'xi-api-key': cfg.apiKey },
-      body: JSON.stringify({ text: text, model_id: cfg.model, voice_settings: cfg.voiceSettings })
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': cfg.apiKey
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: cfg.model,
+        voice_settings: cfg.voiceSettings
+      })
     });
     if (!resp.ok) throw new Error('ElevenLabs ' + resp.status);
     const blob = await resp.blob();
     return URL.createObjectURL(blob);
   }
 
+  // Get or cache the best available voice
+  let cachedVoice = null;
+  function getBestVoice() {
+    if (cachedVoice) return cachedVoice;
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = [
+      'Ava (Premium)', 'Ava (Enhanced)', 'Samantha (Enhanced)', 'Samantha (Premium)',
+      'Zoe (Premium)', 'Zoe (Enhanced)', 'Allison (Enhanced)', 'Allison (Premium)',
+      'Google UK English Female', 'Microsoft Aria Online', 'Microsoft Jenny Online',
+      'Samantha', 'Karen', 'Moira', 'Fiona', 'Tessa'
+    ];
+    for (const name of preferred) {
+      cachedVoice = voices.find(v => v.name.includes(name));
+      if (cachedVoice) return cachedVoice;
+    }
+    cachedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.toLowerCase().includes('premium') || v.name.toLowerCase().includes('enhanced')));
+    if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+    if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en'));
+    return cachedVoice;
+  }
+
+  // Speak a single sentence via Web Speech — returns a Promise
+  function speakSentence(text) {
+    return new Promise((resolve, reject) => {
+      const synth = window.speechSynthesis;
+      if (!synth) { reject('no synth'); return; }
+      const utt = new SpeechSynthesisUtterance(text);
+      currentUtterance = utt;
+      const voice = getBestVoice();
+      if (voice) utt.voice = voice;
+      utt.rate = 0.94;
+      utt.pitch = 1.0;
+      utt.volume = 1;
+      // Chrome bug: long utterances pause. Keep-alive timer.
+      let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
+      utt.onend = () => { clearInterval(keepAlive); currentUtterance = null; resolve(); };
+      utt.onerror = (e) => { clearInterval(keepAlive); currentUtterance = null; if (e.error === 'canceled') resolve(); else reject(e); };
+      synth.speak(utt);
+    });
+  }
+
+  // Process the sentence queue — ChatGPT-like sentence-by-sentence delivery
+  async function processSpeechQueue() {
+    if (isSpeechQueueRunning) return;
+    isSpeechQueueRunning = true;
+    showSpeaking(true);
+
+    while (speechQueue.length > 0) {
+      const sentence = speechQueue.shift();
+      try {
+        await speakSentence(sentence);
+        // Natural micro-pause between sentences (80-150ms, like real speech)
+        if (speechQueue.length > 0) {
+          await new Promise(r => setTimeout(r, 80 + Math.random() * 70));
+        }
+      } catch (e) {
+        console.warn('Speech sentence error:', e);
+        break;
+      }
+    }
+
+    isSpeechQueueRunning = false;
+    showSpeaking(false);
+  }
+
   async function speakAgentResponse(text) {
     if (!voiceEnabled) return;
     stopAgentSpeaking();
-    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/•/g, '').replace(/\s+/g, ' ').trim();
+    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/\u2022/g, '').replace(/\s+/g, ' ').trim();
     if (!plainText) return;
-    showSpeaking(true);
 
+    // Try ElevenLabs first (human-quality voice)
     if (elevenLabsReady) {
       try {
+        showSpeaking(true);
         const url = await elevenLabsSpeak(plainText);
         agentAudio = new Audio(url);
         agentAudio.onended = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
-        agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; fallbackWebSpeech(plainText); };
+        agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
         await agentAudio.play();
         return;
       } catch (e) {
@@ -2837,27 +2965,11 @@ gsap.from('.track-item', {
         elevenLabsReady = false;
       }
     }
-    fallbackWebSpeech(plainText);
-  }
 
-  function fallbackWebSpeech(plainText) {
-    const synth = window.speechSynthesis;
-    if (!synth) { showSpeaking(false); return; }
-    synth.cancel();
-    let voice = null;
-    const voices = synth.getVoices();
-    const preferred = ['Ava (Premium)','Ava (Enhanced)','Samantha (Enhanced)','Samantha (Premium)','Zoe (Premium)','Zoe (Enhanced)','Google UK English Female','Microsoft Aria Online','Samantha','Karen','Moira','Tessa'];
-    for (const name of preferred) { voice = voices.find(v => v.name.includes(name)); if (voice) break; }
-    if (!voice) voice = voices.find(v => v.lang.startsWith('en') && (v.name.toLowerCase().includes('premium') || v.name.toLowerCase().includes('enhanced')));
-    if (!voice) voice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
-    if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
-    const utt = new SpeechSynthesisUtterance(plainText);
-    if (voice) utt.voice = voice;
-    utt.rate = 0.92; utt.pitch = 1.0; utt.volume = 1;
-    let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
-    utt.onend = () => { clearInterval(keepAlive); showSpeaking(false); };
-    utt.onerror = () => { clearInterval(keepAlive); showSpeaking(false); };
-    synth.speak(utt);
+    // Web Speech: sentence-by-sentence for natural conversational pacing
+    const sentences = splitIntoSentences(plainText);
+    speechQueue = sentences;
+    processSpeechQueue();
   }
 
   // ===== VOICE INPUT =====
