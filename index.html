@@ -2939,7 +2939,7 @@ gsap.from('.track-item', {
     const q = query.toLowerCase().trim();
 
     // During onboarding
-    if (!hasStartedOnboarding) {
+    if (!userProfile.identity) {
       if (/angela|ceo|executive/i.test(q) || query.includes("Angela")) {
         handleIdentityChoice("Angela Bonfanti, CEO");
         return null; // Don't double-process
