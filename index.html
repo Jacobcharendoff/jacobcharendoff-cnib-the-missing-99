@@ -2632,8 +2632,8 @@ gsap.from('.track-item', {
   const guidedSections = ['opportunity', 'priorities', 'approach', 'deliverables', 'builder'];
 
   // ===== AGENT-FIRST MODE =====
-  let isOverlayMode = true;
-  document.body.classList.add('agent-mode');
+  let isOverlayMode = false;
+  // document.body.classList.add('agent-mode'); // Disabled: widget mode, not overlay
 
   // ===== DOM REFS (overlay = primary, panel = post-reveal) =====
   const overlay = document.getElementById('agentOverlay');
