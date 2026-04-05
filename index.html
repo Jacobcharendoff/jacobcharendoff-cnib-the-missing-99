@@ -1555,6 +1555,10 @@
     cursor: pointer; transition: background 0.2s, transform 0.15s;
   }
   .agent-suggestions button:hover { background: rgba(255,241,0,0.2); transform: scale(1.03); }
+  .agent-suggestions button:focus { outline: 2px solid #FFF100; outline-offset: 2px; background: rgba(255,241,0,0.2); }
+  .agent-suggestions button:focus-visible { outline: 3px solid #FFF100; outline-offset: 2px; box-shadow: 0 0 0 5px rgba(255,241,0,0.3); }
+  body.a11y-high-contrast .agent-suggestions button { border: 2px solid #FFF100 !important; color: #FFF100 !important; font-weight: 600; }
+  body.a11y-high-contrast .agent-suggestions button:focus { outline: 3px solid #FFFFFF !important; outline-offset: 3px; background: rgba(255,241,0,0.3) !important; }
   .agent-input-row {
     display: flex; align-items: center; gap: 8px;
     padding: 12px 14px; border-top: 1px solid rgba(255,241,0,0.1); flex-shrink: 0;
@@ -1660,7 +1664,7 @@
   </div>
 </nav>
 <div class="a11y-reading-guide" id="a11y-reading-guide"></div>
-<div id="a11y-live-region" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="a11y-live-region" class="sr-only" role="status" aria-live="assertive" aria-atomic="true"></div>
 
 <div class="shortcut-overlay" id="shortcut-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
   <div class="shortcut-modal">
@@ -2095,7 +2099,7 @@
       </button>
     </div>
   </div>
-  <div id="agentBody" class="agent-body" role="log" aria-live="polite" aria-label="Conversation"></div>
+  <div id="agentBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation"></div>
   <div class="agent-input-row">
     <button id="agentMic" class="agent-mic-btn" aria-label="Voice input" title="Speak">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
@@ -2662,7 +2666,7 @@ gsap.from('.track-item', {
 
   function showQuestion1Identity() {
     addMsg('bot', "Hi — I'm the CNIB Member Navigator prototype. Before we begin, who am I speaking with?");
-    addSuggestions(["Angela Bonfanti, CEO", "A CNIB team member", "Just exploring"]);
+    addSuggestions(["Angela Bonfanti, CEO", "A CNIB team member", "A healthcare provider", "Just exploring"]);
   }
 
   function handleIdentityChoice(choice) {
@@ -2670,6 +2674,10 @@ gsap.from('.track-item', {
       userProfile.identity = 'angela';
       addMsg('user', choice);
       addMsg('bot', "Angela — perfect. I know your three priorities: rebranding from institutional stigma to empowerment, personalizing member engagement, and building AI navigators that help people navigate their entire life journey. Everything I show you today is designed around those three things.");
+    } else if (choice.includes("healthcare")) {
+      userProfile.identity = 'clinician';
+      addMsg('user', choice);
+      addMsg('bot', "Welcome \u2014 and thank you for what you do. Ophthalmologists and eye care professionals are the #1 gateway to support services. This proposal addresses the gap between diagnosis and community support. I'll show you how an AI navigator could transform the post-diagnosis referral pathway.");
     } else if (choice.includes("team")) {
       userProfile.identity = 'team';
       addMsg('user', choice);
@@ -2712,7 +2720,14 @@ gsap.from('.track-item', {
 
   function showQuestion3Priority() {
     let priorityOptions;
-    if (userProfile.identity === 'angela') {
+    if (userProfile.identity === 'clinician') {
+      priorityOptions = [
+        "The post-diagnosis referral gap",
+        "Show me a patient journey \u2014 Be Maria",
+        "The data and reach problem"
+      ];
+      addMsg('bot', "What matters most to you as a care provider?");
+    } else if (userProfile.identity === 'angela') {
       priorityOptions = [
         "The reach gap — why less than 1%?",
         "The 90-day sprint approach",
@@ -2740,7 +2755,15 @@ gsap.from('.track-item', {
   function handlePriorityChoice(choice) {
     addMsg('user', choice);
 
-    if (choice.includes("reach") || choice.includes("gap") || choice.includes("problem") || choice.includes("data")) {
+    if (choice.includes("referral gap") || choice.includes("post-diagnosis")) {
+      userProfile.priority = 'reach';
+      guidedSectionIndex = 0;
+      addMsg('bot', "This is the core issue. Patients leave a diagnosis appointment with medical information but no connection to community support. Let me show you the data, then walk you through what a navigator-assisted referral pathway would look like.");
+    } else if (choice.includes("patient journey")) {
+      userProfile.priority = 'engagement';
+      guidedSectionIndex = 0;
+      addMsg('bot', "Perfect \u2014 I'll start with the context, then walk you through Maria's story. She's 58, just diagnosed with AMD, and represents the patients you see every day who fall through the gap.");
+    } else if (choice.includes("reach") || choice.includes("gap") || choice.includes("problem") || choice.includes("data")) {
       userProfile.priority = 'reach';
       guidedSectionIndex = 0; // Start with opportunity
       addMsg('bot', "Great. Let me show you the reach problem in detail, then I'll walk you through the hypotheses, approach, and what I'm proposing to build.");
@@ -2819,6 +2842,10 @@ gsap.from('.track-item', {
       }
       if (/team|member|staff/i.test(q)) {
         handleIdentityChoice("A CNIB team member");
+        return null;
+      }
+      if (/doctor|clinician|ophthalmolog|optometri|healthcare|physician|nurse|medical/i.test(q)) {
+        handleIdentityChoice("A healthcare provider");
         return null;
       }
       if (/explor/i.test(q)) {
@@ -3022,6 +3049,36 @@ gsap.from('.track-item', {
       return { text: "I can do something better than describe — I can <strong>simulate</strong> one. Say one of these to step into a member's shoes:\n\n<strong>\"Be Maria\"</strong> — 58, just diagnosed with macular degeneration, scared, doesn't know about CNIB.\n<strong>\"Be David\"</strong> — 34, Vision Mate participant, wants to start a business, doesn't know about Venture Studio.\n<strong>\"Be the Nguyen family\"</strong> — Parents of a newly diagnosed 6-year-old, overwhelmed, don't know where to start.\n\nI'll walk you through step by step — what happens today without a navigator, and what it could feel like with one.", suggestions: ["Be Maria", "Be David", "Be the Nguyen family"] };
     }
 
+    // Urgency / crisis detection
+    if (/help.*now|urgent|crisis|emergency|just (lost|diagnosed|been told)|scared|don.?t know what to do|need (help|support)|losing.*vision|going blind|get help/i.test(q)) {
+      return { text: "<span class='step-label'>WE'RE HERE FOR YOU</span>\n\nIf you or someone you know needs support right now, CNIB can help:\n\n<strong>Phone:</strong> 1-800-563-2642 (toll-free, Monday-Friday)\n<strong>Online:</strong> <a href='https://cnib.ca' target='_blank' style='color:#FFF100'>cnib.ca</a>\n<strong>Email:</strong> info@cnib.ca\n\nYou can also ask me about specific support \u2014 peer mentoring (Vision Mate), assistive technology, employment services, children and family programs, or anything else.\n\nYou're not alone. Over 1.5 million Canadians live with sight loss, and there is a community ready to support you.", suggestions: ["Tell me about Vision Mate", "What technology can help me?", "I need employment support", "Programs for children"] };
+    }
+
+    // Clinician / healthcare provider queries
+    if (/clinician|ophthalmolog|optometri|doctor|refer|healthcare provider|eye care|medical professional|physician|specialist/i.test(q)) {
+      return { text: "<strong>For Healthcare Providers:</strong>\n\nIf you're an eye care professional looking to connect patients with support services, CNIB is the largest community-based provider of support for Canadians with sight loss.\n\n<strong>Key referral fact:</strong> Ophthalmologists are the #1 gateway to support services, but most patients leave a diagnosis appointment with medical information only \u2014 no connection to peer support, assistive technology, or practical life skills.\n\n<strong>This proposal addresses that gap:</strong> An AI navigator embedded in the post-diagnosis pathway could automatically connect newly diagnosed patients with CNIB services.\n\n<strong>To refer a patient now:</strong> 1-800-563-2642 or <a href='https://cnib.ca' target='_blank' style='color:#FFF100'>cnib.ca</a>", suggestions: ["Tell me about the discovery hypothesis", "What technology is available?", "Be Maria \u2014 see the post-diagnosis gap"] };
+    }
+
+    // Indigenous / First Nations content
+    if (/indigenous|first nation|inuit|m[e\u00e9]tis|aboriginal|on.?reserve|native|reconciliation|indigenous.*vision|diabetes.*vision/i.test(q)) {
+      return { text: "<strong>Vision Loss in Indigenous Communities:</strong>\n\nDiabetes-related vision loss is a major health crisis in Indigenous communities. Indigenous Canadians are 3-5x more likely to develop diabetes, and diabetic retinopathy is a leading cause of preventable blindness.\n\n<strong>Barriers to access:</strong> Geographic isolation, lack of eye care specialists in rural/northern communities, cultural barriers to mainstream healthcare, limited awareness of available supports, and telehealth gaps.\n\n<strong>What's needed:</strong> Culturally safe service delivery, on-reserve outreach, telehealth vision screening, partnerships with Indigenous health organizations, and community health worker training.\n\n<strong>This is a critical gap</strong> for any national organization. The 90-day sprint would investigate CNIB's current reach into Indigenous communities.", suggestions: ["Tell me about rural service delivery", "What's the cost to Canada?", "How does this connect to the reach problem?"] };
+    }
+
+    // Teen / youth content
+    if (/teen|youth|young adult|adolescent|high school|college|university|student|dating|driving|independence|young person/i.test(q)) {
+      return { text: "<strong>Youth and Young Adults with Sight Loss:</strong>\n\nTeens and young adults (15-25) face unique challenges: navigating social life, driving alternatives, post-secondary education, building confidence, and transitioning from children's to adult services.\n\n<strong>Current gap:</strong> CNIB has children and youth programs but limited teen-specific programming. This demographic is hardest to reach and retain \u2014 yet they're the future of the community.\n\n<strong>What a navigator could do:</strong> Connect young people with age-appropriate peer mentors, provide info about scholarships and accessible education tools, help with independence skills, and maintain engagement through the critical transition years.\n\nCNIB's youth programs: <strong>1-800-563-2642</strong>", suggestions: ["Tell me about employment", "Tell me about technology", "Be the Nguyen family"] };
+    }
+
+    // Regional / provincial services
+    if (/provincial|province|region|local|ontario|quebec|bc|british columbia|alberta|manitoba|saskatchewan|nova scotia|new brunswick|pei|newfoundland|northwest|nunavut|yukon|city|my area|near me/i.test(q)) {
+      return { text: "<strong>CNIB Across Canada:</strong>\n\nCNIB operates nationally with regional offices and programs.\n\n<strong>Ontario:</strong> AODA \u2014 strongest provincial accessibility legislation. CNIB HQ in Toronto.\n<strong>Quebec:</strong> Bilingual services critical. Provincial accessibility legislation evolving.\n<strong>British Columbia:</strong> Accessible BC Act (2021). Growing accessible employment opportunities.\n<strong>Alberta:</strong> Large rural population \u2014 telehealth especially important.\n<strong>Atlantic Canada:</strong> Aging population, higher rates of age-related vision loss.\n<strong>Northern/Remote:</strong> Fly-in communities, limited specialist access. Telehealth is the primary delivery mechanism.\n\nThe 90-day sprint would map regional service gaps.", suggestions: ["Tell me about the reach problem", "What about Indigenous communities?", "How does technology help rural areas?"] };
+    }
+
+    // French / bilingual
+    if (/fran[c\u00e7]ais|french|bonjour|salut|parlez.vous|bilingue|bilingual|en fran[c\u00e7]ais/i.test(q)) {
+      return { text: "<strong>Bienvenue!</strong>\n\nCe prototype est actuellement en anglais, mais le navigateur final serait enti\u00e8rement bilingue \u2014 un imp\u00e9ratif pour une organisation nationale canadienne.\n\n<em>(Welcome! This prototype is currently in English, but the final navigator would be fully bilingual \u2014 a requirement for a national Canadian organization serving Quebec and Francophone communities.)</em>\n\nJacob Charendoff est bilingue (anglais/fran\u00e7ais).\n\nComment puis-je vous aider? / How can I help you?", suggestions: ["Summarize the proposal", "Be Maria", "Tell me about the approach"] };
+    }
+
     // Catch-all
     return { text: "I have research data on financials, peer benchmarks, technology, employment, cost to Canada, the three hypotheses, the approach, and more. You can also ask me to navigate to a section, simulate a member journey, or explain what you're looking at.\n\nWhat would you like to know?", suggestions: ["Be Maria", "Tell me about the scale problem", "What am I looking at?"] };
   }
@@ -3061,7 +3118,7 @@ gsap.from('.track-item', {
 
     return {
       text: "<span class='step-label'>" + step.label + "</span>\n\n" + step.text,
-      suggestions: hasMore ? ["Next", "Exit persona mode"] : ["Exit persona mode", "Try another persona", "What did I just experience?"],
+      suggestions: hasMore ? ["Next", "Exit persona mode"] : ["Exit persona mode", "Try another persona", "Get help now \u2014 contact CNIB", "What did I just experience?"],
       isPersonaStep: true,
       isLastStep: !hasMore
     };
@@ -3073,7 +3130,7 @@ gsap.from('.track-item', {
     removePersonaBanner();
 
     if (wasPersona) {
-      return { text: "<span class='step-label'>PERSONA MODE ENDED</span>\n\nYou just experienced what a CNIB AI navigator could feel like from a member's perspective. Every step — proactive outreach, peer connections, cross-program discovery, life-stage awareness — is what this proposal is designed to build.\n\nThe key difference: instead of members finding services, the navigator finds them.", suggestions: ["Be another persona", "Ask me a question", "Take me to the approach"] };
+      return { text: "<span class='step-label'>PERSONA MODE ENDED</span>\n\nYou just experienced what a CNIB AI navigator could feel like from a member's perspective. Every step — proactive outreach, peer connections, cross-program discovery, life-stage awareness — is what this proposal is designed to build.\n\nThe key difference: instead of members finding services, the navigator finds them.\n\n<strong>Need help now?</strong> If you or someone you know is living with sight loss, CNIB is here: <strong>1-800-563-2642</strong> or <a href='https://cnib.ca' target='_blank' style='color:#FFF100'>cnib.ca</a>", suggestions: ["Be another persona", "Get help now \u2014 contact CNIB", "Ask me a question", "Take me to the approach"] };
     }
     return { text: "You're not in persona mode. Want to try one?", suggestions: ["Be Maria", "Be David", "Be the Nguyen family"] };
   }
@@ -3166,6 +3223,9 @@ gsap.from('.track-item', {
 
       if (answer.suggestions && answer.suggestions.length) addSuggestions(answer.suggestions);
 
+      // Focus management: move focus to new bot response for screen readers
+      setTimeout(() => { msgDiv.focus({ preventScroll: true }); }, 50);
+
       if (answer.isPersonaStep || answer.personaBanner) {
         const wasVoice = voiceEnabled;
         voiceEnabled = true;
@@ -3209,9 +3269,11 @@ gsap.from('.track-item', {
 
   function trapFocus(e) {
     if (e.key !== 'Tab') return;
-    const focusable = panel.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])');
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    const focusable = Array.from(panel.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"]), .agent-suggestions button'));
+    const visible = focusable.filter(el => el.offsetParent !== null);
+    if (!visible.length) return;
+    const first = visible[0];
+    const last = visible[visible.length - 1];
     if (e.shiftKey) {
       if (document.activeElement === first) { e.preventDefault(); last.focus(); }
     } else {
