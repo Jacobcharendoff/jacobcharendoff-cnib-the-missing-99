@@ -2776,19 +2776,15 @@ gsap.from('.track-item', {
   function handleIdentityChoice(choice) {
     if (choice.includes("Angela")) {
       userProfile.identity = 'angela';
-      addMsg('user', choice);
       addMsg('bot', "Angela — perfect. I know your three priorities: rebranding from institutional stigma to empowerment, personalizing member engagement, and building AI navigators that help people navigate their entire life journey. Everything I show you today is designed around those three things.");
     } else if (choice.includes("healthcare")) {
       userProfile.identity = 'clinician';
-      addMsg('user', choice);
       addMsg('bot', "Welcome \u2014 and thank you for what you do. Ophthalmologists and eye care professionals are the #1 gateway to support services. This proposal addresses the gap between diagnosis and community support. I'll show you how an AI navigator could transform the post-diagnosis referral pathway.");
     } else if (choice.includes("team")) {
       userProfile.identity = 'team';
-      addMsg('user', choice);
       addMsg('bot', "Great. I'm designed to be a collaboration tool. Everything here — the data, the member journeys, the hypotheses — is open for your input.");
     } else {
       userProfile.identity = 'exploring';
-      addMsg('user', choice);
       addMsg('bot', "Exploring is perfect. No pressure — I'll walk you through what this proposal is, and you can ask questions as we go.");
     }
 
@@ -2801,8 +2797,6 @@ gsap.from('.track-item', {
   }
 
   function handleA11yChoice(choice) {
-    addMsg('user', choice);
-
     if (choice.includes("Larger")) {
       userProfile.a11y.push('large-text');
       toggleFontSize('large');
@@ -2857,8 +2851,6 @@ gsap.from('.track-item', {
   }
 
   function handlePriorityChoice(choice) {
-    addMsg('user', choice);
-
     if (choice.includes("referral gap") || choice.includes("post-diagnosis")) {
       userProfile.priority = 'reach';
       guidedSectionIndex = 0;
