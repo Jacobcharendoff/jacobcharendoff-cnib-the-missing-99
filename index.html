@@ -3405,9 +3405,9 @@ gsap.from('.track-item', {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      const overlay = document.getElementById('shortcut-overlay');
-      if (overlay && overlay.classList.contains('visible')) {
-        overlay.classList.remove('visible');
+      const shortcutOverlay = document.getElementById('shortcut-overlay');
+      if (overlay && shortcutOverlay.classList.contains('visible')) {
+        shortcutOverlay.classList.remove('visible');
         return;
       }
       if (isOpen) toggle();
