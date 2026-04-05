@@ -309,7 +309,7 @@
   body.a11y-high-contrast .a11y-bar button:hover { background: #FFF100 !important; color: #000000 !important; }
   body.a11y-high-contrast .a11y-bar button.active { background: #FFF100 !important; color: #000000 !important; }
 
-  /* Dark sections */
+  /* Dark sections — pure black bg, white text, yellow accents */
   body.a11y-high-contrast .mode-dark { background: #000000 !important; color: #FFFFFF !important; }
   body.a11y-high-contrast .mode-dark * { color: #FFFFFF !important; border-color: #FFF100 !important; }
   body.a11y-high-contrast .mode-dark h2 { color: #FFF100 !important; }
@@ -333,7 +333,7 @@
   body.a11y-high-contrast .mode-dark [style*="background"] { background: #000000 !important; border: 2px solid #FFF100 !important; }
   body.a11y-high-contrast .mode-dark .timeline-phase { border: 2px solid #FFF100 !important; }
 
-  /* Light sections */
+  /* Light sections — pure white bg, black text */
   body.a11y-high-contrast .mode-light { background: #FFFFFF !important; color: #000000 !important; }
   body.a11y-high-contrast .mode-light * { color: #000000 !important; border-color: #000000 !important; background: transparent !important; }
   body.a11y-high-contrast .mode-light h2 { color: #000000 !important; }
@@ -344,7 +344,7 @@
   body.a11y-high-contrast .mode-light .callout { border: 3px solid #000000 !important; }
   body.a11y-high-contrast .mode-light [style*="background"] { background: #FFFFFF !important; border: 2px solid #000000 !important; }
 
-  /* Cover/header */
+  /* Cover/header in high contrast */
   body.a11y-high-contrast .cover-title,
   body.a11y-high-contrast .cover-subtitle,
   body.a11y-high-contrast .cover-accent { color: #FFF100 !important; }
@@ -1194,7 +1194,7 @@
   }
 
   .cover-accent {
-    color: var(--red);
+    color: #D42E12;
     display: inline-block;
   }
 
@@ -1699,6 +1699,8 @@
   <p class="source">Program data: CNIB Foundation Annual Report 2024–2025. Financial data: EY-Audited Non-Consolidated Financial Statements, FY2024 and FY2025.</p>
 
   <div class="callout"><strong>The peer comparison above tells us something important:</strong> even the highest-performing blindness organizations globally have not cracked past single-digit reach. CNIB's &lt;1% is low by those standards, but the ceiling that peer organizations have hit suggests closing this gap requires a fundamentally different approach to discovery and engagement, not incremental improvements to the existing model.</div>
+
+  <div class="callout" style="border-left-color: var(--yellow); background: rgba(255,241,0,0.04);"><strong>You’re already experiencing a prototype.</strong> The AI assistant in the bottom-left corner of this document is a working demonstration of what a member-facing navigator could feel like. Ask it to simulate Maria’s journey, navigate you to any section, or explain the data behind these hypotheses. It is not a mockup — it is functional AI, built in days, showing what becomes possible when technology meets member engagement.</div>
 </div>
 </div>
 </div>
@@ -2064,17 +2066,15 @@ document.querySelectorAll('[data-count]').forEach(el => {
   const decimals = target.toString().includes('.')
     ? target.toString().split('.')[1].length : 0;
 
+  const formatNum = (v) => { let n = v.toFixed(decimals); if (useComma) n = Number(n).toLocaleString('en-US'); return prefix + n + suffix; };
   const counter = { val: 0 };
   gsap.to(counter, {
     val: target,
     duration: 2,
     ease: 'power2.out',
     scrollTrigger: { trigger: el, start: 'top 85%', once: true },
-    onUpdate: () => {
-      let num = counter.val.toFixed(decimals);
-      if (useComma) num = Number(num).toLocaleString('en-US');
-      el.textContent = prefix + num + suffix;
-    }
+    onUpdate: () => { el.textContent = formatNum(counter.val); },
+    onComplete: () => { el.textContent = formatNum(target); }
   });
 });
 
@@ -2116,23 +2116,23 @@ gsap.from('.track-item', {
   const STORAGE_KEY = 'a11y-preferences';
 
   // ===== ELEVENLABS NEURAL TTS CONFIG =====
-  // Sign up free at elevenlabs.io > Profile > API Key
-  // Free tier: 10,000 chars/month - more than enough for demos
-  const ELEVENLABS_API_KEY = ''; // Paste your key here
-  const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // "Sarah" - warm, clear, natural female narrator
+  // Sign up free at elevenlabs.io → Profile → API Key
+  // Free tier: 10,000 chars/month — more than enough for demos
+  const ELEVENLABS_API_KEY = ''; // ← Paste your key here
+  const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // "Sarah" — warm, clear, natural female narrator
   const ELEVENLABS_MODEL = 'eleven_turbo_v2'; // Low latency, high quality
   const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1/text-to-speech/';
   const USE_ELEVENLABS = ELEVENLABS_API_KEY.length > 0;
 
   // Fallback: Web Speech API voice priority
   const VOICE_NAMES = [
-        'Google UK English Female', 'Google US English', 'Google UK English Male',
-        'Shelley', 'Sandy', 'Flo', 'Reed',
-        'Tessa', 'Karen', 'Daniel', 'Moira',
-        'Microsoft Jenny', 'Microsoft Aria', 'Microsoft Guy',
-        'Microsoft Zira', 'Microsoft David',
-        'Samantha', 'Alex', 'Victoria'
-      ];
+    'Google UK English Female', 'Google US English', 'Google UK English Male',
+    'Shelley', 'Sandy', 'Flo', 'Reed',
+    'Tessa', 'Karen', 'Daniel', 'Moira',
+    'Microsoft Jenny', 'Microsoft Aria', 'Microsoft Guy',
+    'Microsoft Zira', 'Microsoft David',
+    'Samantha', 'Alex', 'Victoria'
+  ];
   const FONT_LEVELS = [
     { class: '', label: '100%', size: 'a11y-font-100' },
     { class: 'a11y-font-120', label: '120%', size: 'a11y-font-120' },
@@ -2249,23 +2249,23 @@ gsap.from('.track-item', {
     return str
       // Tilde/approximately
       .replace(/~(\d)/g, 'approximately $1')
-      // Large currency: $5.2M
+      // Large currency: $5.2M → 5 point 2 million dollars
       .replace(/\$(\d+)\.(\d+)(M|B)/g, (_, a, b, u) => a + ' point ' + b + (u === 'M' ? ' million' : ' billion') + ' dollars')
-      // Currency with commas: $5,072
+      // Currency with commas: $5,072 → 5 thousand 72 dollars
       .replace(/\$(\d{1,3}(,\d{3})*)/g, (_, a) => numberToWords(a) + ' dollars')
-      // Plain currency: $414
+      // Plain currency: $414 → 414 dollars
       .replace(/\$(\d+)/g, (_, a) => numberToWords(a) + ' dollars')
-      // Decimal + M: 1.5M
+      // Decimal + M: 1.5M → 1 point 5 million
       .replace(/(\d+)\.(\d+)M/g, (_, a, b) => a + ' point ' + b + ' million')
-      // Decimal percent: 0.82%
+      // Decimal percent: 0.82% → 0 point 82 percent
       .replace(/(\d+)\.(\d+)%/g, (_, a, b) => a + ' point ' + b + ' percent')
-      // Plain percent: 5%
+      // Plain percent: 5% → 5 percent
       .replace(/(\d+)%/g, (_, a) => a + ' percent')
-      // Multiplier: 3x
+      // Multiplier: 3x → 3 times
       .replace(/(\d+)x/g, (_, a) => a + ' times')
-      // Standalone comma numbers: 12,227
+      // Standalone comma numbers: 12,227 → twelve thousand two hundred twenty-seven
       .replace(/\b(\d{1,3}(,\d{3})+)\b/g, (_, a) => numberToWords(a))
-      // Standalone decimals: 0.82
+      // Standalone decimals without suffix: 0.82 → 0 point 82
       .replace(/(\d+)\.(\d+)/g, (_, a, b) => a + ' point ' + b);
   }
 
@@ -2285,7 +2285,9 @@ gsap.from('.track-item', {
       return '';
     }
     const parts = [];
-    const scales = [[1000000000, 'billion'], [1000000, 'million'], [1000, 'thousand'], [1, '']];
+    const scales = [
+      [1000000000, 'billion'], [1000000, 'million'], [1000, 'thousand'], [1, '']
+    ];
     let rem = n;
     for (const [val, label] of scales) {
       if (rem >= val) {
@@ -2349,6 +2351,7 @@ gsap.from('.track-item', {
     // Hypothesis numbers — describe as hypothesis with its tag
     if (element.classList.contains('hyp-num')) {
       const parent = element.closest('.hypothesis');
+      const title = parent?.querySelector('.hyp-title');
       const tag = parent?.querySelector('.hyp-tag');
       if (tag) {
         return 'Hypothesis ' + element.textContent.trim() + ', ' + tag.textContent.trim() + '.';
@@ -2391,7 +2394,7 @@ gsap.from('.track-item', {
     }
     if (element.classList.contains('track-value') && element.previousElementSibling?.classList.contains('track-label')) return '';
 
-    // Headings — read as-is for orientation
+    // Headings — add "heading" prefix for orientation
     if (element.tagName === 'H2' || element.classList.contains('cover-title')) {
       return element.textContent.trim();
     }
@@ -2440,6 +2443,7 @@ gsap.from('.track-item', {
     });
   }
 
+  // Pre-fetch next segments for seamless playback
   async function prefetchAudio(contentArray, startIdx, count) {
     const end = Math.min(startIdx + count, contentArray.length);
     for (let i = startIdx; i < end; i++) {
@@ -2473,13 +2477,15 @@ gsap.from('.track-item', {
     const { text, element } = currentContent[idx];
     highlightElement(element);
 
+    // Prefetch next 2 segments while current plays
     prefetchAudio(currentContent, idx + 1, 2);
 
     try {
       let blob = audioQueue[idx];
       if (!blob) blob = await fetchElevenLabsAudio(text);
 
-      if (!isSpeaking) return;
+      if (!isSpeaking) return; // Stopped while fetching
+        // Wait for unpause
       if (isPaused) {
         await new Promise(resolve => {
           const check = setInterval(() => {
@@ -2498,7 +2504,8 @@ gsap.from('.track-item', {
     if (isSpeaking && !isPaused) await speakElevenLabsFromIndex(idx + 1);
   }
 
-  // Find the content item closest to the user's current scroll position
+  // ===== FIND NEAREST VISIBLE SECTION =====
+  // Starts reading from whatever's on screen, not always from the top
   function findStartIndex(contentArray) {
     const scrollY = window.scrollY;
     const viewportH = window.innerHeight;
@@ -2511,11 +2518,12 @@ gsap.from('.track-item', {
       const dist = Math.abs(elY - viewMid);
       if (dist < bestDist) { bestDist = dist; bestIdx = i; }
     }
+    // If top of page is visible, start from 0
     if (scrollY < 200) return 0;
     return bestIdx;
   }
 
-  // Chrome speechSynthesis keep-alive - prevents 15-second silent kill bug
+  // Chrome speechSynthesis keep-alive — prevents 15-second silent kill bug
   let keepAliveTimer = null;
   function startKeepAlive() {
     stopKeepAlive();
@@ -2711,6 +2719,7 @@ gsap.from('.track-item', {
     const visible = headings.filter(el => el.offsetParent !== null || el.closest('header'));
     if (visible.length === 0) return;
 
+    // Find which heading is closest to current scroll position
     const scrollY = window.scrollY + window.innerHeight * 0.3;
     let closestIdx = 0;
     let closestDist = Infinity;
@@ -2719,6 +2728,7 @@ gsap.from('.track-item', {
       if (dist < closestDist) { closestDist = dist; closestIdx = i; }
     });
 
+    // If moving forward and we're already past the closest heading, stay on current + direction
     let targetIdx = closestIdx + direction;
     if (direction === 1 && visible[closestIdx].getBoundingClientRect().top < 50) {
       targetIdx = closestIdx + 1;
@@ -2735,7 +2745,7 @@ gsap.from('.track-item', {
     currentSectionIdx = targetIdx;
   }
 
-    function toggleToolbar() {
+  function toggleToolbar() {
     bar.classList.toggle('collapsed');
     toggleBtn.setAttribute('aria-label', bar.classList.contains('collapsed') ? 'Expand accessibility toolbar' : 'Collapse accessibility toolbar');
   }
@@ -2785,21 +2795,21 @@ gsap.from('.track-item', {
       // Skip if user is typing in input
       if (isInput) return;
 
-      // ? key - toggle shortcut help overlay
+      // ? key — toggle shortcut help overlay
       if (e.key === '?' || (e.shiftKey && e.key === '/')) {
         e.preventDefault();
         const overlay = document.getElementById('shortcut-overlay');
         if (overlay) {
           overlay.classList.toggle('visible');
           if (overlay.classList.contains('visible')) {
-            announce('Keyboard shortcuts panel opened.');
+            announce('Keyboard shortcuts panel opened. Press Escape or question mark to close.');
           } else {
             announce('Keyboard shortcuts panel closed.');
           }
         }
       }
 
-      // N/P - section jump navigation (works anytime)
+      // N/P — section jump navigation (works anytime, not just during TTS)
       if (e.key.toLowerCase() === 'n' && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         navigateSection(1);
@@ -2994,6 +3004,37 @@ gsap.from('.track-item', {
   .agent-voice-btn.active { background: rgba(255,241,0,0.15); color: var(--yellow); border-color: var(--yellow); }
   .agent-voice-btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
   .agent-voice-btn svg { width: 14px; height: 14px; }
+
+  /* Mic button for voice input */
+  .agent-mic-btn {
+    width: 38px; height: 38px; border-radius: 10px; background: transparent;
+    border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0; color: var(--dim-dark);
+  }
+  .agent-mic-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .agent-mic-btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+  .agent-mic-btn svg { width: 18px; height: 18px; }
+  .agent-mic-btn.listening {
+    background: rgba(229, 83, 61, 0.15); border-color: var(--red);
+    color: var(--red); animation: micPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes micPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(229,83,61,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(229,83,61,0); }
+  }
+  .voice-wave { display: flex; align-items: center; gap: 2px; height: 16px; padding: 0 4px; }
+  .voice-wave span { width: 3px; background: var(--yellow); border-radius: 2px; animation: waveBar 0.8s ease-in-out infinite; }
+  .voice-wave span:nth-child(1) { height: 4px; animation-delay: 0s; }
+  .voice-wave span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+  .voice-wave span:nth-child(3) { height: 16px; animation-delay: 0.3s; }
+  .voice-wave span:nth-child(4) { height: 10px; animation-delay: 0.45s; }
+  .voice-wave span:nth-child(5) { height: 4px; animation-delay: 0.6s; }
+  @keyframes waveBar { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+  .agent-speaking-indicator { display: none; font-size: 10px; color: var(--yellow); align-items: center; gap: 4px; }
+  .agent-speaking-indicator.active { display: flex; }
+  .agent-transcript-preview { font-size: 11px; color: var(--dim-dark); font-style: italic; padding: 0 18px 8px; min-height: 0; transition: all 0.2s; overflow: hidden; }
+  .agent-transcript-preview.active { color: var(--text-dark); }
 
   .nav-agent-body {
     flex: 1;
@@ -3193,6 +3234,7 @@ gsap.from('.track-item', {
     <div class="agent-info">
       <h3>CNIB Member Navigator</h3>
       <p>AI-powered prototype — voice enabled</p>
+      <span class="agent-speaking-indicator" id="agentSpeakingIndicator"><span class="voice-wave"><span></span><span></span><span></span><span></span><span></span></span> Speaking</span>
     </div>
     <div class="agent-controls">
       <button class="agent-voice-btn" id="agentVoiceToggle" aria-label="Toggle voice responses" title="Toggle voice responses">
@@ -3203,7 +3245,11 @@ gsap.from('.track-item', {
   </div>
   <div class="nav-agent-body" id="agentBody" aria-live="polite" aria-relevant="additions">
   </div>
+  <div class="agent-transcript-preview" id="agentTranscript"></div>
   <div class="nav-agent-input">
+    <button class="agent-mic-btn" id="agentMic" aria-label="Voice input — click to speak" title="Click to speak">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
     <input type="text" id="agentInput" placeholder="Ask me anything, or say 'be Maria'..." aria-label="Ask the navigator a question">
     <button id="agentSend" aria-label="Send question">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0D1117" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -3367,33 +3413,100 @@ gsap.from('.track-item', {
     return current;
   }
 
-  // ===== VOICE OUTPUT =====
-  function speakAgentResponse(text) {
-    if (!voiceEnabled) return;
-    // Strip HTML tags for speech
-    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/•/g, '').trim();
-    // Use the page's TTS if available
-    if (typeof window.speakNumber === 'function') {
-      // Use Web Speech API directly for agent responses
-      const synth = window.speechSynthesis;
-      if (synth) {
-        synth.cancel();
-        const utt = new SpeechSynthesisUtterance(plainText);
-        utt.rate = 1.0;
-        utt.pitch = 1.05;
-        utt.volume = 1;
-        synth.speak(utt);
-      }
-    } else {
-      const synth = window.speechSynthesis;
-      if (synth) {
-        synth.cancel();
-        const utt = new SpeechSynthesisUtterance(plainText);
-        utt.rate = 1.0;
-        synth.speak(utt);
-      }
-    }
+    // ===== HI-FI VOICE OUTPUT (ElevenLabs + Web Speech fallback) =====
+  let agentAudio = null;
+  let isSpeakingAgent = false;
+  const speakIndicator = document.getElementById('agentSpeakingIndicator');
+
+  function showSpeaking(on) {
+    isSpeakingAgent = on;
+    if (speakIndicator) speakIndicator.classList.toggle('active', on);
   }
+
+  function stopAgentSpeaking() {
+    showSpeaking(false);
+    if (agentAudio) { agentAudio.pause(); agentAudio = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  async function speakAgentResponse(text) {
+    if (!voiceEnabled) return;
+    stopAgentSpeaking();
+    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/•/g, '').replace(/\s+/g, ' ').trim();
+    if (!plainText) return;
+    showSpeaking(true);
+
+    if (typeof USE_ELEVENLABS !== 'undefined' && USE_ELEVENLABS && typeof ELEVENLABS_API_KEY !== 'undefined') {
+      try {
+        const resp = await fetch(ELEVENLABS_ENDPOINT + ELEVENLABS_VOICE_ID, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+          body: JSON.stringify({ text: plainText, model_id: ELEVENLABS_MODEL, voice_settings: { stability: 0.4, similarity_boost: 0.8, style: 0.5, use_speaker_boost: true } })
+        });
+        if (resp.ok) {
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          agentAudio = new Audio(url);
+          agentAudio.onended = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
+          agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
+          agentAudio.play();
+          return;
+        }
+      } catch (e) { /* fall through to Web Speech */ }
+    }
+
+    const synth = window.speechSynthesis;
+    if (!synth) { showSpeaking(false); return; }
+    synth.cancel();
+    let voice = null;
+    const voices = synth.getVoices();
+    const preferred = ['Google UK English Female', 'Samantha', 'Karen', 'Moira', 'Fiona', 'Victoria'];
+    for (const name of preferred) { voice = voices.find(v => v.name.includes(name)); if (voice) break; }
+    if (!voice) voice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+    if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
+
+    const utt = new SpeechSynthesisUtterance(plainText);
+    if (voice) utt.voice = voice;
+    utt.rate = 0.95; utt.pitch = 1.05; utt.volume = 1;
+    let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
+    utt.onend = () => { clearInterval(keepAlive); showSpeaking(false); };
+    utt.onerror = () => { clearInterval(keepAlive); showSpeaking(false); };
+    synth.speak(utt);
+  }
+
+    // ===== VOICE INPUT — Speech Recognition (Siri/Alexa style) =====
+  const micBtn = document.getElementById('agentMic');
+  const transcriptEl = document.getElementById('agentTranscript');
+  let recognition = null;
+  let isListening = false;
+
+  function initSpeechRecognition() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) { micBtn.title = 'Voice input not supported in this browser'; micBtn.style.opacity = '0.3'; micBtn.style.cursor = 'not-allowed'; return; }
+    recognition = new SpeechRec();
+    recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'en-US'; recognition.maxAlternatives = 1;
+    recognition.onstart = () => { isListening = true; micBtn.classList.add('listening'); micBtn.setAttribute('aria-label', 'Listening... click to stop'); transcriptEl.textContent = 'Listening...'; transcriptEl.classList.add('active'); stopAgentSpeaking(); };
+    recognition.onresult = (event) => {
+      let interim = '', final = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) final += transcript; else interim += transcript;
+      }
+      transcriptEl.textContent = final || interim || 'Listening...';
+      if (final) { setTimeout(() => { transcriptEl.textContent = ''; transcriptEl.classList.remove('active'); handleQuery(final.trim()); }, 300); }
+    };
+    recognition.onerror = (event) => {
+      isListening = false; micBtn.classList.remove('listening'); micBtn.setAttribute('aria-label', 'Voice input — click to speak');
+      if (event.error === 'no-speech') transcriptEl.textContent = 'No speech detected. Try again.';
+      else if (event.error === 'not-allowed') transcriptEl.textContent = 'Microphone access denied.';
+      else transcriptEl.textContent = '';
+      transcriptEl.classList.remove('active'); setTimeout(() => { transcriptEl.textContent = ''; }, 2000);
+    };
+    recognition.onend = () => { isListening = false; micBtn.classList.remove('listening'); micBtn.setAttribute('aria-label', 'Voice input — click to speak'); };
+  }
+
+  function toggleListening() { if (!recognition) return; if (isListening) recognition.stop(); else recognition.start(); }
+  initSpeechRecognition();
 
   // ===== RESPONSE ENGINE =====
   function findAnswer(query) {
@@ -3573,7 +3686,7 @@ gsap.from('.track-item', {
 
     // What can you do?
     if (/what can you|help|capabilities|features|commands/.test(q)) {
-      return { text: "<strong>Here's what I can do:</strong>\n\n<strong>Navigate</strong> — \"Take me to [section]\" scrolls you to any part of the proposal\n<strong>Simulate</strong> — \"Be Maria\" / \"Be David\" / \"Be the Nguyen family\" walks you through a member's experience step by step\n<strong>Explain</strong> — \"What am I looking at?\" gives context for whatever section you're reading\n<strong>Research</strong> — Ask about the data, peer comparisons, sector landscape, or Jacob's background\n<strong>Voice</strong> — Toggle the speaker icon to hear my responses read aloud", suggestions: ["Be Maria", "What am I looking at?", "Take me to the deliverables"] };
+      return { text: "<strong>Here's what I can do:</strong>\n\n<strong>Navigate</strong> — \"Take me to [section]\" scrolls you to any part of the proposal\n<strong>Simulate</strong> — \"Be Maria\" / \"Be David\" / \"Be the Nguyen family\" walks you through a member's experience step by step\n<strong>Explain</strong> — \"What am I looking at?\" gives context for whatever section you're reading\n<strong>Research</strong> — Ask about the data, peer comparisons, sector landscape, or Jacob's background\n<strong>🎤 Voice input</strong> — Click the mic button and speak to me like Siri or Alexa\n<strong>🔊 Voice output</strong> — Toggle the speaker icon to hear my responses in natural speech\n\nPersona journeys are narrated automatically — try \"Be Maria\" to hear it.", suggestions: ["Be Maria", "What am I looking at?", "Take me to the deliverables"] };
     }
 
     // Catch-all
@@ -3724,7 +3837,7 @@ gsap.from('.track-item', {
   }
 
   function showWelcome() {
-    addMsg("bot", "Hi — I'm a prototype of what a <strong>CNIB member-facing AI navigator</strong> could feel like.\n\nI'm not a typical chatbot. I can:\n\n<strong>Navigate</strong> you through this proposal — \"take me to the deliverables\"\n<strong>Simulate</strong> a member's experience — \"be Maria\" to walk through a real journey\n<strong>Explain</strong> what you're reading — \"what am I looking at?\"\n\nThis is what Angela's AI vision could feel like at scale. Try it.");
+    addMsg("bot", "Hi — I'm a prototype of what a <strong>CNIB member-facing AI navigator</strong> could feel like.\n\nI'm not a typical chatbot. I can:\n\n<strong>Navigate</strong> you through this proposal — \"take me to the deliverables\"\n<strong>Simulate</strong> a member's experience — \"be Maria\" to walk through a real journey\n<strong>Explain</strong> what you're reading — \"what am I looking at?\"\n\n\ud83c\udfa4 Click the <strong>mic button</strong> to talk to me by voice \u2014 like Siri or Alexa.\n\ud83d\udd0a Toggle the <strong>speaker icon</strong> above to hear my responses read aloud.\n\nThis is what Angela's AI vision could feel like at scale. Try it.");
     addSuggestions(["Be Maria", "What am I looking at?", "Summarize the proposal"]);
   }
 
@@ -3801,8 +3914,15 @@ gsap.from('.track-item', {
 
       if (answer.suggestions && answer.suggestions.length) addSuggestions(answer.suggestions);
 
-      // Voice output
-      speakAgentResponse(answer.text);
+      // Voice output — always speak persona steps for immersive experience
+      if (answer.isPersonaStep || answer.personaBanner) {
+        const wasVoice = voiceEnabled;
+        voiceEnabled = true;
+        speakAgentResponse(answer.text);
+        if (!wasVoice) voiceEnabled = wasVoice;
+      } else {
+        speakAgentResponse(answer.text);
+      }
     }, delay);
   }
 
@@ -3820,16 +3940,23 @@ gsap.from('.track-item', {
     if (e.key === 'Enter') { e.preventDefault(); send(); }
   });
 
-  // Voice toggle
+  // Mic button
+  micBtn.addEventListener('click', () => {
+    if (!isOpen) toggle();
+    toggleListening();
+  });
+
+  // Voice toggle — now enables full immersive voice mode
   voiceToggle.addEventListener('click', () => {
     voiceEnabled = !voiceEnabled;
     voiceToggle.classList.toggle('active', voiceEnabled);
     voiceToggle.setAttribute('aria-pressed', String(voiceEnabled));
     voiceToggle.setAttribute('aria-label', voiceEnabled ? 'Voice responses on — click to disable' : 'Voice responses off — click to enable');
     if (voiceEnabled) {
-      addMsg('system', 'Voice responses enabled. I\'ll read my answers aloud.');
+      addMsg('system', '\ud83d\udd0a Voice mode activated. I\'ll speak my responses. Click the mic to talk to me.');
+      speakAgentResponse('Voice mode activated. I\'ll speak my responses. You can also click the microphone button or just type.');
     } else {
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      stopAgentSpeaking();
       addMsg('system', 'Voice responses disabled.');
     }
   });
