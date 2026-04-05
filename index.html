@@ -1503,13 +1503,12 @@
   @keyframes nudgeFade { 0%{opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
   .nav-agent {
     position: fixed; bottom: 96px; left: 28px; width: 380px;
-    max-height: 0; overflow: hidden; background: #0D1117;
+    max-height: 70vh; overflow: hidden; background: #0D1117;
     border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-    z-index: 9998; display: flex; flex-direction: column;
-    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
-    opacity: 0; border: 1px solid rgba(255,241,0,0.15);
+    z-index: 9998; display: none; flex-direction: column;
+    border: 1px solid rgba(255,241,0,0.15);
   }
-  .agent-panel.open { max-height: 70vh; opacity: 1; }
+  .nav-agent.open { display: flex; opacity: 1; }
   .agent-header {
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 18px; border-bottom: 1px solid rgba(255,241,0,0.1); flex-shrink: 0;
