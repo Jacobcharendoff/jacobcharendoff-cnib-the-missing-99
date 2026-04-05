@@ -3419,9 +3419,12 @@ gsap.from('.track-item', {
   });
 
   // Auto-open on load
+  // Auto-start onboarding in overlay mode
   setTimeout(() => {
-    toggle();
-  }, 500);
+    hasStartedOnboarding = true;
+    startOnboarding();
+    input.focus();
+  }, 600);
 })();
 
 </script>
