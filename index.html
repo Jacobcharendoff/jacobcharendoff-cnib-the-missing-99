@@ -846,7 +846,7 @@
     flex: 1;
     text-align: center;
     position: relative;
-    opacity: 0;
+    opacity: 1;
   }
   .timeline-dot {
     width: 40px;
@@ -2294,18 +2294,13 @@ gsap.to('#progress', {
 });
 
 // ---- Cover entrance ----
-gsap.to('.cover', {
-  opacity: 1,
-  duration: 0.6,
-  delay: 0.1,
-  ease: 'power2.out'
-});
+// Cover is visible by default — no fade-in needed
 
 const coverTl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.15 });
 coverTl
-  .from('.cover-logo', { scale: 1.15, opacity: 0, duration: 1.2, ease: 'power3.out' })
-  .from('.cover-title', { y: 30, opacity: 0, duration: 0.9 }, '-=0.5')
-  .from('.cover-subtitle', { y: 20, opacity: 0, duration: 0.7 }, '-=0.4');
+  .fromTo('.cover-logo', { scale: 1.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: 'power3.out' })
+  .fromTo('.cover-title', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 }, '-=0.5')
+  .fromTo('.cover-subtitle', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.4');
 
 // ---- Section reveals ----
 gsap.utils.toArray('.section').forEach(section => {
