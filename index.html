@@ -1481,16 +1481,45 @@
   }
 
   /* ===== AI NAVIGATOR STYLES ===== */
+  /* ===== AGENT-FIRST OVERLAY ===== */
+  .agent-overlay { position: fixed; inset: 0; z-index: 10000; background: #0D1117; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, transform 0.6s ease; }
+  .agent-overlay.revealing { opacity: 0; pointer-events: none; transform: translateY(-30px); }
+  .agent-overlay.hidden { display: none; }
+  .agent-overlay-inner { width: 100%; max-width: 640px; padding: 0 24px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+  .agent-overlay-brand { padding-top: 48px; padding-bottom: 16px; text-align: center; flex-shrink: 0; }
+  .agent-overlay-brand img { height: 40px; margin-bottom: 12px; }
+  .agent-overlay-brand h1 { font-family: 'Lilita One', sans-serif; font-size: 28px; color: #FFF; margin: 0; }
+  .agent-overlay-brand h1 span { color: #FFF100; }
+  .agent-overlay-brand .agent-overlay-sub { font-size: 13px; color: #7D8590; margin-top: 6px; }
+  .agent-overlay-chat { flex: 1; width: 100%; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,241,0,0.12); border-radius: 20px; background: rgba(13,17,23,0.95); margin-bottom: 24px; }
+  .agent-overlay-chat .agent-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid rgba(255,241,0,0.08); flex-shrink: 0; }
+  .agent-overlay-chat .agent-header-title { display: flex; align-items: center; gap: 10px; color: #FFF100; font-size: 15px; font-weight: 700; }
+  .agent-overlay-chat .agent-body { flex: 1; overflow-y: auto; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .agent-overlay-chat .agent-body::-webkit-scrollbar { width: 4px; }
+  .agent-overlay-chat .agent-body::-webkit-scrollbar-thumb { background: rgba(255,241,0,0.2); border-radius: 4px; }
+  .agent-overlay-chat .agent-input-row { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-top: 1px solid rgba(255,241,0,0.08); flex-shrink: 0; }
+  .agent-overlay-chat .agent-input-row input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #FFFDF5; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-family: var(--font); }
+  .agent-overlay-chat .agent-input-row input::placeholder { color: rgba(255,255,255,0.3); }
+  .agent-overlay-chat .agent-input-row input:focus { outline: none; border-color: rgba(255,241,0,0.4); }
+  .agent-overlay-chat .agent-msg { font-size: 14.5px; line-height: 1.7; max-width: 95%; }
+  .agent-overlay-chat .agent-suggestions button { font-size: 13px; padding: 8px 16px; }
+  body.agent-mode header, body.agent-mode main, body.agent-mode footer, body.agent-mode .a11y-bar, body.agent-mode #progress, body.agent-mode .cover-fade { opacity: 0; pointer-events: none; }
+  body.agent-mode { overflow: hidden; }
+  body.agent-revealed header, body.agent-revealed main, body.agent-revealed footer, body.agent-revealed .a11y-bar, body.agent-revealed #progress, body.agent-revealed .cover-fade { opacity: 1; pointer-events: auto; transition: opacity 0.5s ease; }
+  body.agent-revealed { overflow: auto; }
+  @media (max-width: 680px) { .agent-overlay-inner { max-width: 100%; padding: 0 12px; } .agent-overlay-brand { padding-top: 28px; } .agent-overlay-brand h1 { font-size: 22px; } .agent-overlay-chat { border-radius: 14px; margin-bottom: 12px; } }
+
   .nav-agent-fab {
     position: fixed; bottom: 28px; left: 28px; width: 56px; height: 56px;
     border-radius: 50%; background: #0D1117; color: #FFF100;
-    display: flex; align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     cursor: pointer; z-index: 9999;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     transition: transform 0.2s, box-shadow 0.2s;
     border: 2px solid rgba(255,241,0,0.3);
   }
   .nav-agent-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(0,0,0,0.4); }
+  body.agent-revealed .nav-agent-fab { display: flex; }
   .nav-agent-fab.open { background: #FFF100; color: #0D1117; }
   .agent-nudge {
     position: absolute; left: 68px; bottom: 8px;
@@ -1694,6 +1723,40 @@
 </div>
 
 <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<!-- ===== AGENT-FIRST OVERLAY ===== -->
+<div id="agentOverlay" class="agent-overlay" role="main" aria-label="CNIB Member Navigator">
+  <div class="agent-overlay-inner">
+    <div class="agent-overlay-brand">
+      <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg" alt="CNIB" onerror="this.outerHTML='<div style=&quot;font-family:Lilita One,sans-serif;font-size:32px;color:#FFF100;margin-bottom:8px&quot;>CNIB</div>';">
+      <h1>The Missing <span>99%</span></h1>
+      <div class="agent-overlay-sub">AI-Powered Member Navigator \u2014 Prototype</div>
+    </div>
+    <div class="agent-overlay-chat">
+      <div class="agent-header">
+        <div class="agent-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span>Member Navigator</span>
+        </div>
+        <div class="agent-header-actions">
+          <button id="overlayVoiceToggle" aria-label="Voice responses off" aria-pressed="false" title="Toggle voice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="overlayBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation"></div>
+      <div class="agent-input-row">
+        <button id="overlayMic" class="agent-mic-btn" aria-label="Voice input" title="Speak">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+        </button>
+        <input id="overlayInput" type="text" placeholder="Ask me anything..." aria-label="Ask a question" autocomplete="off">
+        <button id="overlaySend" class="agent-send-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ===== YELLOW COVER ===== -->
 <header role="banner">
@@ -2451,16 +2514,49 @@ gsap.from('.track-item', {
   let guidedSectionIndex = 0;
   const guidedSections = ['opportunity', 'priorities', 'approach', 'deliverables', 'builder'];
 
-  // ===== DOM REFS =====
+  // ===== AGENT-FIRST MODE =====
+  let isOverlayMode = true;
+  document.body.classList.add('agent-mode');
+
+  // ===== DOM REFS (overlay = primary, panel = post-reveal) =====
+  const overlay = document.getElementById('agentOverlay');
   const fab = document.getElementById('agentFab');
   const panel = document.getElementById('agentPanel');
-  const agentBody = document.getElementById('agentBody');
-  const input = document.getElementById('agentInput');
-  const sendBtn = document.getElementById('agentSend');
-  const voiceToggle = document.getElementById('agentVoiceToggle');
+  let agentBody = document.getElementById('overlayBody');
+  let input = document.getElementById('overlayInput');
+  let sendBtn = document.getElementById('overlaySend');
+  let voiceToggle = document.getElementById('overlayVoiceToggle');
   const nudgeEl = document.getElementById('agentNudge');
-  const micBtn = document.getElementById('agentMic');
+  let micBtn = document.getElementById('overlayMic');
   const transcriptEl = document.getElementById('agentTranscript');
+  const panelBody = document.getElementById('agentBody');
+  const panelInput = document.getElementById('agentInput');
+  const panelSend = document.getElementById('agentSend');
+  const panelVoice = document.getElementById('agentVoiceToggle');
+  const panelMic = document.getElementById('agentMic');
+
+  function revealProposal() {
+    if (!isOverlayMode) return;
+    isOverlayMode = false;
+    panelBody.innerHTML = agentBody.innerHTML;
+    overlay.classList.add('revealing');
+    setTimeout(() => { overlay.classList.add('hidden'); }, 700);
+    document.body.classList.remove('agent-mode');
+    document.body.classList.add('agent-revealed');
+    agentBody = panelBody;
+    input = panelInput;
+    sendBtn = panelSend;
+    voiceToggle = panelVoice;
+    micBtn = panelMic;
+    isOpen = true;
+    fab.classList.add('open');
+    panel.classList.add('open');
+    fab.setAttribute('aria-expanded', 'true');
+    panelInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
+    panelSend.addEventListener('click', send);
+    panelMic.addEventListener('click', () => { toggleListening(); });
+    setTimeout(() => { panelInput.focus(); }, 400);
+  }
 
   // ===== ACCESSIBILITY HELPERS =====
   function toggleFontSize(size) {
@@ -2485,6 +2581,14 @@ gsap.from('.track-item', {
 
   // ===== NAVIGATION ENGINE =====
   function navigateToSection(sectionId) {
+    if (isOverlayMode) {
+      revealProposal();
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.classList.add('agent-highlight-section'); setTimeout(() => el.classList.remove('agent-highlight-section'), 2500); }
+      }, 800);
+      return true;
+    }
     const el = document.getElementById(sectionId);
     if (!el) return false;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3246,21 +3350,13 @@ gsap.from('.track-item', {
 
   // ===== UI ENGINE =====
   function toggle() {
+    if (isOverlayMode) return;
     isOpen = !isOpen;
     fab.classList.toggle('open', isOpen);
     panel.classList.toggle('open', isOpen);
     fab.setAttribute('aria-expanded', String(isOpen));
-
-    if (isOpen && !hasStartedOnboarding) {
-      hasStartedOnboarding = true;
-      startOnboarding();
-    }
-
     if (isOpen) {
-      setTimeout(() => {
-        input.focus();
-        panel.addEventListener('keydown', trapFocus);
-      }, 300);
+      setTimeout(() => { input.focus(); panel.addEventListener('keydown', trapFocus); }, 300);
     } else {
       panel.removeEventListener('keydown', trapFocus);
       fab.focus();
@@ -3282,7 +3378,7 @@ gsap.from('.track-item', {
   }
 
   // ===== EVENT LISTENERS =====
-  fab.addEventListener('click', toggle);
+  fab.addEventListener('click', () => { if (!isOverlayMode) toggle(); });
   sendBtn.addEventListener('click', send);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); send(); }
