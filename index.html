@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CNIB: The Missing 99%</title>
-<meta name="description" content="A rapid pilot to test the most effective ways to reach more Canadians with sight loss, connect them to CNIB programs, and keep them engaged.">
+<meta name="description" content="A 90-day project sprint to diagnose why CNIB reaches less than 1% of 1.5 million Canadians with sight loss, and begin closing the gap.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23FFF100'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='14' fill='%230D1117'%3ECNIB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
@@ -351,12 +351,7 @@
 
   /* Agent panel */
   body.a11y-high-contrast .nav-agent { background: #000000 !important; border: 3px solid #FFF100 !important; }
-  body.a11y-high-contrast .agent-msg.bot { background: rgba(255,241,0,0.1) !important; border: 2px solid #FFF100 !important; 
-      animation: msgFadeIn 0.4s ease-out;}
-    @keyframes msgFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  body.a11y-high-contrast .agent-msg.bot { background: rgba(255,241,0,0.1) !important; border: 2px solid #FFF100 !important; }
   body.a11y-high-contrast .agent-msg.user { background: rgba(255,241,0,0.2) !important; border: 2px solid #FFF100 !important; }
   body.a11y-high-contrast .nav-agent-fab { background: #FFF100 !important; color: #000000 !important; border: 3px solid #FFFFFF !important; }
 
@@ -846,7 +841,7 @@
     flex: 1;
     text-align: center;
     position: relative;
-    opacity: 1;
+    opacity: 0;
   }
   .timeline-dot {
     width: 40px;
@@ -1177,7 +1172,7 @@
     text-align: center;
     padding: 80px 48px;
     position: relative;
-    opacity: 1;
+    opacity: 0;
   }
 
   .cover-logo {
@@ -1485,337 +1480,9 @@
     transition: outline 0.3s ease;
   }
 
-  /* ===== AI NAVIGATOR STYLES ===== */
-  /* ===== AGENT-FIRST OVERLAY — Apple-minimal ===== */
-  /* ---- Iris Chat Widget (bottom-right, closeable) ---- */
-  .agent-overlay {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9000;
-    width: 400px;
-    max-height: 600px;
-    display: flex;
-    flex-direction: column;
-    border-radius: 20px;
-    background: var(--bg-dark);
-    border: 1px solid rgba(255,241,0,0.15);
-    box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-    transform: translateY(0);
-    opacity: 1;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    overflow: hidden;
-  }
-  .agent-overlay.collapsed {
-    transform: translateY(20px);
-    opacity: 0;
-    pointer-events: none;
-    height: 0;
-    max-height: 0;
-    overflow: hidden;
-  }
-
-  .agent-widget-fab {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9001;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--yellow);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(255,241,0,0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .agent-widget-fab:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 28px rgba(255,241,0,0.45);
-  }
-  .agent-widget-fab.hidden { display: none; }
-  .agent-widget-fab svg {
-    width: 28px;
-    height: 28px;
-    stroke: #0D1117;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-  }
-
-  .agent-overlay-inner {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-height: 600px;
-  }
-
-  .agent-widget-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
-  }
-  .agent-widget-header .widget-title {
-    font-family: var(--font);
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--yellow);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .agent-widget-header .widget-title img {
-    height: 22px;
-    filter: brightness(0) saturate(100%) invert(90%) sepia(80%) saturate(500%) hue-rotate(5deg);
-  }
-  .agent-widget-close {
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    transition: color 0.2s, background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .agent-widget-close:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.08);
-  }
-  .agent-widget-close svg { width: 18px; height: 18px; }
-
-  .agent-overlay-brand { display: none; }
-
-  .agent-overlay-chat {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    padding: 0;
-  }
-
-  .agent-overlay-chat .agent-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-height: 200px;
-    max-height: 360px;
-  }
-
-  .agent-overlay-chat .agent-body::-webkit-scrollbar { width: 3px; }
-  .agent-overlay-chat .agent-body::-webkit-scrollbar-thumb { background: rgba(255,241,0,0.15); border-radius: 3px; }
-
-  .agent-overlay-chat .agent-input-row {
-    display: flex;
-    gap: 8px;
-    padding: 12px 16px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
-  }
-  .agent-overlay-chat .agent-input-row input {
-    flex: 1;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 10px 14px;
-    color: #fff;
-    font-size: 14px;
-    font-family: var(--font);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .agent-overlay-chat .agent-input-row input::placeholder { color: rgba(255,255,255,0.25); }
-  .agent-overlay-chat .agent-input-row input:focus {
-    border-color: rgba(255,241,0,0.3);
-  }
-
-  .agent-overlay-chat .agent-msg {
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text-dark);
-    padding: 10px 14px;
-    border-radius: 14px 14px 14px 4px;
-    background: var(--bg-card-dark);
-    max-width: 92%;
-    animation: msgFadeIn 0.4s ease-out;
-  }
-  .agent-overlay-chat .agent-msg.user {
-    align-self: flex-end;
-    background: rgba(255,241,0,0.12);
-    color: #fff;
-    border-radius: 14px 14px 4px 14px;
-  }
-  .agent-overlay-chat .agent-suggestions button {
-    background: rgba(255,241,0,0.08);
-    border: 1px solid rgba(255,241,0,0.15);
-    color: var(--yellow);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-family: var(--font);
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .agent-overlay-chat .agent-suggestions button:hover { background: rgba(255,241,0,0.15); }
-
-  .agent-controls-row {
-    display: flex;
-    gap: 8px;
-    padding: 6px 16px 4px;
-    flex-shrink: 0;
-  }
-  .agent-controls-row button {
-    font-size: 12px;
-    padding: 5px 12px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: transparent;
-    color: rgba(255,255,255,0.4);
-    font-family: var(--font);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.2s;
-  }
-  .agent-controls-row button.active { color: var(--yellow); border-color: rgba(255,241,0,0.2); }
-  .agent-controls-row button svg { width: 14px; height: 14px; }
-
-  .voice-hint {
-    font-size: 11px;
-    color: rgba(255,241,0,0.35);
-    text-align: center;
-    padding: 0 16px 10px;
-    font-style: italic;
-  }
-
-  .agent-begin-gate {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 20px;
-    text-align: center;
-    gap: 16px;
-  }
-  .agent-begin-gate p {
-    font-size: 14px;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.6;
-    max-width: 300px;
-  }
-  .agent-begin-btn {
-    background: var(--yellow);
-    color: #0D1117;
-    border: none;
-    padding: 12px 36px;
-    border-radius: 28px;
-    font-family: var(--font);
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .agent-begin-btn:hover { transform: scale(1.04); box-shadow: 0 4px 20px rgba(255,241,0,0.3); }
-
-  @media (max-width: 500px) {
-    .agent-overlay {
-      bottom: 0;
-      right: 0;
-      left: 0;
-      width: 100%;
-      max-height: 85vh;
-      border-radius: 20px 20px 0 0;
-    }
-    .agent-widget-fab { bottom: 16px; right: 16px; }
-  }
-
-    .agent-msg {
-    padding: 10px 14px; border-radius: 12px; font-size: 13.5px;
-    line-height: 1.65; max-width: 92%; animation: msgIn 0.25s ease;
-  }
-  @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-  .agent-msg.bot {
-    background: rgba(255,241,0,0.08); color: #FFFDF5;
-    border: 1px solid rgba(255,241,0,0.12); align-self: flex-start;
-  }
-  .agent-msg.user {
-    background: rgba(255,255,255,0.08); color: #FFFDF5;
-    align-self: flex-end; border: 1px solid rgba(255,255,255,0.1);
-  }
-  .agent-msg.system {
-    background: transparent; color: rgba(255,255,255,0.5);
-    font-size: 12px; text-align: center; align-self: center; padding: 4px 10px;
-  }
-  .agent-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-  .agent-suggestions button {
-    background: rgba(255,241,0,0.1); border: 1px solid rgba(255,241,0,0.25);
-    color: #FFF100; font-size: 12px; padding: 6px 12px; border-radius: 20px;
-    cursor: pointer; transition: background 0.2s, transform 0.15s;
-  }
-  .agent-suggestions button:hover { background: rgba(255,241,0,0.2); transform: scale(1.03); }
-  .agent-suggestions button:focus { outline: 2px solid #FFF100; outline-offset: 2px; background: rgba(255,241,0,0.2); }
-  .agent-suggestions button:focus-visible { outline: 3px solid #FFF100; outline-offset: 2px; box-shadow: 0 0 0 5px rgba(255,241,0,0.3); }
-  body.a11y-high-contrast .agent-suggestions button { border: 2px solid #FFF100 !important; color: #FFF100 !important; font-weight: 600; }
-  body.a11y-high-contrast .agent-suggestions button:focus { outline: 3px solid #FFFFFF !important; outline-offset: 3px; background: rgba(255,241,0,0.3) !important; }
-  .agent-input-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 12px 14px; border-top: 1px solid rgba(255,241,0,0.1); flex-shrink: 0;
-  }
-  .agent-input-row input {
-    flex: 1; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1); color: #FFFDF5;
-    padding: 10px 14px; border-radius: 10px; font-size: 13px;
-    outline: none; transition: border-color 0.2s; font-family: 'Inter', sans-serif;
-  }
-  .agent-input-row input:focus { border-color: rgba(255,241,0,0.4); }
-  .agent-input-row input::placeholder { color: rgba(255,255,255,0.3); }
-  .agent-send-btn, .agent-mic-btn {
-    background: none; border: none; color: rgba(255,241,0,0.6);
-    cursor: pointer; padding: 6px; border-radius: 8px;
-    transition: color 0.2s, background 0.2s; flex-shrink: 0;
-  }
-  .agent-send-btn:hover, .agent-mic-btn:hover { color: #FFF100; background: rgba(255,241,0,0.1); }
-  .agent-mic-btn.listening { color: #ff4444; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-  .agent-mic-btn { padding: 8px; color: rgba(255,241,0,0.8); animation: mic-glow 2s ease-in-out 3; }
-  .agent-mic-btn svg { width: 22px; height: 22px; }
-  @keyframes mic-glow { 0%,100%{color:rgba(255,241,0,0.8)} 50%{color:#FFF100;filter:drop-shadow(0 0 6px rgba(255,241,0,0.4))} }
-  .voice-hint { text-align:center; font-size:12px; color:rgba(255,241,0,0.45); padding:4px 0 8px; font-style:italic; animation:fadeIn 1s ease-in 1.5s both; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  .agent-transcript { font-size: 11px; color: rgba(255,241,0,0.6); padding: 2px 6px; font-style: italic; }
-  .persona-banner {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(255,241,0,0.12); border: 1px solid rgba(255,241,0,0.3);
-    border-radius: 10px; padding: 10px 14px; margin-bottom: 4px;
-  }
-  .persona-icon { font-size: 20px; }
-  .persona-text { font-size: 12.5px; color: #FFFDF5; flex: 1; }
-  .exit-persona {
-    background: rgba(255,255,255,0.1); border: none; color: #FFFDF5;
-    font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
-  }
-  .exit-persona:hover { background: rgba(255,255,255,0.2); }
-  .step-label {
-    display: inline-block; background: rgba(255,241,0,0.15); color: #FFF100;
-    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px;
-  }
-  @media (max-width: 768px) {
-    .nav-agent-fab { bottom: 16px; left: 16px; width: 48px; height: 48px; }
-    .nav-agent { bottom: 76px; left: 12px; right: 12px; width: auto; }
-    .agent-nudge { display: none; }
+  /* Make agent panel slightly larger for guided mode */
+  .agent-panel.open {
+    max-height: 70vh;
   }
 </style>
 </head>
@@ -1879,7 +1546,7 @@
   </div>
 </nav>
 <div class="a11y-reading-guide" id="a11y-reading-guide"></div>
-<div id="a11y-live-region" class="sr-only" role="status" aria-live="assertive" aria-atomic="true"></div>
+<div id="a11y-live-region" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <div class="shortcut-overlay" id="shortcut-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
   <div class="shortcut-modal">
@@ -1910,75 +1577,14 @@
 
 <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
-<!-- ===== AGENT-FIRST OVERLAY ===== -->
-<!-- Iris FAB (floating action button) -->
-<button id="irisFab" class="agent-widget-fab" aria-label="Talk to Iris" title="Talk to Iris">
-  <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-</button>
-
-<!-- Iris Chat Widget -->
-<div id="agentOverlay" class="agent-overlay collapsed" role="complementary" aria-label="Iris — CNIB Pilot Navigator">
-  <div class="agent-overlay-inner">
-    <div class="agent-widget-header">
-      <div class="widget-title">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        Iris
-      </div>
-      <button id="widgetClose" class="agent-widget-close" aria-label="Close Iris">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="agent-overlay-chat">
-      <div id="overlayBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation">
-        <div id="beginGate" class="agent-begin-gate">
-          <p>Meet Iris — an AI navigator built to show what personalized member engagement could look like for CNIB.</p>
-          <button id="beginBtn" class="agent-begin-btn">Start a conversation</button>
-        </div>
-      </div>
-
-      <div id="a11yPanel" class="a11y-panel">
-        <div class="a11y-panel-inner">
-          <button class="a11y-toggle" data-a11y="large-text" aria-pressed="false">Larger text</button>
-          <button class="a11y-toggle" data-a11y="high-contrast" aria-pressed="false">High contrast</button>
-          <button class="a11y-toggle" data-a11y="dyslexia" aria-pressed="false">Dyslexia font</button>
-          <button class="a11y-toggle" data-a11y="screen-reader" aria-pressed="false">Screen reader mode</button>
-        </div>
-      </div>
-
-      <div class="agent-controls-row">
-        <button id="overlayVoiceToggle" class="active" aria-label="Voice on" aria-pressed="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
-          Voice
-          <div id="irisWaveform" class="iris-waveform"><span></span><span></span><span></span><span></span><span></span></div>
-        </button>
-        <button id="a11yPanelToggle" aria-label="Accessibility settings" aria-pressed="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.5"/><path d="M12 7v6m-5-3.5L12 13l5-3.5M7 21l2.5-8M17 21l-2.5-8"/></svg>
-          Accessibility
-        </button>
-      </div>
-
-      <div class="agent-input-row">
-        <button id="overlayMic" class="agent-mic-btn" aria-label="Voice input" title="Speak to Iris">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-        </button>
-        <input id="overlayInput" type="text" placeholder="Ask Iris anything..." aria-label="Ask Iris a question" autocomplete="off">
-        <button id="overlaySend" class="agent-send-btn" aria-label="Send">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-      <div id="voiceHint" class="voice-hint" aria-live="polite">You can also tap the microphone and talk to Iris</div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== COVER ===== -->
+<!-- ===== YELLOW COVER ===== -->
 <header role="banner">
 <div class="cover" id="cover">
   <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg"
        alt="CNIB - Canadian National Institute for the Blind" class="cover-logo"
        onerror="this.outerHTML='<div style=&quot;font-family:Lilita One,sans-serif;font-size:54px;color:#0F0F0F;margin-bottom:48px;&quot;>CNIB</div>';">
   <h1 class="cover-title">The Missing <span class="cover-accent">99%</span></h1>
-  <div class="cover-subtitle">1.5 million Canadians live with sight loss. Fewer than 13,000 are connected to CNIB. This pilot asks why — and tests what to do about it.</div>
+  <div class="cover-subtitle">A 90-day project sprint to diagnose why CNIB reaches less than 1% of more than 1.5 million Canadians with sight loss, and begin closing the gap.</div>
 </div>
 </header>
 <div class="cover-fade"></div>
@@ -1992,8 +1598,8 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     The Gap
   </div>
-  <h2 id="heading-opportunity">The gap between who CNIB could reach and who it actually reaches is enormous. No one has systematically asked why.</h2>
-  <p class="sub">CNIB's strategic plan, annual reports, and EY-audited financials all confirm the same picture: approximately 12,200 people served out of 1.5 million who could benefit. "The Way Forward" names this as a priority. What it does not yet contain is a detailed account of where and why people fall out of the system between first awareness and sustained engagement. This pilot is designed to find out.</p>
+  <h2 id="heading-opportunity">The reach problem is well documented. The causes are not.</h2>
+  <p class="sub">CNIB's strategic plan, annual reports, and EY-audited financials all confirm the same picture: approximately 12,200 people served out of 1.5 million who could benefit. "The Way Forward" names this as a priority. What it does not yet contain is a detailed account of where and why people fall out of the system between first awareness and sustained engagement. That is the work this project sprint is designed to do.</p>
 
   <!-- Donut Chart + Peer Comparison -->
   <div class="donut-wrap" aria-label="Chart showing 0.82 percent of Canadians with sight loss are reached by CNIB. No blindness organization globally has exceeded single-digit reach.">
@@ -2040,7 +1646,7 @@
     </div>
   </div>
 
-  <div class="stats three">
+  <div class="stats four">
     <div class="stat" aria-label="1.5 million Canadians with Sight Loss">
       <div class="stat-num yellow" data-count="1.5" data-suffix="M" aria-hidden="true">0</div>
       <div class="stat-label">Canadians with Sight Loss</div>
@@ -2053,7 +1659,10 @@
       <div class="stat-num yellow" data-count="0.82" data-suffix="%" aria-hidden="true">0</div>
       <div class="stat-label">Reach Today</div>
     </div>
-        </div>
+    <div class="stat" aria-label="$5,072 Cost per Person Served">
+      <div class="stat-num" data-prefix="$" data-count="5072" data-comma="true" aria-hidden="true">0</div>
+      <div class="stat-label">Cost per Person Served</div>
+    </div>
   </div>
   <p class="source">Sources: CNIB "The Way Forward" Strategic Plan 2023–2028; EY-Audited Non-Consolidated Financial Statements, FY2025 (year ended March 31, 2025). Reach rate calculated against 1.5M addressable market per "The Way Forward." Cost per person: $62M program spend ÷ 12,227 served. Note: some CNIB publications cite 2.2M Canadians with sight loss using a broader definition. Under that figure, reach drops to approximately 0.56%.</p>
 </div>
@@ -2063,31 +1672,34 @@
 <div class="yellow-strip"></div>
 <div class="section-divider fade-dark-to-light"></div>
 
-<!-- ===== THREE QUESTIONS (LIGHT) ===== -->
+<!-- ===== INITIAL HYPOTHESES (LIGHT) ===== -->
 <div class="mode-light">
 <div class="section" id="priorities" role="region" aria-labelledby="heading-priorities">
 <div class="wrap">
   <div class="label">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-    The Pilot
+    Initial Hypotheses
   </div>
-  <h2 id="heading-priorities">This project exists to answer three questions.</h2>
-  <p class="sub">Before committing to a production build, CNIB needs evidence. This pilot is a rapid test-and-learn sprint designed to answer three foundational questions — then build confidence in what works before scaling it.</p>
+  <h2 id="heading-priorities">Three places I believe the system is breaking down.</h2>
+  <p class="sub">I created two programs at CNIB (the Venture Studio and the Know Your Rights podcast) and I am a member who lives with sight loss. Through that work, I watched how members move through the organization, where they get stuck, and where they quietly disappear. These hypotheses come from that firsthand exposure. They are starting points, not conclusions. The sprint is designed to validate or disprove each one.</p>
+  <p class="sub" style="margin-top: 12px;">To be clear: this is an evaluation of the system-wide member journey, not of any individual program. My direct experience is concentrated in the entrepreneurship and advocacy segments. The discovery phase will include populations I have not worked with directly, including seniors, families, children, and deafblind members.</p>
+
+  <p class="sub" style="margin-top: 12px;">These three hypotheses map directly to the priorities you outlined in our conversation: <strong style="color: var(--heading-light);">discovery</strong> is the acquisition layer behind the rebrand, <strong style="color: var(--heading-light);">retention</strong> is the engagement model reimagined, and <strong style="color: var(--heading-light);">scale</strong> is the AI and technology question. This sprint treats them as one connected system, not three separate initiatives.</p>
 
   <div class="flow">
     <div class="flow-node">
       <div class="flow-circle">1</div>
-      <div class="flow-label">Aware</div>
+      <div class="flow-label">Find</div>
     </div>
     <div class="flow-arrow"></div>
     <div class="flow-node">
       <div class="flow-circle">2</div>
-      <div class="flow-label">Informed</div>
+      <div class="flow-label">Stay</div>
     </div>
     <div class="flow-arrow"></div>
     <div class="flow-node">
       <div class="flow-circle">3</div>
-      <div class="flow-label">Connected</div>
+      <div class="flow-label">Scale</div>
     </div>
   </div>
 
@@ -2095,48 +1707,49 @@
     <div class="hypothesis">
       <div class="hyp-num">01</div>
       <div>
-        <div class="hyp-tag">Awareness</div>
-        <div class="hyp-title">Do people with sight loss know CNIB exists?</div>
-        <div class="hyp-body">The vast majority of newly diagnosed Canadians never hear about CNIB from their ophthalmologist, and when they search on their own, CNIB’s digital presence does not meet them where they are. There is no structured referral protocol with eye care providers, no post-diagnosis digital intake pathway, and no mechanism to even measure how many people fall through this gap. A rebrand will help — but only if there is an acquisition system behind it to capture the demand it creates.</div>
+        <div class="hyp-tag">Discovery</div>
+        <div class="hyp-title">CNIB has no systematic way to reach people at the moment of diagnosis.</div>
+        <div class="hyp-body">The 12,300 people CNIB serves today are largely self-selecting: they already identify with the sight loss community. But the vast majority of newly diagnosed Canadians never hear about CNIB from their ophthalmologist, and when they search on their own, CNIB's digital presence does not meet them where they are. There is no structured referral protocol with eye care providers, no post-diagnosis digital intake pathway, and no mechanism to even measure how many people fall through this gap. The rebrand will help, but only if there is an acquisition system behind it to capture the demand it creates.</div>
       </div>
     </div>
     <div class="hypothesis">
       <div class="hyp-num">02</div>
       <div>
-        <div class="hyp-tag">Program Knowledge</div>
-        <div class="hyp-title">Do current members know about all the programs available to them?</div>
-        <div class="hyp-body">Vision Mate (1,488 participants) and Mentor Match (200+ pairs) work well in isolation. But there is no systematic mechanism connecting a Vision Mate participant to Guide Dogs, employment services, or the tech lending library. Each program operates as its own intake funnel. CNIB Connects, a previous digital engagement platform designed to address this, has been paused — suggesting the problem has been recognized before but not yet solved. Members repeatedly report discovering CNIB services years after their first engagement, or not at all.</div>
+        <div class="hyp-tag">Retention</div>
+        <div class="hyp-title">People who engage with one program rarely move to another.</div>
+        <div class="hyp-body">Vision Mate (1,488 participants) and Mentor Match (200+ pairs) work well in isolation. But there is no systematic mechanism connecting a Vision Mate participant to Guide Dogs, employment services, or the tech lending library. Each program operates as its own intake funnel. CNIB Connects, a previous digital engagement platform designed to address this, has been paused — suggesting the problem has been recognized before but not yet solved. I have seen this firsthand: in Venture Studio sessions, at Connecting the Dots events, and through conversations during Know Your Rights recordings, members repeatedly told me they had no idea other CNIB services existed. This was not one or two people. It was a pattern. I also know members who quietly stopped engaging altogether. The sprint needs to find out whether that is an isolated experience or a systemic one, and what the actual drop-off numbers look like.</div>
       </div>
     </div>
     <div class="hypothesis">
       <div class="hyp-num">03</div>
       <div>
-        <div class="hyp-tag">Navigation</div>
-        <div class="hyp-title">Can members easily find and connect to the right programs for their specific situation?</div>
-        <div class="hyp-body">Even members who know about CNIB’s programs face friction getting to the right one. Someone newly diagnosed at 45 has radically different needs than a senior losing vision at 78 or a parent of a child born with a visual impairment. The current system treats them largely the same way. Personalized navigation — matching a member’s diagnosis, life stage, and concerns to the right programs at the right time — is the gap between having good programs and having members who actually use them.</div>
+        <div class="hyp-tag">Scale</div>
+        <div class="hyp-title">Foundation revenue is flat while program costs grow. Serving 10x more people requires a different economic model.</div>
+        <div class="hyp-body">CNIB's operating deficit widened from $3.2M to $7.2M in a single year, even with $6.4M in investment income offsetting the gap. Donation and fundraising revenue declined slightly to $33.4M while expenses grew 6.7% to $94M. At $5,072 per person served today, reaching even 5% of the addressable market would cost multiples of the current budget. The Foundation is already relying on investment returns to stay close to breakeven. CNIB has 3,000+ volunteers — latent capacity that represents infrastructure already in place — but activating them effectively requires the same connective tissue the member journey lacks. Technology, AI, and process redesign are not aspirational. They are the only path where the economics actually work.</div>
       </div>
     </div>
   </div>
-
-  <div class="callout"><strong>The peer comparison above tells us something important:</strong> even the highest-performing blindness organizations globally have not cracked past single-digit reach. CNIB’s &lt;1% is low by those standards, but the ceiling that peer organizations have hit suggests closing this gap requires a fundamentally different approach to discovery and engagement — not incremental improvements to the existing model.</div>
-
   <p class="source">Program data: CNIB Foundation Annual Report 2024–2025. Financial data: EY-Audited Non-Consolidated Financial Statements, FY2024 and FY2025.</p>
+
+  <div class="callout"><strong>The peer comparison above tells us something important:</strong> even the highest-performing blindness organizations globally have not cracked past single-digit reach. CNIB's &lt;1% is low by those standards, but the ceiling that peer organizations have hit suggests closing this gap requires a fundamentally different approach to discovery and engagement, not incremental improvements to the existing model.</div>
+
+  <div class="callout" style="border-left-color: var(--yellow); background: rgba(255,241,0,0.04);"><strong>You're already experiencing a prototype.</strong> The AI assistant in the bottom-left corner of this document is a working demonstration of what a member-facing navigator could feel like. Ask it to simulate Maria's journey, navigate you to any section, or explain the data behind these hypotheses. It is not a mockup — it is functional AI, built in days, showing what becomes possible when technology meets member engagement.</div>
 </div>
 </div>
 </div>
 
 <div class="section-divider fade-light-to-dark"></div>
 
-<!-- ===== THE PILOT STRUCTURE (DARK) ===== -->
+<!-- ===== THE APPROACH (DARK) ===== -->
 <div class="mode-dark">
 <div class="section" id="approach" role="region" aria-labelledby="heading-approach">
 <div class="wrap">
   <div class="label">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-    How It Works
+    The Project Sprint
   </div>
-  <h2 id="heading-approach">Three months. Test multiple approaches. Build what works.</h2>
-  <p class="sub">This is not a strategy engagement that produces a report. It is a rapid pilot: test different methods to reach different CNIB member demographics, learn which approach works best for which audience, then build confidence to productionize. The point is to de-risk the direction before committing to a production build.</p>
+  <h2 id="heading-approach">90 days embedded with your team to validate these hypotheses and fix what we can.</h2>
+  <p class="sub">This is not an advisory engagement that produces recommendations for someone else to implement. It is a project sprint: I work inside the building with your program leads and frontline staff, with access to program data and member records, and the output is both answers and working improvements. Three phases:</p>
 
   <!-- Timeline Visualization -->
   <div class="timeline">
@@ -2144,44 +1757,60 @@
       <div class="timeline-dot">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
-      <div class="timeline-week">Month 1</div>
-      <div class="timeline-name">Define + Build</div>
-      <div class="timeline-desc">Define the strategy, the problems being solved, and who is being targeted. Build two prototypes designed to achieve two distinct outcomes — testing different methods (e.g., an AI navigator vs. a voice/phone approach) to reach different member demographics. The point is to test, not to pick a winner yet.</div>
+      <div class="timeline-week">Weeks 1–4</div>
+      <div class="timeline-name">Discovery</div>
+      <div class="timeline-desc">Structured interviews with ELT, program leads, frontline staff, and community members. Mapping the member journey and documenting what has already been tried.</div>
     </div>
     <div class="timeline-phase">
       <div class="timeline-dot">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
       </div>
-      <div class="timeline-week">Months 2–3</div>
-      <div class="timeline-name">Test + Learn</div>
-      <div class="timeline-desc">Run both prototypes with real members. Measure what works, what doesn’t, and why. Refine based on evidence. The output is not a recommendation deck — it is working prototypes with real performance data and a clear picture of what to build next.</div>
+      <div class="timeline-week">Weeks 5–9</div>
+      <div class="timeline-name">Implementation</div>
+      <div class="timeline-desc">ELT sponsor decides what gets built. I implement one to two high-impact pilots based on discovery findings.</div>
+    </div>
+    <div class="timeline-phase">
+      <div class="timeline-dot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="timeline-week">Weeks 10–12</div>
+      <div class="timeline-name">Measurement</div>
+      <div class="timeline-desc">Formal ELT presentation: findings, pilot outcomes, and a prioritized 12-month roadmap.</div>
     </div>
   </div>
 
-  <h2 style="margin-top: 48px; font-size: clamp(20px, 2.5vw, 26px); color: var(--yellow);">What success looks like at the end</h2>
-  <p class="sub" style="margin-bottom: 16px;">Three questions answered with evidence that did not exist before.</p>
+  <div style="margin-top: 28px; padding: 20px 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; font-size: 13px; color: var(--dim-dark); line-height: 1.7;"><strong style="color: var(--text-dark);">Assumptions and risks:</strong> This sprint assumes access to program-level data and CRM systems, direct access to frontline staff and community members for interviews, and a designated ELT sponsor with authority to approve pilot implementations. If the data infrastructure is less mature than expected, I will flag it by week 3 with a revised timeline for ELT approval before discovery extends. If the hypotheses above prove wrong, the sprint pivots to what the evidence actually shows. If the core bottleneck turns out to be external to CNIB (e.g., physician referral behavior), the roadmap will address what CNIB can control and clearly name what it cannot. The 12-month roadmap will align to the existing pillars in "The Way Forward" (2023–2028).</div>
+
+  <div style="margin-top: 48px; padding: 20px 24px; background: rgba(255,241,0,0.06); border: 1px solid rgba(255,241,0,0.15); border-radius: 8px;">
+    <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--yellow); margin-bottom: 8px;">Investment</div>
+    <div style="font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 4px;">$60,000</div>
+    <div style="font-size: 14px; color: var(--text-dark); line-height: 1.7;">Full 90-day engagement, paid monthly ($20,000 × 3 months). Inclusive of all three deliverables, stakeholder interviews, pilot implementation, and final ELT presentation. No additional fees.</div>
+  </div>
+
+  <h2 style="margin-top: 48px; font-size: clamp(20px, 2.5vw, 26px); color: var(--yellow);">What success looks like at Day 90</h2>
+  <p class="sub" style="margin-bottom: 16px;">Three questions answered with data that did not exist before.</p>
 
   <div class="metric-cards">
     <div class="metric-card">
       <div class="metric-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </div>
-      <h3>Which approach reaches more people?</h3>
-      <p>Comparative data on two tested methods — which one moved the needle, for which audience, and by how much.</p>
+      <h3>Where are people dropping off?</h3>
+      <p>Quantified member journey with drop-off rates at every transition point.</p>
     </div>
     <div class="metric-card">
       <div class="metric-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <h3>Do members engage differently when navigated?</h3>
-      <p>Before-and-after data on whether personalized navigation changes member behavior — program discovery, cross-enrollment, retention.</p>
+      <h3>Does at least one pilot measurably improve a metric?</h3>
+      <p>ELT sponsor and I agree on the metric and target before the pilot begins.</p>
     </div>
     <div class="metric-card">
       <div class="metric-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
       </div>
-      <h3>Is there a path to scale?</h3>
-      <p>An evidence-based assessment of what to productionize, what to drop, and what the economics look like at 10x reach.</p>
+      <h3>Can we project 12-month reach?</h3>
+      <p>Evidence-based projection if roadmap recommendations are implemented. If no, the report will say so.</p>
     </div>
   </div>
 </div>
@@ -2190,42 +1819,130 @@
 
 <div class="section-divider fade-dark-to-light"></div>
 
-<!-- ===== TWO PROTOTYPES (LIGHT) ===== -->
+<!-- ===== DELIVERABLES (LIGHT) ===== -->
 <div class="mode-light">
 <div class="section" id="deliverables" role="region" aria-labelledby="heading-deliverables">
 <div class="wrap">
   <div class="label">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    What Gets Built
+    Engagement Deliverables
   </div>
-  <h2 id="heading-deliverables">Two prototypes. Different methods. Same goal: reach more members.</h2>
-  <p class="sub">Month 1 produces two working prototypes designed to test fundamentally different approaches to member engagement. The point is not to pick a winner in advance — it is to pressure-test each method against real member behavior and let the data decide.</p>
+  <h2 id="heading-deliverables">Three outputs designed for immediate ELT action.</h2>
 
   <div class="deliverable-list">
     <div class="deliverable-banner">
       <div class="deliv-num">1</div>
       <div>
-        <div class="deliv-title">AI Navigator (Iris)</div>
-        <div class="deliv-desc">A personalized, conversational AI that guides members to the right programs based on their diagnosis, life stage, and concerns. Think of it as a smart concierge for the CNIB ecosystem — one that knows every program, understands the member’s context, and can answer questions in real time. Designed for members who are digitally comfortable and want to self-serve. This is not a chatbot. It is an agentic tool that adapts to who it’s talking to.</div>
+        <div class="deliv-title">Complete member journey map</div>
+        <div class="deliv-desc">A documented end-to-end view of the member experience from first contact through sustained engagement, identifying entry points, drop-off stages, and gaps between programs. Built from program data, stakeholder interviews, and member input.</div>
       </div>
-      <div class="deliv-format">Working prototype</div>
+      <div class="deliv-format">Visual map + data appendix</div>
     </div>
     <div class="deliverable-banner">
       <div class="deliv-num">2</div>
       <div>
-        <div class="deliv-title">Voice Navigator (Phone-Based AI)</div>
-        <div class="deliv-desc">A voice-first AI agent that members can call or that calls them — matched to their specific condition and situation. Modeled on what companies like Hippocratic AI have proven at scale in healthcare: personalized, empathetic outreach via phone that reaches people who would never open an app. Designed for seniors, people with limited tech access, and newly diagnosed individuals who need a human-feeling guide, not a screen. A different demographic, a different method — tested head to head.</div>
+        <div class="deliv-title">Implemented pilots with measured outcomes</div>
+        <div class="deliv-desc">One to two targeted improvements deployed during the engagement, with baseline and post-implementation metrics. Examples: a simpler intake pathway for newly diagnosed individuals, or an automated cross-program referral mechanism.</div>
       </div>
-      <div class="deliv-format">Working prototype</div>
+      <div class="deliv-format">Working system + before/after data</div>
+    </div>
+    <div class="deliverable-banner">
+      <div class="deliv-num">3</div>
+      <div>
+        <div class="deliv-title">Prioritized 12-month roadmap</div>
+        <div class="deliv-desc">Organized by impact and feasibility, with specific recommendations on investment priorities, programs to scale, processes to redesign, and an evidence-based assessment of whether the findings warrant a sustained internal function or continued external engagement.</div>
+      </div>
+      <div class="deliv-format">ELT presentation + executive summary</div>
     </div>
   </div>
-
-  <div class="callout" style="border-left-color: var(--yellow); background: rgba(255,241,0,0.04);"><strong>Iris is already live.</strong> The AI assistant on this page is a working demonstration of what Prototype 1 could feel like for members. It is not a mockup — it is functional AI, built in days, showing what becomes possible when technology meets member engagement. Ask it anything about CNIB, this pilot, or the data behind these findings.</div>
 </div>
 </div>
 </div>
 
 <div class="section-divider fade-light-to-dark"></div>
+
+<!-- ===== WHO I AM & WHY (DARK) ===== -->
+<div class="mode-dark">
+<div class="section" id="builder" role="region" aria-labelledby="heading-builder">
+<div class="wrap">
+  <div class="label">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Who I Am & Why
+  </div>
+  <h2 id="heading-builder">I don't need a ramp-up period. I'm already inside the organization.</h2>
+
+  <div class="builder-header">
+    <div class="avatar">JC</div>
+    <div>
+      <div class="builder-name">Jacob Charendoff</div>
+      <div class="builder-sub">Active CNIB Member & Program Creator · Bilingual (EN/FR)</div>
+    </div>
+  </div>
+
+  <!-- Block 1: Personal Connection -->
+  <div class="builder-block">
+    <div class="builder-block-label">Why This Is Personal</div>
+    <p>I live with vision loss and I am an active CNIB member. I know the organizational culture, the program landscape, and many of the people involved because I work inside the organization today. I have also personally navigated the barriers these programs address, including filing a human rights complaint with the Ontario Human Rights Commission when the CFA Institute denied me an accommodation for my sight loss. This is not an abstract policy area for me.</p>
+  </div>
+
+  <!-- Block 2: CNIB Programs -->
+  <div class="builder-block">
+    <div class="builder-block-label">Programs I Built at CNIB</div>
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 6px;">Venture Studio</div>
+      <div style="font-size: 14.5px; color: var(--text-dark); line-height: 1.75;">An entrepreneurship accelerator for CNIB members with sight loss. I designed the program structure, pitched it internally, and built it from the ground up. Originally scoped at 12 sessions, it was extended to 20 based on participant demand. The program launched October 2025 and runs through May 2026. Running it showed me the operational gaps up close: getting participants the information they needed between sessions was harder than it should have been, and there was no system to connect Venture Studio members to other CNIB services that could help them, like employment resources or the tech lending library.</div>
+    </div>
+    <div>
+      <div style="font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 6px;">Know Your Rights Podcast</div>
+      <div style="font-size: 14.5px; color: var(--text-dark); line-height: 1.75;">A 9-episode series on the CNIB Podcast Network that I co-created and hosted. Each episode covers a different area where Canadians with sight loss face discrimination: healthcare, employment, housing, transportation, the built environment. Every episode carries Law Society of Ontario Accredited EDI Professionalism credit, and the series was covered by LawNow Magazine. After the final episode, there was no mechanism to follow up with listeners or connect them to relevant CNIB services. The content existed in isolation. That experience is part of why I believe the connective tissue between programs is the central problem.</div>
+    </div>
+  </div>
+
+  <!-- Block 3: Professional Track Record -->
+  <div class="builder-block">
+    <div class="builder-block-label">Professional Track Record</div>
+    <p style="margin-bottom: 16px;">I have spent my career diagnosing where systems leak and building the infrastructure to fix them. The core competency is always the same: find where the journey breaks, build the connective tissue, and prove it works with data.</p>
+    <div class="track-record">
+      <div class="track-item">
+        <div class="track-item-company">Verifast · B2B SaaS</div>
+        <div class="track-item-role">Head of Revenue</div>
+        <div class="track-item-stats">
+          <div class="track-stat-row"><span class="metric">Handoff time</span><span class="value">48h → 12h</span></div>
+          <div class="track-stat-row"><span class="metric">Pipeline completeness</span><span class="value">55% → 91%</span></div>
+          <div class="track-stat-row"><span class="metric">ARR</span><span class="value">$36M</span></div>
+        </div>
+      </div>
+      <div class="track-item">
+        <div class="track-item-company">The Rig Doctor · D2C</div>
+        <div class="track-item-role">Co-Founder & Operator</div>
+        <div class="track-item-stats">
+          <div class="track-stat-row"><span class="metric">AOV growth</span><span class="value">200%</span></div>
+          <div class="track-stat-row"><span class="metric">Revenue built</span><span class="value">$3.5M</span></div>
+          <div class="track-stat-row"><span class="metric">Exit multiple</span><span class="value">4x EBITDA</span></div>
+        </div>
+      </div>
+      <div class="track-item">
+        <div class="track-item-company">Berman Family Office</div>
+        <div class="track-item-role">VP Revenue & Growth</div>
+        <div class="track-item-stats">
+          <div class="track-stat-row"><span class="metric">Annual revenue</span><span class="value">$22.5M</span></div>
+          <div class="track-stat-row"><span class="metric">Combined exits</span><span class="value">$28M+</span></div>
+          <div class="track-stat-row"><span class="metric">Companies scaled</span><span class="value">2</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 4: Engagement Model -->
+  <div class="builder-block">
+    <div class="builder-block-label">How This Engagement Works</div>
+    <p>This is a solo engagement with my full-time attention. I do the interviews, the analysis, and the implementation work directly. If the sprint surfaces a need for specialized resources (data engineering, CRM configuration), I will flag that to your team by end of week 2 with a specific scope and rationale. The 90-day sprint is self-contained. What happens after it depends entirely on what the evidence shows and whether the ELT decides the roadmap warrants continued investment.</p>
+  </div>
+
+  <p style="margin-top: 16px; font-size: 13px; color: var(--dim-dark); line-height: 1.7; font-style: italic; max-width: 620px;">Note: The Venture Studio and Know Your Rights are not the subject of this sprint. They are evidence that I know how to build inside this organization. The sprint evaluates the system-wide member journey, not any individual program. If the discovery phase surfaces issues related to programs I created, I will flag them to the ELT sponsor transparently and defer evaluation of those specific programs to an independent party if the ELT prefers.</p>
+</div>
+</div>
+</div>
 
 <div class="section-divider fade-dark-to-yellow"></div>
 </main>
@@ -2233,47 +1950,18 @@
 <!-- ===== YELLOW CTA FOOTER ===== -->
 <footer role="contentinfo">
 <div class="footer" id="next">
-  <div class="footer-headline">Ready to explore this?</div>
-  <div class="footer-sub">This pilot is designed to move fast and learn faster. The next step is a conversation about scope, timing, and which member populations to test first.</div>
+  <div class="footer-headline">Next Step</div>
+  <div class="footer-sub">I would like to schedule a working session with you to walk through these hypotheses, discuss scope, and determine whether this sprint is the right fit for CNIB right now.</div>
   <div class="footer-contact-block">
+    <div class="footer-name">Jacob Charendoff</div>
     <div class="footer-details">
-      <a href="mailto:jacobcharendoff@gmail.com">jacobcharendoff@gmail.com</a><br>
+      Active CNIB Member & Program Creator · Bilingual (EN/FR)<br>
+      <a href="mailto:jacobcharendoff@gmail.com">jacobcharendoff@gmail.com</a> · (647) 680-2324<br>
       Prepared for Angela Bonfanti, President & CEO, CNIB Foundation · April 2026
     </div>
   </div>
 </div>
 </footer>
-
-<!-- ===== AI NAVIGATOR ===== -->
-<div id="agentFab" class="nav-agent-fab" role="button" aria-label="Open AI navigator" aria-expanded="false" tabindex="0">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="28" height="28"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-  <span id="agentNudge" class="agent-nudge">Hi Angela — I can guide you through this</span>
-</div>
-
-<div id="agentPanel" class="nav-agent agent-panel" role="dialog" aria-label="CNIB Member Navigator" aria-modal="false">
-  <div class="agent-header">
-    <div class="agent-header-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span>Member Navigator</span>
-    </div>
-    <div class="agent-header-actions">
-      <button id="agentVoiceToggle" aria-label="Voice responses off" aria-pressed="false" title="Toggle voice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
-      </button>
-    </div>
-  </div>
-  <div id="agentBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation"></div>
-  <div class="agent-input-row">
-    <button id="agentMic" class="agent-mic-btn" aria-label="Voice input" title="Speak">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-    </button>
-    <div id="agentTranscript" class="agent-transcript" style="display:none"></div>
-    <input id="agentInput" type="text" placeholder="Ask me anything about this proposal..." aria-label="Ask a question" autocomplete="off">
-    <button id="agentSend" class="agent-send-btn" aria-label="Send">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
-  </div>
-</div>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -2294,7 +1982,18 @@ gsap.to('#progress', {
 });
 
 // ---- Cover entrance ----
-// Cover elements visible by default (no GSAP animation — avoids background-tab throttling issues)
+gsap.to('.cover', {
+  opacity: 1,
+  duration: 0.6,
+  delay: 0.1,
+  ease: 'power2.out'
+});
+
+const coverTl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.15 });
+coverTl
+  .from('.cover-logo', { scale: 1.15, opacity: 0, duration: 1.2, ease: 'power3.out' })
+  .from('.cover-title', { y: 30, opacity: 0, duration: 0.9 }, '-=0.5')
+  .from('.cover-subtitle', { y: 20, opacity: 0, duration: 0.7 }, '-=0.4');
 
 // ---- Section reveals ----
 gsap.utils.toArray('.section').forEach(section => {
@@ -2442,24 +2141,9 @@ gsap.from('.track-item', {
   scrollTrigger: { trigger: '.track-record', start: 'top 90%', once: true }
 });
 
-// ===== CNIB MEMBER NAVIGATOR =====
+// ===== ACCESSIBILITY TOOLBAR =====
+(function() {  // ===== CNIB MEMBER NAVIGATOR =====
 (function() {
-  // ===== ELEVENLABS TTS CONFIG =====
-  // Drop your ElevenLabs API key here for human-quality voice
-  const ELEVENLABS_CONFIG = {
-    enabled: true,
-    apiKey: '', // Paste your ElevenLabs API key here
-    voiceId: '21m00Tcm4TlvDq8ikWAM', // Rachel — warm, empathetic, professional
-    model: 'eleven_turbo_v2_5', // Fastest streaming model
-    endpoint: 'https://api.elevenlabs.io/v1/text-to-speech/',
-    voiceSettings: {
-      stability: 0.45,
-      similarity_boost: 0.78,
-      style: 0.35,
-      use_speaker_boost: true
-    }
-  };
-
   // ===== ENHANCED KNOWLEDGE BASE WITH COMPREHENSIVE INTELLIGENCE =====
   const KB = {
     proposal: {
@@ -2609,60 +2293,26 @@ gsap.from('.track-item', {
   // ===== STATE =====
   let isOpen = false;
   let hasStartedOnboarding = false;
-  let voiceEnabled = true;
+  let voiceEnabled = false;
   let activePersona = null;
   let userProfile = {
     identity: null,    // 'angela', 'team', 'exploring'
     a11y: [],           // array of applied settings
-    a11yAnswered: false, // whether a11y question has been answered
     priority: null      // 'reach', 'rebrand', 'engagement', 'ai'
   };
   let guidedSectionIndex = 0;
   const guidedSections = ['opportunity', 'priorities', 'approach', 'deliverables', 'builder'];
 
-  // ===== AGENT-FIRST MODE =====
-  let isOverlayMode = false;
-  // document.body.classList.add('agent-mode'); // Disabled: widget mode, not overlay
-
-  // ===== DOM REFS (overlay = primary, panel = post-reveal) =====
-  const overlay = document.getElementById('agentOverlay');
+  // ===== DOM REFS =====
   const fab = document.getElementById('agentFab');
   const panel = document.getElementById('agentPanel');
-  let agentBody = document.getElementById('overlayBody');
-  let input = document.getElementById('overlayInput');
-  let sendBtn = document.getElementById('overlaySend');
-  let voiceToggle = document.getElementById('overlayVoiceToggle');
+  const agentBody = document.getElementById('agentBody');
+  const input = document.getElementById('agentInput');
+  const sendBtn = document.getElementById('agentSend');
+  const voiceToggle = document.getElementById('agentVoiceToggle');
   const nudgeEl = document.getElementById('agentNudge');
-  let micBtn = document.getElementById('overlayMic');
+  const micBtn = document.getElementById('agentMic');
   const transcriptEl = document.getElementById('agentTranscript');
-  const panelBody = document.getElementById('agentBody');
-  const panelInput = document.getElementById('agentInput');
-  const panelSend = document.getElementById('agentSend');
-  const panelVoice = document.getElementById('agentVoiceToggle');
-  const panelMic = document.getElementById('agentMic');
-
-  function revealProposal() {
-    if (!isOverlayMode) return;
-    isOverlayMode = false;
-    panelBody.innerHTML = agentBody.innerHTML;
-    overlay.classList.add('revealing');
-    setTimeout(() => { overlay.classList.add('hidden'); }, 700);
-    document.body.classList.remove('agent-mode');
-    document.body.classList.add('agent-revealed');
-    agentBody = panelBody;
-    input = panelInput;
-    sendBtn = panelSend;
-    voiceToggle = panelVoice;
-    micBtn = panelMic;
-    isOpen = true;
-    fab.classList.add('open');
-    panel.classList.add('open');
-    fab.setAttribute('aria-expanded', 'true');
-    panelInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
-    panelSend.addEventListener('click', send);
-    panelMic.addEventListener('click', () => { toggleListening(); });
-    setTimeout(() => { panelInput.focus(); }, 400);
-  }
 
   // ===== ACCESSIBILITY HELPERS =====
   function toggleFontSize(size) {
@@ -2687,14 +2337,6 @@ gsap.from('.track-item', {
 
   // ===== NAVIGATION ENGINE =====
   function navigateToSection(sectionId) {
-    if (isOverlayMode) {
-      revealProposal();
-      setTimeout(() => {
-        const el = document.getElementById(sectionId);
-        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.classList.add('agent-highlight-section'); setTimeout(() => el.classList.remove('agent-highlight-section'), 2500); }
-      }, 800);
-      return true;
-    }
     const el = document.getElementById(sectionId);
     if (!el) return false;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2713,162 +2355,79 @@ gsap.from('.track-item', {
     return current;
   }
 
-  // ===== VOICE OUTPUT (ElevenLabs + Web Speech Fallback) =====
+  // ===== VOICE OUTPUT (ElevenLabs + Web Speech) =====
   let agentAudio = null;
   let isSpeakingAgent = false;
-  let speechQueue = [];
-  let isSpeechQueueRunning = false;
-  let currentUtterance = null;
   const speakIndicator = document.getElementById('agentSpeakingIndicator');
-  let elevenLabsReady = ELEVENLABS_CONFIG.enabled && ELEVENLABS_CONFIG.apiKey.length > 0;
 
   function showSpeaking(on) {
     isSpeakingAgent = on;
     if (speakIndicator) speakIndicator.classList.toggle('active', on);
-    if (voiceToggle) voiceToggle.classList.toggle('speaking', on);
-    const waveform = document.getElementById('irisWaveform');
-    if (waveform) waveform.classList.toggle('active', on);
-  }
-
-  // Split text into natural sentence chunks for conversational pacing
-  function splitIntoSentences(text) {
-    // Split on sentence boundaries but keep the delimiter
-    const raw = text.match(/[^.!?]+[.!?]+[\s]*/g) || [text];
-    // Merge very short fragments with previous sentence
-    const merged = [];
-    for (const s of raw) {
-      const trimmed = s.trim();
-      if (!trimmed) continue;
-      if (merged.length > 0 && trimmed.split(/\s+/).length < 4) {
-        merged[merged.length - 1] += ' ' + trimmed;
-      } else {
-        merged.push(trimmed);
-      }
-    }
-    return merged.length > 0 ? merged : [text];
   }
 
   function stopAgentSpeaking() {
-    // Clear the sentence queue
-    speechQueue = [];
-    isSpeechQueueRunning = false;
-    currentUtterance = null;
     showSpeaking(false);
-    if (agentAudio) { agentAudio.pause(); agentAudio.currentTime = 0; agentAudio = null; }
+    if (agentAudio) { agentAudio.pause(); agentAudio = null; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
-  }
-
-  // ElevenLabs streaming TTS
-  async function elevenLabsSpeak(text) {
-    const cfg = ELEVENLABS_CONFIG;
-    const resp = await fetch(cfg.endpoint + cfg.voiceId + '?output_format=mp3_44100_128', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'xi-api-key': cfg.apiKey
-      },
-      body: JSON.stringify({
-        text: text,
-        model_id: cfg.model,
-        voice_settings: cfg.voiceSettings
-      })
-    });
-    if (!resp.ok) throw new Error('ElevenLabs ' + resp.status);
-    const blob = await resp.blob();
-    return URL.createObjectURL(blob);
-  }
-
-  // Get or cache the best available voice
-  let cachedVoice = null;
-  function getBestVoice() {
-    if (cachedVoice) return cachedVoice;
-    const voices = window.speechSynthesis.getVoices();
-    const preferred = [
-      'Ava (Premium)', 'Ava (Enhanced)', 'Samantha (Enhanced)', 'Samantha (Premium)',
-      'Zoe (Premium)', 'Zoe (Enhanced)', 'Allison (Enhanced)', 'Allison (Premium)',
-      'Google UK English Female', 'Microsoft Aria Online', 'Microsoft Jenny Online',
-      'Samantha', 'Karen', 'Moira', 'Fiona', 'Tessa'
-    ];
-    for (const name of preferred) {
-      cachedVoice = voices.find(v => v.name.includes(name));
-      if (cachedVoice) return cachedVoice;
-    }
-    cachedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.toLowerCase().includes('premium') || v.name.toLowerCase().includes('enhanced')));
-    if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
-    if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en'));
-    return cachedVoice;
-  }
-
-  // Speak a single sentence via Web Speech — returns a Promise
-  function speakSentence(text) {
-    return new Promise((resolve, reject) => {
-      const synth = window.speechSynthesis;
-      if (!synth) { reject('no synth'); return; }
-      const utt = new SpeechSynthesisUtterance(text);
-      currentUtterance = utt;
-      const voice = getBestVoice();
-      if (voice) utt.voice = voice;
-      utt.rate = 0.94;
-      utt.pitch = 1.0;
-      utt.volume = 1;
-      // Chrome bug: long utterances pause. Keep-alive timer.
-      let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
-      utt.onend = () => { clearInterval(keepAlive); currentUtterance = null; resolve(); };
-      utt.onerror = (e) => { clearInterval(keepAlive); currentUtterance = null; if (e.error === 'canceled') resolve(); else reject(e); };
-      synth.speak(utt);
-    });
-  }
-
-  // Process the sentence queue — ChatGPT-like sentence-by-sentence delivery
-  async function processSpeechQueue() {
-    if (isSpeechQueueRunning) return;
-    isSpeechQueueRunning = true;
-    showSpeaking(true);
-
-    while (speechQueue.length > 0) {
-      const sentence = speechQueue.shift();
-      try {
-        await speakSentence(sentence);
-        // Natural micro-pause between sentences (80-150ms, like real speech)
-        if (speechQueue.length > 0) {
-          await new Promise(r => setTimeout(r, 80 + Math.random() * 70));
-        }
-      } catch (e) {
-        console.warn('Speech sentence error:', e);
-        break;
-      }
-    }
-
-    isSpeechQueueRunning = false;
-    showSpeaking(false);
   }
 
   async function speakAgentResponse(text) {
     if (!voiceEnabled) return;
     stopAgentSpeaking();
-    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/\u2022/g, '').replace(/\s+/g, ' ').trim();
+    const plainText = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').replace(/•/g, '').replace(/\s+/g, ' ').trim();
     if (!plainText) return;
+    showSpeaking(true);
 
-    // Try ElevenLabs first (human-quality voice)
-    if (elevenLabsReady) {
+    if (typeof USE_ELEVENLABS !== 'undefined' && USE_ELEVENLABS && typeof ELEVENLABS_API_KEY !== 'undefined') {
       try {
-        showSpeaking(true);
-        const url = await elevenLabsSpeak(plainText);
-        agentAudio = new Audio(url);
-        agentAudio.onended = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
-        agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
-        await agentAudio.play();
-        return;
-      } catch (e) {
-        console.warn('ElevenLabs failed, falling back to Web Speech:', e.message);
-        elevenLabsReady = false;
-      }
+        const resp = await fetch(ELEVENLABS_ENDPOINT + ELEVENLABS_VOICE_ID, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+          body: JSON.stringify({
+            text: plainText,
+            model_id: ELEVENLABS_MODEL,
+            voice_settings: { stability: 0.4, similarity_boost: 0.8, style: 0.5, use_speaker_boost: true }
+          })
+        });
+        if (resp.ok) {
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          agentAudio = new Audio(url);
+          agentAudio.onended = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
+          agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
+          agentAudio.play();
+          return;
+        }
+      } catch (e) { /* fall through to Web Speech */ }
     }
 
-    // Web Speech: sentence-by-sentence for natural conversational pacing
-    const sentences = splitIntoSentences(plainText);
-    speechQueue = sentences;
-    processSpeechQueue();
+    const synth = window.speechSynthesis;
+    if (!synth) { showSpeaking(false); return; }
+    synth.cancel();
+
+    let voice = null;
+    const voices = synth.getVoices();
+    const preferred = ['Google UK English Female', 'Samantha', 'Karen', 'Moira', 'Fiona', 'Victoria'];
+    for (const name of preferred) {
+      voice = voices.find(v => v.name.includes(name));
+      if (voice) break;
+    }
+    if (!voice) voice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+    if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
+
+    const utt = new SpeechSynthesisUtterance(plainText);
+    if (voice) utt.voice = voice;
+    utt.rate = 0.95;
+    utt.pitch = 1.05;
+    utt.volume = 1;
+    utt.onend = () => showSpeaking(false);
+    utt.onerror = () => showSpeaking(false);
+
+    let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
+    utt.onend = () => { clearInterval(keepAlive); showSpeaking(false); };
+    utt.onerror = () => { clearInterval(keepAlive); showSpeaking(false); };
+
+    synth.speak(utt);
   }
 
   // ===== VOICE INPUT =====
@@ -2951,91 +2510,110 @@ gsap.from('.track-item', {
 
   initSpeechRecognition();
 
-  // ===== ONBOARDING FLOW (Iris — Named Navigator) =====
-  let userName = '';
-
+  // ===== ONBOARDING FLOW =====
   function startOnboarding() {
     hasStartedOnboarding = true;
-    showIntroduction();
+    showQuestion1Identity();
   }
 
-  function showIntroduction() {
-    const intro = "Hi, I\u2019m Iris. I\u2019m a prototype \u2014 an AI navigator built to show what personalized member engagement could look like for CNIB. I know every program, every service, and every data point in this pilot. Ask me anything, or I can walk you through the key findings. Before we start \u2014 what\u2019s your name?"
-    addMsg('bot', intro);
-    speakAgentResponse(intro);
-    input.setAttribute('placeholder', 'Type your name...');
-  }
-
-  function handleNameEntry(name) {
-    userName = name.trim();
-    userProfile.a11yAnswered = true;
-
-    if (/angela/i.test(userName)) {
-      userProfile.identity = 'angela';
-      const msg = "Angela \u2014 I was built with you in mind. I know your three priorities: the rebrand, reimagining member engagement, and the AI question. I\u2019ve studied the audited financials, the strategic plan, and the program data. Think of me as one possible answer to that third priority \u2014 an AI that knows CNIB inside out and can navigate members to the right programs. I\u2019d love to walk you through the pilot, or you can ask me anything. What would be most useful?"
-      addMsg('bot', msg);
-      speakAgentResponse(msg);
-      userProfile.priority = 'overview';
-      guidedSectionIndex = 0;
-      input.setAttribute('placeholder', 'Ask me anything, or just say go...');
-      setTimeout(beginGuidedPresentation, 3000);
-
-    } else if (/bonfanti|ceo|president/i.test(userName)) {
-      userProfile.identity = 'angela';
-      userName = 'Angela';
-      const msg = "Angela — I was built for this conversation. Jacob spent weeks in your financials, your strategic plan, and the data behind every program CNIB runs. Everything I’m about to show you connects your three priorities — brand, engagement, and AI — into one system. Let me walk you through it.";
-      addMsg('bot', msg);
-      speakAgentResponse(msg);
-      userProfile.priority = 'overview';
-      guidedSectionIndex = 0;
-      input.setAttribute('placeholder', 'Ask me anything, or just say go...');
-      setTimeout(beginGuidedPresentation, 3000);
-
-    } else {
-      userProfile.identity = 'visitor';
-      const msg = "Great to meet you, " + userName + ". I’m going to walk you through a proposal called The Missing 99% — it’s about why CNIB currently reaches less than one percent of the 1.5 million Canadians living with sight loss, and what a solution could look like. I’ll cover the data, the approach, and then give you a live demo of the technology in action. You can ask me anything along the way — I know every number in this deck. Ready?";
-      addMsg('bot', msg);
-      speakAgentResponse(msg);
-      userProfile.priority = 'overview';
-      guidedSectionIndex = 0;
-      input.setAttribute('placeholder', 'Ask me anything, or say let’s go...');
-      setTimeout(beginGuidedPresentation, 3000);
-    }
-  }
-
-  function beginGuidedPresentation() {
-    if (!userProfile.priority) userProfile.priority = 'overview';
-    let kickoff;
-    if (userProfile.identity === 'angela') {
-      kickoff = "Let’s start with the number that started this whole project. CNIB serves just over twelve thousand people. But there are 1.5 million Canadians living with sight loss. That’s a reach rate of less than one percent. The question isn’t whether CNIB does good work — it clearly does. The question is: what’s happening with the other ninety-nine percent?";
-    } else {
-      kickoff = "Let’s start with the core question, " + userName + ". CNIB currently reaches about twelve thousand people out of 1.5 million Canadians with sight loss. That’s less than one percent. This proposal is about understanding why — and building something that can change it.";
-    }
-    addMsg('bot', kickoff);
-    speakAgentResponse(kickoff);
-    input.setAttribute('placeholder', 'Ask a question or say continue...');
-    setTimeout(startGuidedJourney, 2500);
+  function showQuestion1Identity() {
+    addMsg('bot', "Hi — I'm the CNIB Member Navigator prototype. Before we begin, who am I speaking with?");
+    addSuggestions(["Angela Bonfanti, CEO", "A CNIB team member", "Just exploring"]);
   }
 
   function handleIdentityChoice(choice) {
-    if (choice.includes("Angela")) { handleNameEntry("Angela"); }
-    else { handleNameEntry(choice); }
+    if (choice.includes("Angela")) {
+      userProfile.identity = 'angela';
+      addMsg('user', choice);
+      addMsg('bot', "Angela — perfect. I know your three priorities: rebranding from institutional stigma to empowerment, personalizing member engagement, and building AI navigators that help people navigate their entire life journey. Everything I show you today is designed around those three things.");
+    } else if (choice.includes("team")) {
+      userProfile.identity = 'team';
+      addMsg('user', choice);
+      addMsg('bot', "Great. I'm designed to be a collaboration tool. Everything here — the data, the member journeys, the hypotheses — is open for your input.");
+    } else {
+      userProfile.identity = 'exploring';
+      addMsg('user', choice);
+      addMsg('bot', "Exploring is perfect. No pressure — I'll walk you through what this proposal is, and you can ask questions as we go.");
+    }
+
+    setTimeout(showQuestion2A11y, 600);
+  }
+
+  function showQuestion2A11y() {
+    addMsg('bot', "Next quick thing: would you like me to adjust the reading experience for you? This actually matters — it's part of the demo.");
+    addSuggestions(["Larger text", "High contrast", "Dyslexia-friendly font", "I'm good as is"]);
   }
 
   function handleA11yChoice(choice) {
-    userProfile.a11yAnswered = true;
-    if (/large/i.test(choice)) { toggleFontSize('large'); }
-    else if (/contrast/i.test(choice)) { toggleContrast(true); }
-    else if (/dyslexia/i.test(choice)) { toggleDyslexia(true); }
+    addMsg('user', choice);
+
+    if (choice.includes("Larger")) {
+      userProfile.a11y.push('large-text');
+      toggleFontSize('large');
+      addMsg('bot', "Done — I've made the text larger. You can adjust this anytime with the accessibility toolbar on the right side.");
+    } else if (choice.includes("High contrast")) {
+      userProfile.a11y.push('high-contrast');
+      toggleContrast(true);
+      addMsg('bot', "Done — high contrast is on. The whole interface will adapt.");
+    } else if (choice.includes("Dyslexia")) {
+      userProfile.a11y.push('dyslexia-font');
+      toggleDyslexia(true);
+      addMsg('bot', "Done — OpenDyslexic font is applied throughout.");
+    } else {
+      addMsg('bot', "Got it. The accessibility toolbar is on the right side if you change your mind.");
+    }
+
+    setTimeout(showQuestion3Priority, 600);
+  }
+
+  function showQuestion3Priority() {
+    let priorityOptions;
+    if (userProfile.identity === 'angela') {
+      priorityOptions = [
+        "The reach gap — why less than 1%?",
+        "The 90-day sprint approach",
+        "Show me the AI navigator in action"
+      ];
+      addMsg('bot', "Last question: What's top of mind for you?");
+    } else if (userProfile.identity === 'team') {
+      priorityOptions = [
+        "The data and financial picture",
+        "The three hypotheses",
+        "See it work — the member journeys"
+      ];
+      addMsg('bot', "What would be most helpful to focus on?");
+    } else {
+      priorityOptions = [
+        "Summarize the whole thing",
+        "Show me a real member story",
+        "Tell me about the problem"
+      ];
+      addMsg('bot', "What would you like to explore?");
+    }
+    addSuggestions(priorityOptions);
   }
 
   function handlePriorityChoice(choice) {
-    userProfile.priority = 'overview';
-    guidedSectionIndex = 0;
-    if (/sprint|approach|how|plan|phase/i.test(choice)) { guidedSectionIndex = 2; userProfile.priority = 'approach'; }
-    else if (/story|maria|david|member|demo|action|show/i.test(choice)) { userProfile.priority = 'engagement'; }
-    else if (/data|number|financial|money/i.test(choice)) { userProfile.priority = 'reach'; }
-    input.setAttribute('placeholder', 'Ask me anything about this proposal...');
+    addMsg('user', choice);
+
+    if (choice.includes("reach") || choice.includes("gap") || choice.includes("problem") || choice.includes("data")) {
+      userProfile.priority = 'reach';
+      guidedSectionIndex = 0; // Start with opportunity
+      addMsg('bot', "Great. Let me show you the reach problem in detail, then I'll walk you through the hypotheses, approach, and what I'm proposing to build.");
+    } else if (choice.includes("sprint") || choice.includes("approach") || choice.includes("hypotheses")) {
+      userProfile.priority = 'approach';
+      guidedSectionIndex = 2; // Start with approach
+      addMsg('bot', "Perfect. I'll walk you through the 90-day sprint, then we'll back up to the problem it solves.");
+    } else if (choice.includes("action") || choice.includes("story") || choice.includes("journey") || choice.includes("work")) {
+      userProfile.priority = 'engagement';
+      guidedSectionIndex = 0; // Start with opportunity, then jump to member stories
+      addMsg('bot', "Excellent choice. Let me show you what this navigator feels like from a real member's perspective. I'll start with the context, then walk you through Maria's story.");
+    } else {
+      userProfile.priority = 'overview';
+      guidedSectionIndex = 0;
+      addMsg('bot', "I'll walk you through the whole thing — the problem, the hypotheses, and what I'm proposing. We can dive deeper into anything.");
+    }
+
     setTimeout(startGuidedJourney, 800);
   }
 
@@ -3089,17 +2667,58 @@ gsap.from('.track-item', {
   function findAnswer(query) {
     const q = query.toLowerCase().trim();
 
-    // During onboarding - just need the name
-    if (!userProfile.identity) {
-      handleNameEntry(query.trim());
-      return null;
+    // During onboarding
+    if (!hasStartedOnboarding) {
+      if (/angela|ceo|executive/i.test(q) || query.includes("Angela")) {
+        handleIdentityChoice("Angela Bonfanti, CEO");
+        return null; // Don't double-process
+      }
+      if (/team|member|staff/i.test(q)) {
+        handleIdentityChoice("A CNIB team member");
+        return null;
+      }
+      if (/explor/i.test(q)) {
+        handleIdentityChoice("Just exploring");
+        return null;
+      }
     }
 
-    // Continue / go / next during guided presentation
-    if (/^(go|let.?s go|continue|next|keep going|ready|start|proceed|ok|okay|yep|yes|yeah|sure)$/i.test(q)) {
-      if (userProfile.priority) {
-        advanceGuidedJourney();
+    // A11y choices during onboarding
+    if (hasStartedOnboarding && !userProfile.priority) {
+      if (/larger|big|text/i.test(q)) {
+        handleA11yChoice("Larger text");
         return null;
+      }
+      if (/contrast|high|bright/i.test(q)) {
+        handleA11yChoice("High contrast");
+        return null;
+      }
+      if (/dyslexia|opendyslexic/i.test(q)) {
+        handleA11yChoice("Dyslexia-friendly font");
+        return null;
+      }
+      if (/good|fine|no|none|skip/i.test(q)) {
+        handleA11yChoice("I'm good as is");
+        return null;
+      }
+    }
+
+    // Priority choices during onboarding
+    if (hasStartedOnboarding && !userProfile.priority && userProfile.identity) {
+      // This is being handled by the UI suggestions, but we can catch typed responses
+      if (userProfile.identity === 'angela') {
+        if (/reach|gap|why.*1%|problem/i.test(q)) {
+          handlePriorityChoice("The reach gap — why less than 1%?");
+          return null;
+        }
+        if (/sprint|approach|90|phase/i.test(q)) {
+          handlePriorityChoice("The 90-day sprint approach");
+          return null;
+        }
+        if (/action|work|journey|navigator/i.test(q)) {
+          handlePriorityChoice("Show me the AI navigator in action");
+          return null;
+        }
       }
     }
 
@@ -3259,36 +2878,6 @@ gsap.from('.track-item', {
       return { text: "I can do something better than describe — I can <strong>simulate</strong> one. Say one of these to step into a member's shoes:\n\n<strong>\"Be Maria\"</strong> — 58, just diagnosed with macular degeneration, scared, doesn't know about CNIB.\n<strong>\"Be David\"</strong> — 34, Vision Mate participant, wants to start a business, doesn't know about Venture Studio.\n<strong>\"Be the Nguyen family\"</strong> — Parents of a newly diagnosed 6-year-old, overwhelmed, don't know where to start.\n\nI'll walk you through step by step — what happens today without a navigator, and what it could feel like with one.", suggestions: ["Be Maria", "Be David", "Be the Nguyen family"] };
     }
 
-    // Urgency / crisis detection
-    if (/help.*now|urgent|crisis|emergency|just (lost|diagnosed|been told)|scared|don.?t know what to do|need (help|support)|losing.*vision|going blind|get help/i.test(q)) {
-      return { text: "<span class='step-label'>WE'RE HERE FOR YOU</span>\n\nIf you or someone you know needs support right now, CNIB can help:\n\n<strong>Phone:</strong> 1-800-563-2642 (toll-free, Monday-Friday)\n<strong>Online:</strong> <a href='https://cnib.ca' target='_blank' style='color:#FFF100'>cnib.ca</a>\n<strong>Email:</strong> info@cnib.ca\n\nYou can also ask me about specific support \u2014 peer mentoring (Vision Mate), assistive technology, employment services, children and family programs, or anything else.\n\nYou're not alone. Over 1.5 million Canadians live with sight loss, and there is a community ready to support you.", suggestions: ["Tell me about Vision Mate", "What technology can help me?", "I need employment support", "Programs for children"] };
-    }
-
-    // Clinician / healthcare provider queries
-    if (/clinician|ophthalmolog|optometri|doctor|refer|healthcare provider|eye care|medical professional|physician|specialist/i.test(q)) {
-      return { text: "<strong>For Healthcare Providers:</strong>\n\nIf you're an eye care professional looking to connect patients with support services, CNIB is the largest community-based provider of support for Canadians with sight loss.\n\n<strong>Key referral fact:</strong> Ophthalmologists are the #1 gateway to support services, but most patients leave a diagnosis appointment with medical information only \u2014 no connection to peer support, assistive technology, or practical life skills.\n\n<strong>This proposal addresses that gap:</strong> An AI navigator embedded in the post-diagnosis pathway could automatically connect newly diagnosed patients with CNIB services.\n\n<strong>To refer a patient now:</strong> 1-800-563-2642 or <a href='https://cnib.ca' target='_blank' style='color:#FFF100'>cnib.ca</a>", suggestions: ["Tell me about the discovery hypothesis", "What technology is available?", "Be Maria \u2014 see the post-diagnosis gap"] };
-    }
-
-    // Indigenous / First Nations content
-    if (/indigenous|first nation|inuit|m[e\u00e9]tis|aboriginal|on.?reserve|native|reconciliation|indigenous.*vision|diabetes.*vision/i.test(q)) {
-      return { text: "<strong>Vision Loss in Indigenous Communities:</strong>\n\nDiabetes-related vision loss is a major health crisis in Indigenous communities. Indigenous Canadians are 3-5x more likely to develop diabetes, and diabetic retinopathy is a leading cause of preventable blindness.\n\n<strong>Barriers to access:</strong> Geographic isolation, lack of eye care specialists in rural/northern communities, cultural barriers to mainstream healthcare, limited awareness of available supports, and telehealth gaps.\n\n<strong>What's needed:</strong> Culturally safe service delivery, on-reserve outreach, telehealth vision screening, partnerships with Indigenous health organizations, and community health worker training.\n\n<strong>This is a critical gap</strong> for any national organization. The 90-day sprint would investigate CNIB's current reach into Indigenous communities.", suggestions: ["Tell me about rural service delivery", "What's the cost to Canada?", "How does this connect to the reach problem?"] };
-    }
-
-    // Teen / youth content
-    if (/teen|youth|young adult|adolescent|high school|college|university|student|dating|driving|independence|young person/i.test(q)) {
-      return { text: "<strong>Youth and Young Adults with Sight Loss:</strong>\n\nTeens and young adults (15-25) face unique challenges: navigating social life, driving alternatives, post-secondary education, building confidence, and transitioning from children's to adult services.\n\n<strong>Current gap:</strong> CNIB has children and youth programs but limited teen-specific programming. This demographic is hardest to reach and retain \u2014 yet they're the future of the community.\n\n<strong>What a navigator could do:</strong> Connect young people with age-appropriate peer mentors, provide info about scholarships and accessible education tools, help with independence skills, and maintain engagement through the critical transition years.\n\nCNIB's youth programs: <strong>1-800-563-2642</strong>", suggestions: ["Tell me about employment", "Tell me about technology", "Be the Nguyen family"] };
-    }
-
-    // Regional / provincial services
-    if (/provincial|province|region|local|ontario|quebec|bc|british columbia|alberta|manitoba|saskatchewan|nova scotia|new brunswick|pei|newfoundland|northwest|nunavut|yukon|city|my area|near me/i.test(q)) {
-      return { text: "<strong>CNIB Across Canada:</strong>\n\nCNIB operates nationally with regional offices and programs.\n\n<strong>Ontario:</strong> AODA \u2014 strongest provincial accessibility legislation. CNIB HQ in Toronto.\n<strong>Quebec:</strong> Bilingual services critical. Provincial accessibility legislation evolving.\n<strong>British Columbia:</strong> Accessible BC Act (2021). Growing accessible employment opportunities.\n<strong>Alberta:</strong> Large rural population \u2014 telehealth especially important.\n<strong>Atlantic Canada:</strong> Aging population, higher rates of age-related vision loss.\n<strong>Northern/Remote:</strong> Fly-in communities, limited specialist access. Telehealth is the primary delivery mechanism.\n\nThe 90-day sprint would map regional service gaps.", suggestions: ["Tell me about the reach problem", "What about Indigenous communities?", "How does technology help rural areas?"] };
-    }
-
-    // French / bilingual
-    if (/fran[c\u00e7]ais|french|bonjour|salut|parlez.vous|bilingue|bilingual|en fran[c\u00e7]ais/i.test(q)) {
-      return { text: "<strong>Bienvenue!</strong>\n\nCe prototype est actuellement en anglais, mais le navigateur final serait enti\u00e8rement bilingue \u2014 un imp\u00e9ratif pour une organisation nationale canadienne.\n\n<em>(Welcome! This prototype is currently in English, but the final navigator would be fully bilingual \u2014 a requirement for a national Canadian organization serving Quebec and Francophone communities.)</em>\n\nJacob Charendoff est bilingue (anglais/fran\u00e7ais).\n\nComment puis-je vous aider? / How can I help you?", suggestions: ["Summarize the proposal", "Be Maria", "Tell me about the approach"] };
-    }
-
     // Catch-all
     return { text: "I have research data on financials, peer benchmarks, technology, employment, cost to Canada, the three hypotheses, the approach, and more. You can also ask me to navigate to a section, simulate a member journey, or explain what you're looking at.\n\nWhat would you like to know?", suggestions: ["Be Maria", "Tell me about the scale problem", "What am I looking at?"] };
   }
@@ -3328,7 +2917,7 @@ gsap.from('.track-item', {
 
     return {
       text: "<span class='step-label'>" + step.label + "</span>\n\n" + step.text,
-      suggestions: hasMore ? ["Next", "Exit persona mode"] : ["Exit persona mode", "Try another persona", "Get help now \u2014 contact CNIB", "What did I just experience?"],
+      suggestions: hasMore ? ["Next", "Exit persona mode"] : ["Exit persona mode", "Try another persona", "What did I just experience?"],
       isPersonaStep: true,
       isLastStep: !hasMore
     };
@@ -3340,7 +2929,7 @@ gsap.from('.track-item', {
     removePersonaBanner();
 
     if (wasPersona) {
-      return { text: "<span class='step-label'>PERSONA MODE ENDED</span>\n\nYou just experienced what a CNIB AI navigator could feel like from a member's perspective. Every step — proactive outreach, peer connections, cross-program discovery, life-stage awareness — is what this proposal is designed to build.\n\nThe key difference: instead of members finding services, the navigator finds them.\n\n<strong>Need help now?</strong> If you or someone you know is living with sight loss, CNIB is here: <strong>1-800-563-2642</strong> or <a href='https://cnib.ca' target='_blank' style='color:#FFF100'>cnib.ca</a>", suggestions: ["Be another persona", "Get help now \u2014 contact CNIB", "Ask me a question", "Take me to the approach"] };
+      return { text: "<span class='step-label'>PERSONA MODE ENDED</span>\n\nYou just experienced what a CNIB AI navigator could feel like from a member's perspective. Every step — proactive outreach, peer connections, cross-program discovery, life-stage awareness — is what this proposal is designed to build.\n\nThe key difference: instead of members finding services, the navigator finds them.", suggestions: ["Be another persona", "Ask me a question", "Take me to the approach"] };
     }
     return { text: "You're not in persona mode. Want to try one?", suggestions: ["Be Maria", "Be David", "Be the Nguyen family"] };
   }
@@ -3433,9 +3022,6 @@ gsap.from('.track-item', {
 
       if (answer.suggestions && answer.suggestions.length) addSuggestions(answer.suggestions);
 
-      // Focus management: move focus to new bot response for screen readers
-      setTimeout(() => { msgDiv.focus({ preventScroll: true }); }, 50);
-
       if (answer.isPersonaStep || answer.personaBanner) {
         const wasVoice = voiceEnabled;
         voiceEnabled = true;
@@ -3456,13 +3042,21 @@ gsap.from('.track-item', {
 
   // ===== UI ENGINE =====
   function toggle() {
-    if (isOverlayMode) return;
     isOpen = !isOpen;
     fab.classList.toggle('open', isOpen);
     panel.classList.toggle('open', isOpen);
     fab.setAttribute('aria-expanded', String(isOpen));
+
+    if (isOpen && !hasStartedOnboarding) {
+      hasStartedOnboarding = true;
+      startOnboarding();
+    }
+
     if (isOpen) {
-      setTimeout(() => { input.focus(); panel.addEventListener('keydown', trapFocus); }, 300);
+      setTimeout(() => {
+        input.focus();
+        panel.addEventListener('keydown', trapFocus);
+      }, 300);
     } else {
       panel.removeEventListener('keydown', trapFocus);
       fab.focus();
@@ -3471,11 +3065,9 @@ gsap.from('.track-item', {
 
   function trapFocus(e) {
     if (e.key !== 'Tab') return;
-    const focusable = Array.from(panel.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"]), .agent-suggestions button'));
-    const visible = focusable.filter(el => el.offsetParent !== null);
-    if (!visible.length) return;
-    const first = visible[0];
-    const last = visible[visible.length - 1];
+    const focusable = panel.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])');
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
     if (e.shiftKey) {
       if (document.activeElement === first) { e.preventDefault(); last.focus(); }
     } else {
@@ -3484,7 +3076,7 @@ gsap.from('.track-item', {
   }
 
   // ===== EVENT LISTENERS =====
-  fab.addEventListener('click', () => { if (!isOverlayMode) toggle(); });
+  fab.addEventListener('click', toggle);
   sendBtn.addEventListener('click', send);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); send(); }
@@ -3495,42 +3087,27 @@ gsap.from('.track-item', {
     toggleListening();
   });
 
-  // Voice toggle
   voiceToggle.addEventListener('click', () => {
     voiceEnabled = !voiceEnabled;
     voiceToggle.classList.toggle('active', voiceEnabled);
     voiceToggle.setAttribute('aria-pressed', String(voiceEnabled));
-    voiceToggle.setAttribute('aria-label', voiceEnabled ? 'Voice on' : 'Voice off');
-    if (voiceEnabled) { speakAgentResponse('Voice on.'); } else { stopAgentSpeaking(); }
+    voiceToggle.setAttribute('aria-label', voiceEnabled ? 'Voice responses on' : 'Voice responses off');
+    if (voiceEnabled) {
+      addMsg('system', '🔊 Voice mode on. I\'ll speak my responses.');
+      speakAgentResponse('Voice mode activated. I will speak my responses. You can also use the microphone to talk to me.');
+    } else {
+      stopAgentSpeaking();
+      addMsg('system', 'Voice responses disabled.');
+    }
   });
-
-  // A la carte accessibility panel
-  const a11yPanelToggle = document.getElementById('a11yPanelToggle');
-  const a11yPanel = document.getElementById('a11yPanel');
-  if (a11yPanelToggle && a11yPanel) {
-    a11yPanelToggle.addEventListener('click', () => {
-      const panelOpen = a11yPanel.classList.toggle('open');
-      a11yPanelToggle.classList.toggle('active', panelOpen);
-      a11yPanelToggle.setAttribute('aria-pressed', String(panelOpen));
-    });
-    a11yPanel.querySelectorAll('.a11y-toggle').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const setting = btn.dataset.a11y;
-        const isActive = btn.classList.toggle('active');
-        btn.setAttribute('aria-pressed', String(isActive));
-        if (setting === 'large-text') toggleFontSize(isActive ? 'large' : 'normal');
-        else if (setting === 'high-contrast') toggleContrast(isActive);
-        else if (setting === 'dyslexia') toggleDyslexia(isActive);
-        else if (setting === 'screen-reader') document.body.classList.toggle('a11y-screen-reader', isActive);
-      });
-    });
-  }
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      const so = document.getElementById('shortcut-overlay');
-      if (so && so.classList.contains('visible')) { so.classList.remove('visible'); return; }
-      if (isOverlayMode) return;
+      const overlay = document.getElementById('shortcut-overlay');
+      if (overlay && overlay.classList.contains('visible')) {
+        overlay.classList.remove('visible');
+        return;
+      }
       if (isOpen) toggle();
     }
   });
@@ -3539,78 +3116,10 @@ gsap.from('.track-item', {
     if (e.target.id === 'shortcut-overlay') e.target.classList.remove('visible');
   });
 
-  // Voice on by default
-  voiceToggle.classList.add('active');
-  voiceToggle.setAttribute('aria-pressed', 'true');
-  voiceToggle.setAttribute('aria-label', 'Voice on');
-
-  if (window.speechSynthesis) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
-  }
-
-  // Begin gate — user interaction unlocks audio, then Iris starts
-    // ===== WIDGET FAB + CLOSE =====
-  const irisFab = document.getElementById('irisFab');
-  const widgetClose = document.getElementById('widgetClose');
-
-  irisFab.addEventListener('click', () => {
-    overlay.classList.remove('collapsed');
-    irisFab.classList.add('hidden');
-  });
-
-  widgetClose.addEventListener('click', () => {
-    overlay.classList.add('collapsed');
-    irisFab.classList.remove('hidden');
-    stopAgentSpeaking();
-  });
-
-  const beginBtn = document.getElementById('beginBtn');
-  const beginGate = document.getElementById('beginGate');
-
-  if (beginBtn && beginGate) {
-    // Hide input row until onboarding starts
-    const inputRow = document.querySelector('.agent-input-row');
-    const controlsRow = document.querySelector('.agent-controls-row');
-    const voiceHintEl = document.getElementById('voiceHint');
-    if (inputRow) inputRow.style.display = 'none';
-    if (controlsRow) controlsRow.style.display = 'none';
-    if (voiceHintEl) voiceHintEl.style.display = 'none';
-
-    beginBtn.addEventListener('click', () => {
-      // This click IS the user gesture — unlocks audio
-      // Prime the audio system with a silent utterance
-      const synth = window.speechSynthesis;
-      if (synth) {
-        const primer = new SpeechSynthesisUtterance('');
-        primer.volume = 0;
-        synth.speak(primer);
-      }
-
-      // Fade out the gate
-      beginGate.style.transition = 'opacity 0.4s ease';
-      beginGate.style.opacity = '0';
-      setTimeout(() => {
-        beginGate.remove();
-        // Show input and controls
-        if (inputRow) { inputRow.style.display = ''; inputRow.style.animation = 'chatFadeIn 0.5s ease both'; }
-        if (controlsRow) { controlsRow.style.display = ''; controlsRow.style.animation = 'chatFadeIn 0.5s ease both'; }
-        if (voiceHintEl) { voiceHintEl.style.display = ''; voiceHintEl.style.animation = 'hintFadeIn 1s ease 1s both'; }
-
-        // Now start onboarding — audio is unlocked
-        hasStartedOnboarding = true;
-        startOnboarding();
-        input.focus();
-      }, 400);
-    });
-  } else {
-    // Fallback if gate elements missing
-    setTimeout(() => {
-      hasStartedOnboarding = true;
-      startOnboarding();
-      input.focus();
-    }, 1000);
-  }
+  // Auto-open on load
+  setTimeout(() => {
+    toggle();
+  }, 500);
 })();
 
 </script>
