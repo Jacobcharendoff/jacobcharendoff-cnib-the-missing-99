@@ -1487,7 +1487,7 @@
   .agent-overlay.hidden { display: none; }
   .agent-overlay-inner { width: 100%; max-width: 640px; padding: 0 24px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
   .agent-overlay-brand { padding-top: 48px; padding-bottom: 16px; text-align: center; flex-shrink: 0; }
-  .agent-overlay-brand img { height: 40px; margin-bottom: 12px; }
+  .agent-overlay-brand img { height: 40px; margin-bottom: 12px; filter: brightness(0) saturate(100%) invert(89%) sepia(96%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(104%); }
   .agent-overlay-brand h1 { font-family: 'Lilita One', sans-serif; font-size: 28px; color: #FFF; margin: 0; }
   .agent-overlay-brand h1 span { color: #FFF100; }
   .agent-overlay-brand .agent-overlay-sub { font-size: 13px; color: #7D8590; margin-top: 6px; }
@@ -2509,6 +2509,7 @@ gsap.from('.track-item', {
   let userProfile = {
     identity: null,    // 'angela', 'team', 'exploring'
     a11y: [],           // array of applied settings
+    a11yAnswered: false, // whether a11y question has been answered
     priority: null      // 'reach', 'rebrand', 'engagement', 'ai'
   };
   let guidedSectionIndex = 0;
@@ -2769,8 +2770,8 @@ gsap.from('.track-item', {
   }
 
   function showQuestion1Identity() {
-    addMsg('bot', "Hi — I'm the CNIB Member Navigator prototype. Before we begin, who am I speaking with?");
-    addSuggestions(["Angela Bonfanti, CEO", "A CNIB team member", "A healthcare provider", "Just exploring"]);
+    addMsg('bot', "Hi \u2014 I'm the CNIB Member Navigator prototype. This experience is personalized, so before I start: who am I speaking with? Just type your name or role below.");
+    input.setAttribute('placeholder', 'e.g. Angela, CNIB team, healthcare provider...');
   }
 
   function handleIdentityChoice(choice) {
@@ -2792,11 +2793,12 @@ gsap.from('.track-item', {
   }
 
   function showQuestion2A11y() {
-    addMsg('bot', "Next quick thing: would you like me to adjust the reading experience for you? This actually matters — it's part of the demo.");
-    addSuggestions(["Larger text", "High contrast", "Dyslexia-friendly font", "I'm good as is"]);
+    addMsg('bot', "One quick thing \u2014 would you like me to adjust the reading experience? You can say \"larger text\", \"high contrast\", or \"dyslexia-friendly font\". Or just say \"let\'s go\" and I\'ll start.");
+    input.setAttribute('placeholder', "e.g. larger text, high contrast, let's go...");
   }
 
   function handleA11yChoice(choice) {
+    userProfile.a11yAnswered = true;
     if (choice.includes("Larger")) {
       userProfile.a11y.push('large-text');
       toggleFontSize('large');
@@ -2817,37 +2819,16 @@ gsap.from('.track-item', {
   }
 
   function showQuestion3Priority() {
-    let priorityOptions;
     if (userProfile.identity === 'clinician') {
-      priorityOptions = [
-        "The post-diagnosis referral gap",
-        "Show me a patient journey \u2014 Be Maria",
-        "The data and reach problem"
-      ];
-      addMsg('bot', "What matters most to you as a care provider?");
+      addMsg('bot', "Last thing \u2014 what matters most to you? The post-diagnosis referral gap, a patient journey walkthrough, or the data behind the reach problem? Just tell me.");
     } else if (userProfile.identity === 'angela') {
-      priorityOptions = [
-        "The reach gap — why less than 1%?",
-        "The 90-day sprint approach",
-        "Show me the AI navigator in action"
-      ];
-      addMsg('bot', "Last question: What's top of mind for you?");
+      addMsg('bot', "Last thing \u2014 what\'s top of mind for you? The reach gap, the 90-day sprint approach, or would you rather see the AI navigator in action? Just tell me.");
     } else if (userProfile.identity === 'team') {
-      priorityOptions = [
-        "The data and financial picture",
-        "The three hypotheses",
-        "See it work — the member journeys"
-      ];
-      addMsg('bot', "What would be most helpful to focus on?");
+      addMsg('bot', "Last thing \u2014 what would be most helpful to focus on? The data and financials, the three hypotheses, or seeing the member journeys in action?");
     } else {
-      priorityOptions = [
-        "Summarize the whole thing",
-        "Show me a real member story",
-        "Tell me about the problem"
-      ];
-      addMsg('bot', "What would you like to explore?");
+      addMsg('bot', "Last thing \u2014 what would you like to explore? I can summarize the whole thing, show you a real member story, or walk you through the problem we\'re solving.");
     }
-    addSuggestions(priorityOptions);
+    input.setAttribute('placeholder', 'Tell me what interests you...');
   }
 
   function handlePriorityChoice(choice) {
@@ -2877,6 +2858,7 @@ gsap.from('.track-item', {
       addMsg('bot', "I'll walk you through the whole thing — the problem, the hypotheses, and what I'm proposing. We can dive deeper into anything.");
     }
 
+    input.setAttribute('placeholder', 'Ask me anything about this proposal...');
     setTimeout(startGuidedJourney, 800);
   }
 
@@ -2944,14 +2926,17 @@ gsap.from('.track-item', {
         handleIdentityChoice("A healthcare provider");
         return null;
       }
-      if (/explor/i.test(q)) {
+      if (/explor|just looking|curious|browsing/i.test(q)) {
         handleIdentityChoice("Just exploring");
         return null;
       }
+      // Catch-all: treat unrecognized as exploring
+      handleIdentityChoice("Just exploring");
+      return null;
     }
 
     // A11y choices during onboarding
-    if (hasStartedOnboarding && !userProfile.priority) {
+    if (hasStartedOnboarding && userProfile.identity && !userProfile.a11yAnswered) {
       if (/larger|big|text/i.test(q)) {
         handleA11yChoice("Larger text");
         return null;
@@ -2964,29 +2949,49 @@ gsap.from('.track-item', {
         handleA11yChoice("Dyslexia-friendly font");
         return null;
       }
-      if (/good|fine|no|none|skip/i.test(q)) {
+      if (/good|fine|no|none|skip|let.?s go|start|nah|pass|i.?m ok|go ahead|ready|proceed/i.test(q)) {
         handleA11yChoice("I'm good as is");
         return null;
       }
+      // Catch-all for a11y
+      handleA11yChoice("I'm good as is");
+      return null;
     }
 
     // Priority choices during onboarding
-    if (hasStartedOnboarding && !userProfile.priority && userProfile.identity) {
+    if (hasStartedOnboarding && !userProfile.priority && userProfile.a11yAnswered) {
       // This is being handled by the UI suggestions, but we can catch typed responses
-      if (userProfile.identity === 'angela') {
-        if (/reach|gap|why.*1%|problem/i.test(q)) {
-          handlePriorityChoice("The reach gap — why less than 1%?");
-          return null;
-        }
-        if (/sprint|approach|90|phase/i.test(q)) {
-          handlePriorityChoice("The 90-day sprint approach");
-          return null;
-        }
-        if (/action|work|journey|navigator/i.test(q)) {
-          handlePriorityChoice("Show me the AI navigator in action");
-          return null;
-        }
+      if (/reach|gap|why.*1%|problem|data|number/i.test(q)) {
+        handlePriorityChoice("The reach gap — why less than 1%?");
+        return null;
       }
+      if (/sprint|approach|90|phase|plan|how/i.test(q)) {
+        handlePriorityChoice("The 90-day sprint approach");
+        return null;
+      }
+      if (/action|work|journey|navigator|show|demo|see/i.test(q)) {
+        handlePriorityChoice("Show me the AI navigator in action");
+        return null;
+      }
+      if (/summar|everything|whole|all|overview/i.test(q)) {
+        handlePriorityChoice("Summarize the whole thing");
+        return null;
+      }
+      if (/stor|maria|david|member|patient/i.test(q)) {
+        handlePriorityChoice("Show me a real member story");
+        return null;
+      }
+      if (/hypothes|three|test/i.test(q)) {
+        handlePriorityChoice("The three hypotheses");
+        return null;
+      }
+      if (/financ|money|budget|cost/i.test(q)) {
+        handlePriorityChoice("The data and financial picture");
+        return null;
+      }
+      // Catch-all
+      handlePriorityChoice("The reach gap — why less than 1%?");
+      return null;
     }
 
     // After onboarding, normal query handling
