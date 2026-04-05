@@ -2294,13 +2294,7 @@ gsap.to('#progress', {
 });
 
 // ---- Cover entrance ----
-// Cover is visible by default — no fade-in needed
-
-const coverTl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.15 });
-coverTl
-  .fromTo('.cover-logo', { scale: 1.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: 'power3.out' })
-  .fromTo('.cover-title', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 }, '-=0.5')
-  .fromTo('.cover-subtitle', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.4');
+// Cover elements visible by default (no GSAP animation — avoids background-tab throttling issues)
 
 // ---- Section reveals ----
 gsap.utils.toArray('.section').forEach(section => {
