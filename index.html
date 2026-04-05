@@ -1481,27 +1481,114 @@
   }
 
   /* ===== AI NAVIGATOR STYLES ===== */
-  /* ===== AGENT-FIRST OVERLAY ===== */
-  .agent-overlay { position: fixed; inset: 0; z-index: 10000; background: #0D1117; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, transform 0.6s ease; }
-  .agent-overlay.revealing { opacity: 0; pointer-events: none; transform: translateY(-30px); }
+  /* ===== AGENT-FIRST OVERLAY — Apple-minimal ===== */
+  .agent-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: #0B0E13;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .agent-overlay.revealing { opacity: 0; pointer-events: none; transform: scale(0.98) translateY(-20px); }
   .agent-overlay.hidden { display: none; }
-  .agent-overlay-inner { width: 100%; max-width: 640px; padding: 0 24px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
-  .agent-overlay-brand { padding-top: 48px; padding-bottom: 16px; text-align: center; flex-shrink: 0; }
-  .agent-overlay-brand img { height: 40px; margin-bottom: 12px; filter: brightness(0) saturate(100%) invert(89%) sepia(96%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(104%); }
-  .agent-overlay-brand h1 { font-family: 'Lilita One', sans-serif; font-size: 28px; color: #FFF; margin: 0; }
+  .agent-overlay-inner {
+    width: 100%; max-width: 680px; padding: 0 32px;
+    display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+  }
+  .agent-overlay-brand {
+    padding-top: 72px; padding-bottom: 8px; text-align: center; flex-shrink: 0;
+    animation: brandFadeIn 1.2s cubic-bezier(0.4,0,0.2,1) both;
+  }
+  @keyframes brandFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .agent-overlay-brand img {
+    height: 44px; margin-bottom: 16px;
+    filter: brightness(0) saturate(100%) invert(89%) sepia(96%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(104%);
+  }
+  .agent-overlay-brand h1 {
+    font-family: 'Lilita One', sans-serif; font-size: 36px; color: #FFFFFF;
+    margin: 0; letter-spacing: -0.5px; line-height: 1.1;
+  }
   .agent-overlay-brand h1 span { color: #FFF100; }
-  .agent-overlay-brand .agent-overlay-sub { font-size: 13px; color: #7D8590; margin-top: 6px; }
-  .agent-overlay-chat { flex: 1; width: 100%; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,241,0,0.12); border-radius: 20px; background: rgba(13,17,23,0.95); margin-bottom: 24px; }
-  .agent-overlay-chat .agent-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid rgba(255,241,0,0.08); flex-shrink: 0; }
-  .agent-overlay-chat .agent-header-title { display: flex; align-items: center; gap: 10px; color: #FFF100; font-size: 15px; font-weight: 700; }
-  .agent-overlay-chat .agent-body { flex: 1; overflow-y: auto; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
-  .agent-overlay-chat .agent-body::-webkit-scrollbar { width: 4px; }
-  .agent-overlay-chat .agent-body::-webkit-scrollbar-thumb { background: rgba(255,241,0,0.2); border-radius: 4px; }
-  .agent-overlay-chat .agent-input-row { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-top: 1px solid rgba(255,241,0,0.08); flex-shrink: 0; }
-  .agent-overlay-chat .agent-input-row input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #FFFDF5; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-family: var(--font); }
-  .agent-overlay-chat .agent-input-row input::placeholder { color: rgba(255,255,255,0.3); }
-  .agent-overlay-chat .agent-input-row input:focus { outline: none; border-color: rgba(255,241,0,0.4); }
-  .agent-overlay-chat .agent-msg { font-size: 14.5px; line-height: 1.7; max-width: 95%; }
+  .agent-overlay-brand .agent-overlay-sub {
+    font-size: 14px; color: rgba(255,255,255,0.35); margin-top: 10px; font-weight: 400; letter-spacing: 0.3px;
+  }
+  .agent-overlay-chat {
+    flex: 1; width: 100%; display: flex; flex-direction: column; overflow: hidden;
+    margin-bottom: 32px; margin-top: 12px;
+    animation: chatFadeIn 1s cubic-bezier(0.4,0,0.2,1) 0.3s both;
+  }
+  @keyframes chatFadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .agent-overlay-chat .agent-header { display: none; }
+  .agent-overlay-chat .agent-body {
+    flex: 1; overflow-y: auto; padding: 24px 4px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .agent-overlay-chat .agent-body::-webkit-scrollbar { width: 3px; }
+  .agent-overlay-chat .agent-body::-webkit-scrollbar-thumb { background: rgba(255,241,0,0.15); border-radius: 3px; }
+  .agent-controls-row {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 8px 0 4px; flex-shrink: 0;
+  }
+  .agent-controls-row button {
+    background: none; border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.4);
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-family: var(--font);
+    cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;
+  }
+  .agent-controls-row button:hover { border-color: rgba(255,241,0,0.25); color: rgba(255,255,255,0.7); }
+  .agent-controls-row button.active { border-color: rgba(255,241,0,0.35); color: #FFF100; background: rgba(255,241,0,0.06); }
+  .agent-controls-row button.speaking { animation: speakPulse 1.5s ease-in-out infinite; }
+  @keyframes speakPulse { 0%,100% { box-shadow: none; } 50% { box-shadow: 0 0 12px rgba(255,241,0,0.15); } }
+  .agent-controls-row button svg { width: 14px; height: 14px; }
+  .agent-overlay-chat .agent-input-row {
+    display: flex; align-items: center; gap: 10px; padding: 12px 0; flex-shrink: 0;
+  }
+  .agent-overlay-chat .agent-input-row input {
+    flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: #FFFDF5; padding: 14px 20px; border-radius: 16px; font-size: 15px; font-family: var(--font);
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .agent-overlay-chat .agent-input-row input::placeholder { color: rgba(255,255,255,0.25); }
+  .agent-overlay-chat .agent-input-row input:focus { outline: none; border-color: rgba(255,241,0,0.3); background: rgba(255,255,255,0.06); }
+  .agent-overlay-chat .agent-msg {
+    font-size: 15.5px; line-height: 1.75; max-width: 100%; color: rgba(255,255,255,0.88); letter-spacing: 0.01em;
+  }
+  .agent-overlay-chat .agent-msg.user {
+    color: rgba(255,241,0,0.85); font-weight: 500; padding-left: 16px; border-left: 2px solid rgba(255,241,0,0.2);
+  }
+  .voice-hint {
+    text-align: center; font-size: 12px; color: rgba(255,255,255,0.2);
+    padding: 4px 0 12px; font-style: italic; animation: hintFadeIn 1s ease-in 2s both;
+  }
+  @keyframes hintFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .agent-mic-btn {
+    padding: 10px; color: rgba(255,241,0,0.6); background: none; border: none;
+    cursor: pointer; border-radius: 50%; transition: all 0.2s ease;
+  }
+  .agent-mic-btn:hover { color: #FFF100; background: rgba(255,241,0,0.08); }
+  .agent-mic-btn.listening { color: #FFF100; animation: micPulse 1s ease-in-out infinite; }
+  @keyframes micPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  .agent-mic-btn svg { width: 20px; height: 20px; }
+  .agent-send-btn {
+    padding: 10px; color: rgba(255,241,0,0.5); background: none; border: none;
+    cursor: pointer; border-radius: 50%; transition: all 0.2s ease;
+  }
+  .agent-send-btn:hover { color: #FFF100; }
+  .agent-send-btn svg { width: 18px; height: 18px; }
+  .a11y-panel {
+    max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+    opacity: 0; width: 100%;
+  }
+  .a11y-panel.open { max-height: 200px; opacity: 1; }
+  .a11y-panel-inner {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px 0 4px;
+  }
+  .a11y-toggle {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 20px;
+    font-size: 13px; font-family: var(--font); cursor: pointer; transition: all 0.2s ease;
+  }
+  .a11y-toggle:hover { border-color: rgba(255,241,0,0.3); color: rgba(255,255,255,0.8); }
+  .a11y-toggle.active { background: rgba(255,241,0,0.1); border-color: rgba(255,241,0,0.4); color: #FFF100; }
   .agent-overlay-chat .agent-suggestions button { font-size: 13px; padding: 8px 16px; }
   body.agent-mode header, body.agent-mode main, body.agent-mode footer, body.agent-mode .a11y-bar, body.agent-mode #progress, body.agent-mode .cover-fade { opacity: 0; pointer-events: none; }
   body.agent-mode { overflow: hidden; }
@@ -1730,36 +1817,47 @@
 <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <!-- ===== AGENT-FIRST OVERLAY ===== -->
-<div id="agentOverlay" class="agent-overlay" role="main" aria-label="CNIB Member Navigator">
+<div id="agentOverlay" class="agent-overlay" role="main" aria-label="Iris — CNIB Proposal Navigator">
   <div class="agent-overlay-inner">
     <div class="agent-overlay-brand">
-      <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg" alt="CNIB" onerror="this.outerHTML='<div style=&quot;font-family:Lilita One,sans-serif;font-size:32px;color:#FFF100;margin-bottom:8px&quot;>CNIB</div>';">
+      <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg"
+           alt="CNIB" onerror="this.outerHTML='<div style=&quot;font-family:Lilita One,sans-serif;font-size:32px;color:#FFF100;margin-bottom:8px&quot;>CNIB</div>';">
       <h1>The Missing <span>99%</span></h1>
-      <div class="agent-overlay-sub">AI-Powered Member Navigator \u2014 Prototype</div>
+      <div class="agent-overlay-sub">A proposal for CNIB Foundation</div>
     </div>
     <div class="agent-overlay-chat">
-      <div class="agent-header">
-        <div class="agent-header-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          <span>Member Navigator</span>
-        </div>
-        <div class="agent-header-actions">
-          <button id="overlayVoiceToggle" class="active" aria-label="Voice responses on" aria-pressed="true" title="Toggle voice">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
-          </button>
-        </div>
-      </div>
       <div id="overlayBody" class="agent-body" role="log" aria-live="assertive" aria-label="Conversation"></div>
-      <div class="agent-input-row">
-        <button id="overlayMic" class="agent-mic-btn" aria-label="Voice input" title="Speak">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+
+      <div id="a11yPanel" class="a11y-panel">
+        <div class="a11y-panel-inner">
+          <button class="a11y-toggle" data-a11y="large-text" aria-pressed="false">Larger text</button>
+          <button class="a11y-toggle" data-a11y="high-contrast" aria-pressed="false">High contrast</button>
+          <button class="a11y-toggle" data-a11y="dyslexia" aria-pressed="false">Dyslexia font</button>
+          <button class="a11y-toggle" data-a11y="screen-reader" aria-pressed="false">Screen reader mode</button>
+        </div>
+      </div>
+
+      <div class="agent-controls-row">
+        <button id="overlayVoiceToggle" class="active" aria-label="Voice on" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+          Voice
         </button>
-        <input id="overlayInput" type="text" placeholder="Ask me anything..." aria-label="Ask a question" autocomplete="off">
-        <button id="overlaySend" class="agent-send-btn" aria-label="Send">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <button id="a11yPanelToggle" aria-label="Accessibility settings" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.5"/><path d="M12 7v6m-5-3.5L12 13l5-3.5M7 21l2.5-8M17 21l-2.5-8"/></svg>
+          Accessibility
         </button>
       </div>
-      <div id="voiceHint" class="voice-hint">You can also tap the microphone and just talk to me</div>
+
+      <div class="agent-input-row">
+        <button id="overlayMic" class="agent-mic-btn" aria-label="Voice input" title="Speak to Iris">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+        </button>
+        <input id="overlayInput" type="text" placeholder="Type your name..." aria-label="Type your name or speak to Iris" autocomplete="off">
+        <button id="overlaySend" class="agent-send-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div id="voiceHint" class="voice-hint" aria-live="polite">You can also tap the microphone and just talk to me</div>
     </div>
   </div>
 </div>
@@ -2361,6 +2459,22 @@ gsap.from('.track-item', {
 
 // ===== CNIB MEMBER NAVIGATOR =====
 (function() {
+  // ===== ELEVENLABS TTS CONFIG =====
+  // Drop your ElevenLabs API key here for human-quality voice
+  const ELEVENLABS_CONFIG = {
+    enabled: true,
+    apiKey: '', // Paste your ElevenLabs API key here
+    voiceId: '21m00Tcm4TlvDq8ikWAM', // Rachel — warm, empathetic, professional
+    model: 'eleven_turbo_v2_5', // Fastest streaming model
+    endpoint: 'https://api.elevenlabs.io/v1/text-to-speech/',
+    voiceSettings: {
+      stability: 0.45,
+      similarity_boost: 0.78,
+      style: 0.35,
+      use_speaker_boost: true
+    }
+  };
+
   // ===== ENHANCED KNOWLEDGE BASE WITH COMPREHENSIVE INTELLIGENCE =====
   const KB = {
     proposal: {
@@ -2614,20 +2728,34 @@ gsap.from('.track-item', {
     return current;
   }
 
-  // ===== VOICE OUTPUT (ElevenLabs + Web Speech) =====
+  // ===== VOICE OUTPUT (ElevenLabs + Web Speech Fallback) =====
   let agentAudio = null;
   let isSpeakingAgent = false;
   const speakIndicator = document.getElementById('agentSpeakingIndicator');
+  let elevenLabsReady = ELEVENLABS_CONFIG.enabled && ELEVENLABS_CONFIG.apiKey.length > 0;
 
   function showSpeaking(on) {
     isSpeakingAgent = on;
     if (speakIndicator) speakIndicator.classList.toggle('active', on);
+    if (voiceToggle) voiceToggle.classList.toggle('speaking', on);
   }
 
   function stopAgentSpeaking() {
     showSpeaking(false);
-    if (agentAudio) { agentAudio.pause(); agentAudio = null; }
+    if (agentAudio) { agentAudio.pause(); agentAudio.currentTime = 0; agentAudio = null; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  async function elevenLabsSpeak(text) {
+    const cfg = ELEVENLABS_CONFIG;
+    const resp = await fetch(cfg.endpoint + cfg.voiceId + '?output_format=mp3_44100_128', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'xi-api-key': cfg.apiKey },
+      body: JSON.stringify({ text: text, model_id: cfg.model, voice_settings: cfg.voiceSettings })
+    });
+    if (!resp.ok) throw new Error('ElevenLabs ' + resp.status);
+    const blob = await resp.blob();
+    return URL.createObjectURL(blob);
   }
 
   async function speakAgentResponse(text) {
@@ -2637,56 +2765,39 @@ gsap.from('.track-item', {
     if (!plainText) return;
     showSpeaking(true);
 
-    if (typeof USE_ELEVENLABS !== 'undefined' && USE_ELEVENLABS && typeof ELEVENLABS_API_KEY !== 'undefined') {
+    if (elevenLabsReady) {
       try {
-        const resp = await fetch(ELEVENLABS_ENDPOINT + ELEVENLABS_VOICE_ID, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
-          body: JSON.stringify({
-            text: plainText,
-            model_id: ELEVENLABS_MODEL,
-            voice_settings: { stability: 0.4, similarity_boost: 0.8, style: 0.5, use_speaker_boost: true }
-          })
-        });
-        if (resp.ok) {
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          agentAudio = new Audio(url);
-          agentAudio.onended = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
-          agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
-          agentAudio.play();
-          return;
-        }
-      } catch (e) { /* fall through to Web Speech */ }
+        const url = await elevenLabsSpeak(plainText);
+        agentAudio = new Audio(url);
+        agentAudio.onended = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; };
+        agentAudio.onerror = () => { showSpeaking(false); URL.revokeObjectURL(url); agentAudio = null; fallbackWebSpeech(plainText); };
+        await agentAudio.play();
+        return;
+      } catch (e) {
+        console.warn('ElevenLabs failed, falling back to Web Speech:', e.message);
+        elevenLabsReady = false;
+      }
     }
+    fallbackWebSpeech(plainText);
+  }
 
+  function fallbackWebSpeech(plainText) {
     const synth = window.speechSynthesis;
     if (!synth) { showSpeaking(false); return; }
     synth.cancel();
-
     let voice = null;
     const voices = synth.getVoices();
     const preferred = ['Ava (Premium)','Ava (Enhanced)','Samantha (Enhanced)','Samantha (Premium)','Zoe (Premium)','Zoe (Enhanced)','Google UK English Female','Microsoft Aria Online','Samantha','Karen','Moira','Tessa'];
-    for (const name of preferred) {
-      voice = voices.find(v => v.name.includes(name));
-      if (voice) break;
-    }
+    for (const name of preferred) { voice = voices.find(v => v.name.includes(name)); if (voice) break; }
     if (!voice) voice = voices.find(v => v.lang.startsWith('en') && (v.name.toLowerCase().includes('premium') || v.name.toLowerCase().includes('enhanced')));
     if (!voice) voice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
     if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
-
     const utt = new SpeechSynthesisUtterance(plainText);
     if (voice) utt.voice = voice;
-    utt.rate = 0.92;
-    utt.pitch = 1.0;
-    utt.volume = 1;
-    utt.onend = () => showSpeaking(false);
-    utt.onerror = () => showSpeaking(false);
-
+    utt.rate = 0.92; utt.pitch = 1.0; utt.volume = 1;
     let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
     utt.onend = () => { clearInterval(keepAlive); showSpeaking(false); };
     utt.onerror = () => { clearInterval(keepAlive); showSpeaking(false); };
-
     synth.speak(utt);
   }
 
@@ -2770,109 +2881,90 @@ gsap.from('.track-item', {
 
   initSpeechRecognition();
 
-  // ===== ONBOARDING FLOW =====
+  // ===== ONBOARDING FLOW (Iris — Named Navigator) =====
+  let userName = '';
+
   function startOnboarding() {
     hasStartedOnboarding = true;
-    showQuestion1Identity();
+    showIntroduction();
   }
 
-  function showQuestion1Identity() {
-    const greeting = "Hey there. I\u2019m a prototype of something we think could change how CNIB connects with people. Before I get into it, I\u2019d love to know who I\u2019m talking to. Just type your name or tell me a bit about yourself below.";
-    addMsg('bot', greeting);
-    speakAgentResponse(greeting);
-    input.setAttribute('placeholder', 'Just type your name or role...');
+  function showIntroduction() {
+    const intro = "Hi, I’m Iris. I was designed by Jacob Charendoff to be your guide through this proposal. Think of me less like a slideshow and more like a colleague who’s done a lot of homework and wants to walk you through what we found. I can answer questions, pull up data, and at the end, I’ll give you a live demo of what this technology could actually look like for CNIB members. Before we start — what’s your name?";
+    addMsg('bot', intro);
+    speakAgentResponse(intro);
+    input.setAttribute('placeholder', 'Type your name...');
+  }
+
+  function handleNameEntry(name) {
+    userName = name.trim();
+    userProfile.a11yAnswered = true;
+
+    if (/angela/i.test(userName)) {
+      userProfile.identity = 'angela';
+      const msg = "Angela — I was built for this conversation. Jacob spent weeks in your audited financials, your strategic plan, your annual reports, and the data behind every program CNIB runs. He identified three things driving your agenda: repositioning the CNIB brand from institutional to empowering, making member engagement genuinely personal, and using AI to extend what human staff can’t scale alone. Everything I’m about to show you connects those three things into one system. Let me walk you through it.";
+      addMsg('bot', msg);
+      speakAgentResponse(msg);
+      userProfile.priority = 'overview';
+      guidedSectionIndex = 0;
+      input.setAttribute('placeholder', 'Ask me anything, or just say go...');
+      setTimeout(beginGuidedPresentation, 3000);
+
+    } else if (/bonfanti|ceo|president/i.test(userName)) {
+      userProfile.identity = 'angela';
+      userName = 'Angela';
+      const msg = "Angela — I was built for this conversation. Jacob spent weeks in your financials, your strategic plan, and the data behind every program CNIB runs. Everything I’m about to show you connects your three priorities — brand, engagement, and AI — into one system. Let me walk you through it.";
+      addMsg('bot', msg);
+      speakAgentResponse(msg);
+      userProfile.priority = 'overview';
+      guidedSectionIndex = 0;
+      input.setAttribute('placeholder', 'Ask me anything, or just say go...');
+      setTimeout(beginGuidedPresentation, 3000);
+
+    } else {
+      userProfile.identity = 'visitor';
+      const msg = "Great to meet you, " + userName + ". I’m going to walk you through a proposal called The Missing 99% — it’s about why CNIB currently reaches less than one percent of the 1.5 million Canadians living with sight loss, and what a solution could look like. I’ll cover the data, the approach, and then give you a live demo of the technology in action. You can ask me anything along the way — I know every number in this deck. Ready?";
+      addMsg('bot', msg);
+      speakAgentResponse(msg);
+      userProfile.priority = 'overview';
+      guidedSectionIndex = 0;
+      input.setAttribute('placeholder', 'Ask me anything, or say let’s go...');
+      setTimeout(beginGuidedPresentation, 3000);
+    }
+  }
+
+  function beginGuidedPresentation() {
+    if (!userProfile.priority) userProfile.priority = 'overview';
+    let kickoff;
+    if (userProfile.identity === 'angela') {
+      kickoff = "Let’s start with the number that started this whole project. CNIB serves just over twelve thousand people. But there are 1.5 million Canadians living with sight loss. That’s a reach rate of less than one percent. The question isn’t whether CNIB does good work — it clearly does. The question is: what’s happening with the other ninety-nine percent?";
+    } else {
+      kickoff = "Let’s start with the core question, " + userName + ". CNIB currently reaches about twelve thousand people out of 1.5 million Canadians with sight loss. That’s less than one percent. This proposal is about understanding why — and building something that can change it.";
+    }
+    addMsg('bot', kickoff);
+    speakAgentResponse(kickoff);
+    input.setAttribute('placeholder', 'Ask a question or say continue...');
+    setTimeout(startGuidedJourney, 2500);
   }
 
   function handleIdentityChoice(choice) {
-    if (choice.includes("Angela")) {
-      userProfile.identity = 'angela';
-      addMsg('bot', "Angela, hi. I was built with you in mind. I know the three things keeping you up at night: shifting the brand from institutional to empowering, making member engagement actually personal, and building something that helps people navigate their whole life with sight loss \u2014 not just one program at a time. Everything you\u2019re about to see is designed around those three things.");
-    } else if (choice.includes("healthcare")) {
-      userProfile.identity = 'clinician';
-      addMsg('bot', "Thank you for being here \u2014 and for what you do every day. You\u2019re the first person most patients see after a diagnosis, and right now there\u2019s a gap between that moment and the community support that could change their life. I\u2019m going to show you what it would look like if that gap didn\u2019t exist.");
-    } else if (choice.includes("team")) {
-      userProfile.identity = 'team';
-      addMsg('bot', "Great to have you here. Think of me as a working tool, not a finished product. Everything you\u2019re about to see \u2014 the data, the member stories, the hypotheses \u2014 I want your honest reaction to all of it.");
-    } else {
-      userProfile.identity = 'exploring';
-      addMsg('bot', "That\u2019s totally fine. No pressure at all \u2014 I\u2019ll walk you through what this is, and you can jump in with questions whenever something catches your attention.");
-    }
-
-    setTimeout(showQuestion2A11y, 600);
-  }
-
-  function showQuestion2A11y() {
-    const a11yMsg = "One quick thing \u2014 this is a prototype about accessibility, so I should practice what I preach. Want me to adjust anything? I can do larger text, high contrast, or a dyslexia-friendly font. Or just say let\u2019s go and we\u2019ll dive in.";
-    addMsg('bot', a11yMsg);
-    speakAgentResponse(a11yMsg);
-    input.setAttribute('placeholder', 'larger text, high contrast, or let\u2019s go...');
+    if (choice.includes("Angela")) { handleNameEntry("Angela"); }
+    else { handleNameEntry(choice); }
   }
 
   function handleA11yChoice(choice) {
     userProfile.a11yAnswered = true;
-    if (choice.includes("Larger")) {
-      userProfile.a11y.push('large-text');
-      toggleFontSize('large');
-      addMsg('bot', "Done — I've made the text larger. You can adjust this anytime with the accessibility toolbar on the right side.");
-    } else if (choice.includes("High contrast")) {
-      userProfile.a11y.push('high-contrast');
-      toggleContrast(true);
-      addMsg('bot', "Done — high contrast is on. The whole interface will adapt.");
-    } else if (choice.includes("Dyslexia")) {
-      userProfile.a11y.push('dyslexia-font');
-      toggleDyslexia(true);
-      addMsg('bot', "Done — OpenDyslexic font is applied throughout.");
-    } else {
-      addMsg('bot', "Got it. The accessibility toolbar is on the right side if you change your mind.");
-    }
-
-    setTimeout(showQuestion3Priority, 600);
-  }
-
-  function showQuestion3Priority() {
-    let msg;
-    if (userProfile.identity === 'clinician') {
-      msg = "Okay, last thing and then I\u2019ll stop asking questions. What\u2019s pulling you in? The referral gap after diagnosis, what a patient\u2019s journey actually looks like, or the numbers behind the reach problem?";
-    } else if (userProfile.identity === 'angela') {
-      msg = "Okay, last question and then I\u2019ll get out of the way. What\u2019s pulling you in right now? The reach gap and why it\u2019s less than one percent, the ninety-day sprint approach, or would you rather just see this navigator do its thing?";
-    } else if (userProfile.identity === 'team') {
-      msg = "Last one, I promise. What would be most useful? The data and financial picture, the three hypotheses we\u2019re testing, or seeing the member journeys come to life?";
-    } else {
-      msg = "Okay, one more and then I\u2019ll let you explore. Want me to give you the big picture summary, show you a real member\u2019s story, or walk through the problem we\u2019re trying to solve?";
-    }
-    addMsg('bot', msg);
-    speakAgentResponse(msg);
-    input.setAttribute('placeholder', 'Tell me what interests you...');
+    if (/large/i.test(choice)) { toggleFontSize('large'); }
+    else if (/contrast/i.test(choice)) { toggleContrast(true); }
+    else if (/dyslexia/i.test(choice)) { toggleDyslexia(true); }
   }
 
   function handlePriorityChoice(choice) {
-    if (choice.includes("referral gap") || choice.includes("post-diagnosis")) {
-      userProfile.priority = 'reach';
-      guidedSectionIndex = 0;
-      addMsg('bot', "This is the core issue. Patients leave a diagnosis appointment with medical information but no connection to community support. Let me show you the data, then walk you through what a navigator-assisted referral pathway would look like.");
-    } else if (choice.includes("patient journey")) {
-      userProfile.priority = 'engagement';
-      guidedSectionIndex = 0;
-      addMsg('bot', "Perfect \u2014 I'll start with the context, then walk you through Maria's story. She's 58, just diagnosed with AMD, and represents the patients you see every day who fall through the gap.");
-    } else if (choice.includes("reach") || choice.includes("gap") || choice.includes("problem") || choice.includes("data")) {
-      userProfile.priority = 'reach';
-      guidedSectionIndex = 0; // Start with opportunity
-      addMsg('bot', "Great. Let me show you the reach problem in detail, then I'll walk you through the hypotheses, approach, and what I'm proposing to build.");
-    } else if (choice.includes("sprint") || choice.includes("approach") || choice.includes("hypotheses")) {
-      userProfile.priority = 'approach';
-      guidedSectionIndex = 2; // Start with approach
-      addMsg('bot', "Perfect. I'll walk you through the 90-day sprint, then we'll back up to the problem it solves.");
-    } else if (choice.includes("action") || choice.includes("story") || choice.includes("journey") || choice.includes("work")) {
-      userProfile.priority = 'engagement';
-      guidedSectionIndex = 0; // Start with opportunity, then jump to member stories
-      addMsg('bot', "Excellent choice. Let me show you what this navigator feels like from a real member's perspective. I'll start with the context, then walk you through Maria's story.");
-    } else {
-      userProfile.priority = 'overview';
-      guidedSectionIndex = 0;
-      addMsg('bot', "I'll walk you through the whole thing — the problem, the hypotheses, and what I'm proposing. We can dive deeper into anything.");
-    }
-
-    input.setAttribute('placeholder', 'Ask me anything about this proposal...');
+    userProfile.priority = 'overview';
+    guidedSectionIndex = 0;
+    if (/sprint|approach|how|plan|phase/i.test(choice)) { guidedSectionIndex = 2; userProfile.priority = 'approach'; }
+    else if (/story|maria|david|member|demo|action|show/i.test(choice)) { userProfile.priority = 'engagement'; }
+    else if (/data|number|financial|money/i.test(choice)) { userProfile.priority = 'reach'; }
     input.setAttribute('placeholder', 'Ask me anything about this proposal...');
     setTimeout(startGuidedJourney, 800);
   }
@@ -2927,86 +3019,18 @@ gsap.from('.track-item', {
   function findAnswer(query) {
     const q = query.toLowerCase().trim();
 
-    // During onboarding
+    // During onboarding - just need the name
     if (!userProfile.identity) {
-      if (/angela|ceo|executive/i.test(q) || query.includes("Angela")) {
-        handleIdentityChoice("Angela Bonfanti, CEO");
-        return null; // Don't double-process
-      }
-      if (/team|member|staff/i.test(q)) {
-        handleIdentityChoice("A CNIB team member");
-        return null;
-      }
-      if (/doctor|clinician|ophthalmolog|optometri|healthcare|physician|nurse|medical/i.test(q)) {
-        handleIdentityChoice("A healthcare provider");
-        return null;
-      }
-      if (/explor|just looking|curious|browsing/i.test(q)) {
-        handleIdentityChoice("Just exploring");
-        return null;
-      }
-      // Catch-all: treat unrecognized as exploring
-      handleIdentityChoice("Just exploring");
+      handleNameEntry(query.trim());
       return null;
     }
 
-    // A11y choices during onboarding
-    if (hasStartedOnboarding && userProfile.identity && !userProfile.a11yAnswered) {
-      if (/larger|big|text/i.test(q)) {
-        handleA11yChoice("Larger text");
+    // Continue / go / next during guided presentation
+    if (/^(go|let.?s go|continue|next|keep going|ready|start|proceed|ok|okay|yep|yes|yeah|sure)$/i.test(q)) {
+      if (userProfile.priority) {
+        advanceGuidedJourney();
         return null;
       }
-      if (/contrast|high|bright/i.test(q)) {
-        handleA11yChoice("High contrast");
-        return null;
-      }
-      if (/dyslexia|opendyslexic/i.test(q)) {
-        handleA11yChoice("Dyslexia-friendly font");
-        return null;
-      }
-      if (/good|fine|no|none|skip|let.?s go|start|nah|pass|i.?m ok|go ahead|ready|proceed/i.test(q)) {
-        handleA11yChoice("I'm good as is");
-        return null;
-      }
-      // Catch-all for a11y
-      handleA11yChoice("I'm good as is");
-      return null;
-    }
-
-    // Priority choices during onboarding
-    if (hasStartedOnboarding && !userProfile.priority && userProfile.a11yAnswered) {
-      // This is being handled by the UI suggestions, but we can catch typed responses
-      if (/reach|gap|why.*1%|problem|data|number/i.test(q)) {
-        handlePriorityChoice("The reach gap — why less than 1%?");
-        return null;
-      }
-      if (/sprint|approach|90|phase|plan|how/i.test(q)) {
-        handlePriorityChoice("The 90-day sprint approach");
-        return null;
-      }
-      if (/action|work|journey|navigator|show|demo|see/i.test(q)) {
-        handlePriorityChoice("Show me the AI navigator in action");
-        return null;
-      }
-      if (/summar|everything|whole|all|overview/i.test(q)) {
-        handlePriorityChoice("Summarize the whole thing");
-        return null;
-      }
-      if (/stor|maria|david|member|patient/i.test(q)) {
-        handlePriorityChoice("Show me a real member story");
-        return null;
-      }
-      if (/hypothes|three|test/i.test(q)) {
-        handlePriorityChoice("The three hypotheses");
-        return null;
-      }
-      if (/financ|money|budget|cost/i.test(q)) {
-        handlePriorityChoice("The data and financial picture");
-        return null;
-      }
-      // Catch-all
-      handlePriorityChoice("The reach gap — why less than 1%?");
-      return null;
     }
 
     // After onboarding, normal query handling
@@ -3401,27 +3425,42 @@ gsap.from('.track-item', {
     toggleListening();
   });
 
+  // Voice toggle
   voiceToggle.addEventListener('click', () => {
     voiceEnabled = !voiceEnabled;
     voiceToggle.classList.toggle('active', voiceEnabled);
     voiceToggle.setAttribute('aria-pressed', String(voiceEnabled));
-    voiceToggle.setAttribute('aria-label', voiceEnabled ? 'Voice responses on' : 'Voice responses off');
-    if (voiceEnabled) {
-      addMsg('system', '🔊 Voice mode on. I\'ll speak my responses.');
-      speakAgentResponse('Voice mode activated. I will speak my responses. You can also use the microphone to talk to me.');
-    } else {
-      stopAgentSpeaking();
-      addMsg('system', 'Voice responses disabled.');
-    }
+    voiceToggle.setAttribute('aria-label', voiceEnabled ? 'Voice on' : 'Voice off');
+    if (voiceEnabled) { speakAgentResponse('Voice on.'); } else { stopAgentSpeaking(); }
   });
+
+  // A la carte accessibility panel
+  const a11yPanelToggle = document.getElementById('a11yPanelToggle');
+  const a11yPanel = document.getElementById('a11yPanel');
+  if (a11yPanelToggle && a11yPanel) {
+    a11yPanelToggle.addEventListener('click', () => {
+      const panelOpen = a11yPanel.classList.toggle('open');
+      a11yPanelToggle.classList.toggle('active', panelOpen);
+      a11yPanelToggle.setAttribute('aria-pressed', String(panelOpen));
+    });
+    a11yPanel.querySelectorAll('.a11y-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const setting = btn.dataset.a11y;
+        const isActive = btn.classList.toggle('active');
+        btn.setAttribute('aria-pressed', String(isActive));
+        if (setting === 'large-text') toggleFontSize(isActive ? 'large' : 'normal');
+        else if (setting === 'high-contrast') toggleContrast(isActive);
+        else if (setting === 'dyslexia') toggleDyslexia(isActive);
+        else if (setting === 'screen-reader') document.body.classList.toggle('a11y-screen-reader', isActive);
+      });
+    });
+  }
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      const shortcutOverlay = document.getElementById('shortcut-overlay');
-      if (overlay && shortcutOverlay.classList.contains('visible')) {
-        shortcutOverlay.classList.remove('visible');
-        return;
-      }
+      const so = document.getElementById('shortcut-overlay');
+      if (so && so.classList.contains('visible')) { so.classList.remove('visible'); return; }
+      if (isOverlayMode) return;
       if (isOpen) toggle();
     }
   });
@@ -3430,18 +3469,22 @@ gsap.from('.track-item', {
     if (e.target.id === 'shortcut-overlay') e.target.classList.remove('visible');
   });
 
-  // Auto-open on load
-  // Voice init
+  // Voice on by default
   voiceToggle.classList.add('active');
   voiceToggle.setAttribute('aria-pressed', 'true');
-  if (window.speechSynthesis) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices(); }
+  voiceToggle.setAttribute('aria-label', 'Voice on');
 
-  // Auto-start onboarding
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+  }
+
+  // Auto-start — Iris introduces herself
   setTimeout(() => {
     hasStartedOnboarding = true;
     startOnboarding();
     input.focus();
-  }, 800);
+  }, 1000);
 })();
 
 </script>
