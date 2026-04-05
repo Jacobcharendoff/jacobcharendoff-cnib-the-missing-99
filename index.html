@@ -1608,6 +1608,11 @@
   .agent-send-btn:hover, .agent-mic-btn:hover { color: #FFF100; background: rgba(255,241,0,0.1); }
   .agent-mic-btn.listening { color: #ff4444; animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .agent-mic-btn { padding: 8px; color: rgba(255,241,0,0.8); animation: mic-glow 2s ease-in-out 3; }
+  .agent-mic-btn svg { width: 22px; height: 22px; }
+  @keyframes mic-glow { 0%,100%{color:rgba(255,241,0,0.8)} 50%{color:#FFF100;filter:drop-shadow(0 0 6px rgba(255,241,0,0.4))} }
+  .voice-hint { text-align:center; font-size:12px; color:rgba(255,241,0,0.45); padding:4px 0 8px; font-style:italic; animation:fadeIn 1s ease-in 1.5s both; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   .agent-transcript { font-size: 11px; color: rgba(255,241,0,0.6); padding: 2px 6px; font-style: italic; }
   .persona-banner {
     display: flex; align-items: center; gap: 10px;
@@ -1739,7 +1744,7 @@
           <span>Member Navigator</span>
         </div>
         <div class="agent-header-actions">
-          <button id="overlayVoiceToggle" aria-label="Voice responses off" aria-pressed="false" title="Toggle voice">
+          <button id="overlayVoiceToggle" class="active" aria-label="Voice responses on" aria-pressed="true" title="Toggle voice">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
           </button>
         </div>
@@ -1754,6 +1759,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
+      <div id="voiceHint" class="voice-hint">You can also tap the microphone and just talk to me</div>
     </div>
   </div>
 </div>
@@ -2504,7 +2510,7 @@ gsap.from('.track-item', {
   // ===== STATE =====
   let isOpen = false;
   let hasStartedOnboarding = false;
-  let voiceEnabled = false;
+  let voiceEnabled = true;
   let activePersona = null;
   let userProfile = {
     identity: null,    // 'angela', 'team', 'exploring'
@@ -2660,18 +2666,19 @@ gsap.from('.track-item', {
 
     let voice = null;
     const voices = synth.getVoices();
-    const preferred = ['Google UK English Female', 'Samantha', 'Karen', 'Moira', 'Fiona', 'Victoria'];
+    const preferred = ['Ava (Premium)','Ava (Enhanced)','Samantha (Enhanced)','Samantha (Premium)','Zoe (Premium)','Zoe (Enhanced)','Google UK English Female','Microsoft Aria Online','Samantha','Karen','Moira','Tessa'];
     for (const name of preferred) {
       voice = voices.find(v => v.name.includes(name));
       if (voice) break;
     }
+    if (!voice) voice = voices.find(v => v.lang.startsWith('en') && (v.name.toLowerCase().includes('premium') || v.name.toLowerCase().includes('enhanced')));
     if (!voice) voice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
     if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
 
     const utt = new SpeechSynthesisUtterance(plainText);
     if (voice) utt.voice = voice;
-    utt.rate = 0.95;
-    utt.pitch = 1.05;
+    utt.rate = 0.92;
+    utt.pitch = 1.0;
     utt.volume = 1;
     utt.onend = () => showSpeaking(false);
     utt.onerror = () => showSpeaking(false);
@@ -2770,31 +2777,35 @@ gsap.from('.track-item', {
   }
 
   function showQuestion1Identity() {
-    addMsg('bot', "Hi \u2014 I'm the CNIB Member Navigator prototype. This experience is personalized, so before I start: who am I speaking with? Just type your name or role below.");
-    input.setAttribute('placeholder', 'e.g. Angela, CNIB team, healthcare provider...');
+    const greeting = "Hey there. I\u2019m a prototype of something we think could change how CNIB connects with people. Before I get into it, I\u2019d love to know who I\u2019m talking to. Just type your name or tell me a bit about yourself below.";
+    addMsg('bot', greeting);
+    speakAgentResponse(greeting);
+    input.setAttribute('placeholder', 'Just type your name or role...');
   }
 
   function handleIdentityChoice(choice) {
     if (choice.includes("Angela")) {
       userProfile.identity = 'angela';
-      addMsg('bot', "Angela — perfect. I know your three priorities: rebranding from institutional stigma to empowerment, personalizing member engagement, and building AI navigators that help people navigate their entire life journey. Everything I show you today is designed around those three things.");
+      addMsg('bot', "Angela, hi. I was built with you in mind. I know the three things keeping you up at night: shifting the brand from institutional to empowering, making member engagement actually personal, and building something that helps people navigate their whole life with sight loss \u2014 not just one program at a time. Everything you\u2019re about to see is designed around those three things.");
     } else if (choice.includes("healthcare")) {
       userProfile.identity = 'clinician';
-      addMsg('bot', "Welcome \u2014 and thank you for what you do. Ophthalmologists and eye care professionals are the #1 gateway to support services. This proposal addresses the gap between diagnosis and community support. I'll show you how an AI navigator could transform the post-diagnosis referral pathway.");
+      addMsg('bot', "Thank you for being here \u2014 and for what you do every day. You\u2019re the first person most patients see after a diagnosis, and right now there\u2019s a gap between that moment and the community support that could change their life. I\u2019m going to show you what it would look like if that gap didn\u2019t exist.");
     } else if (choice.includes("team")) {
       userProfile.identity = 'team';
-      addMsg('bot', "Great. I'm designed to be a collaboration tool. Everything here — the data, the member journeys, the hypotheses — is open for your input.");
+      addMsg('bot', "Great to have you here. Think of me as a working tool, not a finished product. Everything you\u2019re about to see \u2014 the data, the member stories, the hypotheses \u2014 I want your honest reaction to all of it.");
     } else {
       userProfile.identity = 'exploring';
-      addMsg('bot', "Exploring is perfect. No pressure — I'll walk you through what this proposal is, and you can ask questions as we go.");
+      addMsg('bot', "That\u2019s totally fine. No pressure at all \u2014 I\u2019ll walk you through what this is, and you can jump in with questions whenever something catches your attention.");
     }
 
     setTimeout(showQuestion2A11y, 600);
   }
 
   function showQuestion2A11y() {
-    addMsg('bot', "One quick thing \u2014 would you like me to adjust the reading experience? You can say \"larger text\", \"high contrast\", or \"dyslexia-friendly font\". Or just say \"let\'s go\" and I\'ll start.");
-    input.setAttribute('placeholder', "e.g. larger text, high contrast, let's go...");
+    const a11yMsg = "One quick thing \u2014 this is a prototype about accessibility, so I should practice what I preach. Want me to adjust anything? I can do larger text, high contrast, or a dyslexia-friendly font. Or just say let\u2019s go and we\u2019ll dive in.";
+    addMsg('bot', a11yMsg);
+    speakAgentResponse(a11yMsg);
+    input.setAttribute('placeholder', 'larger text, high contrast, or let\u2019s go...');
   }
 
   function handleA11yChoice(choice) {
@@ -2819,15 +2830,18 @@ gsap.from('.track-item', {
   }
 
   function showQuestion3Priority() {
+    let msg;
     if (userProfile.identity === 'clinician') {
-      addMsg('bot', "Last thing \u2014 what matters most to you? The post-diagnosis referral gap, a patient journey walkthrough, or the data behind the reach problem? Just tell me.");
+      msg = "Okay, last thing and then I\u2019ll stop asking questions. What\u2019s pulling you in? The referral gap after diagnosis, what a patient\u2019s journey actually looks like, or the numbers behind the reach problem?";
     } else if (userProfile.identity === 'angela') {
-      addMsg('bot', "Last thing \u2014 what\'s top of mind for you? The reach gap, the 90-day sprint approach, or would you rather see the AI navigator in action? Just tell me.");
+      msg = "Okay, last question and then I\u2019ll get out of the way. What\u2019s pulling you in right now? The reach gap and why it\u2019s less than one percent, the ninety-day sprint approach, or would you rather just see this navigator do its thing?";
     } else if (userProfile.identity === 'team') {
-      addMsg('bot', "Last thing \u2014 what would be most helpful to focus on? The data and financials, the three hypotheses, or seeing the member journeys in action?");
+      msg = "Last one, I promise. What would be most useful? The data and financial picture, the three hypotheses we\u2019re testing, or seeing the member journeys come to life?";
     } else {
-      addMsg('bot', "Last thing \u2014 what would you like to explore? I can summarize the whole thing, show you a real member story, or walk you through the problem we\'re solving.");
+      msg = "Okay, one more and then I\u2019ll let you explore. Want me to give you the big picture summary, show you a real member\u2019s story, or walk through the problem we\u2019re trying to solve?";
     }
+    addMsg('bot', msg);
+    speakAgentResponse(msg);
     input.setAttribute('placeholder', 'Tell me what interests you...');
   }
 
@@ -2858,6 +2872,7 @@ gsap.from('.track-item', {
       addMsg('bot', "I'll walk you through the whole thing — the problem, the hypotheses, and what I'm proposing. We can dive deeper into anything.");
     }
 
+    input.setAttribute('placeholder', 'Ask me anything about this proposal...');
     input.setAttribute('placeholder', 'Ask me anything about this proposal...');
     setTimeout(startGuidedJourney, 800);
   }
@@ -3416,12 +3431,17 @@ gsap.from('.track-item', {
   });
 
   // Auto-open on load
-  // Auto-start onboarding in overlay mode
+  // Voice init
+  voiceToggle.classList.add('active');
+  voiceToggle.setAttribute('aria-pressed', 'true');
+  if (window.speechSynthesis) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices(); }
+
+  // Auto-start onboarding
   setTimeout(() => {
     hasStartedOnboarding = true;
     startOnboarding();
     input.focus();
-  }, 600);
+  }, 800);
 })();
 
 </script>
