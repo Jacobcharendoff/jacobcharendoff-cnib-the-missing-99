@@ -1,1 +1,1857 @@
-undefined
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRIS — Powered by CNIB</title>
+  <meta name="description" content="Meet Iris. A personal AI navigator for life with sight loss.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --yellow: #FFF100;
+      --yellow-dim: rgba(255, 241, 0, 0.08);
+      --yellow-glow: rgba(255, 241, 0, 0.15);
+      --bg: #0A0A0A;
+      --bg-card: #141414;
+      --bg-card-hover: #1a1a1a;
+      --text: #FFFFFF;
+      --text-dim: rgba(255,255,255,0.5);
+      --text-body: rgba(255,255,255,0.7);
+      --border: rgba(255,255,255,0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .headline-xl {
+      font-family: 'Lilita One', sans-serif;
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 1.0;
+      letter-spacing: -2px;
+    }
+    .headline-lg {
+      font-family: 'Lilita One', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -1px;
+    }
+    .headline-md {
+      font-size: clamp(24px, 3vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+    }
+    .body-lg {
+      font-size: clamp(18px, 2vw, 22px);
+      color: var(--text-body);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+    .accent { color: var(--yellow); }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    .section {
+      padding: 160px 0;
+      position: relative;
+    }
+    .section-sm { padding: 100px 0; }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,10,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-brand img {
+      height: 28px;
+      filter: brightness(0) invert(1);
+    }
+    .nav-wordmark {
+      font-family: 'Lilita One', sans-serif;
+      font-size: 20px;
+      color: var(--yellow);
+      letter-spacing: 1px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--yellow);
+      color: #000;
+      padding: 10px 24px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(255,241,0,0.3);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 32px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(255,241,0,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .iris-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      box-shadow: 0 0 60px rgba(255,241,0,0.2), 0 0 120px rgba(255,241,0,0.1);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 60px rgba(255,241,0,0.2), 0 0 120px rgba(255,241,0,0.1); }
+      50% { box-shadow: 0 0 80px rgba(255,241,0,0.3), 0 0 160px rgba(255,241,0,0.15); }
+    }
+    .iris-logo svg { width: 40px; height: 40px; }
+    .hero-title { margin-bottom: 24px; }
+    .hero-sub {
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+    .hero-cta-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: var(--yellow);
+      color: #000;
+      padding: 16px 40px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,241,0,0.3);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      padding: 16px 40px;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 16px;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 80px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .stat-item {
+      background: var(--bg-card);
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .stat-number {
+      font-family: 'Lilita One', sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      color: var(--yellow);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 400;
+    }
+
+    /* ===== WHAT IS IRIS ===== */
+    .what-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .what-text .body-lg { margin-top: 24px; }
+    .what-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .what-visual::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--yellow), transparent);
+    }
+    .chat-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .chat-bubble {
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 85%;
+      animation: bubbleFade 0.5s ease both;
+    }
+    .chat-bubble.bot {
+      background: rgba(255,241,0,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,241,0,0.12);
+      align-self: flex-start;
+    }
+    .chat-bubble.user {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-body);
+      align-self: flex-end;
+    }
+    @keyframes bubbleFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== PERSONA DEMOS ===== */
+    .demos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .demos-row-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .demo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .demo-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255,241,0,0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .demo-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--yellow);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .demo-card:hover::after { opacity: 1; }
+    .demo-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .demo-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .demo-card .demo-age {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .demo-card p {
+      font-size: 15px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .demo-card .demo-tag {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .tag-new { background: rgba(255,87,87,0.12); color: #FF5757; }
+    .tag-lapsed { background: rgba(255,171,64,0.12); color: #FFAB40; }
+    .tag-senior { background: rgba(130,177,255,0.12); color: #82B1FF; }
+    .tag-youth { background: rgba(156,107,255,0.12); color: #9C6BFF; }
+    .tag-parent { background: rgba(77,208,161,0.12); color: #4DD0A1; }
+
+    /* ===== HOW IT WORKS ===== */
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+    }
+    .how-step {
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .how-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: var(--yellow-dim);
+      border: 1px solid rgba(255,241,0,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .how-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--yellow);
+    }
+    .how-step h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .how-step p {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .how-connector {
+      display: none; /* Could add connecting lines */
+    }
+
+    /* ===== DATA STRIP ===== */
+    .data-strip {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 0;
+    }
+    .data-strip .container {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+    .data-strip .body-lg { flex: 1; }
+    .data-source {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 8px;
+    }
+    .reach-visual {
+      flex-shrink: 0;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .reach-visual::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: var(--yellow);
+      transform: rotate(-87deg); /* ~0.82% of circle */
+    }
+    .reach-number {
+      font-family: 'Lilita One', sans-serif;
+      font-size: 36px;
+      color: var(--yellow);
+    }
+    .reach-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== VOICE SECTION ===== */
+    .voice-section {
+      text-align: center;
+    }
+    .phone-mockup {
+      width: 280px;
+      height: 500px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      margin: 48px auto 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .phone-mockup::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 24px;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+    .phone-call-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    .phone-call-icon svg {
+      width: 36px;
+      height: 36px;
+      stroke: #000;
+    }
+    .phone-text {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .phone-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      text-align: center;
+      padding: 160px 32px;
+      position: relative;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255,241,0,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section .headline-lg { margin-bottom: 24px; }
+    .cta-section .body-lg { max-width: 500px; margin: 0 auto 48px; }
+    .cta-footer {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ===== IRIS CHAT MODAL ===== */
+    .iris-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .iris-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .iris-chat-container {
+      width: 100%;
+      max-width: 560px;
+      height: 85vh;
+      max-height: 700px;
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .iris-modal.active .iris-chat-container {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Chat Header */
+    .iris-chat-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .iris-chat-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .iris-chat-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .iris-chat-avatar svg { width: 18px; height: 18px; }
+    .iris-chat-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .iris-chat-status {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .iris-close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .iris-close-btn:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+    .iris-close-btn svg { width: 18px; height: 18px; }
+
+    /* Persona Banner */
+    .iris-persona-banner {
+      padding: 14px 24px;
+      background: var(--yellow-dim);
+      border-bottom: 1px solid rgba(255,241,0,0.12);
+      font-size: 13px;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Chat Body */
+    .iris-chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+    .iris-msg {
+      max-width: 85%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.6;
+      animation: msgIn 0.3s ease both;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .iris-msg.bot {
+      background: rgba(255,255,255,0.06);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .iris-msg.user {
+      background: var(--yellow);
+      color: #000;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+      font-weight: 500;
+    }
+    .iris-msg.system {
+      align-self: center;
+      background: none;
+      color: var(--text-dim);
+      font-size: 13px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Suggestions */
+    .iris-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .iris-suggestions button {
+      background: rgba(255,241,0,0.08);
+      border: 1px solid rgba(255,241,0,0.15);
+      color: var(--yellow);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .iris-suggestions button:hover {
+      background: rgba(255,241,0,0.15);
+      border-color: rgba(255,241,0,0.3);
+    }
+
+    /* Typing indicator */
+    .iris-typing {
+      display: flex;
+      gap: 4px;
+      padding: 14px 18px;
+      align-self: flex-start;
+    }
+    .iris-typing span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      animation: typeDot 1.4s ease-in-out infinite;
+    }
+    .iris-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .iris-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typeDot {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Chat Input */
+    .iris-chat-input-row {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .iris-chat-input {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 12px 20px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .iris-chat-input:focus { border-color: rgba(255,241,0,0.3); }
+    .iris-chat-input::placeholder { color: rgba(255,255,255,0.25); }
+    .iris-send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .iris-send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255,241,0,0.3); }
+    .iris-send-btn svg { width: 20px; height: 20px; stroke: #000; }
+
+    /* Voice controls in chat */
+    .iris-chat-controls {
+      padding: 8px 24px;
+      display: flex;
+      gap: 16px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .iris-chat-controls button {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 0;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .iris-chat-controls button:hover { color: var(--text); }
+    .iris-chat-controls button.active { color: var(--yellow); }
+    .iris-chat-controls button svg { width: 14px; height: 14px; }
+
+    /* ===== FAB (floating) ===== */
+    .iris-fab {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 9999;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(255,241,0,0.3);
+      transition: all 0.3s;
+    }
+    .iris-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 30px rgba(255,241,0,0.4);
+    }
+    .iris-fab svg { width: 28px; height: 28px; stroke: #000; }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .what-grid { grid-template-columns: 1fr; gap: 48px; }
+      .demos-grid { grid-template-columns: 1fr; }
+      .demos-row-2 { grid-template-columns: 1fr; }
+      .how-steps { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr; }
+      .data-strip .container { flex-direction: column; text-align: center; }
+      #journey .container > div:last-child { grid-template-columns: 1fr !important; }
+      .nav-links { display: none; }
+      .section { padding: 100px 0; }
+      .iris-chat-container { max-width: 100%; height: 100vh; max-height: none; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">
+      <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg" alt="CNIB" onerror="this.outerHTML='<span style=&quot;font-family:Lilita One;font-size:20px;color:#fff&quot;>CNIB</span>'">
+      <span class="nav-wordmark">IRIS</span>
+      <span style="font-size:11px;color:var(--text-dim);font-weight:400;margin-left:4px;letter-spacing:0.3px">Your sight loss navigator</span>
+    </div>
+    <div class="nav-links">
+      <a href="#demos">Live Demos</a>
+      <a href="#journey">Journeys</a>
+      <a href="#how">How It Works</a>
+      <a href="#voice">Voice</a>
+      <button class="nav-cta" onclick="openChat('general')">Try Iris</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="iris-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </div>
+    <h1 class="headline-xl hero-title">Meet <span class="accent">Iris</span></h1>
+    <p style="font-size:clamp(16px,2vw,20px);color:var(--yellow);font-weight:500;letter-spacing:1px;margin-bottom:16px;opacity:0.9">Your Personal Sight Loss Navigator</p>
+    <p class="body-lg hero-sub">She knows every CNIB program, understands your diagnosis, your life stage, and your fears. She connects you to what actually helps — at 2am or 2pm.</p>
+    <div class="hero-cta-row">
+      <button class="btn-primary" onclick="openChat('general')">Start a conversation</button>
+      <a href="#demos" class="btn-ghost">See live demos</a>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-number">1.5M</div>
+        <div class="stat-label">Canadians with sight loss</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">13,000</div>
+        <div class="stat-label">Connected to CNIB today</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">&lt;1%</div>
+        <div class="stat-label">Reached</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT IS IRIS -->
+  <section class="section" id="what">
+    <div class="container">
+      <div class="what-grid">
+        <div class="what-text reveal">
+          <span class="label">What is Iris</span>
+          <h2 class="headline-md" style="margin-top:16px">Think Alexa, but for navigating life with vision loss.</h2>
+          <p class="body-lg">Iris is a personal AI navigator that understands where someone is in their sight loss journey and connects them to the right CNIB programs, people, and resources. Not a chatbot. Not a search bar. A guide that listens, learns, and acts.</p>
+          <p class="body-lg" style="margin-top:16px">She can answer questions a newly diagnosed person is afraid to ask at 2am. She can reconnect a lapsed member who didn't know Guide Dogs was even an option. She can call a senior who would never open an app.</p>
+        </div>
+        <div class="what-visual reveal">
+          <div class="chat-preview">
+            <div class="chat-bubble bot" style="animation-delay:0.1s">Hi Sarah. I'm Iris, your navigator at CNIB. I understand you were recently diagnosed with RP. That's a lot to process. I'm here whenever you're ready.</div>
+            <div class="chat-bubble user" style="animation-delay:0.3s">I don't even know what questions to ask</div>
+            <div class="chat-bubble bot" style="animation-delay:0.5s">That's completely okay. Most people feel exactly that way. Let me start with the things I wish someone had told me on day one...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DEMOS -->
+  <section class="section" id="demos" style="background: var(--bg-card);">
+    <div class="container">
+      <div style="text-align:center" class="reveal">
+        <span class="label">Live Interactive Demos</span>
+        <h2 class="headline-lg" style="margin-top:16px">Three people. Three journeys.<br><span class="accent">One navigator.</span></h2>
+        <p class="body-lg" style="max-width:600px; margin:24px auto 0">Click any scenario below. Iris will respond in real time as if she's meeting this person for the first time. This is a working prototype.</p>
+      </div>
+
+      <div class="demos-grid">
+        <!-- Sarah -->
+        <div class="demo-card reveal" onclick="openChat('sarah')">
+          <div class="demo-avatar" style="background: rgba(255,87,87,0.12);">
+            <span>👩</span>
+          </div>
+          <h3>Sarah</h3>
+          <div class="demo-age">34, Toronto. Marketing manager.</div>
+          <p>Diagnosed with retinitis pigmentosa two weeks ago. Terrified. Searching for answers at 2am. Doesn't think of herself as blind. Has never heard of CNIB.</p>
+          <span class="demo-tag tag-new">New to sight loss</span>
+        </div>
+
+        <!-- David -->
+        <div class="demo-card reveal" onclick="openChat('david')">
+          <div class="demo-avatar" style="background: rgba(255,171,64,0.12);">
+            <span>👨‍🦳</span>
+          </div>
+          <h3>David</h3>
+          <div class="demo-age">67, Ottawa. Retired teacher.</div>
+          <p>Joined CNIB five years ago for Vision Mate after macular degeneration diagnosis. Did six months, then disappeared. His vision has gotten worse. He doesn't know half the programs that exist.</p>
+          <span class="demo-tag tag-lapsed">Lapsed member</span>
+        </div>
+
+        <!-- Priya -->
+        <div class="demo-card reveal" onclick="openChat('priya')">
+          <div class="demo-avatar" style="background: rgba(130,177,255,0.12);">
+            <span>👵</span>
+          </div>
+          <h3>Priya</h3>
+          <div class="demo-age">78, Mississauga. Lives alone.</div>
+          <p>Age-related macular degeneration, progressive. Her daughter is worried. Priya wouldn't download an app, but she answers her phone. Iris calls her.</p>
+          <span class="demo-tag tag-senior">Senior / phone-based</span>
+        </div>
+      </div>
+
+      <div class="demos-row-2">
+        <!-- Marcus -->
+        <div class="demo-card reveal" onclick="openChat('marcus')">
+          <div class="demo-avatar" style="background: rgba(156,107,255,0.12);">
+            <span>🧑</span>
+          </div>
+          <h3>Marcus</h3>
+          <div class="demo-age">16, Vancouver. Grade 11 student.</div>
+          <p>Born with Stargardt disease. Vision has been declining since age 10. Feels different from everyone at school. Doesn't want to be "the blind kid." Hates asking for help.</p>
+          <span class="demo-tag tag-youth">Youth / identity</span>
+        </div>
+
+        <!-- Fatima -->
+        <div class="demo-card reveal" onclick="openChat('fatima')">
+          <div class="demo-avatar" style="background: rgba(77,208,161,0.12);">
+            <span>👩‍👧</span>
+          </div>
+          <h3>Fatima</h3>
+          <div class="demo-age">41, Calgary. Mother of Amir, age 7.</div>
+          <p>Amir was just diagnosed with retinoblastoma. He'll lose vision in one eye. Fatima is devastated and searching for answers — for him, for school, for their family. She needs to know he'll be okay.</p>
+          <span class="demo-tag tag-parent">Parent of diagnosed child</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="container">
+      <div style="text-align:center" class="reveal">
+        <span class="label">How It Works</span>
+        <h2 class="headline-lg" style="margin-top:16px">Three steps to connection.</h2>
+      </div>
+      <div class="how-steps">
+        <div class="how-step reveal">
+          <div class="how-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <h3>You talk to Iris</h3>
+          <p>Text, voice, or phone call. Iris meets people where they are. No downloads. No forms. Just a conversation.</p>
+        </div>
+        <div class="how-step reveal">
+          <div class="how-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <h3>Iris understands your situation</h3>
+          <p>Diagnosis, life stage, concerns, goals. Iris builds a picture of what matter</h2>you right now, not a generic intake form.</p>
+        </div>
+        <div class="how-step reveal">
+          <div class="how-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+          </div>
+          <h3>Connected to the right help</h3>
+          <p>Programs, mentors, technology, community. Not everything CNIB offers. The specific things that match this person, right now.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBER JOURNEY -->
+  <section class="section" id="journey" style="background: var(--bg-card);">
+    <div class="container">
+      <div style="text-align:center" class="reveal">
+        <span class="label">The Member Journey</span>
+        <h2 class="headline-lg" style="margin-top:16px">Every person. A different path.<br><span class="accent">One intelligent system.</span></h2>
+        <p class="body-lg" style="max-width:640px; margin:24px auto 0">Iris doesn't follow a script. She maps a unique journey based on diagnosis, life stage, emotional readiness, and goals. Here's what that looks like.</p>
+      </div>
+
+      <div style="margin-top:64px; display:grid; grid-template-columns:1fr 1fr; gap:32px;">
+        <!-- Journey: New Diagnosis -->
+        <div class="reveal" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:36px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF5757,transparent);"></div>
+          <div style="font-size:13px;font-weight:600;color:#FF5757;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">New Diagnosis Journey</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,87,87,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#FF5757;">1</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">First Contact</strong> — Iris listens. No intake forms. Understands diagnosis, fears, life context.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(255,87,87,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,87,87,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#FF5757;">2</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Emotional Support</strong> — Peer counseling referral. Vision Mate match. "You're not alone."</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(255,87,87,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,87,87,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#FF5757;">3</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Practical Tools</strong> — Technology assessment. Lending library. Phone accessibility setup.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(255,87,87,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,87,87,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#FF5757;">4</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Life Navigation</strong> — Employment rights. Driving assessment. Workplace accommodations.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(255,87,87,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,87,87,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#FF5757;">5</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Long-term Connection</strong> — Community. Sports. Advocacy. From member to champion.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Journey: Senior / Phone-Based -->
+        <div class="reveal" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:36px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#82B1FF,transparent);"></div>
+          <div style="font-size:13px;font-weight:600;color:#82B1FF;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Senior / Phone Journey</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(130,177,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#82B1FF;">1</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Warm Outreach</strong> — Iris calls. Warm, unhurried. No pressure. Builds trust.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(130,177,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(130,177,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#82B1FF;">2</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Safety Assessment</strong> — Falls, kitchen, reading, isolation. Identifies urgent needs.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(130,177,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(130,177,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#82B1FF;">3</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Home Visit</strong> — Rehabilitation specialist visits. Magnifiers, lighting, safety modifications.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(130,177,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(130,177,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#82B1FF;">4</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Follow-up Calls</strong> — Iris checks in regularly. Adjusts support. Connects to community.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(130,177,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(130,177,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#82B1FF;">5</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Independence Maintained</strong> — Staying home safely. Connected. Confident. Empowered.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Journey: Youth -->
+        <div class="reveal" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:36px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#9C6BFF,transparent);"></div>
+          <div style="font-size:13px;font-weight:600;color:#9C6BFF;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Youth / Identity Journey</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(156,107,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#9C6BFF;">1</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Meet Them Where They Are</strong> — No lectures. No pity. Just real talk.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(156,107,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(156,107,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#9C6BFF;">2</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Tech as Equalizer</strong> — Phone setup, apps, tools that make school manageable.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(156,107,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(156,107,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#9C6BFF;">3</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Peer Connection</strong> — Meet other teens who get it. No explanations needed.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(156,107,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(156,107,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#9C6BFF;">4</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Sports & Activities</strong> — Goalball, cycling, recreation. Belonging through doing.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(156,107,255,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(156,107,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#9C6BFF;">5</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Career Launchpad</strong> — Venture Studio. Employment prep. University planning.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Journey: Parent of Child -->
+        <div class="reveal" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:36px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4DD0A1,transparent);"></div>
+          <div style="font-size:13px;font-weight:600;color:#4DD0A1;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Parent / Family Journey</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(77,208,161,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#4DD0A1;">1</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Family Support</strong> — Iris supports the parent first. Because they need it most.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(77,208,161,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(77,208,161,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#4DD0A1;">2</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">School Advocacy</strong> — Accommodation planning. Teacher training. Legal rights.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(77,208,161,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(77,208,161,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#4DD0A1;">3</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Child Programs</strong> — Tech training for kids. Adapted recreation. Peer groups.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(77,208,161,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(77,208,161,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#4DD0A1;">4</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Parent Network</strong> — Connect with families who've been here. You're not alone.</div>
+            </div>
+            <div style="width:1px;height:8px;background:rgba(77,208,161,0.2);margin-left:16px;"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(77,208,161,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#4DD0A1;">5</div>
+              <div style="font-size:14px;color:var(--text-body);"><strong style="color:var(--text);">Growing Together</strong> — As the child grows, Iris adapts. Teen programs. Career prep.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <div class="data-strip">
+    <div class="container">
+      <div>
+        <p class="body-lg">No blindness organization globally has cracked past single-digit reach. CNIB serves fewer than 1% of Canadians with sight loss. The gap isn't awareness alone. It's that no one has built a system to find, engage, and retain the other 99%.</p>
+        <p class="data-source">Sources: CNIB Foundation Annual Report 2024-2025. EY-Audited Non-Consolidated Financial Statements, FY2025.</p>
+      </div>
+      <div class="reach-visual">
+        <div class="reach-number">&lt;1%</div>
+        <div class="reach-label">Reached</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICE -->
+  <section class="section voice-section" id="voice">
+    <div class="container">
+      <div class="reveal">
+        <span class="label">Voice Navigator</span>
+        <h2 class="headline-lg" style="margin-top:16px">Not everyone uses a screen.<br><span class="accent">Iris also calls.</span></h2>
+        <p class="body-lg" style="max-width:560px; margin:24px auto 0">For seniors, people with limited tech access, and anyone who would never open an app. Iris reaches them by phone with the same empathy, the same knowledge, the same personalization.</p>
+      </div>
+      <div class="phone-mockup reveal">
+        <div class="phone-call-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div class="phone-text">Iris is calling...</div>
+        <div class="phone-sub">CNIB Member Navigator</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="reveal">
+        <span class="label">Ready?</span>
+        <h2 class="headline-lg" style="margin-top:16px"><span class="accent">Iris</span> is a prototype today.<br>She could reach millions tomorrow.</h2>
+        <p class="body-lg">This is a working demo of what personalized AI navigation could look like for CNIB members. The technology exists. The data is clear. The only question is when to start.</p>
+        <button class="btn-primary" onclick="openChat('general')" style="margin-top:48px">Talk to Iris</button>
+      </div>
+      <div class="cta-footer">
+        Prepared for Angela Bonfanti, President & CEO, CNIB Foundation · April 2026<br>
+        jacobcharendoff@gmail.com
+      </div>
+    </div>
+  </section>
+
+  <!-- FAB -->
+  <button class="iris-fab" onclick="openChat('general')" aria-label="Talk to Iris">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+  </button>
+
+  <!-- IRIS CHAT MODAL -->
+  <div class="iris-modal" id="irisModal">
+    <div class="iris-chat-container">
+      <div class="iris-chat-header">
+        <div class="iris-chat-header-left">
+          <div class="iris-chat-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="iris-chat-name">Iris</div>
+            <div class="iris-chat-status" id="irisStatus">Powered by CNIB</div>
+          </div>
+        </div>
+        <button class="iris-close-btn" onclick="closeChat()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="iris-persona-banner" id="irisBanner" style="display:none"></div>
+      <div class="iris-chat-body" id="irisChatBody"></div>
+      <div class="iris-chat-controls">
+        <button id="irisVoiceBtn" class="active" onclick="toggleVoice()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+          Voice
+        </button>
+        <button id="irisMicBtn" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/></svg>
+          Mic
+        </button>
+      </div>
+      <div class="iris-chat-input-row">
+        <input type="text" class="iris-chat-input" id="irisChatInput" placeholder="Ask Iris anything..." autocomplete="off">
+        <button class="iris-send-btn" onclick="sendIrisMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== SCROLL REVEAL =====
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ===== IRIS CHAT ENGINE =====
+    const modal = document.getElementById('irisModal');
+    const chatBody = document.getElementById('irisChatBody');
+    const chatInput = document.getElementById('irisChatInput');
+    const banner = document.getElementById('irisBanner');
+    const statusEl = document.getElementById('irisStatus');
+    let currentScenario = null;
+    let conversationStep = 0;
+    let voiceEnabled = true;
+
+    // TTS
+    let cachedVoice = null;
+    let currentUtterance = null;
+    let speechQueue = [];
+    let isSpeechQueueRunning = false;
+
+    function getBestVoice() {
+      if (cachedVoice) return cachedVoice;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = ['Ava (Premium)', 'Ava (Enhanced)', 'Samantha (Enhanced)', 'Samantha (Premium)',
+        'Google UK English Female', 'Microsoft Aria Online', 'Samantha', 'Karen'];
+      for (const name of preferred) {
+        cachedVoice = voices.find(v => v.name.includes(name));
+        if (cachedVoice) return cachedVoice;
+      }
+      cachedVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+      if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en'));
+      return cachedVoice;
+    }
+
+    function speakText(text) {
+      if (!voiceEnabled) return;
+      window.speechSynthesis.cancel();
+      const plain = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').trim();
+      if (!plain) return;
+      const sentences = plain.match(/[^.!?]+[.!?]+/g) || [plain];
+      speechQueue = sentences;
+      processSpeechQueue();
+    }
+
+    async function processSpeechQueue() {
+      if (isSpeechQueueRunning) return;
+      isSpeechQueueRunning = true;
+      while (speechQueue.length > 0) {
+        const sentence = speechQueue.shift();
+        try { await speakSentence(sentence); }
+        catch(e) { break; }
+        if (speechQueue.length > 0) await new Promise(r => setTimeout(r, 80 + Math.random() * 70));
+      }
+      isSpeechQueueRunning = false;
+    }
+
+    function speakSentence(text) {
+      return new Promise((resolve, reject) => {
+        const synth = window.speechSynthesis;
+        if (!synth) { reject(); return; }
+        const utt = new SpeechSynthesisUtterance(text);
+        currentUtterance = utt;
+        const voice = getBestVoice();
+        if (voice) utt.voice = voice;
+        utt.rate = 0.94; utt.pitch = 1.0; utt.volume = 1;
+        let keepAlive = setInterval(() => { synth.pause(); synth.resume(); }, 10000);
+        utt.onend = () => { clearInterval(keepAlive); currentUtterance = null; resolve(); };
+        utt.onerror = (e) => { clearInterval(keepAlive); currentUtterance = null; resolve(); };
+        synth.speak(utt);
+      });
+    }
+
+    function stopSpeaking() {
+      speechQueue = [];
+      isSpeechQueueRunning = false;
+      currentUtterance = null;
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+
+    // Speech Recognition
+    let recognition = null;
+    let isListening = false;
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      recognition.onresult = (event) => {
+        let final = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) final += event.results[i][0].transcript;
+        }
+        if (final) {
+          setTimeout(() => handleUserMessage(final.trim()), 300);
+        }
+      };
+      recognition.onend = () => { isListening = false; document.getElementById('irisMicBtn').classList.remove('active'); };
+    }
+
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      const btn = document.getElementById('irisVoiceBtn');
+      btn.classList.toggle('active', voiceEnabled);
+      if (!voiceEnabled) stopSpeaking();
+    }
+
+    function toggleMic() {
+      if (!recognition) return;
+      if (isListening) { recognition.stop(); }
+      else { recognition.start(); isListening = true; document.getElementById('irisMicBtn').classList.add('active'); stopSpeaking(); }
+    }
+
+    // Pre-load voices
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // ===== SCENARIOS =====
+    const scenarios = {
+      general: {
+        banner: null,
+        greeting: "Hi. I'm Iris, your personal navigator for life with sight loss. I'm powered by CNIB, which means I know every program, service, and resource available to Canadians with vision loss. What's on your mind?",
+        suggestions: ["What can you help with?", "Tell me about CNIB programs", "I was just diagnosed"]
+      },
+      sarah: {
+        banner: "🔴 Scenario: Sarah, 34, newly diagnosed with retinitis pigmentosa",
+        greeting: "Hi Sarah. I'm Iris. I understand this is probably a really difficult time. Being diagnosed with RP two weeks ago... there's no playbook for how you're supposed to feel right now. But I want you to know: you're not alone, and there's more support available than you might think. What's weighing on you most right now?",
+        suggestions: ["I'm scared about losing my vision", "Will I still be able to work?", "I don't even know what CNIB is"]
+      },
+      david: {
+        banner: "🟠 Scenario: David, 67, lapsed CNIB member. Last active 5 years ago.",
+        greeting: "David, welcome back. It's been a while since you were connected with us through Vision Mate. A lot has changed at CNIB since then, and I imagine a lot has changed for you too. How have things been going with your vision?",
+        suggestions: ["My vision has gotten worse", "What's new at CNIB?", "I didn't know there were other programs"]
+      },
+      priya: {
+        banner: "🔵 Scenario: Priya, 78, AMD, lives alone. Iris is calling her by phone.",
+        greeting: "Hello, Priya? This is Iris calling from CNIB. Your daughter Anita mentioned you might appreciate a call from us. I'm not trying to sell you anything, I promise. I just wanted to check in and see how you're doing. She mentioned your eyesight has been giving you some trouble lately?",
+        suggestions: ["Who is this again?", "My eyes are getting worse", "I don't need any help"]
+      },
+      marcus: {
+        banner: "🟣 Scenario: Marcus, 16, Stargardt disease since age 10. Feels isolated at school.",
+        greeting: "Hey Marcus. I'm Iris. I work with CNIB, but I'm not going to lecture you or anything. I know you've been dealing with Stargardt for a while now, and I just wanted to check in. High school is hard enough without your vision making everything more complicated. How are things going?",
+        suggestions: ["School is annoying", "I hate being different", "My friends don't get it"]
+      },
+      fatima: {
+        banner: "🟢 Scenario: Fatima, 41, mother of Amir (7) recently diagnosed with retinoblastoma.",
+        greeting: "Hi Fatima. I'm Iris, a navigator at CNIB. I understand your son Amir was recently diagnosed, and I want you to know: you're in the right place. I know this feels overwhelming. Before we talk about anything else, I want you to hear this — children are incredibly adaptive, and Amir has every chance of living a full, happy, independent life. How are you and your family holding up?",
+        suggestions: ["I'm terrified for him", "What about school?", "Will he be okay?"]
+      }
+    };
+
+    // Response trees for each scenario
+    const responses = {
+      sarah: {
+        "scared|losing|vision|afraid|terrified|worried": {
+          text: "That fear is completely valid, Sarah. RP is different for everyone — some people retain useful vision for decades, others progress faster. But here's what matter</right now: you're not facing this alone, and there's real support designed for exactly this moment. I want to suggest two things. First, Vision Mate — you'd be matched one-on-one with a trained volunteer who's already navigated what you're feeling. 1,488 people are in the program right now. Second, I'd recommend connecting with CNIB's peer counseling, because the emotional side of this is just as real as the clinical side. Would either of those feel right?",
+          suggestions: ["Tell me about Vision Mate", "I need emotional support first", "What does RP actually mean for my future?"]
+        },
+        "rp|retinitis|pigmentosa|what does it mean|future|progression": {
+          text: "I'll be honest with you. RP typically starts with difficulty seeing at night and gradually narrows your peripheral vision. But the word 'gradually' is key — for many people, this happens over years or even decades. Some people retain central vision well into their 60s or 70s. The research landscape is also changing fast. Gene therapy trials are underway, and retinal implant technology is advancing. Right now, the most impactful thing you can do is learn adaptive strategies early, while you have the most vision. CNIB's rehabilitation specialists can create a personalized plan. Want me to connect you?",
+          suggestions: ["Yes, connect me", "What about night vision now?", "Are there clinical trials I should know about?"]
+        },
+        "work|career|job|employed|boss": {
+          text: "Yes — most people with RP continue working for many years, and many throughout their entire careers. CNIB's Careers and Employment program helps with workplace accommodations, assistive technology setup, and even conversations with your employer if you need that support. Under the Accessible Canada Act and provincial laws like AODA, your employer has a legal obligation to accommodate you. You don't have to figure this out alone. 54% of Canadians with sight loss are employed, and that number goes up significantly with the right tools.",
+          suggestions: ["Do I have to tell my employer?", "What technology helps at work?", "What are my legal rights?"]
+        },
+        "tell employer|disclosure|boss know|rights|legal|accommodation": {
+          text: "You're not legally required to disclose your diagnosis — that's your choice. But if you want accommodations, you'll need to share some information. Here's the good news: under Canadian law, employers must provide reasonable accommodations. That could mean screen magnification software, adjusted lighting, flexible scheduling for medical appointments, or modified duties. CNIB has specialists who can help you have that conversation, or even sit in on it if you want. They also have a podcast called Know Your Rights that covers exactly this — it's even Law Society accredited. Want me to set up a call with the employment team?",
+          suggestions: ["Set up that call", "What about the Know Your Rights podcast?", "What technology helps at work?"]
+        },
+        "cnib|what is|who are|never heard": {
+          text: "CNIB is the Canadian National Institute for the Blind, but the name undersells it. It's not just for people who are fully blind. If you have any form of sight loss — progressive or not — CNIB has programs for you. Here's what's available: Vision Mate for peer mentoring, Mentor Match for lived-experience connections, a Technology Lending Library where you borrow devices for free, employment services, guide dog services, children and youth programs, sports and recreation, and advocacy work. About 12,000 people are actively connected, but there are 1.5 million Canadians who could benefit. That gap is exactly why I exist.",
+          suggestions: ["Vision Mate sounds good", "Tell me about the tech library", "How do I get started?"]
+        },
+        "vision mate|mentor|volunteer|matched": {
+          text: "Vision Mate pairs you one-on-one with a trained volunteer who understands what you're going through. It's not clinical — it's personal. They help with everything from practical tips to emotional support. Your mentor might text you before your next ophthalmology appointment to ask how you're feeling, or share which apps they've found most useful. 1,488 people are active in the program with 200+ mentor pairs. I can book an intake call for you — usually within a week. No pressure, just a conversation.",
+          suggestions: ["Book the intake call", "What about Mentor Match?", "I'm not ready yet"]
+        },
+        "not ready|need time|think about it|overwhelmed": {
+          text: "That is completely okay. There's no deadline here, Sarah. When you're ready — whether that's tomorrow or in three months — I'll be right here. In the meantime, I'll send you a short guide about RP that covers the basics: what to expect, what questions to ask your ophthalmologist, and a few things most people wish they'd known earlier. And you can always reach CNIB directly at 1-800-563-2642. They're genuinely good people.",
+          suggestions: ["Send me that guide", "Actually, I think I'm ready", "Can I come back to you later?"]
+        },
+        "tech|technology|device|lending|library|iphone|accessibility": {
+          text: "Here's something that surprises most people: about 90% of the accessibility features you need are already built into the phone in your pocket right now. VoiceOver on iPhone, TalkBack on Android — they're powerful and free. CNIB's Technology Lending Library lets you borrow devices like screen magnifiers, smart displays, and assistive tools at no cost. Try them in your real life before committing to anything. They also run training sessions. Most people tell me this is where they feel the most immediate, tangible impact. Want me to book a tech assessment?",
+          suggestions: ["Book a tech assessment", "What about work technology?", "Show me what's on my phone"]
+        },
+        "drive|driving|car|license": {
+          text: "This is one of the hardest questions, and I want to be straight with you. It depends on where your vision i</right now and how it progresses. In Canada, driving standards are set provincially, and you'll need to meet minimum visual field and acuity requirements. Your ophthalmologist can assess this. Some people with early RP drive safely for years. Others transition to alternative transportation. CNIB's orientation and mobility specialists can help you plan for either scenario — including learning transit systems, ride-sharing, and navigation tools. Want me to connect you with mobility services?",
+          suggestions: ["Connect me with mobility services", "What about transit?", "This is really hard to hear"]
+        },
+        "mental health|emotional|counseling|depressed|anxious|anxiety|sad": {
+          text: "Thank you for saying that out loud, Sarah. The emotional impact of a diagnosis like this is real and significant. Grief, anxiety, fear about the future — all of it is normal and valid. CNIB's peer counseling connects you with people who've been through this. And Vision Mate mentors often become someone you can be completely honest with about how you're feeling. If you need professional support, CNIB can also refer you to counselors who specialize in sight loss adjustment. You don't have to carry this alone.",
+          suggestions: ["Connect me with peer counseling", "I'd like a professional referral", "Vision Mate sounds right"]
+        },
+        "sign up|connect|ready|start|join|i'd like|book": {
+          text: "I'll make this easy. I'm going to connect you with CNIB's intake team — they'll set up a conversation at whatever pace works for you. Based on what you've told me, I'd recommend starting with a Vision Mate match and a technology assessment. No forms right now. Just a human who'll pick up where I'm leaving off. The number is 1-800-563-2642, or I can have someone reach out to you within 48 hours. What works better?",
+          suggestions: ["Have someone call me", "I'll call them", "What happens in the first call?"]
+        }
+      },
+      david: {
+        "worse|gotten worse|declining|can't see|struggling": {
+          text: "I'm sorry to hear that, David. Macular degeneration can be unpredictable, and I know it's frustrating when things you used to manage become harder. Since you were last with us five years ago, CNIB has expanded significantly. Here's what's new: a Technology Lending Library for trying devices at no cost, Mentor Match for peer support from someone with lived experience, expanded Guide Dogs services, and enhanced community programs — including virtual ones that didn't exist before. Have any specific daily activities been particularly affected?",
+          suggestions: ["Reading is really hard now", "Getting around is harder", "I feel pretty isolated"]
+        },
+        "new|changed|what's new|programs|didn't know": {
+          text: "Quite a lot since you were last connected. Beyond Vision Mate, there's now: the Technology Lending Library — borrow magnifiers, smart displays, and assistive devices at no cost. Mentor Match — different from Vision Mate because both people share the lived experience. Expanded Guide Dogs — the program has graduated 100+ teams since 2017. Sports and recreation programs. And virtual community programs you can access from home. Also, CNIB now has Access Labs for emerging tech innovation. Which sounds most relevant to where you are now?",
+          suggestions: ["The tech library", "Guide Dogs interests me", "What about community events?"]
+        },
+        "reading|trouble reading|can't read|newspaper|book": {
+          text: "Reading difficulty is the number one thing I hear from people with macular degeneration, and it's one of the most solvable. Desktop video magnifiers can enlarge text 2x to 60x. Handheld electronic magnifiers are portable. Text-to-speech tools can read your newspaper, mail, or books out loud. The tech lending library lets you try all of these at no cost before deciding what works. A lot of people tell me that one device changed their entire daily routine. I can book a technology assessment for you — usually scheduled within a week.",
+          suggestions: ["Book the tech assessment", "What about my phone?", "What else helps with AMD?"]
+        },
+        "isolated|lonely|alone|miss people|social": {
+          text: "That's real, David, and more common than you'd think. Vision loss can slowly shrink your world if you let it. CNIB runs community programs — both in-person in Ottawa and virtual. Mentor Match specifically connects you with someone who understands. There are social groups, recreational activities, and regular gatherings. Some people find that just having one reliable weekly connection changes everything. Want me to find what's running in the Ottawa area right now?",
+          suggestions: ["Yes, what's in Ottawa?", "Virtual programs sound easier", "Tell me about Mentor Match"]
+        },
+        "guide dog|dogs|getting around|mobility|navigate": {
+          text: "CNIB Guide Dogs has grown a lot. They've graduated over 100 guide dog teams since 2017 and even placed 39 buddy dogs. A guide dog isn't just mobility — people describe it as confidence, independence, and companionship all in one. The process includes a thorough matching based on your lifestyle, walking speed, and living situation. If a guide dog isn't right for you, there's also orientation and mobility training with white cane techniques and spatial navigation strategies. Want me to start a guide dog inquiry?",
+          suggestions: ["Start the guide dog inquiry", "Tell me about mobility training", "What's the time commitment?"]
+        },
+        "retired|retirement|age": {
+          text: "David, retirement doesn't mean CNIB has less to offer — if anything, it means more time to take advantage of what's available. Tech training, community programs, the lending library, sports and recreation, social groups. A lot of CNIB's most engaged members are retired. The question isn't about age. It's about what you want your daily life to look like. What does a good day look like for you right now?",
+          suggestions: ["I miss reading", "I want to get out more", "Connect me with community programs"]
+        },
+        "phone|smartphone|iphone|android|tablet": {
+          text: "Great question. Your phone is probably the most powerful accessibility tool you own, and most of its features are already built in. VoiceOver on iPhone or TalkBack on Android can read your screen out loud. Magnification gestures let you zoom into anything. CNIB's tech team can walk you through setting these up in about 30 minutes. They can also show you apps like Be My Eyes, which connects you to a volunteer who can see through your camera in real time. Want me to book a phone training session?",
+          suggestions: ["Book a phone session", "Tell me about Be My Eyes", "What other apps help?"]
+        },
+        "yes|connect|ready|set up|book|sign me up": {
+          text: "Consider it done. I'm going to have the CNIB Ottawa team reach out to you. Based on what you've told me, I'd suggest starting with a technology assessment and reconnecting with community programs. They'll call you within a couple of days. And David — I'm glad you came back. The programs have gotten a lot better since you were last here. The number if you want to call directly is 1-800-563-2642.",
+          suggestions: ["Thanks, Iris", "What should I expect?", "Anything else I should know?"]
+        }
+      },
+      priya: {
+        "who|this again|what is this|calling": {
+          text: "Of course, no confusion at all. My name is Iris, and I'm calling from CNIB — the Canadian National Institute for the Blind. Your daughter Anita reached out to us because she thought you might benefit from some of our services. I'm not a salesperson, I'm more like a navigator. I help people find support that makes daily life easier and safer. Would you be open to chatting for just a minute?",
+          suggestions: ["Okay, I can talk for a minute", "What kind of support?", "My daughter worries too much"]
+        },
+        "eyes|worse|can't see|blurry|hard to see|vision|trouble": {
+          text: "I hear you, Priya. A lot of people describe it just that way — things you used to do without thinking start getting harder. With macular degeneration, the central vision is what's affected first, so reading, recognizing faces, and detailed tasks get more difficult while your side vision stays longer. Can I ask, are there specific things that have gotten harder? Like reading, cooking, or getting around your home?",
+          suggestions: ["I can't read the newspaper anymore", "Cooking is getting dangerous", "I'm afraid of falling"]
+        },
+        "don't need|fine|no help|independent|manage": {
+          text: "I completely respect that, Priya. You sound like someone who values her independence, and nothing I'm describing would take that away. Actually, the whole point is to help you keep your independence for as long as possible. Simple things like magnifiers for reading, better lighting, markers on your stove dials. No nursing homes, no moving, no fuss. Just making your life at home work a little better. Would it be okay if I told you about just one thing that might help?",
+          suggestions: ["Okay, one thing", "What kind of modifications?", "Tell me about the magnifiers"]
+        },
+        "daughter|anita|worries": {
+          text: "She clearly cares about you very much. And from what she's told us, it sounds like you're managing well. She just wants to make sure you have access to support if you want it. Everything we talk about is completely your choice. I'm just here to let you know what's available. No strings attached. Would you like to hear about what might help with the things that are getting harder?",
+          suggestions: ["What's available?", "I do have trouble with reading", "My kitchen is getting harder"]
+        },
+        "reading|newspaper|can't read|labels|mail": {
+          text: "That's really common with macular degeneration, and there are simple solutions that make a big difference. CNIB has handheld magnifiers that enlarge text so you can read your newspaper again, large-print resources, and even talking devices that read your mail or labels out loud. A lot of people tell me the magnifier alone changed their entire day. We can send someone to your home in Mississauga to show you these tools — no cost, no obligation. Would that be okay?",
+          suggestions: ["Someone would come to my home?", "What about cooking?", "How much does it cost?"]
+        },
+        "cooking|kitchen|stove|dangerous|burn": {
+          text: "That's really important, Priya, and I'm glad you mentioned it. There are simple tools that make the kitchen much safer: talking thermometers, high-contrast cutting boards so you can see what you're cutting, bump dots or tactile markers for your stove dials so you can feel the settings. CNIB can send a rehabilitation specialist right to your home in Mississauga to walk through your kitchen and suggest adjustments. Everything is designed to keep you cooking independently and safely. Shall I arrange that visit?",
+          suggestions: ["Yes, please", "What about my bathroom?", "I need to ask my daughter first"]
+        },
+        "falling|fall|afraid|stairs|trip": {
+          text: "That's the number one concern, and the good news is most falls are preventable with some straightforward changes. Better lighting in hallways, contrast strips on stair edges, removing trip hazards, adding grab bars where needed. CNIB has orientation and mobility specialists who come to your home and assess everything room by room. It's free and it makes a real difference. Most people feel much more confident moving around their home after just one visit. Can I schedule that for you?",
+          suggestions: ["That would be great", "I don't want strangers in my home", "Let me talk to Anita first"]
+        },
+        "home|come to|visit|someone": {
+          text: "Yes, absolutely. A CNIB specialist would come to your home at a time that works for you. They'll take a look at your space, ask what's been giving you trouble, and suggest practical solutions. Most people feel much more confident after just one visit. And Priya, these are warm, experienced people — they do this because they care. There's no cost and no obligation. Shall I set that up?",
+          suggestions: ["Yes please", "What time would work?", "Can my daughter be there?"]
+        },
+        "cost|pay|money|expensive|free": {
+          text: "Everything I've mentioned is free, Priya. CNIB is a nonprofit. The home visit, the magnifiers to try, the specialist assessment — no cost to you. That's what they're there for.",
+          suggestions: ["That's wonderful", "Okay, set up the visit", "What else is available?"]
+        },
+        "daughter|anita|be there|check with": {
+          text: "Absolutely, Anita is welcome to be there. In fact, many families find the visit helpful because everyone learns together. You can talk to her and decide on a time that works for both of you. I'll have our team follow up with a call in the next day or two to schedule it. They'll call you on this number. Sound okay?",
+          suggestions: ["That sounds perfect", "Thank you, Iris", "Will you call me again?"]
+        },
+        "yes|please|sure|okay|sounds good|great|set it up|perfect": {
+          text: "Wonderful, Priya. I'll have our team in the Mississauga area reach out to you within the next day or two to find a time that works. They'll call you on this number. And if you ever have questions in the meantime, you can call us anytime at 1-800-563-2642 — a real person will answer. It was really lovely talking with you.",
+          suggestions: ["Thank you, Iris", "Will you call me again?", "Goodbye"]
+        },
+        "thank you|thanks|goodbye|bye": {
+          text: "It was my pleasure, Priya. And yes, I'll check in with you again in a couple of weeks to see how the visit went and if there's anything else that would help. Take care of yourself, and give Anita a hug for caring enough to connect us. Goodbye for now.",
+          suggestions: []
+        }
+      },
+      marcus: {
+        "school|annoying|class|classes|teacher|teachers": {
+          text: "Yeah, I get it. School's already a lot without dealing with vision stuff on top of it. Can I ask — is it the actual classwork that's frustrating, or more the social side? Because CNIB has different support for each. On the academic side, there's assistive tech that can make reading textbooks and seeing whiteboards way easier. And on the social side... honestly, there are other people your age going through the same thing, and connecting with them might make school feel less like you're the only one.",
+          suggestions: ["It's both honestly", "The classwork is hard", "I don't want to be treated differently"]
+        },
+        "different|hate|only one|blind kid|normal|weird|stare": {
+          text: "That's a really normal way to feel, and I'm not going to tell you to just 'embrace it' or whatever. Being 16 and feeling different from everyone else is genuinely hard. Here's what I will say: there are other teens with Stargardt's and other conditions who feel exactly like you do. CNIB has a Children and Youth program where you can connect with them. Not in a weird 'support group' way — more like meeting people who actually get it without you having to explain everything. Some of the people I've connected have become real friends. Interested?",
+          suggestions: ["Maybe... what's it like?", "I don't want a support group", "Are there people my age with Stargardt's?"]
+        },
+        "friends|don't get it|don't understand|explain|tired of explaining": {
+          text: "That's exhausting. Having to explain your vision to people who will never fully understand it is a specific kind of tired that most people don't recognize. You shouldn't have to be an educator about your own condition every day. CNIB's youth program has events and online communities specifically for teens with sight loss. Not to replace your current friends — they probably do care even if they don't get it — but to give you a space where nobody needs the explanation. Does that sound like something you'd try?",
+          suggestions: ["What kind of events?", "Is there an online community?", "I just want to be normal"]
+        },
+        "help|asking for help|hate asking|independent|do it myself": {
+          text: "I hear that. Nobody wants to ask for help, especially at 16. But here's a different way to think about it: using accessibility tools isn't asking for help. It's using the right equipment. An athlete wears cleats. A photographer uses a lens. You use tools that match your vision. CNIB's Technology program has stuff like screen magnifiers, phone accessibility features, and apps that can read text in real time from your camera. It's not about needing help — it's about being smart enough to use what's available. Want to see what tech exists?",
+          suggestions: ["What tech would help me?", "What about my phone?", "Do other kids use this stuff?"]
+        },
+        "tech|technology|phone|apps|iphone|android|computer": {
+          text: "Okay, this is actually the good stuff. Your phone already has crazy powerful accessibility features built in. Magnification gestures can zoom anything on screen. VoiceOver or TalkBack reads the screen out loud. And there are apps like Seeing AI from Microsoft — point your camera at a whiteboard or textbook page and it reads it to you instantly. Be My Eyes connects you to a volunteer who can see through your camera in real time. CNIB's tech team can set all of this up on your phone in one session. It takes about 30 minutes and it's free. Want me to set that up?",
+          suggestions: ["Set it up", "What about for school specifically?", "This actually sounds useful"]
+        },
+        "stargardt|my condition|what's going to happen|future|worse": {
+          text: "I want to be real with you, Marcus. Stargardt's affects central vision, which is what you use for reading, recognizing faces, and detail work. It usually stabilizes at some point — it doesn't typically lead to total blindness. Your peripheral vision usually stays. That said, everyone's different, and working with a specialist to understand your specific progression is important. What I can tell you is that people with Stargardt's go to university, have careers, play sports, travel, date, and live completely full lives. The tools are better now than they've ever been. Want me to connect you with someone your age who's been through this?",
+          suggestions: ["Yeah, I'd like that", "What careers can I still have?", "This is a lot"]
+        },
+        "career|job|future|university|college|what can I do": {
+          text: "Honestly? Almost anything. I know that sounds like a line, but CNIB's employment data shows that people with sight loss who get the right support and tools have careers across every industry. Tech, law, teaching, music, trades, business. The key is getting comfortable with assistive technology early — which at 16, you're perfectly positioned to do. CNIB's Venture Studio is an entrepreneurship accelerator for people with sight loss if you've ever thought about starting something. And their employment team can help with career exploration and co-op placements. What are you interested in?",
+          suggestions: ["I like tech stuff", "I want to go to university", "I haven't thought about it yet"]
+        },
+        "sports|recreation|active|play|team": {
+          text: "CNIB has sports and recreation programs that are actually cool. We're talking goalball, tandem cycling, running groups, skiing. These aren't watered-down versions of sports — they're real, competitive, and social. A lot of people find it's where they make their best connections because everyone there just gets it. No explanations needed. Want me to find what's running near Vancouver?",
+          suggestions: ["What's goalball?", "Find programs near me", "This sounds better than I expected"]
+        },
+        "maybe|try|sounds good|set up|connect|yeah": {
+          text: "Cool. I'm going to connect you with CNIB's Youth team in Vancouver. They'll reach out in a way that works for you — text, call, whatever you prefer. No pressure, no awkward group therapy vibes. Just people who know what it's like and can show you what's available. And Marcus — the fact that you're even having this conversation says a lot about you. Most people don't reach out at 16. You can always come back and talk to me anytime.",
+          suggestions: ["Thanks, Iris", "Can they text me?", "I might come back later"]
+        }
+      },
+      fatima: {
+        "terrified|scared|afraid|devastated|worried|can't stop crying": {
+          text: "Fatima, what you're feeling is exactly what any loving parent would feel. I want you to know that. The fear, the grief, the uncertainty — it's all valid and you don't have to minimize any of it. But I also want to give you some hope based on real experience: children who lose vision early are remarkably adaptive. Their brains are still developing, and they build compensatory skills naturally. Amir at age 7 is in an incredibly strong position to adapt. CNIB's Children and Youth program works with families exactly like yours. Can I tell you what that support looks like?",
+          suggestions: ["Yes, please", "Will he be okay at school?", "I don't know where to start"]
+        },
+        "school|education|classroom|learn|teacher|read|write": {
+          text: "This is one of the most important areas, and there's really good support available. CNIB works with schools to ensure children with sight loss have the accommodations they need: large print materials, assistive technology, seating arrangements, and teacher training. Under provincial education law, the school board is required to provide these accommodations. CNIB also has specialists who can assess Amir's specific needs and advocate directly with his school. Many children with monocular vision (one eye) do extremely well academically with the right setup. Want me to connect you with CNIB's education support team?",
+          suggestions: ["Yes, connect us", "What about his social life at school?", "What accommodations would he need?"]
+        },
+        "okay|will he be okay|normal life|future|grow up": {
+          text: "Yes, Fatima. I want to say that clearly: yes. Children who adapt to sight loss early live full, independent, joyful lives. They go to school, make friends, play sports, go to university, build careers, have families. Amir is seven — his brain is extraordinarily plastic right now, and he will develop skills and strategies that become second nature to him. CNIB works with hundreds of families, and the stories I could tell you would give you so much hope. The most important thing right now is connecting him with the right support early. That's where CNIB's Children and Youth team comes in. Can I set up a call for your family?",
+          suggestions: ["Please set up that call", "What programs are there for kids?", "What should I tell Amir?"]
+        },
+        "tell amir|explain|how do I tell|what do I say|son": {
+          text: "That's one of the hardest conversations a parent can have. Here's what CNIB's child specialists generally recommend: be honest in an age-appropriate way. Children are perceptive — Amir probably already knows something is happening. Use simple language: 'One of your eyes needs extra help, and there are people who are going to help us make sure you can still do everything you love.' Focus on what he CAN do, not what he can't. Avoid showing fear — children read their parents' emotions more than their words. CNIB can also help you prepare for this conversation specifically. Their family support counselors do this regularly. Would that help?",
+          suggestions: ["Yes, I'd like that support", "What about his siblings?", "What programs help kids his age?"]
+        },
+        "kids|children|youth|programs|activities|child": {
+          text: "CNIB's Children and Youth program is specifically designed for families like yours. It includes: technology training adapted for kids — teaching Amir to use accessibility features on tablets and phones in a way that feels natural, not clinical. Recreation and sports programs where he can meet other kids with sight loss. Family support counseling for you, Amir, and your whole family. School advocacy and accommodation planning. And peer connections for parents — because you need support too, Fatima. Other moms and dads who've been where you are. Want me to start with the family intake call?",
+          suggestions: ["Start with the intake call", "Tell me about the parent connections", "What about sports for him?"]
+        },
+        "parent|other parents|families|support for me|I need help too": {
+          text: "Absolutely, and I'm glad you said that. This impacts the whole family, not just Amir. CNIB connects parents of children with sight loss through peer support networks. You can talk to other moms who've been through exactly this — the diagnosis, the school conversations, the worry at 3am. Some of them will tell you it gets so much easier, because it does. There's also family counseling available. You don't have to be strong all the time, Fatima. Taking care of yourself is taking care of Amir. Want me to connect you with the parent support network?",
+          suggestions: ["Yes, please", "What about family counseling?", "How soon can we start?"]
+        },
+        "retinoblastoma|cancer|tumor|treatment|surgery": {
+          text: "I want to be thoughtful here, Fatima. Retinoblastoma is a serious diagnosis, but it's also one of the most treatable childhood cancers — survival rates are above 95% in Canada. Your medical team will guide the treatment decisions. What CNIB focuses on is everything that comes after and alongside the medical journey: helping Amir adapt to changes in his vision, ensuring school is set up properly, connecting your family with support, and making sure he grows up knowing that his vision doesn't limit who he can become. CNIB works alongside your medical team, not instead of them. Does that make sense?",
+          suggestions: ["That helps, thank you", "What about after treatment?", "Connect us with CNIB"]
+        },
+        "sports|play|active|friends|social": {
+          text: "Great news here. Children with monocular vision can absolutely play sports and be active. Depth perception adjustments take time, but kids adapt remarkably fast. CNIB runs adapted sports programs including goalball, tandem cycling, and swimming. But honestly, many kids with vision in one eye also play mainstream sports with their peers — they just develop different spatial awareness strategies. CNIB can advise on which activities are best and help with any school gym class accommodations. The social piece is often the most valuable — meeting other kids who get it. Want me to find programs near Calgary?",
+          suggestions: ["Find programs near Calgary", "What about school gym class?", "This gives me hope"]
+        },
+        "start|ready|connect|call|set up|please|yes": {
+          text: "I'm setting this in motion right now. CNIB's Children and Youth team in Calgary will reach out to you within 48 hours to schedule a family intake call. They'll assess Amir's needs, connect you with parent support, and start building a plan for school and daily life. The number if you want to call directly is 1-800-563-2642 — tell them Iris referred you. Fatima, you're doing exactly the right thing by reaching out. Amir is lucky to have a mom who acts this quickly. You're going to be okay.",
+          suggestions: ["Thank you so much, Iris", "What should I prepare for the call?", "Can I come back if I have questions?"]
+        },
+        "thank|grateful|hope|better": {
+          text: "You're welcome, Fatima. And I mean this: you can come back to me anytime. Day or night. If you have a question at 2am about something Amir's struggling with, or if you just need to hear that it's going to be okay — I'm here. This is what I was built for. Give Amir a hug from me. He's going to do amazing things.",
+          suggestions: []
+        }
+      },
+      general: {
+        "help|what can you|what do you": {
+          text: "I can help with a lot. If you or someone you know is living with sight loss, I can connect you with CNIB programs that match your specific situation. That includes: Vision Mate mentoring, Mentor Match peer support, the Technology Lending Library, employment services, guide dog services, children and youth programs, sports and recreation, orientation and mobility training, and advocacy support. What brings you here?",
+          suggestions: ["I was just diagnosed", "I know someone who needs help", "Tell me about the programs"]
+        },
+        "diagnosed|just found out|new to this|recently": {
+          text: "I'm glad you found me. A new diagnosis can feel overwhelming, and most people don't know where to start. That's exactly what I'm here for. Can you tell me a bit about your situation? Your diagnosis, your age, what you're most worried about — whatever feels right. The more I understand, the better I can point you to the specific support that matters.",
+          suggestions: ["Retinitis pigmentosa", "Macular degeneration", "Glaucoma", "My child was diagnosed"]
+        },
+        "retinitis|rp|pigmentosa": {
+          text: "RP affects peripheral vision first and can progress to tunnel vision over time, but the rate varies enormously. Some people retain useful central vision for decades. The key is preparing now — learning adaptive strategies, getting comfortable with assistive technology, and connecting with people who understand the journey. CNIB's Vision Mate program and rehabilitation services are specifically built for this. Want me to walk you through the support that's available?",
+          suggestions: ["Yes, walk me through it", "What technology helps with RP?", "How fast does it progress?"]
+        },
+        "macular|amd|degeneration": {
+          text: "Macular degeneration affects central vision — reading, faces, detail work — while typically preserving peripheral vision. The wet form can sometimes be slowed with injections, and the dry form progresses more gradually. Regardless of type, there's a lot that can help right now: magnification devices, lighting modifications, assistive technology, and daily living adaptations. CNIB's rehabilitation specialists and Technology Lending Library are specifically designed for this. Where would you like to start?",
+          suggestions: ["Technology and magnifiers", "Daily living help", "Connect me with CNIB"]
+        },
+        "glaucoma": {
+          text: "Glaucoma is often called the 'silent thief' because it takes peripheral vision gradually, and many people don't notice until significant vision is lost. The medical side — eye drops, treatments — is managed by your ophthalmologist. What CNIB helps with is everything else: orientation and mobility training to navigate safely, technology to support daily tasks, and peer connection with others who understand. Early support makes a real difference in maintaining independence. Want me to connect you with the right CNIB team?",
+          suggestions: ["Yes, connect me", "What about mobility training?", "Tell me about peer support"]
+        },
+        "diabetic|diabetes|retinopathy": {
+          text: "Diabetic retinopathy is closely linked to blood sugar management, and your medical team is the first line of defense. But the vision changes it causes — blurriness, dark spots, fluctuating vision — can significantly affect daily life. CNIB's rehabilitation specialists understand the specific challenges of diabetic eye conditions and can help with magnification, lighting, technology, and daily living strategies. The Technology Lending Library is especially relevant here because vision can change day to day. Want to explore what's available?",
+          suggestions: ["Yes, what technology helps?", "Tell me about daily living support", "Connect me with someone"]
+        },
+        "child|kid|son|daughter|parent|my child": {
+          text: "Thank you for reaching out. A child's diagnosis affects the whole family. CNIB's Children and Youth program provides comprehensive support: technology training adapted for kids, school advocacy and accommodation planning, sports and recreation, family counseling, and parent peer networks. Children are extraordinarily adaptive, and early intervention makes a tremendous difference. How old is your child, and what's the diagnosis?",
+          suggestions: ["Tell me about school support", "What about sports for kids?", "I need parent support too"]
+        },
+        "program|programs|services|offer|available": {
+          text: "CNIB's six core program areas are: Technology — including the lending library and training. Peer Support — Vision Mate mentoring and Mentor Match. Careers and Employment — workplace accommodations, job search support, even the Venture Studio entrepreneurship accelerator. Sports and Recreation — goalball, tandem cycling, running, skiing. Children and Youth — family support, school advocacy, youth programs. And Advocacy — policy work and rights education, including the Know Your Rights podcast. Plus Guide Dogs, orientation and mobility, and rehabilitation services. What's most relevant to you?",
+          suggestions: ["Vision Mate", "Technology", "Employment", "Guide Dogs"]
+        },
+        "tech|technology|lending|library|devices": {
+          text: "The Technology Lending Library is one of CNIB's most impactful programs. You can borrow assistive devices — screen magnifiers, smart displays, talking gadgets, and more — at no cost. Try them in your real life before committing to anything. Most people don't realize that 90% of the accessibility features they need are already built into their current phone. CNIB also runs training sessions and can do a personalized technology assessment. Want me to book one?",
+          suggestions: ["Book a tech assessment", "What's on my phone already?", "What devices are available?"]
+        },
+        "guide dog|dogs": {
+          text: "CNIB Guide Dogs has graduated over 100 guide dog teams since 2017 and placed 39 buddy dogs. It's a world-class program with careful matching based on your lifestyle, mobility needs, and living situation. A guide dog is independence, confidence, and companionship. The process involves an application, assessment, and training period. If you're also interested in other mobility options, CNIB has orientation and mobility specialists who teach white cane techniques and spatial navigation. Want to start an inquiry?",
+          suggestions: ["Start a guide dog inquiry", "Tell me about mobility training", "What are buddy dogs?"]
+        },
+        "employment|work|job|career|hire": {
+          text: "CNIB's Careers and Employment program helps with workplace accommodations, assistive technology for work, employer education, and job search support. Under the Accessible Canada Act and provincial legislation, employers must provide reasonable accommodations. CNIB can help facilitate that conversation. There's also the Venture Studio — an entrepreneurship accelerator for people with sight loss. And the Know Your Rights podcast covers legal protections. 54% of Canadians with sight loss are employed, and CNIB's goal is to close that gap with the sighted rate of 80%. Want me to connect you with the employment team?",
+          suggestions: ["Connect me with employment", "Tell me about Venture Studio", "What are my legal rights?"]
+        },
+        "someone else|friend|family|know someone": {
+          text: "It means a lot that you're looking out for someone you care about. I can help in a few ways: I can walk you through what's available so you can share the information. I can send you a link to pass along. Or if they're open to it, I can reach out to them directly — including by phone for people who wouldn't use a website. What feels right for the person you're thinking of?",
+          suggestions: ["Walk me through what's available", "They'd prefer a phone call", "Send me a link to share"]
+        }
+      }
+    };
+
+    // Fallback for unmatched queries
+    const fallbackResponse = {
+      text: "That's a great question. Let me connect you with someone on the CNIB team who can give you the most accurate answer. You can reach them at 1-800-563-2642, or I can have someone call you back. In the meantime, is there anything else I can help with?",
+      suggestions: ["Tell me about CNIB programs", "I have a different question", "That's all for now"]
+    };
+
+    function findResponse(text, scenario) {
+      const lower = text.toLowerCase();
+      const tree = responses[scenario] || responses.general;
+
+      for (const [patterns, response] of Object.entries(tree)) {
+        const keywords = patterns.split('|');
+        if (keywords.some(k => lower.includes(k))) {
+          return response;
+        }
+      }
+
+      // Try general responses as fallback
+      if (scenario !== 'general') {
+        for (const [patterns, response] of Object.entries(responses.general)) {
+          const keywords = patterns.split('|');
+          if (keywords.some(k => lower.includes(k))) {
+            return response;
+          }
+        }
+      }
+
+      return fallbackResponse;
+    }
+
+    // ===== CHAT UI FUNCTIONS =====
+    function addBotMessage(text, suggestions) {
+      const div = document.createElement('div');
+      div.className = 'iris-msg bot';
+      div.innerHTML = text.replace(/\n/g, '<br>');
+      chatBody.appendChild(div);
+
+      if (suggestions && suggestions.length) {
+        const wrap = document.createElement('div');
+        wrap.className = 'iris-suggestions';
+        suggestions.forEach(s => {
+          const btn = document.createElement('button');
+          btn.textContent = s;
+          btn.onclick = () => handleUserMessage(s);
+          wrap.appendChild(btn);
+        });
+        chatBody.appendChild(wrap);
+      }
+
+      chatBody.scrollTop = chatBody.scrollHeight;
+      speakText(text);
+    }
+
+    function addUserMessage(text) {
+      // Remove old suggestions
+      chatBody.querySelectorAll('.iris-suggestions').forEach(el => el.remove());
+
+      const div = document.createElement('div');
+      div.className = 'iris-msg user';
+      div.textContent = text;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const div = document.createElement('div');
+      div.className = 'iris-typing';
+      div.id = 'irisTyping';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return div;
+    }
+
+    function handleUserMessage(text) {
+      stopSpeaking();
+      addUserMessage(text);
+
+      const typing = showTypingIndicator();
+      const delay = 600 + Math.random() * 800;
+
+      setTimeout(() => {
+        typing.remove();
+        const response = findResponse(text, currentScenario);
+        addBotMessage(response.text, response.suggestions);
+        conversationStep++;
+      }, delay);
+    }
+
+    function sendIrisMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      chatInput.value = '';
+      handleUserMessage(text);
+    }
+
+    // ===== OPEN / CLOSE =====
+    function openChat(scenario) {
+      currentScenario = scenario;
+      conversationStep = 0;
+      chatBody.innerHTML = '';
+
+      const s = scenarios[scenario];
+
+      if (s.banner) {
+        banner.textContent = s.banner;
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+      }
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // Greeting after animation
+      setTimeout(() => {
+        addBotMessage(s.greeting, s.suggestions);
+        chatInput.focus();
+      }, 500);
+    }
+
+    function closeChat() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      stopSpeaking();
+    }
+
+    // Enter to send
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); sendIrisMessage(); }
+    });
+
+    // Escape to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeChat();
+    });
+
+    // Click outside to close
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeChat();
+    });
+  </script>
+</body>
+</html>
