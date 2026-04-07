@@ -3,7 +3,7 @@
 
 export const config = { runtime: 'edge' };
 
-const MODEL = 'gpt-4o-mini';
+const MODEL = 'gpt-4o';
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
@@ -40,10 +40,10 @@ export default async function handler(req) {
       model: MODEL,
       messages: trimmed,
       stream: true,
-      temperature: 0.9,
-      max_tokens: 220,
-      presence_penalty: 0.4,
-      frequency_penalty: 0.3,
+      temperature: 0.85,
+      max_tokens: 160,
+      presence_penalty: 0.5,
+      frequency_penalty: 0.4,
     }),
   });
 

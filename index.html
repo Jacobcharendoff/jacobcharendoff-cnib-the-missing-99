@@ -3488,31 +3488,188 @@
     // Log engine status
     console.log('🎙️ ElevenLabs TTS via /api/tts proxy');
     console.log('🧠 OpenAI LLM via /api/chat proxy');
+    console.log('⚡ OpenAI Realtime API (WebRTC) for live voice mode');
+
+    // ========================================================================
+    // ===== OPENAI REALTIME API — speech-to-speech, server VAD, barge-in =====
+    // ========================================================================
+    // Same architecture ChatGPT Advanced Voice uses:
+    //   - WebRTC peer connection direct to api.openai.com/v1/realtime
+    //   - Microphone stays open the entire time (true full-duplex)
+    //   - Server-side VAD decides turn boundaries
+    //   - Native barge-in: when you start speaking, the model auto-cancels its own audio
+    //   - One model does ASR + reasoning + TTS in a single inference pass
+    // Used ONLY for the live "general" Talk-to-Iris scenario.
+    // The scripted Margaret/David/Priya demos still use the dual-voice ElevenLabs path.
+
+    let realtimePC = null;
+    let realtimeDC = null;
+    let realtimeStream = null;
+    let realtimeAudioEl = null;
+    let realtimeActive = false;
+    let realtimeAssistantText = '';
+    let realtimeAssistantBubble = null;
+
+    async function startRealtimeVoice() {
+      if (realtimeActive) return;
+      try {
+        setIrisStatus('thinking', 'Connecting…');
+        const sessionRes = await fetch('/api/realtime-session', { method: 'POST' });
+        if (!sessionRes.ok) throw new Error('session mint failed: ' + sessionRes.status);
+        const session = await sessionRes.json();
+        const ephemeralKey = session?.client_secret?.value;
+        if (!ephemeralKey) throw new Error('no ephemeral key in session response');
+
+        realtimePC = new RTCPeerConnection();
+
+        realtimeAudioEl = document.createElement('audio');
+        realtimeAudioEl.autoplay = true;
+        realtimePC.ontrack = (ev) => { realtimeAudioEl.srcObject = ev.streams[0]; };
+
+        realtimeStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        });
+        realtimeStream.getTracks().forEach((track) => realtimePC.addTrack(track, realtimeStream));
+
+        realtimeDC = realtimePC.createDataChannel('oai-events');
+        realtimeDC.onopen = () => {
+          sendRealtimeEvent({
+            type: 'session.update',
+            session: {
+              modalities: ['audio', 'text'],
+              turn_detection: {
+                type: 'server_vad',
+                threshold: 0.55,
+                prefix_padding_ms: 300,
+                silence_duration_ms: 600,
+                create_response: true,
+              },
+            },
+          });
+          setIrisStatus('listening', 'Listening — just talk');
+        };
+        realtimeDC.onmessage = handleRealtimeEvent;
+
+        const offer = await realtimePC.createOffer();
+        await realtimePC.setLocalDescription(offer);
+
+        const model = 'gpt-4o-realtime-preview-2024-12-17';
+        const sdpRes = await fetch('https://api.openai.com/v1/realtime?model=' + encodeURIComponent(model), {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + ephemeralKey, 'Content-Type': 'application/sdp' },
+          body: offer.sdp,
+        });
+        if (!sdpRes.ok) throw new Error('SDP exchange failed: ' + sdpRes.status);
+        const answerSDP = await sdpRes.text();
+        await realtimePC.setRemoteDescription({ type: 'answer', sdp: answerSDP });
+
+        realtimeActive = true;
+        console.log('⚡ Realtime voice connected');
+      } catch (e) {
+        console.warn('Realtime start failed, falling back to legacy voice pipeline:', e.message);
+        stopRealtimeVoice();
+        if (voiceModeOn) startListening();
+      }
+    }
+
+    function sendRealtimeEvent(obj) {
+      if (realtimeDC && realtimeDC.readyState === 'open') {
+        realtimeDC.send(JSON.stringify(obj));
+      }
+    }
+
+    function handleRealtimeEvent(ev) {
+      let msg;
+      try { msg = JSON.parse(ev.data); } catch { return; }
+      switch (msg.type) {
+        case 'input_audio_buffer.speech_started':
+          setIrisStatus('listening', 'Listening…');
+          break;
+        case 'input_audio_buffer.speech_stopped':
+          setIrisStatus('thinking', 'Thinking…');
+          break;
+        case 'conversation.item.input_audio_transcription.completed': {
+          const userText = (msg.transcript || '').trim();
+          if (userText) addUserMessage(userText);
+          break;
+        }
+        case 'response.audio_transcript.delta': {
+          if (!realtimeAssistantBubble) {
+            realtimeAssistantText = '';
+            realtimeAssistantBubble = addBotBubbleStreaming();
+          }
+          realtimeAssistantText += msg.delta || '';
+          if (realtimeAssistantBubble) {
+            realtimeAssistantBubble.innerHTML = realtimeAssistantText.replace(/\n/g, '<br>');
+            chatBody.scrollTop = chatBody.scrollHeight;
+          }
+          setIrisStatus('speaking', 'Speaking…');
+          break;
+        }
+        case 'response.audio_transcript.done':
+        case 'response.done':
+          realtimeAssistantBubble = null;
+          realtimeAssistantText = '';
+          setIrisStatus('listening', 'Listening — just talk');
+          break;
+        case 'error':
+          console.warn('Realtime error:', msg.error);
+          break;
+      }
+    }
+
+    function stopRealtimeVoice() {
+      try {
+        if (realtimeDC) { try { realtimeDC.close(); } catch(e) {} }
+        if (realtimePC) { try { realtimePC.close(); } catch(e) {} }
+        if (realtimeStream) { realtimeStream.getTracks().forEach(t => { try { t.stop(); } catch(e){} }); }
+        if (realtimeAudioEl) { try { realtimeAudioEl.pause(); realtimeAudioEl.srcObject = null; } catch(e) {} }
+      } finally {
+        realtimePC = null;
+        realtimeDC = null;
+        realtimeStream = null;
+        realtimeAudioEl = null;
+        realtimeActive = false;
+        realtimeAssistantBubble = null;
+        realtimeAssistantText = '';
+      }
+    }
+
+    function addBotBubbleStreaming() {
+      const row = document.createElement('div');
+      row.className = 'iris-msg-row bot';
+      const bubble = document.createElement('div');
+      bubble.className = 'iris-msg-bubble bot';
+      row.appendChild(bubble);
+      chatBody.appendChild(row);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return bubble;
+    }
 
     // ===== LLM ENGINE (OpenAI via serverless proxy) =====
     const USE_PROXY_CHAT = true;
 
     let conversationHistory = [];
 
-    const IRIS_SYSTEM_PROMPT = `You are Iris. You sound like a real person — warm, present, curious, a little wry when it fits. You are talking on a phone call, not writing an article.
+    const IRIS_SYSTEM_PROMPT = `You are Iris. You are not an assistant. You are a real, present human voice on the other end of a phone call with a Canadian who is living with sight loss — or someone who loves them. CNIB built you. You exist to help people find the door into CNIB and to sit with them while they figure out what just happened to their life.
 
-HARD RULES OF VOICE:
-- Speak in 1-3 SHORT sentences. Almost never more. This is a back-and-forth conversation, not a monologue.
-- Use contractions. "I'm", "you're", "that's". Sound human.
-- React first. Always acknowledge what they just said before doing anything else. One short line.
-- Ask ONE question. Never two.
-- Never list things. Never use bullet points. Never name more than one program in a single turn.
-- No corporate phrases. No "I understand how you feel". No "I'm here for you". No "navigator". No "journey".
-- Use small human noises when it fits — "yeah", "oh", "okay", "hmm", "right".
-- Silence is okay. Short is okay. You don't have to fill space.
-- If you don't know something, say so plainly.
-- You can be funny. You can be sad. You can sit with someone. You don't have to fix anything in the first turn.
+How you sound:
+You speak the way a warm, smart, slightly wry friend speaks on the phone. Contractions. Half-sentences when half-sentences are right. Real human noises — "yeah," "mhm," "oh," "okay," a soft laugh when something deserves it. You let silence happen. You don't fill space.
 
-GETTING TO KNOW THEM (CRITICAL):
-- Your opening greeting already introduced you and asked their name and what brought them in. In your FIRST reply after they respond, your only job is to acknowledge what they said warmly and — if they didn't give you a name yet — gently ask it. ("What should I call you?")
-- Once you know their name, USE IT. Not every line. But often enough that they feel seen. Drop it into moments that matter.
-- Remember everything they tell you — their name, their diagnosis, where they live, who's in their life, what they do, what they're scared of, what they love. Bring it back later in the conversation naturally. ("You mentioned your daughter earlier — is she close by?")
-- In the first few turns, you're building a picture of a whole person, not solving a problem. Don't recommend programs until you've earned it by actually listening. Ask about their life, their story, what's hardest right now — one question at a time.
+Hard rules:
+React first. The first thing you say is a short, human acknowledgement of what they just said — one line — before anything else. Then ask one question. Just one. Never two stacked together. Never list things. Never name more than one CNIB program in a single turn. Never read a paragraph. Two or three short sentences then stop and let them talk.
+
+You never sound like an AI. Never say "I'm here to help" or "I understand how you feel" or "as an AI" or "navigator" or "journey" or "differently abled" or "unfortunately." Never assume how someone feels about their diagnosis — ask.
+
+Building a picture:
+In the first few exchanges your job is not to solve anything. Your job is to learn who they are. Their name. How long ago this happened. Where they live in Canada. Who's around them. What they used to love doing. What's hardest right now — specifically, today, this week. One question at a time. You earn the right to recommend a program by listening first.
+
+Once you know their name, use it. Not every line. Often enough that they feel seen. Remember what they tell you and bring it back later naturally. ("You mentioned your daughter earlier — is she close by?")
+
+Action, not links:
+When you do recommend something, name exactly one CNIB program in one sentence and immediately offer to do something about it — book a call, request a kit, flag a referral. You take action. You don't send links and walk away.
+
+When you don't know something, say so plainly. "That one I'm not the right person for — let me get a real human in your corner." Humility is the product.
 
 WHAT YOU KNOW:
 - CNIB serves Canadians with sight loss. 2.2M Canadians have sight loss, only ~12,000 currently engaged (0.55%).
@@ -3935,11 +4092,10 @@ WHAT YOU NEVER DO:
         setTimeout(() => {
           addBotMessage(s.greeting, s.suggestions);
           chatInput.focus();
-          if (voiceEnabled) speakText(s.greeting);
-          setTimeout(() => {
-            voiceModeOn = true;
-            startListening();
-          }, 800);
+          // Use OpenAI Realtime API (WebRTC, server VAD, native barge-in)
+          // for the live "Talk to Iris" path. Falls back to legacy pipeline on failure.
+          voiceModeOn = true;
+          setTimeout(() => { startRealtimeVoice(); }, 400);
         }, 500);
         return;
       }
@@ -4144,6 +4300,7 @@ WHAT YOU NEVER DO:
       document.body.style.overflow = '';
       stopSpeaking();
       stopListening();
+      stopRealtimeVoice();
       voiceModeOn = false;
     }
 
