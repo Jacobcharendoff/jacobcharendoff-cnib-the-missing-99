@@ -1394,11 +1394,9 @@
     let conversationStep = 0;
     let voiceEnabled = true;
 
-    // ===== TTS ENGINE (ElevenLabs Streaming) =====
-    // Set your ElevenLabs API key here for hi-fi voice
-    const ELEVENLABS_API_KEY = ''; // ← Paste your ElevenLabs API key here (find it at elevenlabs.io → Profile → API Keys)
-    const ELEVENLABS_VOICE_ID = 'NtS6nEHDYMQC9QczMQuq'; // Jacob's chosen voice for IRIS
-    const ELEVENLABS_MODEL = 'eleven_turbo_v2_5'; // Low-latency, high quality
+    // ===== TTS ENGINE (ElevenLabs via serverless proxy) =====
+    // Keys live in Vercel env vars. Frontend calls /api/tts.
+    const USE_PROXY_TTS = true;
 
     let currentAudio = null;
     let audioQueue = [];
@@ -1410,37 +1408,21 @@
       const plain = text.replace(/<[^>]+>/g, '').replace(/\n/g, '. ').trim();
       if (!plain) return;
 
-      // If ElevenLabs key is configured, use it; otherwise fall back to browser TTS
-      if (ELEVENLABS_API_KEY) {
+      if (USE_PROXY_TTS) {
         await speakElevenLabs(plain);
       } else {
         speakBrowserTTS(plain);
       }
     }
 
-    // === ElevenLabs Streaming TTS ===
+    // === ElevenLabs Streaming TTS (via proxy) ===
     async function speakElevenLabs(text) {
       try {
-        const response = await fetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}/stream`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'xi-api-key': ELEVENLABS_API_KEY,
-            },
-            body: JSON.stringify({
-              text: text,
-              model_id: ELEVENLABS_MODEL,
-              voice_settings: {
-                stability: 0.4,
-                similarity_boost: 0.8,
-                style: 0.35,
-                use_speaker_boost: true
-              }
-            })
-          }
-        );
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
 
         if (!response.ok) {
           console.warn('ElevenLabs API error, falling back to browser TTS');
@@ -1551,12 +1533,11 @@
     }
 
     // Log engine status
-    console.log(ELEVENLABS_API_KEY ? '🎙️ ElevenLabs TTS active' : '⚠️ No ElevenLabs key — using browser TTS fallback. Set ELEVENLABS_API_KEY for hi-fi voice.');
-    console.log(OPENAI_API_KEY ? '🧠 OpenAI LLM active — Iris is intelligent' : '⚠️ No OpenAI key — using scripted fallback. Set OPENAI_API_KEY for real AI conversations.');
+    console.log('🎙️ ElevenLabs TTS via /api/tts proxy');
+    console.log('🧠 OpenAI LLM via /api/chat proxy');
 
-    // ===== LLM ENGINE (OpenAI Streaming) =====
-    const OPENAI_API_KEY = ''; // ← Paste your OpenAI key here
-    const OPENAI_MODEL = 'gpt-4o'; // Fast, smart, conversational
+    // ===== LLM ENGINE (OpenAI via serverless proxy) =====
+    const USE_PROXY_CHAT = true;
 
     let conversationHistory = [];
 
@@ -1611,7 +1592,7 @@ WHAT YOU NEVER DO:
     }
 
     async function callLLM(userMessage, scenario) {
-      if (!OPENAI_API_KEY) return null; // Fall back to scripted
+      if (!USE_PROXY_CHAT) return null; // Fall back to scripted
 
       // Add scenario context to first message
       if (conversationHistory.length === 0) {
@@ -1627,21 +1608,10 @@ WHAT YOU NEVER DO:
       conversationHistory.push({ role: 'user', content: userMessage });
 
       try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + OPENAI_API_KEY
-          },
-          body: JSON.stringify({
-            model: OPENAI_MODEL,
-            messages: conversationHistory,
-            stream: true,
-            temperature: 0.85,
-            max_tokens: 500,
-            presence_penalty: 0.3,
-            frequency_penalty: 0.2
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: conversationHistory })
         });
 
         if (!response.ok) {
@@ -2096,7 +2066,7 @@ WHAT YOU NEVER DO:
       const typing = showTypingIndicator();
 
       // Try LLM first
-      if (OPENAI_API_KEY) {
+      if (USE_PROXY_CHAT) {
         try {
           const streamResponse = await callLLM(text, currentScenario);
           if (streamResponse) {
