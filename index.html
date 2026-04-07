@@ -312,6 +312,24 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 30px rgba(255,241,0,0.3);
     }
+    /* On yellow sections: invert primary button to black-fill / yellow-text for contrast */
+    .theme-yellow .btn-primary {
+      background: #0A0A0A;
+      color: #FFF100;
+    }
+    .theme-yellow .btn-primary:hover {
+      background: #1f1f1f;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+    /* On white sections */
+    .theme-white .btn-primary {
+      background: #0A0A0A;
+      color: #FFF100;
+    }
+    .theme-white .btn-primary:hover {
+      background: #1f1f1f;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
     .btn-ghost {
       background: transparent;
       color: var(--text-dim);
@@ -331,6 +349,24 @@
     .btn-ghost:hover {
       color: var(--text);
       border-color: rgba(255,255,255,0.2);
+    }
+    .theme-yellow .btn-ghost {
+      color: #0A0A0A;
+      border-color: rgba(10,10,10,0.4);
+    }
+    .theme-yellow .btn-ghost:hover {
+      color: #0A0A0A;
+      border-color: #0A0A0A;
+      background: rgba(0,0,0,0.05);
+    }
+    .theme-white .btn-ghost {
+      color: #0A0A0A;
+      border-color: rgba(10,10,10,0.3);
+    }
+    .theme-white .btn-ghost:hover {
+      color: #0A0A0A;
+      border-color: #0A0A0A;
+      background: rgba(0,0,0,0.05);
     }
 
     /* ===== STATS BAR ===== */
@@ -1027,6 +1063,26 @@
       gap: 8px;
       flex-shrink: 0;
     }
+    .iris-banner-text { flex: 1; }
+    .iris-end-scenario-btn {
+      background: transparent;
+      color: rgba(255,241,0,0.85);
+      border: 1px solid rgba(255,241,0,0.4);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .iris-end-scenario-btn:hover {
+      background: rgba(255,241,0,0.12);
+      color: #FFF100;
+      border-color: #FFF100;
+    }
 
     /* Chat Body — modernized, more breathing room */
     .iris-chat-body {
@@ -1090,6 +1146,113 @@
       font-size: 13px;
       text-align: center;
       font-style: italic;
+    }
+
+    /* ===== NARRATOR / SCENARIO BRIEFING ===== */
+    .iris-narrator-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #FFF100;
+      margin-bottom: 6px;
+      padding-left: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .iris-narrator-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #FFF100;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255,241,0,0.6);
+    }
+    .iris-msg.iris-msg-narrator {
+      background: linear-gradient(180deg, #1A1A1C 0%, #141416 100%);
+      border: 1px solid rgba(255,241,0,0.18);
+      border-radius: 18px;
+      max-width: 100%;
+      line-height: 1.65;
+      font-size: 15px;
+      padding: 18px 22px;
+    }
+
+    /* Big Begin button */
+    .iris-begin-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 0 6px;
+      animation: msgIn 0.6s ease both;
+    }
+    .iris-begin-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFF100;
+      color: #0A0A0A;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(255,241,0,0.35), 0 0 0 0 rgba(255,241,0,0.6);
+      animation: beginPulse 2.4s ease-in-out infinite;
+      transition: transform 0.2s ease;
+    }
+    .iris-begin-btn:hover { transform: translateY(-2px) scale(1.02); }
+    .iris-begin-btn svg { stroke: #0A0A0A; }
+    @keyframes beginPulse {
+      0%, 100% { box-shadow: 0 8px 30px rgba(255,241,0,0.35), 0 0 0 0 rgba(255,241,0,0.5); }
+      50% { box-shadow: 0 8px 30px rgba(255,241,0,0.5), 0 0 0 12px rgba(255,241,0,0); }
+    }
+    .iris-begin-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      max-width: 280px;
+    }
+
+    /* Phase divider */
+    .iris-phase-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 0;
+      animation: msgIn 0.5s ease both;
+    }
+    .iris-phase-divider::before,
+    .iris-phase-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: rgba(255,241,0,0.3);
+    }
+    .iris-phase-divider span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #FFF100;
+    }
+
+    /* Banner with live indicator dot */
+    .iris-banner-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FFF100;
+      margin-right: 8px;
+      box-shadow: 0 0 8px rgba(255,241,0,0.6);
+      animation: statusPulse 2s ease-in-out infinite;
     }
 
     /* Modernized quick reply chips */
@@ -1813,9 +1976,6 @@
       <div class="iris-chat-body" id="irisChatBody" role="log" aria-live="polite" aria-atomic="false"></div>
       <div class="iris-waveform" id="irisWaveform" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
       <div class="iris-chat-input-row">
-        <button id="irisVoiceBtn" class="iris-voice-toggle active" onclick="toggleVoice()" title="Toggle voice responses">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
-        </button>
         <input type="text" class="iris-chat-input" id="irisChatInput" placeholder="Message Iris..." autocomplete="off">
         <button id="irisMicBtn" class="iris-mic-btn listening" onclick="toggleMic()" title="Mic is on — tap to mute">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
@@ -2050,10 +2210,8 @@
     }
 
     function toggleVoice() {
-      voiceEnabled = !voiceEnabled;
-      const btn = document.getElementById('irisVoiceBtn');
-      if (btn) btn.classList.toggle('active', voiceEnabled);
-      if (!voiceEnabled) stopSpeaking();
+      // Deprecated — voice toggle button removed. Keep stub so any stale callers don't crash.
+      // Mic muting is handled by toggleMic(); Iris's TTS audio should never be killed by a UI press.
     }
 
     // Mic button now toggles voice MODE (mute mic entirely), not push-to-talk
@@ -2150,9 +2308,24 @@ WHAT YOU NEVER DO:
 
       // Add scenario context to first message
       if (conversationHistory.length === 0) {
+        const isNamedScenario = scenario && scenario !== 'general';
+        let systemPrompt = IRIS_SYSTEM_PROMPT;
+        if (isNamedScenario) {
+          // Strip the "ask their name" rule — in named scenarios Iris already knows who she's talking to.
+          systemPrompt = systemPrompt.replace(
+            /GETTING TO KNOW THEM \(CRITICAL\):[\s\S]*?one question at a time\./,
+            `YOU ARE IN CHARACTER (CRITICAL):
+- You already know this person's name and situation from the SCENARIO block below. NEVER ask their name. NEVER ask "what brought you in" — you know.
+- Use their name naturally, not every line, but often enough they feel seen.
+- React first to whatever they just said. One short line of acknowledgement before anything else.
+- Stay in their world. Ask gentle, specific follow-ups about their actual life — the details in the scenario are real to you.
+- Don't recommend programs in the first turn. Earn it by listening. Sit with the emotion. Match their energy.
+- One question per turn. Always.`
+          );
+        }
         conversationHistory.push({
           role: 'system',
-          content: IRIS_SYSTEM_PROMPT + '\n\nSCENARIO:\n' + getScenarioContext(scenario)
+          content: systemPrompt + '\n\nSCENARIO:\n' + getScenarioContext(scenario)
         });
         // Add the greeting as assistant context
         const greeting = scenarios[scenario]?.greeting || scenarios.general.greeting;
@@ -2245,37 +2418,48 @@ WHAT YOU NEVER DO:
       return fullText;
     }
 
-    // ===== SCENARIOS (for greetings + fallback) =====
+    // ===== SCENARIOS — three phases: BRIEFING (Iris narrates) → CONVERSATION (Iris in character) → DEBRIEF =====
     const scenarios = {
       general: {
         banner: null,
+        isLive: true,
         greeting: "Hey. I'm Iris. I'm your guide for life with sight loss — whether that's you, or someone you love. I can help you find CNIB programs, talk through a new diagnosis, figure out tech or work or school stuff — or honestly, I can just sit with you if that's what today needs. Nothing's too small, and there's no wrong way to start. Before we get into anything — what's your name? And what brought you here today?",
         suggestions: ["I just got diagnosed", "I'm helping someone I love", "Honestly, I'm not sure yet"]
       },
       sarah: {
-        banner: "🔴 Scenario: Sarah, 34, newly diagnosed with retinitis pigmentosa",
-        greeting: "Hi Sarah. I'm Iris. I understand this is probably a really difficult time. Being diagnosed with RP two weeks ago... there's no playbook for how you're supposed to feel right now. But I want you to know: you're not alone, and there's more support available than you might think. What's weighing on you most right now?",
-        suggestions: ["I'm scared about losing my vision", "Will I still be able to work?", "I don't even know what CNIB is"]
+        banner: "Scenario · Sarah, 34 · Newly diagnosed with retinitis pigmentosa",
+        briefing: "Okay. Before we step into this one, let me set the scene for you.\n\nThis is Sarah. She's 34, lives in a small one-bedroom in Toronto's east end, and works as a junior graphic designer at a marketing agency. She loves cycling on weekends, has a cat named Pickle, and until two weeks ago had no idea anything was wrong with her eyes — she just thought she was clumsier in dim light than her friends.\n\nThen at a routine eye exam, her optometrist noticed her peripheral vision had narrowed. A specialist appointment confirmed it: retinitis pigmentosa. Progressive. No cure. She's spent the last fourteen days oscillating between numbness and panic, hasn't told her boss, hasn't told her parents, and has been Googling at 3am. She's never heard of CNIB.\n\nIn a moment, I'm going to step into character as if I'm having my first conversation with Sarah. You can just listen and watch — or tap any of the suggested replies to hear how the conversation could branch. Those replies are written from Sarah's point of view.\n\nWhen you're ready, hit Begin.",
+        greeting: "Hi Sarah. I'm Iris. I'm so glad you found me — and I'm sorry about what brought you here. Two weeks is no time at all to sit with news like that. We don't have to do anything in particular right now. What's the loudest thing in your head today?",
+        suggestions: ["I'm scared I'm going to lose everything", "Will I still be able to work?", "I don't even know what CNIB is"],
+        debrief: "That's a glimpse of how a first conversation with Sarah might unfold. Notice that I didn't lead with programs — I led with her. Programs come later, once she feels seen. Want to try a different scenario, or talk to me yourself?"
       },
       david: {
-        banner: "🟠 Scenario: David, 67, lapsed CNIB member. Last active 5 years ago.",
-        greeting: "David, welcome back. It's been a while since you were connected with us through Vision Mate. A lot has changed at CNIB since then, and I imagine a lot has changed for you too. How have things been going with your vision?",
-        suggestions: ["My vision has gotten worse", "What's new at CNIB?", "I didn't know there were other programs"]
+        banner: "Scenario · David, 67 · Lapsed CNIB member, last active 5 years ago",
+        briefing: "This one's about reactivation.\n\nMeet David. He's 67, retired electrician, lives in a townhouse in Ottawa's west end with his wife Margaret. They have two grown kids and three grandkids he babysits on Saturdays. David was diagnosed with macular degeneration nine years ago. He connected with CNIB back then through Vision Mate, used the program for about a year, and then quietly drifted away. He didn't unsubscribe — he just stopped opening the emails.\n\nFive years later, his vision has gotten noticeably worse. He can't read the newspaper anymore. He's stopped driving. He's quietly embarrassed about how much help he needs from Margaret, and lonely in a way he won't say out loud. He still has CNIB's number on his fridge — he just hasn't called.\n\nIn a moment I'm going to call David myself, the way Iris would proactively reach out to a lapsed member. You can tap any of David's suggested replies to see how the conversation goes. Hit Begin when you're ready.",
+        greeting: "Hi, is this David? It's Iris from CNIB. I know it's been a few years since we've been in touch — please don't take this as a sales call or anything like that. I just wanted to check in and see how you're doing. How have things been with your vision lately?",
+        suggestions: ["My vision has gotten worse", "Honestly, I've been struggling", "What's new at CNIB?"],
+        debrief: "That's the reactivation pattern. Notice the call doesn't push — it just shows up, gently, the way a friend would. About a third of CNIB's lapsed members come back if you reach out this way. Want to see another scenario?"
       },
       priya: {
-        banner: "🔵 Scenario: Priya, 78, AMD, lives alone. Iris is calling her by phone.",
-        greeting: "Hello, Priya? This is Iris calling from CNIB. Your daughter Anita mentioned you might appreciate a call from us. I'm not trying to sell you anything, I promise. I just wanted to check in and see how you're doing. She mentioned your eyesight has been giving you some trouble lately?",
-        suggestions: ["Who is this again?", "My eyes are getting worse", "I don't need any help"]
+        banner: "Scenario · Priya, 78 · AMD, lives alone — Iris is phoning her",
+        briefing: "This is a phone call, not a chat.\n\nMeet Priya. She's 78, born in Mumbai, immigrated to Canada in 1972, and has lived in the same Mississauga bungalow for forty-one years. Her husband Raj passed away in 2019. Her daughter Anita lives in Vancouver and worries about her constantly. Priya cooks every meal from scratch, watches the news with the volume too loud, and refuses to admit she's struggling.\n\nShe was diagnosed with macular degeneration three years ago. It's gotten worse this winter. Last week she burned her hand on the stove she couldn't quite see. She told Anita it was nothing. Anita called CNIB anyway and asked if someone could check in.\n\nPriya is fiercely independent. She does NOT want to be treated like she's frail. She's also lonely, scared, and exactly the kind of person who would never go looking for help — but who would talk to a kind voice on the phone if it called her first.\n\nThis is exactly what Iris does that nothing else can. Hit Begin to hear the call.",
+        greeting: "Hello? Is this Priya? Hi Priya, my name is Iris. I'm calling from CNIB — that's the Canadian National Institute for the Blind. Your daughter Anita gave us your number. Don't worry, you're not in any trouble — she just thought we might be able to help with a few things around the house. Is now an okay time to chat for a minute?",
+        suggestions: ["Who did you say you were?", "I don't really need any help", "Anita worries too much"],
+        debrief: "That's how Iris reaches the people who would never reach out themselves. Priya represents the largest hidden segment of CNIB's potential members — older, proud, alone, and one phone call away from a completely different daily life. Want to try another?"
       },
       marcus: {
-        banner: "🟣 Scenario: Marcus, 16, Stargardt disease since age 10. Feels isolated at school.",
-        greeting: "Hey Marcus. I'm Iris. I work with CNIB, but I'm not going to lecture you or anything. I know you've been dealing with Stargardt for a while now, and I just wanted to check in. High school is hard enough without your vision making everything more complicated. How are things going?",
-        suggestions: ["School is annoying", "I hate being different", "My friends don't get it"]
+        banner: "Scenario · Marcus, 16 · Stargardt disease, isolated at school",
+        briefing: "Now a hard one — a teenager who doesn't want help.\n\nMeet Marcus. He's 16, in grade eleven at a public high school in East Vancouver. He likes hip-hop, hates getting up early, and is decent at basketball even though his coach moved him off the team last year because of his vision. He was diagnosed with Stargardt disease at age ten — a juvenile form of macular degeneration.\n\nMarcus's central vision is gone. He can see your peripheral but not your face. He uses an iPad with massive font in class and pretends he doesn't. None of his friends really get it. His parents are supportive but anxious, which makes him feel even more like a burden. He's tired of being The Blind Kid. He's never wanted to join a 'support group' in his life.\n\nHis school counselor mentioned CNIB once. He rolled his eyes. But here we are. In a moment Iris is going to talk to Marcus the way an older cousin would — not a counselor, not a teacher. You'll hear how she meets him where he is.\n\nHit Begin.",
+        greeting: "Hey Marcus. I'm Iris. I'm not gonna lecture you or do the whole 'how does that make you feel' thing — you've probably had enough of that. I just wanted to say hi. School treating you alright this week, or is it being annoying?",
+        suggestions: ["School's annoying", "I hate being treated different", "I don't really do support groups"],
+        debrief: "Notice the tone shift — Iris doesn't talk to Marcus the way she talks to David. She matches his energy. Same care, completely different voice. That's the magic of meeting someone where they are. Try another scenario?"
       },
       fatima: {
-        banner: "🟢 Scenario: Fatima, 41, mother of Amir (7) recently diagnosed with retinoblastoma.",
-        greeting: "Hi Fatima. I'm Iris, a navigator at CNIB. I understand your son Amir was recently diagnosed, and I want you to know: you're in the right place. I know this feels overwhelming. Before we talk about anything else, I want you to hear this — children are incredibly adaptive, and Amir has every chance of living a full, happy, independent life. How are you and your family holding up?",
-        suggestions: ["I'm terrified for him", "What about school?", "Will he be okay?"]
+        banner: "Scenario · Fatima, 41 · Mother of Amir, 7 — recently diagnosed with retinoblastoma",
+        briefing: "This last one is about a parent in crisis.\n\nMeet Fatima. She's 41, lives in northeast Calgary with her husband Yusuf and their three kids — Layla (12), Amir (7), and baby Hana (8 months). Fatima is a registered nurse who works night shifts at a local hospital. The family moved to Canada from Jordan in 2014.\n\nThree weeks ago, Amir's grade-two teacher noticed he was holding his books unusually close. The pediatrician sent them to a specialist. Last Thursday they got the diagnosis: retinoblastoma in his right eye. It's an aggressive but highly treatable childhood cancer. Treatment starts in nine days. There's a chance he'll lose the eye.\n\nFatima has barely slept. She's been Googling everything at 4am, fighting with the school over accommodations, hasn't cried in front of her kids once, and has nobody she can fall apart with. Yusuf is doing his best but he's just as scared. She found CNIB's website tonight at 2am and stared at it for an hour before clicking.\n\nIn a moment Iris will respond to that 2am click. Hit Begin when you're ready.",
+        greeting: "Fatima. I'm Iris. I want you to know — there's no wrong way to be here right now, and there's no wrong way to feel. You don't need to have your questions in order. Whatever you can tell me about Amir, or about how YOU are doing tonight, I'm listening.",
+        suggestions: ["I'm terrified for him", "I don't know how to tell him", "Will he have a normal life?"],
+        debrief: "Notice that the first thing Iris asked Fatima about wasn't Amir — it was her. Caregivers are the second invisible population in sight loss. Iris sees them. Want to try another scenario, or talk to me yourself?"
       }
     };
 
@@ -2646,6 +2830,12 @@ WHAT YOU NEVER DO:
       stopSpeaking();
       addUserMessage(text);
 
+      // Auto-end scenario if user signals goodbye and we're inside a named conversation
+      if (currentPhase === 'conversation' && /^(end scenario|end demo|stop scenario|that's it|that's enough|wrap up|debrief|i'm done|we're done)\b/i.test(text.trim())) {
+        setTimeout(() => endScenarioWithDebrief(), 400);
+        return;
+      }
+
       const typing = showTypingIndicator();
 
       // Try LLM first
@@ -2701,6 +2891,9 @@ WHAT YOU NEVER DO:
     }
 
     // ===== OPEN / CLOSE =====
+    // currentPhase: 'live' | 'briefing' | 'conversation' | 'debrief'
+    let currentPhase = 'live';
+
     function openChat(scenario) {
       currentScenario = scenario;
       conversationStep = 0;
@@ -2710,7 +2903,9 @@ WHAT YOU NEVER DO:
       const s = scenarios[scenario];
 
       if (s.banner) {
-        banner.textContent = s.banner;
+        const showEndBtn = !s.isLive && s.debrief;
+        banner.innerHTML = '<span class="iris-banner-dot"></span><span class="iris-banner-text">' + s.banner + '</span>' +
+          (showEndBtn ? '<button class="iris-end-scenario-btn" onclick="endScenarioWithDebrief()" title="End scenario and hear the debrief">End scenario</button>' : '');
         banner.style.display = 'flex';
       } else {
         banner.style.display = 'none';
@@ -2719,24 +2914,136 @@ WHAT YOU NEVER DO:
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      // Greeting after animation, then start always-on listening
+      // LIVE mode (general scenario or any scenario without a briefing)
+      if (s.isLive || !s.briefing) {
+        currentPhase = 'live';
+        setTimeout(() => {
+          addBotMessage(s.greeting, s.suggestions);
+          chatInput.focus();
+          if (voiceEnabled) speakText(s.greeting);
+          setTimeout(() => {
+            voiceModeOn = true;
+            startListening();
+          }, 800);
+        }, 500);
+        return;
+      }
+
+      // SCENARIO mode → briefing first
+      currentPhase = 'briefing';
+      setTimeout(() => {
+        playBriefing(s);
+      }, 500);
+    }
+
+    // Iris narrates the scenario context, ending with a Begin button
+    function playBriefing(s) {
+      addNarratorMessage(s.briefing);
+      addBeginButton();
+      if (voiceEnabled) speakText(s.briefing);
+    }
+
+    // Renders Iris's narration as a distinct "narrator" bubble (visually different from in-character)
+    function addNarratorMessage(text) {
+      const row = document.createElement('div');
+      row.className = 'iris-msg-row bot';
+
+      const tag = document.createElement('div');
+      tag.className = 'iris-narrator-tag';
+      tag.textContent = 'Iris · narrator';
+      row.appendChild(tag);
+
+      const bubble = document.createElement('div');
+      bubble.className = 'iris-msg bot iris-msg-narrator';
+      bubble.innerHTML = text.replace(/\n/g, '<br>');
+      row.appendChild(bubble);
+
+      chatBody.appendChild(row);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Big yellow Begin button that starts the in-character conversation
+    function addBeginButton() {
+      const wrap = document.createElement('div');
+      wrap.className = 'iris-begin-wrap';
+      const btn = document.createElement('button');
+      btn.className = 'iris-begin-btn';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Begin scenario';
+      btn.onclick = () => beginInCharacterPhase();
+      wrap.appendChild(btn);
+
+      const hint = document.createElement('div');
+      hint.className = 'iris-begin-hint';
+      hint.textContent = 'When you tap Begin, I step into character and the call starts.';
+      wrap.appendChild(hint);
+
+      chatBody.appendChild(wrap);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function beginInCharacterPhase() {
+      // Remove the Begin button + briefing's suggestion strip if any
+      chatBody.querySelectorAll('.iris-begin-wrap').forEach(el => el.remove());
+      stopSpeaking();
+
+      currentPhase = 'conversation';
+      const s = scenarios[currentScenario];
+
+      // Visual transition: divider that says "Conversation begins"
+      const divider = document.createElement('div');
+      divider.className = 'iris-phase-divider';
+      divider.innerHTML = '<span>Call connecting…</span>';
+      chatBody.appendChild(divider);
+
       setTimeout(() => {
         addBotMessage(s.greeting, s.suggestions);
-        chatInput.focus();
-        // Speak the greeting and then open the mic
         if (voiceEnabled) speakText(s.greeting);
-        // Start continuous listening once greeting begins
+        chatInput.focus();
         setTimeout(() => {
           voiceModeOn = true;
           startListening();
-          const prompt = document.getElementById('irisMicPrompt');
-          if (prompt && recognition) {
-            prompt.textContent = 'Listening — just talk';
-            prompt.classList.add('show');
-            setTimeout(() => prompt.classList.remove('show'), 4000);
-          }
         }, 800);
-      }, 500);
+      }, 1200);
+    }
+
+    function endScenarioWithDebrief() {
+      if (currentPhase === 'debrief') return;
+      const s = scenarios[currentScenario];
+      if (!s || !s.debrief) return;
+      currentPhase = 'debrief';
+      stopSpeaking();
+      voiceModeOn = false;
+      stopListening && stopListening();
+
+      const divider = document.createElement('div');
+      divider.className = 'iris-phase-divider';
+      divider.innerHTML = '<span>End of scenario</span>';
+      chatBody.appendChild(divider);
+
+      addNarratorMessage(s.debrief);
+
+      // Offer next steps
+      const wrap = document.createElement('div');
+      wrap.className = 'iris-suggestions';
+      const tryAnother = document.createElement('button');
+      tryAnother.textContent = 'Try another scenario';
+      tryAnother.onclick = () => closeChatAndScrollToDemos();
+      wrap.appendChild(tryAnother);
+      const goLive = document.createElement('button');
+      goLive.textContent = 'Talk to me for real';
+      goLive.onclick = () => { closeChat(); setTimeout(() => openChat('general'), 350); };
+      wrap.appendChild(goLive);
+      chatBody.appendChild(wrap);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      if (voiceEnabled) speakText(s.debrief);
+    }
+
+    function closeChatAndScrollToDemos() {
+      closeChat();
+      setTimeout(() => {
+        const demos = document.getElementById('demos');
+        if (demos) demos.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
     }
 
     function closeChat() {
