@@ -1743,6 +1743,214 @@
       margin-top: 14px;
     }
 
+    /* ===== Buffer hook line + format strip ===== */
+    .iris-buffer-hook {
+      font-family: 'Newsreader', Georgia, serif;
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.4;
+      color: #FFD100;
+      margin: -14px 0 24px;
+      letter-spacing: -0.005em;
+    }
+    .iris-format-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0 22px;
+    }
+    .iris-format-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.78);
+    }
+    .iris-format-pill svg { color: rgba(255,255,255,0.55); }
+    .iris-format-pill-cta {
+      background: rgba(255, 209, 0, 0.10);
+      border-color: rgba(255, 209, 0, 0.35);
+      color: #FFD100;
+    }
+    .iris-format-pill-cta svg { color: #FFD100; }
+
+    /* Anticipation block — replaces the spoiler-y "After" block */
+    .iris-baf-anticipation {
+      border-left: 3px solid #FFD100;
+      background: rgba(255, 209, 0, 0.04);
+    }
+    .iris-baf-anticipation .iris-baf-label { color: #FFD100; }
+
+    /* ===== Animated action card ===== */
+    .iris-action-list-animated {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+    }
+    .iris-action-li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.92);
+      opacity: 0;
+      transform: translateY(6px);
+      animation: actionLiIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .iris-action-li:last-child { border-bottom: none; }
+    @keyframes actionLiIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .iris-action-icon {
+      position: relative;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+    }
+    .iris-action-spinner {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 209, 0, 0.25);
+      border-top-color: #FFD100;
+      animation: spin 0.75s linear infinite;
+      transition: opacity 0.2s ease;
+    }
+    .iris-action-check {
+      position: absolute;
+      inset: 0;
+      width: 20px;
+      height: 20px;
+      color: #0A0A0A;
+      background: #FFD100;
+      border-radius: 50%;
+      padding: 3px;
+      box-shadow: 0 0 0 0 rgba(255, 209, 0, 0.6);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .iris-action-li.sent .iris-action-spinner { opacity: 0; }
+    .iris-action-li.sent .iris-action-check {
+      opacity: 1;
+      transform: scale(1);
+      animation: checkPop 0.6s ease;
+    }
+    @keyframes checkPop {
+      0%   { box-shadow: 0 0 0 0 rgba(255, 209, 0, 0.7); }
+      80%  { box-shadow: 0 0 0 10px rgba(255, 209, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 209, 0, 0); }
+    }
+    .iris-action-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .iris-action-status {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+      background: rgba(255, 209, 0, 0.12);
+      color: #FFD100;
+      align-self: center;
+    }
+    .iris-action-li.sent .iris-action-status {
+      background: rgba(56, 217, 169, 0.15);
+      color: #38d9a9;
+    }
+
+    /* ===== THEN / NOW transformation card ===== */
+    .iris-thennow-card {
+      margin: 16px 14px 18px;
+      padding: 22px;
+      background: linear-gradient(135deg, rgba(255, 209, 0, 0.08), rgba(255, 209, 0, 0.02));
+      border: 1px solid rgba(255, 209, 0, 0.28);
+      border-radius: 18px;
+      animation: thenNowIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes thenNowIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .iris-thennow-header {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #FFD100;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .iris-thennow-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+    .iris-thennow-col {
+      padding: 14px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+    }
+    .iris-thennow-then {
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .iris-thennow-now {
+      border: 1px solid rgba(255, 209, 0, 0.35);
+      background: rgba(255, 209, 0, 0.06);
+    }
+    .iris-thennow-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 6px;
+    }
+    .iris-thennow-now .iris-thennow-label { color: #FFD100; }
+    .iris-thennow-body {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #fff;
+    }
+    .iris-thennow-arrow {
+      color: #FFD100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: arrowPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes arrowPulse {
+      0%, 100% { transform: translateX(0); opacity: 0.7; }
+      50%      { transform: translateX(3px); opacity: 1; }
+    }
+    @media (max-width: 560px) {
+      .iris-thennow-grid {
+        grid-template-columns: 1fr;
+      }
+      .iris-thennow-arrow { transform: rotate(90deg); }
+      @keyframes arrowPulse {
+        0%, 100% { transform: rotate(90deg) translateX(0); opacity: 0.7; }
+        50%      { transform: rotate(90deg) translateX(3px); opacity: 1; }
+      }
+    }
+
     /* ===== BEFORE / BRIDGE / AFTER layout inside buffer ===== */
     .iris-baf {
       display: flex;
@@ -4668,9 +4876,14 @@ WHAT YOU NEVER DO:
         duration: 195,
         intro: {
           headline: "Iris turns Margaret's first call into a plan.",
-          before: "Two months ago her ophthalmologist said the words macular degeneration. Margaret is sixty-eight. She lives alone in Sudbury. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't make this call.",
+          hook: "She almost hung up before Iris said hello.",
+          before: "Two months ago her ophthalmologist said the words macular degeneration. Margaret is sixty-eight. She lives alone in Sudbury. Her daughter is in Vancouver. She hasn't told her friends. She taught for thirty-four years and reading was who she was.",
           bridge: "Iris hears what Margaret can't say out loud. Then makes the calls she can't make herself.",
-          after: "A Vision Mate referral, flagged as newly diagnosed with the Northern Ontario coordinator. A peer support call with CNIB Sudbury booked this week. A Phone It Forward kit on the way. The 'how do I tell my daughter' conversation now has a person to help her have it."
+          anticipation: "Three minutes. Two voices. One first call. Iris won't name a single CNIB program until she's earned the right to. Listen for the moment she stops listening and starts acting on Margaret's behalf — and the one thing Iris refuses to do, because no AI should.",
+          thenNow: {
+            then: "Alone. Almost didn't call.",
+            now:  "Vision Mate on the way. Sudbury peer support team on the calendar. Text confirmation in her pocket tonight."
+          }
         },
         briefing: "This is Margaret. Sixty-eight. Sudbury. Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. She lives alone. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out. Here's what a first conversation can sound like — and how Iris brings a real CNIB human into the room.",
         script: [
@@ -4689,7 +4902,9 @@ WHAT YOU NEVER DO:
           { speaker: 'margaret', voice: 'margaret', text: "Yes. Please." },
           { speaker: 'iris',     voice: 'iris',     text: "Doing it now. One last thing, Margaret — how do you want me to send your confirmations? I can text you, email, or send a quiet notification. Whatever's easiest. I'll keep it short and I won't crowd you." },
           { speaker: 'margaret', voice: 'margaret', text: "Text. With big letters if you can." },
-          { speaker: 'iris',     voice: 'iris',     text: "Large-print text, low frequency. You'll get one tonight confirming the Vision Mate referral, and another the moment the Sudbury team picks up the peer support call. Nothing else unless you ask." }
+          { speaker: 'iris',     voice: 'iris',     text: "Large-print text, low frequency. You'll get one tonight confirming the Vision Mate referral, and another the moment the Sudbury team picks up the peer support call. Nothing else unless you ask." },
+          { speaker: 'margaret', voice: 'margaret', text: "Thank you. I really wasn't expecting any of this." },
+          { speaker: 'iris',     voice: 'iris',     text: "I know. That's why I'm glad you stayed on the line. I'll talk to you in a few days, Margaret." }
         ],
         action: {
           title: "Iris just did this",
@@ -4711,9 +4926,14 @@ WHAT YOU NEVER DO:
         duration: 140,
         intro: {
           headline: "Iris turns David's quiet panic into a path forward.",
-          before: "Ten years of low vision and getting worse. David is forty-two, a financial analyst in downtown Toronto. He spends extra hours compensating in spreadsheets. He hasn't told his employer. He's terrified someone will notice. His wife pushed him to make this call.",
+          hook: "He's been hiding it from his employer for a decade.",
+          before: "Ten years of low vision and getting worse. David is forty-two, a financial analyst in downtown Toronto. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.",
           bridge: "Iris hears what David can't say out loud. Then makes the calls he can't make himself.",
-          after: "A private tech assessment booked with CNIB's professional team. A Come to Work intro made for disclosure coaching. A workflow built around the way David actually works — on his own terms, on his own timeline."
+          anticipation: "Three minutes. Two voices. One conversation David has been avoiding for ten years. Listen for the moment Iris reframes the whole thing — and the small detail Iris notices that proves she's actually listening to him, not running a script.",
+          thenNow: {
+            then: "Hiding it. Exhausted. Spending energy on pretending.",
+            now:  "Tech assessment booked. Come to Work coordinator on his side. Personal email — not work."
+          }
         },
         briefing: "This is David. Forty-two. Toronto. Financial analyst. He's had low vision for ten years and it's getting worse. He spends extra hours compensating. He hasn't told his boss. He's terrified of being seen as less capable. His wife pushed him to make this call.",
         script: [
@@ -4728,7 +4948,9 @@ WHAT YOU NEVER DO:
           { speaker: 'david', voice: 'david', text: "I want that. Yes." },
           { speaker: 'iris',  voice: 'iris',  text: "Booking it now. Quick — where do you want me to send the confirmations? Email, text, or push notification? I can send everything to your personal address if you'd rather keep this off your work account." },
           { speaker: 'david', voice: 'david', text: "Personal email. Definitely not work." },
-          { speaker: 'iris',  voice: 'iris',  text: "Personal email only. Done. The tech team's calendar link will be in your inbox in the next ten minutes, and the Come to Work coordinator will reach out within two business days. You're not alone in this anymore." }
+          { speaker: 'iris',  voice: 'iris',  text: "Personal email only. Done. The tech team's calendar link will be in your inbox in the next ten minutes, and the Come to Work coordinator will reach out within two business days." },
+          { speaker: 'david', voice: 'david', text: "That's… actually a relief. I didn't realize how heavy I was carrying this." },
+          { speaker: 'iris',  voice: 'iris',  text: "Ten years is a long time to carry anything alone. You don't have to anymore. Talk soon, David." }
         ],
         action: {
           title: "Iris just did this",
@@ -4749,9 +4971,14 @@ WHAT YOU NEVER DO:
         duration: 135,
         intro: {
           headline: "Iris puts a real human in Aiden's school.",
-          before: "Six months ago Aiden was diagnosed with a degenerative eye condition. Priya is thirty-four. She's been the only person fighting for him — researching alone, explaining the school system to teachers, putting Aiden first every single hour. She found CNIB through a Facebook comment.",
+          hook: "She has been the only person in her son's corner for six months.",
+          before: "Six months ago Aiden was diagnosed with a degenerative eye condition. Priya is thirty-four. She's been researching alone, explaining the school system to teachers, putting Aiden first every single hour. She found CNIB through a Facebook comment.",
           bridge: "Iris hears what Priya can't say out loud. Then makes the calls she can't make herself.",
-          after: "An Inclusive Schools coordinator on the way to Aiden's school to meet his teacher directly. The parent peer support group's next session in Priya's calendar. A colleague in the room — so Priya is no longer the only person in it."
+          anticipation: "Three minutes. Two voices. The first thing Iris does will surprise you — because it isn't about Aiden. Listen for the moment Iris stops being a tool and starts being a colleague.",
+          thenNow: {
+            then: "The only one in the room. Six months alone.",
+            now:  "An Inclusive Schools coordinator on the way to Aiden's school. Parent peer group in her calendar. Texts the morning of every appointment."
+          }
         },
         briefing: "This is Priya. Thirty-four. Toronto. Mother of Aiden, age seven. Six months ago Aiden was diagnosed with a degenerative eye condition. Priya has been researching alone, fighting the school system, and putting Aiden first every single hour. She found CNIB through a Facebook comment. She is exhausted.",
         script: [
@@ -4766,7 +4993,9 @@ WHAT YOU NEVER DO:
           { speaker: 'priya', voice: 'priya', text: "I didn't know that existed. Yes. Please." },
           { speaker: 'iris',  voice: 'iris',  text: "Good. I'm getting them on the phone today. One more thing, Priya — text or email for follow-ups? With everything you're juggling I'd suggest text so it's right on your lock screen, but it's your call. I'll only message you when there's something real." },
           { speaker: 'priya', voice: 'priya', text: "Text. Definitely text." },
-          { speaker: 'iris',  voice: 'iris',  text: "Text it is. You'll get one the moment the Inclusive Schools coordinator picks up Aiden's file, and another the morning of any appointment so nothing slips. And one for you next Wednesday — the parent peer group's session, if you want it." }
+          { speaker: 'iris',  voice: 'iris',  text: "Text it is. You'll get one the moment the Inclusive Schools coordinator picks up Aiden's file, and another the morning of any appointment so nothing slips. And one for you next Wednesday — the parent peer group's session, if you want it." },
+          { speaker: 'priya', voice: 'priya', text: "I haven't cried in front of a screen before. Don't tell anyone." },
+          { speaker: 'iris',  voice: 'iris',  text: "Your secret. I'll text you Wednesday, Priya. Not for Aiden. For you." }
         ],
         action: {
           title: "Iris just did this",
@@ -4994,10 +5223,11 @@ WHAT YOU NEVER DO:
         <div class="iris-buffer-inner">
           <div class="iris-buffer-eyebrow">Iris in Action · ${s.title || ''}</div>
           <h2 class="iris-buffer-title">${intro.headline || ''}</h2>
+          ${intro.hook ? `<div class="iris-buffer-hook">${intro.hook}</div>` : ''}
 
           <div class="iris-baf">
             <div class="iris-baf-block iris-baf-before">
-              <div class="iris-baf-label">Before this call</div>
+              <div class="iris-baf-label">Who you're about to meet</div>
               <div class="iris-baf-body">${intro.before || ''}</div>
             </div>
 
@@ -5007,20 +5237,28 @@ WHAT YOU NEVER DO:
               <div class="iris-baf-bridge-line"></div>
             </div>
 
-            <div class="iris-baf-block iris-baf-after">
-              <div class="iris-baf-label">${durStr} later</div>
-              <div class="iris-baf-body">${intro.after || ''}</div>
+            <div class="iris-baf-block iris-baf-anticipation">
+              <div class="iris-baf-label">What's about to happen</div>
+              <div class="iris-baf-body">${intro.anticipation || ''}</div>
             </div>
           </div>
 
-          <div class="iris-buffer-meta">
-            <div class="iris-buffer-meta-item">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span><strong>${durStr}</strong> · plays on its own</span>
+          <div class="iris-format-strip">
+            <div class="iris-format-pill">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>${durStr}</span>
             </div>
-            <div class="iris-buffer-meta-item">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
-              <span>Audio-led re-creation. <strong>Sound on</strong> for the full experience.</span>
+            <div class="iris-format-pill">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+              <span>Two voices</span>
+            </div>
+            <div class="iris-format-pill">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Plays on its own</span>
+            </div>
+            <div class="iris-format-pill iris-format-pill-cta">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/></svg>
+              <span>Sound on</span>
             </div>
           </div>
 
@@ -5228,17 +5466,19 @@ WHAT YOU NEVER DO:
         }
       }
 
-      // 5. Action card
+      // 5. Action card — animates checkmarks one by one
       if (scenarioCancelled) return;
-      await wait(500);
-      addActionCard(s.action);
-      await wait(900);
+      await wait(420);
+      insertPhaseDivider('Iris is acting now');
+      await addActionCard(s.action);
+      await wait(700);
 
-      // 6. Debrief
+      // 6. THEN / NOW transformation card — replaces the meta debrief.
+      // The contrast IS the teaching. No narrator stepping out.
       if (scenarioCancelled) return;
-      insertPhaseDivider('Debrief');
-      addNarratorMessage(s.debrief, 'debrief');
-      await speakAndWait(s.debrief, 'narrator');
+      const memberLabel = (s.title || 'Member').split(',')[0];
+      addThenNowCard(s.intro, memberLabel);
+      await wait(900);
 
       // 7. Next steps
       if (scenarioCancelled) return;
@@ -5309,22 +5549,73 @@ WHAT YOU NEVER DO:
       chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    function addActionCard(action) {
+    // Animated action card. Each item arrives with a "sending… → sent ✓"
+    // beat staggered ~480ms apart so the user sees Iris actually doing
+    // things in real time, not a static log.
+    async function addActionCard(action) {
       if (!action) return;
       const card = document.createElement('div');
-      card.className = 'iris-action-card';
+      card.className = 'iris-action-card iris-action-card-animated';
+
       const title = document.createElement('div');
       title.className = 'iris-action-card-title';
-      title.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ' + (action.title || 'Iris just did this');
+      title.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ' + (action.title || 'Iris is taking action…');
       card.appendChild(title);
+
       const list = document.createElement('ul');
-      list.className = 'iris-action-list';
-      (action.items || []).forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        list.appendChild(li);
-      });
+      list.className = 'iris-action-list iris-action-list-animated';
       card.appendChild(list);
+      chatBody.appendChild(card);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      const items = action.items || [];
+      for (let i = 0; i < items.length; i++) {
+        if (scenarioCancelled) return;
+        const li = document.createElement('li');
+        li.className = 'iris-action-li sending';
+        li.innerHTML = `
+          <span class="iris-action-icon" aria-hidden="true">
+            <span class="iris-action-spinner"></span>
+            <svg class="iris-action-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span class="iris-action-text">${items[i]}</span>
+          <span class="iris-action-status">sending…</span>
+        `;
+        list.appendChild(li);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        await wait(420);
+        if (scenarioCancelled) return;
+        li.classList.remove('sending');
+        li.classList.add('sent');
+        li.querySelector('.iris-action-status').textContent = 'sent';
+        await wait(180);
+      }
+    }
+
+    // Final transformation card — replaces the meta debrief.
+    // Two columns: THEN (where they walked in) / NOW (where they walk out).
+    // No narrator commentary. The contrast IS the teaching.
+    function addThenNowCard(intro, member) {
+      if (!intro || !intro.thenNow) return;
+      const tn = intro.thenNow;
+      const card = document.createElement('div');
+      card.className = 'iris-thennow-card';
+      card.innerHTML = `
+        <div class="iris-thennow-header">${member}</div>
+        <div class="iris-thennow-grid">
+          <div class="iris-thennow-col iris-thennow-then">
+            <div class="iris-thennow-label">A few minutes ago</div>
+            <div class="iris-thennow-body">${tn.then || ''}</div>
+          </div>
+          <div class="iris-thennow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+          <div class="iris-thennow-col iris-thennow-now">
+            <div class="iris-thennow-label">Right now</div>
+            <div class="iris-thennow-body">${tn.now || ''}</div>
+          </div>
+        </div>
+      `;
       chatBody.appendChild(card);
       chatBody.scrollTop = chatBody.scrollHeight;
     }
