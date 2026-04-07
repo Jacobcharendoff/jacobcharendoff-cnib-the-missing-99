@@ -25,6 +25,79 @@
       --radius-sm: 12px;
     }
 
+    /* ===== SECTION THEMES (CNIB Yellow / White / Black) ===== */
+    .theme-black {
+      --bg: #0A0A0A;
+      --bg-card: #141414;
+      --bg-card-hover: #1a1a1a;
+      --text: #FFFFFF;
+      --text-dim: rgba(255,255,255,0.5);
+      --text-body: rgba(255,255,255,0.7);
+      --border: rgba(255,255,255,0.08);
+      --yellow: #FFF100;
+      --yellow-dim: rgba(255, 241, 0, 0.08);
+      --yellow-glow: rgba(255, 241, 0, 0.15);
+      background: #0A0A0A;
+      color: #FFFFFF;
+    }
+    .theme-white {
+      --bg: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F2F2F2;
+      --text: #0A0A0A;
+      --text-dim: rgba(10,10,10,0.55);
+      --text-body: rgba(10,10,10,0.72);
+      --border: rgba(10,10,10,0.1);
+      --yellow: #0A0A0A; /* on white, accent is black for contrast */
+      --yellow-dim: rgba(10,10,10,0.05);
+      --yellow-glow: rgba(255, 241, 0, 0.4);
+      background: #FAFAFA;
+      color: #0A0A0A;
+    }
+    .theme-white .label { color: #B89500; } /* keep a brand-yellow eyebrow even on white */
+    .theme-yellow {
+      --bg: #FFF100;
+      --bg-card: #0A0A0A; /* contrasting cards */
+      --bg-card-hover: #1a1a1a;
+      --text: #0A0A0A;
+      --text-dim: rgba(10,10,10,0.6);
+      --text-body: rgba(10,10,10,0.82);
+      --border: rgba(10,10,10,0.18);
+      --yellow: #0A0A0A; /* accent flips to black */
+      --yellow-dim: rgba(10,10,10,0.08);
+      --yellow-glow: rgba(10,10,10,0.15);
+      background: #FFF100;
+      color: #0A0A0A;
+    }
+    .theme-yellow .label { color: #0A0A0A; }
+
+    /* Theme-specific component overrides */
+    .theme-white .chat-bubble.bot {
+      background: #FFF100;
+      color: #0A0A0A;
+      border: 1px solid rgba(10,10,10,0.12);
+    }
+    .theme-white .chat-bubble.user {
+      background: rgba(10,10,10,0.06);
+      color: rgba(10,10,10,0.78);
+    }
+    .theme-white .what-visual {
+      box-shadow: 0 24px 80px rgba(10,10,10,0.08);
+    }
+    .theme-yellow .how-icon {
+      background: #0A0A0A;
+      border-color: #0A0A0A;
+    }
+    .theme-yellow .how-icon svg { stroke: #FFF100; }
+    .theme-yellow .accent { color: #0A0A0A; }
+    .theme-white .accent { color: #0A0A0A; }
+    .theme-white .data-strip {
+      border-top-color: rgba(10,10,10,0.08);
+      border-bottom-color: rgba(10,10,10,0.08);
+    }
+    .theme-white .reach-visual::before { border-top-color: #FFF100; }
+    .theme-white .reach-number { color: #0A0A0A; }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -455,7 +528,7 @@
     .data-strip .body-lg { flex: 1; }
     .data-source {
       font-size: 12px;
-      color: rgba(255,255,255,0.25);
+      color: var(--text-dim);
       margin-top: 8px;
     }
     .reach-visual {
@@ -999,7 +1072,7 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero theme-black">
     <div class="iris-logo">
       <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -1031,7 +1104,7 @@
   </section>
 
   <!-- WHAT IS IRIS -->
-  <section class="section" id="what">
+  <section class="section theme-white" id="what">
     <div class="container">
       <div class="what-grid">
         <div class="what-text reveal">
@@ -1052,7 +1125,7 @@
   </section>
 
   <!-- LIVE DEMOS -->
-  <section class="section" id="demos" style="background: var(--bg-card);">
+  <section class="section theme-black" id="demos">
     <div class="container">
       <div style="text-align:center" class="reveal">
         <span class="label">Live Interactive Demos</span>
@@ -1122,7 +1195,7 @@
   </section>
 
   <!-- HOW IT WORKS -->
-  <section class="section" id="how">
+  <section class="section theme-yellow" id="how">
     <div class="container">
       <div style="text-align:center" class="reveal">
         <span class="label">How It Works</span>
@@ -1155,7 +1228,7 @@
   </section>
 
   <!-- MEMBER JOURNEY -->
-  <section class="section" id="journey" style="background: var(--bg-card);">
+  <section class="section theme-black" id="journey">
     <div class="container">
       <div style="text-align:center" class="reveal">
         <span class="label">The Member Journey</span>
@@ -1296,7 +1369,7 @@
   </section>
 
   <!-- DATA -->
-  <div class="data-strip">
+  <div class="data-strip theme-white">
     <div class="container">
       <div>
         <p class="body-lg">No blindness organization globally has cracked past single-digit reach. CNIB serves fewer than 1% of Canadians with sight loss. The gap isn't awareness alone. It's that no one has built a system to find, engage, and retain the other 99%.</p>
@@ -1310,7 +1383,7 @@
   </div>
 
   <!-- VOICE -->
-  <section class="section voice-section" id="voice">
+  <section class="section voice-section theme-black" id="voice">
     <div class="container">
       <div class="reveal">
         <span class="label">Voice Navigator</span>
@@ -1328,7 +1401,7 @@
   </section>
 
   <!-- CTA -->
-  <section class="cta-section">
+  <section class="cta-section theme-black">
     <div class="container">
       <div class="reveal">
         <span class="label">Ready?</span>
