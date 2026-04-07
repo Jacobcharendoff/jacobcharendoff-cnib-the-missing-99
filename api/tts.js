@@ -3,7 +3,16 @@
 
 export const config = { runtime: 'edge' };
 
-const VOICE_ID = 'NtS6nEHDYMQC9QczMQuq';
+// Voice routing — each persona gets its own ElevenLabs voice for the auto-playing scenarios.
+// Defaults are public ElevenLabs library voices (available on every account).
+// Override any of them via Vercel env vars (e.g. ELEVENLABS_VOICE_MARGARET).
+const VOICE_MAP = {
+  iris:     process.env.ELEVENLABS_VOICE_IRIS     || 'NtS6nEHDYMQC9QczMQuq', // Iris (current custom)
+  narrator: process.env.ELEVENLABS_VOICE_NARRATOR || 'NtS6nEHDYMQC9QczMQuq', // Same as Iris
+  margaret: process.env.ELEVENLABS_VOICE_MARGARET || 'XrExE9yKIg1WjnnlVkGX', // Matilda — warm mature female
+  david:    process.env.ELEVENLABS_VOICE_DAVID    || 'nPczCjzI2devNBz1zQrb', // Brian — calm professional male
+  priya:    process.env.ELEVENLABS_VOICE_PRIYA    || 'EXAVITQu4vr4xnSDxMaL', // Sarah — younger female
+};
 const MODEL = 'eleven_turbo_v2_5';
 
 export default async function handler(req) {
@@ -27,6 +36,9 @@ export default async function handler(req) {
   if (!text) {
     return new Response('Missing text', { status: 400 });
   }
+
+  const requestedVoice = (body.voice || 'iris').toString().toLowerCase();
+  const VOICE_ID = VOICE_MAP[requestedVoice] || VOICE_MAP.iris;
 
   const upstream = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream`,
