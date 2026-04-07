@@ -2229,6 +2229,39 @@
     }
     .pilot-success li strong { color: #FFD100; font-weight: 700; }
 
+    /* ===== HARD PARTS ===== */
+    .hardparts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+    }
+    .hardpart {
+      padding: 32px 28px;
+      border: 1px solid rgba(255,209,0,0.18);
+      border-left: 3px solid #FFD100;
+      border-radius: 4px;
+      background: rgba(255,209,0,0.025);
+    }
+    .hardpart h4 {
+      font-family: 'Barlow', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin-bottom: 12px;
+      color: #FFD100;
+      line-height: 1.3;
+    }
+    .hardpart p {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.78);
+    }
+    @media (max-width: 900px) {
+      .hardparts-grid { grid-template-columns: 1fr; gap: 20px; }
+      .hardpart { padding: 26px 22px; }
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 900px) {
       #problem .problem-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -2922,6 +2955,44 @@
     </div>
   </section>
 
+  <!-- THE HARD PARTS -->
+  <section class="section theme-black" id="hardparts">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="label">The hard parts</span>
+        <h2 class="headline-lg">The questions CNIB<br><span class="accent">would ask in week one.</span></h2>
+        <p class="body-lg">Iris doesn't hide from the difficult questions. Here is a plain answer to every hard thing a CNIB executive, program lead, or digital team member would raise the moment they saw a prototype like this. None of these are solved. All of them have a direction.</p>
+      </div>
+
+      <div class="hardparts-grid reveal">
+        <div class="hardpart">
+          <h4>Bilingual — French parity, not French translation.</h4>
+          <p>Canada is bilingual. CNIB is bilingual. Iris has to be built bilingual from day one, not translated at the end. The pilot launches in English first because it's faster to ship, but the 90-day plan includes a French co-build with a CNIB Quebec program lead — not a localization agency. A French-speaking member should never feel like a second priority.</p>
+        </div>
+        <div class="hardpart">
+          <h4>Accessibility — held to a higher standard than CNIB's own site.</h4>
+          <p>This is CNIB. Iris has to be the most accessible interface in the organization, not the least. That means WCAG 2.2 AA minimum, full screen reader compatibility, voice-first alternatives for every interaction, adjustable type and contrast, and regular testing with real CNIB members who use AT. The site you're looking at right now includes an accessibility panel in the top-right — and that's the floor, not the ceiling.</p>
+        </div>
+        <div class="hardpart">
+          <h4>Privacy &amp; PHIPA — health conversations belong to members.</h4>
+          <p>A conversation with Iris will contain things that look a lot like personal health information. That means PHIPA in Ontario, equivalent provincial legislation elsewhere, and a privacy posture that assumes the member owns their data end to end. Canadian data residency. Explicit consent for storage and human review. An easy, one-step "forget me" inside the chat. CNIB's Chief Privacy Officer signs off on the architecture before pilot day one.</p>
+        </div>
+        <div class="hardpart">
+          <h4>Data ownership — CNIB owns the member graph.</h4>
+          <p>Iris is a tool, not a platform. Every conversation, every referral, every follow-up belongs to CNIB — not to a vendor, not to Jacob, not to a model provider. The data layer is portable by design. If CNIB ever wants to bring Iris in-house, the handoff is a weekend of work, not a lawsuit. This is a tool built for CNIB to own.</p>
+        </div>
+        <div class="hardpart">
+          <h4>Cost per connection — measured against the real baseline.</h4>
+          <p>Iris has to be cheaper per meaningful connection than the current intake path, and the pilot will measure that honestly. The baseline we'd propose: CNIB's current fully-loaded cost of converting an inbound inquiry into an activated program participant. Iris carries compute cost, human review cost, and an honest share of build cost. If the numbers don't work, they don't work — and the pilot is designed to tell us that in 90 days, not 90 months.</p>
+        </div>
+        <div class="hardpart">
+          <h4>When Iris doesn't know — the human handoff is the point.</h4>
+          <p>Iris is not a replacement for CNIB staff. It is a front door that makes sure the right human gets the right conversation at the right time. The Margaret demo above includes a moment where Iris explicitly says "that one I'm not the right person for" and books a peer support call. That is not a failure mode. That is the product.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA — Talk to Iris OR Talk to Jacob -->
   <section class="cta-section theme-black">
     <div class="container">
@@ -3475,29 +3546,34 @@ WHAT YOU NEVER DO:
         title: "Margaret, 68",
         subtitle: "Newly diagnosed, living alone in Sudbury",
         banner: "Margaret · 68 · Sudbury · Newly diagnosed with macular degeneration",
-        briefing: "This is Margaret. Sixty-eight. Sudbury. Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. She lives alone. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out. Watch what a first conversation can be.",
+        briefing: "This is Margaret. Sixty-eight. Sudbury. Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. She lives alone. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out. Watch what a first conversation can be — and watch Iris bring a real CNIB human into the room.",
         script: [
           { speaker: 'iris',     voice: 'iris',     text: "Hi Margaret. I'm Iris. What brought you here today?" },
           { speaker: 'margaret', voice: 'margaret', text: "My eye doctor told me I have macular degeneration. My daughter found you. I'm honestly not even sure what I'm looking for." },
           { speaker: 'iris',     voice: 'iris',     text: "Two months. That's still raw. How are you doing? Not practically. Just — how are you doing?" },
           { speaker: 'margaret', voice: 'margaret', text: "Some days are okay. I taught for thirty-four years. Reading was everything to me. I feel like I'm losing something I can't get back." }
         ],
-        midPoint: "Notice — Iris hasn't named a single program yet. It's still building the picture. The match comes after it's earned.",
+        midPoint: "Notice — Iris hasn't named a single program yet. It's still building the picture. The match comes after it's earned. What comes next is why Iris is built on top of CNIB, not around it.",
         scriptAfterMid: [
-          { speaker: 'iris',     voice: 'iris',     text: "Reading wasn't a hobby. It was who you were. There's a woman in Sudbury named Linda. She has a vision condition too. I think you should meet her." },
-          { speaker: 'margaret', voice: 'margaret', text: "I think I'd like that. Yes." },
-          { speaker: 'iris',     voice: 'iris',     text: "Good. I'm setting that up right now." }
+          { speaker: 'iris',     voice: 'iris',     text: "Reading wasn't a hobby. It was who you were. There's something I'd like to tell you about — CNIB's Vision Mate program. One-on-one peer support. Someone who's lived this. The Northern Ontario coordinator is based out of the Sudbury CNIB office. There's usually about a three-week wait in your region right now, but I can flag the referral as newly diagnosed and that moves things up." },
+          { speaker: 'margaret', voice: 'margaret', text: "Three weeks feels like forever." },
+          { speaker: 'iris',     voice: 'iris',     text: "I know. So while we wait — CNIB also has Phone It Forward. They send you a smartphone already set up for low vision. Screen reader, large text, the works. Free. And I can request a rehab specialist home visit for lighting and magnifiers — that one moves faster than Vision Mate." },
+          { speaker: 'margaret', voice: 'margaret', text: "Can you help me tell my daughter? I don't know how to have that conversation." },
+          { speaker: 'iris',     voice: 'iris',     text: "That one I'm not the right person for. That's a conversation I'd want a real human in your corner for. Let me book you a call this week with the peer support team at CNIB Sudbury — they've helped hundreds of people say exactly these words out loud. I'll stay in the background if you want, but they're the one you want in the room." },
+          { speaker: 'margaret', voice: 'margaret', text: "Yes. Please." },
+          { speaker: 'iris',     voice: 'iris',     text: "Doing it now." }
         ],
         action: {
           title: "Iris just did this",
           items: [
-            "Vision Mate referral sent to the Sudbury coordinator",
-            "Linda — peer match — flagged as a personal fit",
-            "Audio reading guide queued for follow-up",
-            "30-day check-in scheduled"
+            "Vision Mate referral → Northern Ontario coordinator · flagged newly diagnosed · priority review",
+            "Phone It Forward kit queued for shipping (pre-configured, low-vision setup)",
+            "Home vision rehab visit requested — Sudbury regional team",
+            "Peer support call booked with CNIB Sudbury within 5 days — the 'telling my daughter' conversation",
+            "14-day Iris check-in scheduled (text + voice)"
           ]
         },
-        debrief: "That's a first conversation. No forms. No links. Margaret leaves with a real human heading her way. Try another scenario, or talk to me yourself."
+        debrief: "That's a first conversation. No forms. No links. Iris named real CNIB programs, owned the regional wait time, and — most importantly — knew when to hand the hard conversation to a human. That humility is the product."
       },
       david: {
         title: "David, 42",
