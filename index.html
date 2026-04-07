@@ -3515,10 +3515,33 @@
         if (!ephemeralKey) throw new Error('no ephemeral key in session response');
 
         realtimePC = new RTCPeerConnection();
+        realtimePC.oniceconnectionstatechange = () => console.log('[realtime] ICE:', realtimePC.iceConnectionState);
+        realtimePC.onconnectionstatechange  = () => console.log('[realtime] PC :', realtimePC.connectionState);
 
+        // Audio element MUST be attached to the DOM and must call .play()
+        // explicitly — autoplay is unreliable for srcObject MediaStreams in
+        // Chrome/Safari. This was the bug causing "no audible reply".
         realtimeAudioEl = document.createElement('audio');
+        realtimeAudioEl.id = 'iris-realtime-audio';
         realtimeAudioEl.autoplay = true;
-        realtimePC.ontrack = (ev) => { realtimeAudioEl.srcObject = ev.streams[0]; };
+        realtimeAudioEl.setAttribute('playsinline', '');
+        realtimeAudioEl.style.position = 'fixed';
+        realtimeAudioEl.style.left = '-9999px';
+        realtimeAudioEl.style.top = '-9999px';
+        document.body.appendChild(realtimeAudioEl);
+
+        realtimePC.ontrack = (ev) => {
+          console.log('[realtime] ontrack — remote audio stream attached');
+          realtimeAudioEl.srcObject = ev.streams[0];
+          // Force play on every track event — Chrome ignores autoplay on srcObject
+          // unless there's a recent user gesture context.
+          const p = realtimeAudioEl.play();
+          if (p && p.catch) p.catch(err => console.warn('[realtime] audio.play() blocked:', err));
+        };
+
+        // Pre-add a recvonly transceiver so remote audio is negotiated even if
+        // the track event fires before we add ours.
+        realtimePC.addTransceiver('audio', { direction: 'sendrecv' });
 
         realtimeStream = await navigator.mediaDevices.getUserMedia({
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
@@ -3617,7 +3640,10 @@
         if (realtimeDC) { try { realtimeDC.close(); } catch(e) {} }
         if (realtimePC) { try { realtimePC.close(); } catch(e) {} }
         if (realtimeStream) { realtimeStream.getTracks().forEach(t => { try { t.stop(); } catch(e){} }); }
-        if (realtimeAudioEl) { try { realtimeAudioEl.pause(); realtimeAudioEl.srcObject = null; } catch(e) {} }
+        if (realtimeAudioEl) {
+          try { realtimeAudioEl.pause(); realtimeAudioEl.srcObject = null; } catch(e) {}
+          try { realtimeAudioEl.remove(); } catch(e) {}
+        }
       } finally {
         realtimePC = null;
         realtimeDC = null;
@@ -3995,6 +4021,21 @@ WHAT YOU NEVER DO:
       // Auto-end scenario if user signals goodbye and we're inside a named conversation
       if (currentPhase === 'conversation' && /^(end scenario|end demo|stop scenario|that's it|that's enough|wrap up|debrief|i'm done|we're done)\b/i.test(text.trim())) {
         setTimeout(() => endScenarioWithDebrief(), 400);
+        return;
+      }
+
+      // If Realtime voice is active, route the typed message through the data channel
+      // so Iris responds with one voice and one model — no parallel TTS.
+      if (realtimeActive && realtimeDC && realtimeDC.readyState === 'open') {
+        sendRealtimeEvent({
+          type: 'conversation.item.create',
+          item: {
+            type: 'message',
+            role: 'user',
+            content: [{ type: 'input_text', text }],
+          },
+        });
+        sendRealtimeEvent({ type: 'response.create' });
         return;
       }
 
