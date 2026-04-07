@@ -70,28 +70,25 @@
     }
     .theme-yellow .label { color: #0A0A0A; }
 
-    /* ===== FLOWING BACKGROUND BLEEDS ===== */
-    /* Each section sits on a body-wide gradient that runs across the whole page.
-       Sections themselves are TRANSPARENT so the gradient bleeds through every join. */
-    body {
-      background: linear-gradient(
-        180deg,
-        #FFF100 0%,
-        #FFF100 7%,        /* hero yellow holds */
-        #8a7a05 11%,       /* yellow→dark warm bleed */
-        #0A0A0A 16%,
-        #0A0A0A 40%,       /* dark holds through what + demos */
-        #4a4847 45%,       /* dark→white warm bleed */
-        #FAFAFA 50%,
-        #FAFAFA 72%,       /* white holds through how + journey */
-        #4a4847 76%,       /* white→black warm bleed */
-        #0A0A0A 80%,
-        #0A0A0A 100%       /* black highlight + voice + cta close */
-      );
-      background-attachment: fixed;
-      min-height: 100vh;
+    /* ===== SECTION BACKGROUNDS — solid blocks, dividers do the bleeding ===== */
+    body { background: #0A0A0A; }
+    .theme-black, .theme-black.hero, .theme-black.section, .theme-black.data-strip, .theme-black.cta-section { background: #0A0A0A; }
+    .theme-white, .theme-white.section, .theme-white.data-strip { background: #FAFAFA; }
+    .theme-yellow, .theme-yellow.hero, .theme-yellow.section, .theme-yellow.data-strip { background: #FFF100; }
+
+    /* ===== SECTION DIVIDERS — silky 96px gradient blends between section colors ===== */
+    .section-divider {
+      height: 96px;
+      width: 100%;
+      position: relative;
+      pointer-events: none;
     }
-    .hero, section.section, .data-strip, .cta-section { background: transparent !important; }
+    .section-divider.fade-yellow-to-dark { background: linear-gradient(to bottom, #FFF100, #0A0A0A); }
+    .section-divider.fade-dark-to-yellow { background: linear-gradient(to bottom, #0A0A0A, #FFF100); }
+    .section-divider.fade-dark-to-white { background: linear-gradient(to bottom, #0A0A0A, #FAFAFA); }
+    .section-divider.fade-white-to-dark { background: linear-gradient(to bottom, #FAFAFA, #0A0A0A); }
+    .section-divider.fade-yellow-to-white { background: linear-gradient(to bottom, #FFF100, #FAFAFA); }
+    .section-divider.fade-white-to-yellow { background: linear-gradient(to bottom, #FAFAFA, #FFF100); }
 
     /* Theme-specific component overrides */
     .theme-white .chat-bubble.bot {
@@ -1459,6 +1456,8 @@
     </div>
   </section>
 
+  <div class="section-divider fade-yellow-to-dark" aria-hidden="true"></div>
+
   <!-- WHAT IS IRIS -->
   <section class="section theme-black" id="what">
     <div class="container">
@@ -1549,6 +1548,8 @@
       </div>
     </div>
   </section>
+
+  <div class="section-divider fade-dark-to-white" aria-hidden="true"></div>
 
   <!-- HOW IT WORKS -->
   <section class="section theme-white" id="how">
@@ -1723,6 +1724,8 @@
       </div>
     </div>
   </section>
+
+  <div class="section-divider fade-white-to-dark" aria-hidden="true"></div>
 
   <!-- DATA -->
   <div class="data-strip theme-black">
