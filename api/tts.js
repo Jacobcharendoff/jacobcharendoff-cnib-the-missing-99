@@ -13,7 +13,25 @@ const VOICE_MAP = {
   david:    process.env.ELEVENLABS_VOICE_DAVID    || 'nPczCjzI2devNBz1zQrb', // Brian — calm professional male
   priya:    process.env.ELEVENLABS_VOICE_PRIYA    || 'EXAVITQu4vr4xnSDxMaL', // Sarah — younger female
 };
-const MODEL = 'eleven_turbo_v2_5';
+// Per-voice tuning. Each persona gets settings shaped to who they actually are.
+// stability: lower = more expressive/variable; higher = more even/controlled
+// style:     higher = more dramatic interpretation of punctuation/emotion
+// speed:     1.0 = natural; <1.0 = slower (more weight); >1.0 = faster
+const VOICE_SETTINGS = {
+  // Iris — warm, calm, present, slightly wry. Conversational pace.
+  iris:     { stability: 0.42, similarity_boost: 0.80, style: 0.55, use_speaker_boost: true, speed: 1.0 },
+  // Narrator — declarative, even, documentary tone.
+  narrator: { stability: 0.62, similarity_boost: 0.82, style: 0.30, use_speaker_boost: true, speed: 1.0 },
+  // Margaret, 68 — older, vulnerable, takes her time. Slower, more weight on each word.
+  margaret: { stability: 0.55, similarity_boost: 0.82, style: 0.45, use_speaker_boost: true, speed: 0.93 },
+  // David, 42 — controlled professional, holding it together. Even, slightly clipped.
+  david:    { stability: 0.58, similarity_boost: 0.80, style: 0.35, use_speaker_boost: true, speed: 1.0 },
+  // Priya, 34 — exhausted mother. Forward-leaning energy but trailing off when tired.
+  priya:    { stability: 0.40, similarity_boost: 0.80, style: 0.58, use_speaker_boost: true, speed: 1.0 },
+};
+// eleven_multilingual_v2 is meaningfully more expressive than turbo_v2_5 for emotional delivery.
+// Slightly higher latency but the demos are pre-scripted so latency isn't the bottleneck.
+const MODEL = 'eleven_multilingual_v2';
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
@@ -39,6 +57,7 @@ export default async function handler(req) {
 
   const requestedVoice = (body.voice || 'iris').toString().toLowerCase();
   const VOICE_ID = VOICE_MAP[requestedVoice] || VOICE_MAP.iris;
+  const voice_settings = VOICE_SETTINGS[requestedVoice] || VOICE_SETTINGS.iris;
 
   const upstream = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream`,
@@ -51,14 +70,8 @@ export default async function handler(req) {
       body: JSON.stringify({
         text,
         model_id: MODEL,
-        voice_settings: {
-          stability: 0.32,
-          similarity_boost: 0.78,
-          style: 0.55,
-          use_speaker_boost: true,
-          speed: 1.08,
-        },
-        optimize_streaming_latency: 3,
+        voice_settings,
+        optimize_streaming_latency: 2,
       }),
     }
   );

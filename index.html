@@ -3320,7 +3320,7 @@
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
-      audio.playbackRate = 1.1;
+      audio.playbackRate = 1.0;
       currentAudio = audio;
       await new Promise((resolve) => {
         audio.onended = () => { URL.revokeObjectURL(audioUrl); resolve(); };
