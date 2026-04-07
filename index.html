@@ -222,8 +222,19 @@
       font-size: 14px;
       font-weight: 500;
       transition: color 0.2s;
+      position: relative;
+      padding: 6px 0;
     }
     .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--yellow); }
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -2px;
+      height: 2px;
+      background: var(--yellow);
+      border-radius: 2px;
+    }
     .nav-cta {
       background: var(--yellow);
       color: #000;
@@ -1786,10 +1797,450 @@
     }
     .how-step .how-icon { margin: 0 0 24px; }
 
+    /* ===== LIVING IRIS EYE (hero) ===== */
+    .iris-eye {
+      width: clamp(160px, 22vw, 240px);
+      height: clamp(160px, 22vw, 240px);
+      margin: 0 auto 48px;
+      position: relative;
+      filter: drop-shadow(0 20px 60px rgba(10,10,10,0.18));
+    }
+    .iris-eye svg { width: 100%; height: 100%; display: block; }
+    .iris-eye .pupil { transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); transform-origin: center; }
+    .iris-eye .iris-ring { animation: irisBreathe 4s ease-in-out infinite; transform-origin: center; }
+    @keyframes irisBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* ===== PROBLEM SECTION ===== */
+    #problem .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      margin-top: 80px;
+    }
+    .donut-99 {
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      position: relative;
+      border-radius: 50%;
+      background: conic-gradient(var(--yellow) 0 3.6deg, rgba(255,255,255,0.06) 3.6deg 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .donut-99::before {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      background: var(--bg);
+      border-radius: 50%;
+    }
+    .donut-99-inner {
+      position: relative;
+      text-align: center;
+      z-index: 1;
+    }
+    .donut-99-inner .big {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(64px, 9vw, 110px);
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: -3px;
+      line-height: 1;
+    }
+    .donut-99-inner .small {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 8px;
+    }
+    .problem-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .problem-stat {
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+    }
+    .problem-stat:last-child { border-bottom: 1px solid var(--border); }
+    .problem-stat .num {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .problem-stat .lbl {
+      font-size: 15px;
+      color: var(--text-body);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* Sector benchmark bars */
+    .benchmarks {
+      margin-top: 96px;
+      max-width: 880px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .benchmarks-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .benchmark-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 80px;
+      gap: 20px;
+      align-items: center;
+      padding: 14px 0;
+    }
+    .benchmark-row .org { font-size: 14px; color: var(--text); font-weight: 500; }
+    .benchmark-row .org small { color: var(--text-dim); font-weight: 400; display: block; font-size: 12px; }
+    .benchmark-row .bar-track {
+      height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .benchmark-row .bar-fill {
+      height: 100%;
+      background: var(--yellow);
+      border-radius: 100px;
+      transform-origin: left center;
+      transform: scaleX(0);
+      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .benchmark-row.visible .bar-fill { transform: scaleX(1); }
+    .benchmark-row .pct {
+      font-family: 'Barlow', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--yellow);
+      text-align: right;
+    }
+    .benchmark-source {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 32px;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== CONSTELLATION (Iris ↔ CNIB programs) ===== */
+    .constellation {
+      width: 100%;
+      max-width: 860px;
+      margin: 80px auto 0;
+      position: relative;
+      text-align: center;
+    }
+    .constellation-cap {
+      margin-top: 24px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .constellation svg { width: 100%; height: 100%; }
+    .constellation .iris-core { fill: #0A0A0A; stroke: #0A0A0A; }
+    .theme-black .constellation .iris-core { fill: #FFD100; stroke: #FFD100; }
+    .constellation .program-node circle {
+      transition: r 0.4s ease, fill 0.4s ease;
+      cursor: default;
+    }
+    .constellation .program-node:hover circle { r: 36; }
+    .constellation .program-node text {
+      font-family: 'Barlow', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      pointer-events: none;
+      text-anchor: middle;
+    }
+    .constellation .link-line {
+      stroke-dasharray: 4 6;
+      animation: dashFlow 22s linear infinite;
+    }
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -120; }
+    }
+
+    /* ===== JOURNEY SELECTOR ===== */
+    #journeys { padding: 120px 0; }
+    .journey-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 56px 0 56px;
+    }
+    .journey-tab {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-body);
+      padding: 12px 22px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+    .journey-tab:hover { border-color: rgba(10,10,10,0.4); color: var(--text); }
+    .journey-tab.active {
+      background: #0A0A0A;
+      color: #FFD100;
+      border-color: #0A0A0A;
+    }
+    .journey-stage {
+      max-width: 880px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 56px 56px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .journey-stage::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FFD100, transparent);
+    }
+    .journey-persona {
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+    .journey-headline {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(22px, 2.6vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 40px;
+    }
+    .journey-headline em { font-style: normal; color: #B89500; }
+    .theme-black .journey-headline em { color: var(--yellow); }
+    .journey-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      counter-reset: jstep;
+    }
+    .journey-step {
+      position: relative;
+      padding-left: 56px;
+      padding-bottom: 28px;
+      counter-increment: jstep;
+    }
+    .journey-step:last-child { padding-bottom: 0; }
+    .journey-step::before {
+      content: counter(jstep, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 209, 0, 0.12);
+      border: 1px solid rgba(255, 209, 0, 0.3);
+      color: #B89500;
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .theme-black .journey-step::before { color: var(--yellow); }
+    .journey-step::after {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 36px;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255, 209, 0, 0.18);
+    }
+    .journey-step:last-child::after { display: none; }
+    .journey-step h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .journey-step p {
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .journey-stage[data-loading="true"] .journey-steps { opacity: 0.4; }
+    .journey-stage .journey-steps { transition: opacity 0.25s ease; }
+
+    /* ===== AUDIENCE TILES (multi-audience marketing) ===== */
+    .audience-tiles {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 80px;
+      max-width: 1080px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .audience-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 28px 24px;
+      text-align: left;
+      transition: all 0.25s ease;
+    }
+    .audience-tile:hover {
+      border-color: rgba(255, 209, 0, 0.3);
+      transform: translateY(-2px);
+    }
+    .audience-tile .a-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 209, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .audience-tile .a-icon svg { width: 18px; height: 18px; stroke: var(--yellow); fill: none; stroke-width: 2; }
+    .audience-tile h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .audience-tile p {
+      font-size: 13px;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    /* ===== PILOT SECTION ===== */
+    #pilot { padding: 120px 0; }
+    .pilot-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 64px;
+      margin-top: 64px;
+      align-items: start;
+    }
+    .pilot-phases { display: flex; flex-direction: column; gap: 0; }
+    .pilot-phase {
+      padding: 24px 0;
+      border-top: 1px solid rgba(10,10,10,0.18);
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .pilot-phase:last-child { border-bottom: 1px solid rgba(10,10,10,0.18); }
+    .pilot-phase .phase-meta {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.55);
+    }
+    .pilot-phase .phase-num {
+      font-family: 'Barlow', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 1;
+      color: #FFD100;
+      letter-spacing: -1px;
+    }
+    .pilot-phase h4 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #0A0A0A;
+    }
+    .pilot-phase p {
+      font-size: 14px;
+      color: rgba(10,10,10,0.72);
+      line-height: 1.55;
+    }
+    .pilot-success {
+      background: #0A0A0A;
+      color: #FAFAFA;
+      padding: 40px 36px;
+      border-radius: var(--radius);
+    }
+    .pilot-success h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #FFD100;
+      margin-bottom: 24px;
+    }
+    .pilot-success ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .pilot-success li {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.82);
+      padding-left: 22px;
+      position: relative;
+    }
+    .pilot-success li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FFD100;
+    }
+    .pilot-success li strong { color: #FFD100; font-weight: 700; }
+
     /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      #problem .problem-grid { grid-template-columns: 1fr; gap: 48px; }
+      .pilot-grid { grid-template-columns: 1fr; gap: 40px; }
+      .audience-tiles { grid-template-columns: repeat(2, 1fr); }
+      .benchmark-row { grid-template-columns: 120px 1fr 60px; gap: 14px; }
+    }
     @media (max-width: 768px) {
       .trio { grid-template-columns: 1fr; }
       .quiet-beat { padding: 48px 24px 16px; }
+      .audience-tiles { grid-template-columns: 1fr; }
+      .journey-stage { padding: 36px 28px; }
       .what-grid { grid-template-columns: 1fr; gap: 48px; }
       .demos-grid { grid-template-columns: 1fr; }
       .demos-row-2 { grid-template-columns: 1fr; }
@@ -1845,10 +2296,11 @@
       <span style="font-size:11px;color:var(--text-dim);font-weight:400;margin-left:4px;letter-spacing:0.3px">Your sight loss navigator</span>
     </div>
     <div class="nav-links">
-      <a href="#demos">Live Demos</a>
-      <a href="#journey">Journeys</a>
-      <a href="#how">How It Works</a>
-      <a href="#voice">Voice</a>
+      <a href="#problem" data-nav>The Problem</a>
+      <a href="#iris" data-nav>Meet Iris</a>
+      <a href="#demos" data-nav>Demos</a>
+      <a href="#journeys" data-nav>Journeys</a>
+      <a href="#pilot" data-nav>The Pilot</a>
       <button class="nav-cta" onclick="openChat('general')">Try Iris</button>
     </div>
   </nav>
@@ -1856,36 +2308,111 @@
   <main id="main-content">
 
   <!-- HERO -->
-  <section class="hero theme-yellow">
-    <div class="hero-eyebrow">Powered by CNIB</div>
-    <div class="iris-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#FFD100" stroke-width="2" stroke-linecap="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
+  <section class="hero theme-yellow" id="hero">
+    <div class="hero-eyebrow">A proposal for CNIB · April 2026</div>
+    <div class="iris-eye" aria-hidden="true">
+      <svg viewBox="0 0 240 240">
+        <defs>
+          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#1a1a1a"/>
+            <stop offset="55%" stop-color="#0A0A0A"/>
+            <stop offset="100%" stop-color="#000"/>
+          </radialGradient>
+          <radialGradient id="pupilGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#000"/>
+            <stop offset="100%" stop-color="#0A0A0A"/>
+          </radialGradient>
+        </defs>
+        <!-- outer almond -->
+        <ellipse cx="120" cy="120" rx="116" ry="68" fill="#FFF8D6" stroke="#0A0A0A" stroke-width="3"/>
+        <!-- iris circle -->
+        <g class="iris-ring">
+          <circle cx="120" cy="120" r="58" fill="url(#irisGrad)"/>
+          <!-- iris striations -->
+          <g stroke="#FFD100" stroke-width="1" opacity="0.55">
+            <line x1="120" y1="62" x2="120" y2="78"/>
+            <line x1="120" y1="178" x2="120" y2="162"/>
+            <line x1="62" y1="120" x2="78" y2="120"/>
+            <line x1="178" y1="120" x2="162" y2="120"/>
+            <line x1="79" y1="79" x2="91" y2="91"/>
+            <line x1="161" y1="79" x2="149" y2="91"/>
+            <line x1="79" y1="161" x2="91" y2="149"/>
+            <line x1="161" y1="161" x2="149" y2="149"/>
+          </g>
+          <circle cx="120" cy="120" r="58" fill="none" stroke="#FFD100" stroke-width="1.5" opacity="0.4"/>
+        </g>
+        <!-- pupil -->
+        <g class="pupil">
+          <circle cx="120" cy="120" r="22" fill="url(#pupilGrad)"/>
+          <circle cx="113" cy="113" r="6" fill="#FFF8D6" opacity="0.85"/>
+        </g>
       </svg>
     </div>
-    <h1 class="headline-xl hero-title">Meet Iris.</h1>
-    <p class="body-lg hero-sub" style="font-size:clamp(20px,2.4vw,26px);color:rgba(10,10,10,0.78);font-weight:500;max-width:680px;line-height:1.35;">A personal AI navigator for life with sight loss.<br><span style="color:rgba(10,10,10,0.55);font-weight:400;">Not a chatbot. A guide that listens, learns, and acts.</span></p>
+    <h1 class="headline-xl hero-title" style="font-size:clamp(56px,9vw,120px);">Meet Iris.</h1>
+    <p class="body-lg hero-sub" style="font-size:clamp(20px,2.4vw,26px);color:rgba(10,10,10,0.78);font-weight:500;max-width:720px;line-height:1.35;">The CNIB navigator built to find the <strong style="color:#0A0A0A">99%</strong> we don't reach yet.<br><span style="color:rgba(10,10,10,0.55);font-weight:400;font-size:0.85em;">A working prototype. A proposal. A way forward.</span></p>
     <div class="hero-cta-row">
-      <button class="btn-primary" onclick="openChat('general')">Talk to Iris</button>
-      <a href="#demos" class="btn-ghost">See it work</a>
+      <a href="#problem" class="btn-primary">Start with the problem</a>
+      <button class="btn-ghost" onclick="openChat('general')">Talk to Iris</button>
     </div>
     <div class="hero-meta">
       <div><strong>1.5M</strong> Canadians with sight loss</div>
-      <div><strong>13,000</strong> connected to CNIB today</div>
-      <div><strong>&lt;1%</strong> reached</div>
+      <div><strong>13,000</strong> reached by CNIB</div>
+      <div><strong>&lt;1%</strong> of the population</div>
     </div>
   </section>
 
   <div class="section-divider fade-yellow-to-dark" aria-hidden="true"></div>
 
-  <!-- WHAT IRIS DOES — Trio -->
-  <section class="section theme-black" id="what">
+  <!-- THE PROBLEM — earns Iris -->
+  <section class="section theme-black" id="problem">
     <div class="container">
       <div class="section-head reveal">
-        <span class="label">What Iris does</span>
-        <h2 class="headline-lg">No forms.<br><span class="accent">Just conversations.</span></h2>
-        <p class="body-lg">CNIB serves more than 200 programs. Iris understands all of them — and which one matters for the person on the other end of the line, right now.</p>
+        <span class="label">The Problem</span>
+        <h2 class="headline-lg">CNIB serves the world.<br><span class="accent">Most of the world doesn't know.</span></h2>
+        <p class="body-lg">Roughly 1.5 million Canadians live with sight loss today. CNIB connects with about 13,000 of them. That's not a marketing problem. It's a navigation problem — and no blindness organization on Earth has solved it.</p>
+      </div>
+
+      <div class="problem-grid reveal">
+        <div class="donut-99" aria-hidden="true">
+          <div class="donut-99-inner">
+            <div class="big">99%</div>
+            <div class="small">unreached</div>
+          </div>
+        </div>
+        <div class="problem-stats">
+          <div class="problem-stat">
+            <div class="num">1.5M</div>
+            <div class="lbl">Canadians live with sight loss today, and that number is projected to nearly double by 2050.</div>
+          </div>
+          <div class="problem-stat">
+            <div class="num">~13K</div>
+            <div class="lbl">Active CNIB members across all programs nationwide. Less than one percent of the population that needs us.</div>
+          </div>
+          <div class="problem-stat">
+            <div class="num">$30M+</div>
+            <div class="lbl">FY2025 operating deficit. Every program is fighting for runway. The cost of staying invisible is the highest cost of all.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="benchmarks reveal">
+        <div class="benchmarks-title">Sector benchmark · % of national sight-loss population reached</div>
+        <div class="benchmark-row"><div class="org">CNIB <small>Canada</small></div><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><div class="pct">~1%</div></div>
+        <div class="benchmark-row"><div class="org">RNIB <small>United Kingdom</small></div><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div><div class="pct">~3%</div></div>
+        <div class="benchmark-row"><div class="org">Vision Australia <small>Australia</small></div><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><div class="pct">~6%</div></div>
+        <div class="benchmark-row"><div class="org">AFB <small>United States</small></div><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><div class="pct">~2%</div></div>
+        <div class="benchmark-source">Sources: CNIB Foundation Annual Report 2024–2025 · EY-Audited Non-Consolidated Financial Statements FY2025 · RNIB Annual Review 2024 · Vision Australia Annual Report 2024 · AFB Public Filings 2024. Reach figures are author estimates based on published active-service counts vs. national prevalence.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEET IRIS — the solution emerges -->
+  <section class="section theme-black" id="iris">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="label">Meet Iris</span>
+        <h2 class="headline-lg">A navigator that knows<br><span class="accent">every program, every member, every door.</span></h2>
+        <p class="body-lg">Iris is an AI navigator designed for CNIB. It listens like a person, knows every program in the ecosystem, and connects each Canadian with sight loss to the support that actually fits their life — the moment they need it.</p>
       </div>
 
       <div class="trio reveal">
@@ -1904,6 +2431,46 @@
           <h3>Makes the connection.</h3>
           <p>Books the call. Sends the warm intro. Follows up at 2am or 2pm. Brings the right CNIB human into the loop the moment one is needed.</p>
         </div>
+      </div>
+
+      <!-- Constellation: Iris at the center of CNIB's program ecosystem -->
+      <div class="constellation reveal" aria-label="Iris connects every CNIB program">
+        <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFD100" stop-opacity="1"/>
+              <stop offset="60%" stop-color="#FFD100" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#FFD100" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- links -->
+          <g stroke="#FFD100" stroke-opacity="0.55" stroke-width="1.5" fill="none">
+            <line class="link-line" x1="450" y1="260" x2="120" y2="90"/>
+            <line class="link-line" x1="450" y1="260" x2="450" y2="60"/>
+            <line class="link-line" x1="450" y1="260" x2="780" y2="90"/>
+            <line class="link-line" x1="450" y1="260" x2="60" y2="260"/>
+            <line class="link-line" x1="450" y1="260" x2="840" y2="260"/>
+            <line class="link-line" x1="450" y1="260" x2="120" y2="430"/>
+            <line class="link-line" x1="450" y1="260" x2="450" y2="470"/>
+            <line class="link-line" x1="450" y1="260" x2="780" y2="430"/>
+          </g>
+          <!-- core -->
+          <circle cx="450" cy="260" r="120" fill="url(#coreGlow)"/>
+          <circle cx="450" cy="260" r="46" fill="#FFD100"/>
+          <text x="450" y="266" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="700" fill="#0A0A0A">IRIS</text>
+          <!-- nodes -->
+          <g font-family="Inter,sans-serif" font-size="13" fill="#FFFFFF" text-anchor="middle">
+            <g><circle cx="120" cy="90" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="94">Vision Mate</text></g>
+            <g><circle cx="450" cy="60" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="450" y="64">Guide Dogs</text></g>
+            <g><circle cx="780" cy="90" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="780" y="94">Tech</text></g>
+            <g><circle cx="60" cy="260" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="60" y="264">Peer</text></g>
+            <g><circle cx="840" cy="260" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="840" y="264">Employ</text></g>
+            <g><circle cx="120" cy="430" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="434">Advocacy</text></g>
+            <g><circle cx="450" cy="470" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="450" y="474">Family</text></g>
+            <g><circle cx="780" cy="430" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="780" y="434">Sport &amp; Rec</text></g>
+          </g>
+        </svg>
+        <p class="constellation-cap">One navigator. Every door into CNIB.</p>
       </div>
     </div>
   </section>
@@ -1989,11 +2556,164 @@
           <p>Programs, mentors, technology, community — only the ones that fit. Iris makes the warm handoff. CNIB humans take it from there.</p>
         </div>
       </div>
+
+      <div class="audience-tiles reveal" style="margin-top:96px">
+        <div class="audience-tile">
+          <div class="a-icon">👤</div>
+          <h4>For members</h4>
+          <p>The person living with sight loss. Iris is theirs first.</p>
+        </div>
+        <div class="audience-tile">
+          <div class="a-icon">👨‍⚕️</div>
+          <h4>For medical providers</h4>
+          <p>One referral. Closed-loop. No fax, no portal.</p>
+        </div>
+        <div class="audience-tile">
+          <div class="a-icon">👨‍👩‍👧</div>
+          <h4>For friends &amp; family</h4>
+          <p>Plain-language guidance for the people around the person.</p>
+        </div>
+        <div class="audience-tile">
+          <div class="a-icon">🎓</div>
+          <h4>For educators</h4>
+          <p>One front door for every CNIB program for kids and youth.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- MEMBER JOURNEY (removed — archetypes now live in #demos) -->
-  <section class="section theme-white" id="journey" hidden style="display:none">
+  <!-- CHOOSE YOUR JOURNEY — interactive selector -->
+  <section class="section theme-white" id="journeys">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="label">Choose your journey</span>
+        <h2 class="headline-lg">Iris meets every audience<br><span class="accent">on their own terms.</span></h2>
+        <p class="body-lg">Sight loss touches more than the person diagnosed. Iris is built for all of them — the member, the family, the doctor, the educator. Pick a journey to see what Iris does, in their words.</p>
+      </div>
+
+      <div class="journey-tabs reveal" role="tablist">
+        <button class="journey-tab active" data-jrn="newdx" role="tab">Newly diagnosed</button>
+        <button class="journey-tab" data-jrn="senior" role="tab">Senior</button>
+        <button class="journey-tab" data-jrn="youth" role="tab">Youth</button>
+        <button class="journey-tab" data-jrn="parent" role="tab">Parent</button>
+        <button class="journey-tab" data-jrn="family" role="tab">Friend / Family</button>
+        <button class="journey-tab" data-jrn="medical" role="tab">Medical Provider</button>
+        <button class="journey-tab" data-jrn="educator" role="tab">Educator</button>
+      </div>
+
+      <div class="journey-stage reveal" id="journeyStage">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      const JOURNEYS = {
+        newdx: {
+          persona: "Margaret, 68 — newly diagnosed",
+          headline: "From the day the doctor said the words.",
+          steps: [
+            ["First contact","Iris listens. No intake form. Hears the diagnosis, the fear, the things she isn't saying."],
+            ["Emotional landing","Peer counselling referral. A Vision Mate match. Someone who's been there."],
+            ["Practical tools","Tech assessment. Lending library. Phone accessibility set up by a real human."],
+            ["Life navigation","Driving conversation. Workplace rights. The questions she didn't know to ask."],
+            ["Long-term","From member to community. From scared to connected."]
+          ]
+        },
+        senior: {
+          persona: "Phone-first, no app, no email",
+          headline: "Iris calls. Warm. Unhurried.",
+          steps: [
+            ["Warm outreach","Iris places the call. No pressure. Just a real conversation."],
+            ["Safety check","Falls, lighting, kitchen, isolation — the things that get worse in silence."],
+            ["Home visit","A CNIB rehab specialist arrives. Magnifiers. Lighting. Confidence."],
+            ["Follow-up","Iris keeps calling. Adjusts the support. Keeps the door open."],
+            ["Independence","Stays home. Stays safe. Stays connected."]
+          ]
+        },
+        youth: {
+          persona: "Teen — identity, school, future",
+          headline: "No lectures. No pity. Just real talk.",
+          steps: [
+            ["Meet them where they are","Text first. Voice when they want it. Their pace."],
+            ["Tech as equalizer","Phone setup, screen reader, the apps that make school survivable."],
+            ["Peer connection","Other teens who get it. No explanations needed."],
+            ["Sport & belonging","Goalball, cycling, recreation. Belonging through doing."],
+            ["Career launchpad","Venture Studio. Employment prep. University planning."]
+          ]
+        },
+        parent: {
+          persona: "Priya — parent of a child with sight loss",
+          headline: "The parent gets supported first.",
+          steps: [
+            ["Family support","Iris holds the parent first. Because they've been holding everyone else."],
+            ["School advocacy","IEP planning. Teacher resources. Legal rights — without the lawyer."],
+            ["Child programs","Tech training for the child. Adapted recreation. Peer groups."],
+            ["Parent network","Other families. Who've been here. Who made it through."],
+            ["Growing together","Iris stays as the child grows. Teen programs. Career prep. Always available."]
+          ]
+        },
+        family: {
+          persona: "Adult child, spouse, sibling, friend",
+          headline: "The people around the person also need a guide.",
+          steps: [
+            ["What just happened","Iris explains the diagnosis in plain language — without the doom."],
+            ["What you can do","Specific, useful, non-patronizing ways to help. And what to stop doing."],
+            ["What CNIB offers your person","The exact program for their stage, their region, their goals."],
+            ["How to bring it up","Scripts for the hard conversations. Driving. Independence. Identity."],
+            ["Stay involved, gently","Iris keeps you in the loop — only as much as your person wants."]
+          ]
+        },
+        medical: {
+          persona: "Optometrist, ophthalmologist, GP",
+          headline: "Hand off to CNIB without the friction.",
+          steps: [
+            ["One referral, any patient","Send a name. Iris takes it from there. No fax. No portal."],
+            ["Right program, right region","Iris matches the patient to CNIB services that actually fit their life."],
+            ["Closed-loop reporting","You hear back. You know what your patient took up."],
+            ["Patient education","Iris answers the questions there's no time for in a 12-minute appointment."],
+            ["Always available","2am questions. Weekend questions. The ones that don't fit office hours."]
+          ]
+        },
+        educator: {
+          persona: "Guidance counsellor, teacher, TVI",
+          headline: "Iris is the resource hub you've been building from scratch.",
+          steps: [
+            ["One front door","Every CNIB program for kids and youth, organized for educators."],
+            ["IEP support","Accommodation language, assistive tech, classroom modifications."],
+            ["Family connector","Iris brings the family in. So you're not the only adult fighting for this child."],
+            ["Career & transitions","University prep. Employment programs. The next chapter."],
+            ["Peer learning","Connect students to other students who get it."]
+          ]
+        }
+      };
+
+      function renderJourney(key){
+        const j = JOURNEYS[key];
+        if (!j) return;
+        const stage = document.getElementById('journeyStage');
+        if (!stage) return;
+        stage.innerHTML =
+          '<div class="journey-persona">' + j.persona + '</div>' +
+          '<h3 class="journey-headline">' + j.headline + '</h3>' +
+          '<ol class="journey-steps">' +
+            j.steps.map(s => '<li class="journey-step"><strong>' + s[0] + '</strong><span>' + s[1] + '</span></li>').join('') +
+          '</ol>';
+      }
+      document.addEventListener('DOMContentLoaded', function(){
+        const tabs = document.querySelectorAll('.journey-tab');
+        tabs.forEach(t => t.addEventListener('click', function(){
+          tabs.forEach(x => x.classList.remove('active'));
+          this.classList.add('active');
+          renderJourney(this.dataset.jrn);
+        }));
+        renderJourney('newdx');
+      });
+    })();
+  </script>
+
+  <section class="section theme-white" id="journey-old" hidden style="display:none">
     <div class="container">
       <div style="text-align:center" class="reveal">
         <span class="label">The Member Journey</span>
@@ -2153,7 +2873,56 @@
     </div>
   </section>
 
-  <!-- CTA — with quiet 99% beat folded in as supporting context -->
+  <!-- THE PILOT -->
+  <section class="section theme-black" id="pilot">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="label">The pilot</span>
+        <h2 class="headline-lg">A 90-day proof.<br><span class="accent">Built with CNIB. Measured honestly.</span></h2>
+        <p class="body-lg">Iris doesn't need a five-year plan to prove itself. It needs ninety days, one region, and the willingness to measure what happens when sight loss support meets people where they are.</p>
+      </div>
+
+      <div class="pilot-grid reveal">
+        <div class="pilot-phases">
+          <div class="pilot-phase">
+            <div class="phase-num">30</div>
+            <div>
+              <h4>Days 1–30 · Ground truth</h4>
+              <p>Embed with CNIB program leaders. Map every pathway. Train Iris on the real ecosystem — programs, eligibility, regional nuance, the things only insiders know.</p>
+            </div>
+          </div>
+          <div class="pilot-phase">
+            <div class="phase-num">60</div>
+            <div>
+              <h4>Days 31–60 · Closed pilot</h4>
+              <p>Launch with one region and a small cohort of new and existing members. Iris answers, refers, follows up. Every conversation reviewed by a CNIB human.</p>
+            </div>
+          </div>
+          <div class="pilot-phase">
+            <div class="phase-num">90</div>
+            <div>
+              <h4>Days 61–90 · Public soft launch</h4>
+              <p>Open the door wider. Medical providers, family members, educators. Measure activation, satisfaction, and the warm handoffs that actually land.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pilot-success">
+          <h4>What we measure</h4>
+          <ul>
+            <li><strong>Reach.</strong> New Canadians with sight loss who connect with CNIB for the first time.</li>
+            <li><strong>Activation.</strong> Members who take up at least one program after talking to Iris.</li>
+            <li><strong>Quality.</strong> Member satisfaction vs. existing intake. Conversation review by CNIB staff.</li>
+            <li><strong>Cost per connection.</strong> All-in cost of an Iris-mediated handoff vs. traditional intake.</li>
+            <li><strong>Provider lift.</strong> Referrals from optometrists, ophthalmologists, GPs after the medical pilot.</li>
+          </ul>
+          <p style="margin-top:20px;opacity:0.7;font-size:14px">Reported back to CNIB leadership monthly. Public summary at day 90.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA — Talk to Iris OR Talk to Jacob -->
   <section class="cta-section theme-black">
     <div class="container">
       <div class="quiet-beat reveal">
@@ -2166,11 +2935,15 @@
         <span class="label">Ready?</span>
         <h2 class="headline-lg" style="margin-top:18px">Iris is a prototype today.<br><span class="accent">It could reach millions tomorrow.</span></h2>
         <p class="body-lg">A working demo of what personal CNIB navigation can feel like. The technology exists. The need is documented. The only question is when CNIB starts.</p>
-        <button class="btn-primary" onclick="openChat('general')" style="margin-top:48px">Talk to Iris</button>
+        <div class="hero-cta-row" style="margin-top:48px;justify-content:center">
+          <button class="btn-primary" onclick="openChat('general')">Talk to Iris</button>
+          <a class="btn-ghost" href="mailto:jacobcharendoff@gmail.com?subject=Iris%20pilot%20conversation">Talk to Jacob</a>
+        </div>
       </div>
       <div class="cta-footer">
         Prepared for Angela Bonfanti, President &amp; CEO, CNIB Foundation · April 2026<br>
-        jacobcharendoff@gmail.com
+        jacobcharendoff@gmail.com<br>
+        <span style="opacity:0.5;font-size:12px">Sources: CNIB Foundation Annual Report 2024–2025 · EY-Audited Statements FY2025 · RNIB Annual Review · Vision Australia Annual Report · AFB Public Filings</span>
       </div>
     </div>
   </section>
@@ -2236,6 +3009,29 @@
       });
     }, { threshold: 0.15 });
     revealEls.forEach(el => observer.observe(el));
+
+    // ===== NAV SCROLL-SPY =====
+    (function navScrollSpy(){
+      const navLinks = document.querySelectorAll('.nav-links a[data-nav]');
+      const sectionMap = new Map();
+      navLinks.forEach(a => {
+        const id = a.getAttribute('href').slice(1);
+        const sec = document.getElementById(id);
+        if (sec) sectionMap.set(sec, a);
+      });
+      if (!sectionMap.size) return;
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const link = sectionMap.get(entry.target);
+          if (!link) return;
+          if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          }
+        });
+      }, { threshold: [0.4, 0.6] });
+      sectionMap.forEach((_, sec) => spy.observe(sec));
+    })();
 
     // ===== IRIS CHAT ENGINE =====
     const modal = document.getElementById('irisModal');
