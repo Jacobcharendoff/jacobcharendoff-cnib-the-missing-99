@@ -1827,18 +1827,34 @@
       aspect-ratio: 1;
       margin: 0 auto;
       position: relative;
-      border-radius: 50%;
-      background: conic-gradient(var(--yellow) 0 3.6deg, rgba(255,255,255,0.06) 3.6deg 360deg);
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .donut-99::before {
-      content: '';
+    .donut-svg {
       position: absolute;
-      inset: 28px;
-      background: var(--bg);
-      border-radius: 50%;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .donut-track {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 18;
+    }
+    .donut-fill {
+      fill: none;
+      stroke: url(#donutGrad);
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-dasharray: 628;
+      stroke-dashoffset: 628;
+      filter: drop-shadow(0 0 12px rgba(255,209,0,0.35));
+      transition: stroke-dashoffset 2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .donut-99.in-view .donut-fill {
+      stroke-dashoffset: 6.28; /* 1% of 628 unfilled */
     }
     .donut-99-inner {
       position: relative;
@@ -1918,13 +1934,13 @@
     }
     .benchmark-row .bar-fill {
       height: 100%;
-      background: var(--yellow);
+      width: 0;
+      background: linear-gradient(90deg, #FFE055 0%, #FFD100 100%);
       border-radius: 100px;
-      transform-origin: left center;
-      transform: scaleX(0);
-      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 0 18px rgba(255,209,0,0.35);
+      transition: width 1.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .benchmark-row.visible .bar-fill { transform: scaleX(1); }
+    .benchmark-row.visible .bar-fill { width: var(--w, 50%); }
     .benchmark-row .pct {
       font-family: 'Barlow', sans-serif;
       font-size: 18px;
@@ -2145,89 +2161,140 @@
 
     /* ===== PILOT SECTION ===== */
     #pilot { padding: 120px 0; }
-    .pilot-grid {
+    /* ===== PILOT TIMELINE ===== */
+    .pilot-timeline {
+      position: relative;
+      margin: 96px 0 64px;
+      padding: 0 20px;
+    }
+    .pilot-track {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 38px;
+      height: 4px;
+      background: rgba(255,209,0,0.12);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .pilot-track-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #FFE055 0%, #FFD100 100%);
+      box-shadow: 0 0 18px rgba(255,209,0,0.45);
+      transition: width 2.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .pilot-timeline.visible .pilot-track-fill { width: 100%; }
+    .pilot-stops {
       display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 64px;
-      margin-top: 64px;
-      align-items: start;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
     }
-    .pilot-phases { display: flex; flex-direction: column; gap: 0; }
-    .pilot-phase {
-      padding: 24px 0;
-      border-top: 1px solid rgba(10,10,10,0.18);
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-    .pilot-phase:last-child { border-bottom: 1px solid rgba(10,10,10,0.18); }
-    .pilot-phase .phase-meta {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: rgba(10,10,10,0.55);
-    }
-    .pilot-phase .phase-num {
+    .pilot-stop { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .stop-dot {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #0A0A0A;
+      border: 3px solid #FFD100;
+      box-shadow: 0 0 0 8px #0A0A0A, 0 0 32px rgba(255,209,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Barlow', sans-serif;
-      font-size: 56px;
+      font-size: 32px;
       font-weight: 800;
-      line-height: 1;
       color: #FFD100;
       letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
+      transform: scale(0.6);
+      opacity: 0;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
     }
-    .pilot-phase h4 {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #0A0A0A;
+    .pilot-timeline.visible .pilot-stop:nth-child(1) .stop-dot { transform: scale(1); opacity: 1; transition-delay: 0.2s; }
+    .pilot-timeline.visible .pilot-stop:nth-child(2) .stop-dot { transform: scale(1); opacity: 1; transition-delay: 0.9s; }
+    .pilot-timeline.visible .pilot-stop:nth-child(3) .stop-dot { transform: scale(1); opacity: 1; transition-delay: 1.6s; }
+    .stop-card {
+      margin-top: 32px;
+      max-width: 280px;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
     }
-    .pilot-phase p {
-      font-size: 14px;
-      color: rgba(10,10,10,0.72);
-      line-height: 1.55;
-    }
-    .pilot-success {
-      background: #0A0A0A;
-      color: #FAFAFA;
-      padding: 40px 36px;
-      border-radius: var(--radius);
-    }
-    .pilot-success h4 {
-      font-size: 12px;
+    .pilot-timeline.visible .pilot-stop:nth-child(1) .stop-card { transform: translateY(0); opacity: 1; transition-delay: 0.5s; }
+    .pilot-timeline.visible .pilot-stop:nth-child(2) .stop-card { transform: translateY(0); opacity: 1; transition-delay: 1.2s; }
+    .pilot-timeline.visible .pilot-stop:nth-child(3) .stop-card { transform: translateY(0); opacity: 1; transition-delay: 1.9s; }
+    .stop-label {
+      font-family: 'Barlow', sans-serif;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #FFD100;
-      margin-bottom: 24px;
+      color: var(--yellow);
+      margin-bottom: 10px;
     }
-    .pilot-success ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+    .stop-card h4 {
+      font-family: 'Barlow', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
     }
-    .pilot-success li {
+    .stop-card p {
       font-size: 14px;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.82);
-      padding-left: 22px;
-      position: relative;
+      color: var(--text-body);
+      line-height: 1.6;
     }
-    .pilot-success li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 8px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #FFD100;
+
+    .pilot-success {
+      background: rgba(255,209,0,0.04);
+      border: 1px solid rgba(255,209,0,0.18);
+      padding: 48px 44px;
+      border-radius: 4px;
+      margin-top: 48px;
     }
-    .pilot-success li strong { color: #FFD100; font-weight: 700; }
+    .pilot-success h4 {
+      font-family: 'Barlow', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #FFD100;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 28px;
+    }
+    .metric {
+      padding: 0 0 0 18px;
+      border-left: 2px solid rgba(255,209,0,0.4);
+    }
+    .metric-label {
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFD100;
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .metric p {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.72);
+    }
+    .reporting-note {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      font-style: italic;
+    }
 
     /* ===== HARD PARTS ===== */
     .hardparts-grid {
@@ -2265,11 +2332,15 @@
     /* ===== RESPONSIVE ===== */
     @media (max-width: 900px) {
       #problem .problem-grid { grid-template-columns: 1fr; gap: 48px; }
-      .pilot-grid { grid-template-columns: 1fr; gap: 40px; }
+      .pilot-stops { grid-template-columns: 1fr; gap: 64px; }
+      .pilot-track { display: none; }
+      .metric-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
       .audience-tiles { grid-template-columns: repeat(2, 1fr); }
       .benchmark-row { grid-template-columns: 120px 1fr 60px; gap: 14px; }
     }
     @media (max-width: 768px) {
+      .metric-grid { grid-template-columns: 1fr; gap: 20px; }
+      .pilot-success { padding: 36px 24px; }
       .trio { grid-template-columns: 1fr; }
       .quiet-beat { padding: 48px 24px 16px; }
       .audience-tiles { grid-template-columns: 1fr; }
@@ -2401,28 +2472,38 @@
     <div class="container">
       <div class="section-head reveal">
         <span class="label">The Problem</span>
-        <h2 class="headline-lg">CNIB serves the world.<br><span class="accent">Most of the world doesn't know.</span></h2>
-        <p class="body-lg">Roughly 1.5 million Canadians live with sight loss today. CNIB connects with about 13,000 of them. That's not a marketing problem. It's a navigation problem — and no blindness organization on Earth has solved it.</p>
+        <h2 class="headline-lg">CNIB serves Canadians living with sight loss.<br><span class="accent">Most of them don't know it yet.</span></h2>
+        <p class="body-lg">Roughly 1.5 million Canadians live with sight loss today. CNIB connects with about 13,000 of them. That isn't a marketing problem — it's a navigation problem. Most Canadians who need CNIB never find the door.</p>
       </div>
 
       <div class="problem-grid reveal">
         <div class="donut-99" aria-hidden="true">
+          <svg viewBox="0 0 240 240" class="donut-svg">
+            <defs>
+              <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFE055"/>
+                <stop offset="100%" stop-color="#FFD100"/>
+              </linearGradient>
+            </defs>
+            <circle cx="120" cy="120" r="100" class="donut-track"/>
+            <circle cx="120" cy="120" r="100" class="donut-fill" data-pct="99"/>
+          </svg>
           <div class="donut-99-inner">
-            <div class="big">99%</div>
+            <div class="big" data-count="99" data-suffix="%">0%</div>
             <div class="small">unreached</div>
           </div>
         </div>
         <div class="problem-stats">
           <div class="problem-stat">
-            <div class="num">1.5M</div>
+            <div class="num" data-count="1.5" data-suffix="M" data-decimals="1">0M</div>
             <div class="lbl">Canadians live with sight loss today, and that number is projected to nearly double by 2050.</div>
           </div>
           <div class="problem-stat">
-            <div class="num">~13K</div>
+            <div class="num" data-count="13" data-suffix="K" data-prefix="~">~0K</div>
             <div class="lbl">Active CNIB members across all programs nationwide. Less than one percent of the population that needs us.</div>
           </div>
           <div class="problem-stat">
-            <div class="num">$30M+</div>
+            <div class="num" data-count="30" data-prefix="$" data-suffix="M+">$0M+</div>
             <div class="lbl">FY2025 operating deficit. Every program is fighting for runway. The cost of staying invisible is the highest cost of all.</div>
           </div>
         </div>
@@ -2430,11 +2511,11 @@
 
       <div class="benchmarks reveal">
         <div class="benchmarks-title">Sector benchmark · % of national sight-loss population reached</div>
-        <div class="benchmark-row"><div class="org">CNIB <small>Canada</small></div><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><div class="pct">~1%</div></div>
-        <div class="benchmark-row"><div class="org">RNIB <small>United Kingdom</small></div><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div><div class="pct">~3%</div></div>
-        <div class="benchmark-row"><div class="org">Vision Australia <small>Australia</small></div><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><div class="pct">~6%</div></div>
-        <div class="benchmark-row"><div class="org">AFB <small>United States</small></div><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><div class="pct">~2%</div></div>
-        <div class="benchmark-source">Sources: CNIB Foundation Annual Report 2024–2025 · EY-Audited Non-Consolidated Financial Statements FY2025 · RNIB Annual Review 2024 · Vision Australia Annual Report 2024 · AFB Public Filings 2024. Reach figures are author estimates based on published active-service counts vs. national prevalence.</div>
+        <div class="benchmark-row reveal" style="--w:14%"><div class="org">CNIB <small>Canada</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~1%</div></div>
+        <div class="benchmark-row reveal" style="--w:43%"><div class="org">RNIB <small>United Kingdom</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~3%</div></div>
+        <div class="benchmark-row reveal" style="--w:86%"><div class="org">Vision Australia <small>Australia</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~6%</div></div>
+        <div class="benchmark-row reveal" style="--w:28%"><div class="org">AFB <small>United States</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~2%</div></div>
+        <div class="benchmark-source">Bars scaled relative to peer reach for visual contrast. Sources: CNIB Foundation Annual Report 2024–2025 · EY-Audited Non-Consolidated Financial Statements FY2025 · RNIB Annual Review 2024 · Vision Australia Annual Report 2024 · AFB Public Filings 2024. Reach figures are author estimates based on published active-service counts vs. national prevalence.</div>
       </div>
     </div>
   </section>
@@ -2731,7 +2812,7 @@
           '<div class="journey-persona">' + j.persona + '</div>' +
           '<h3 class="journey-headline">' + j.headline + '</h3>' +
           '<ol class="journey-steps">' +
-            j.steps.map(s => '<li class="journey-step"><strong>' + s[0] + '</strong><span>' + s[1] + '</span></li>').join('') +
+            j.steps.map(s => '<li class="journey-step"><h4>' + s[0] + '</h4><p>' + s[1] + '</p></li>').join('') +
           '</ol>';
       }
       document.addEventListener('DOMContentLoaded', function(){
@@ -2915,42 +2996,48 @@
         <p class="body-lg">Iris doesn't need a five-year plan to prove itself. It needs ninety days, one region, and the willingness to measure what happens when sight loss support meets people where they are.</p>
       </div>
 
-      <div class="pilot-grid reveal">
-        <div class="pilot-phases">
-          <div class="pilot-phase">
-            <div class="phase-num">30</div>
-            <div>
-              <h4>Days 1–30 · Ground truth</h4>
+      <div class="pilot-timeline reveal">
+        <div class="pilot-track" aria-hidden="true">
+          <div class="pilot-track-fill"></div>
+        </div>
+        <div class="pilot-stops">
+          <div class="pilot-stop">
+            <div class="stop-dot"><span data-count="30">0</span></div>
+            <div class="stop-card">
+              <div class="stop-label">Days 1–30</div>
+              <h4>Ground truth.</h4>
               <p>Embed with CNIB program leaders. Map every pathway. Train Iris on the real ecosystem — programs, eligibility, regional nuance, the things only insiders know.</p>
             </div>
           </div>
-          <div class="pilot-phase">
-            <div class="phase-num">60</div>
-            <div>
-              <h4>Days 31–60 · Closed pilot</h4>
+          <div class="pilot-stop">
+            <div class="stop-dot"><span data-count="60">0</span></div>
+            <div class="stop-card">
+              <div class="stop-label">Days 31–60</div>
+              <h4>Closed pilot.</h4>
               <p>Launch with one region and a small cohort of new and existing members. Iris answers, refers, follows up. Every conversation reviewed by a CNIB human.</p>
             </div>
           </div>
-          <div class="pilot-phase">
-            <div class="phase-num">90</div>
-            <div>
-              <h4>Days 61–90 · Public soft launch</h4>
+          <div class="pilot-stop">
+            <div class="stop-dot"><span data-count="90">0</span></div>
+            <div class="stop-card">
+              <div class="stop-label">Days 61–90</div>
+              <h4>Public soft launch.</h4>
               <p>Open the door wider. Medical providers, family members, educators. Measure activation, satisfaction, and the warm handoffs that actually land.</p>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="pilot-success">
-          <h4>What we measure</h4>
-          <ul>
-            <li><strong>Reach.</strong> New Canadians with sight loss who connect with CNIB for the first time.</li>
-            <li><strong>Activation.</strong> Members who take up at least one program after talking to Iris.</li>
-            <li><strong>Quality.</strong> Member satisfaction vs. existing intake. Conversation review by CNIB staff.</li>
-            <li><strong>Cost per connection.</strong> All-in cost of an Iris-mediated handoff vs. traditional intake.</li>
-            <li><strong>Provider lift.</strong> Referrals from optometrists, ophthalmologists, GPs after the medical pilot.</li>
-          </ul>
-          <p style="margin-top:20px;opacity:0.7;font-size:14px">Reported back to CNIB leadership monthly. Public summary at day 90.</p>
+      <div class="pilot-success reveal">
+        <h4>What we measure</h4>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">Reach</div><p>New Canadians with sight loss who connect with CNIB for the first time.</p></div>
+          <div class="metric"><div class="metric-label">Activation</div><p>Members who take up at least one program after talking to Iris.</p></div>
+          <div class="metric"><div class="metric-label">Quality</div><p>Member satisfaction vs. existing intake. Conversation review by CNIB staff.</p></div>
+          <div class="metric"><div class="metric-label">Cost per connection</div><p>All-in cost of an Iris-mediated handoff vs. traditional intake.</p></div>
+          <div class="metric"><div class="metric-label">Provider lift</div><p>Referrals from optometrists, ophthalmologists, GPs after the medical pilot.</p></div>
         </div>
+        <p class="reporting-note">Reported back to CNIB leadership monthly. Public summary at day 90.</p>
       </div>
     </div>
   </section>
@@ -3080,6 +3167,50 @@
       });
     }, { threshold: 0.15 });
     revealEls.forEach(el => observer.observe(el));
+
+    // ===== COUNT-UP ANIMATION =====
+    function animateCount(el){
+      if (el.dataset.counted === '1') return;
+      el.dataset.counted = '1';
+      const target = parseFloat(el.dataset.count);
+      const decimals = parseInt(el.dataset.decimals || '0', 10);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const start = performance.now();
+      function tick(now){
+        const t = Math.min(1, (now - start) / duration);
+        // ease-out cubic
+        const eased = 1 - Math.pow(1 - t, 3);
+        const value = (target * eased).toFixed(decimals);
+        el.textContent = prefix + value + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = prefix + target.toFixed(decimals) + suffix;
+      }
+      requestAnimationFrame(tick);
+    }
+    const countEls = document.querySelectorAll('[data-count]');
+    const countObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          countObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    countEls.forEach(el => countObserver.observe(el));
+
+    // ===== DONUT FILL TRIGGER =====
+    const donutEls = document.querySelectorAll('.donut-99');
+    const donutObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          donutObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    donutEls.forEach(el => donutObserver.observe(el));
 
     // ===== NAV SCROLL-SPY =====
     (function navScrollSpy(){
