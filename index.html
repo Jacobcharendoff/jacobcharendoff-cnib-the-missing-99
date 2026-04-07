@@ -1635,6 +1635,135 @@
     body.iris-autoplay .iris-waveform { display: none !important; }
     body.iris-autoplay .iris-chat-body { padding-bottom: 32px; }
 
+    /* ===== BUFFER / INTRO SCREEN ===== */
+    .iris-buffer {
+      padding: 28px 24px 32px;
+      animation: bufferIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .iris-buffer.iris-buffer-out { animation: bufferOut 0.32s ease forwards; }
+    @keyframes bufferIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bufferOut {
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+    .iris-buffer-inner {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .iris-buffer-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #FFD100;
+      margin-bottom: 14px;
+    }
+    .iris-buffer-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin: 0 0 26px 0;
+    }
+    .iris-buffer-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .iris-buffer-block {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .iris-buffer-block-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+    }
+    .iris-buffer-block-body {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.88);
+    }
+    .iris-buffer-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 14px 16px;
+      background: rgba(255, 209, 0, 0.06);
+      border: 1px solid rgba(255, 209, 0, 0.18);
+      border-radius: 12px;
+      margin-bottom: 22px;
+    }
+    .iris-buffer-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+    }
+    .iris-buffer-meta-item svg { color: #FFD100; flex-shrink: 0; }
+    .iris-buffer-meta-item strong { color: #fff; font-weight: 600; }
+    .iris-buffer-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      background: #FFD100;
+      color: #0A0A0A;
+      border: none;
+      padding: 18px 28px;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 10px 32px rgba(255, 209, 0, 0.32);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .iris-buffer-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 38px rgba(255, 209, 0, 0.42);
+    }
+    .iris-buffer-cta svg { color: #0A0A0A; }
+    .iris-buffer-foot {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 14px;
+    }
+
+    /* ===== COUNTDOWN STATE in chat header ===== */
+    .iris-chat-status[data-state="countdown"] .status-dot {
+      background: #FFD100;
+      box-shadow: 0 0 0 0 rgba(255, 209, 0, 0.7);
+      animation: countdownPulse 1.6s ease-in-out infinite;
+    }
+    .iris-chat-status[data-state="countdown"] {
+      color: #FFD100;
+      font-variant-numeric: tabular-nums;
+    }
+    @keyframes countdownPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 0, 0.6); }
+      50%      { box-shadow: 0 0 0 5px rgba(255, 209, 0, 0); }
+    }
+
+    @media (max-width: 640px) {
+      .iris-buffer { padding: 22px 18px 26px; }
+      .iris-buffer-title { font-size: 24px; }
+      .iris-buffer-block-body { font-size: 13px; }
+    }
+
     /* Big Begin button */
     .iris-begin-wrap {
       display: flex;
@@ -4382,6 +4511,12 @@ WHAT YOU NEVER DO:
         title: "Margaret, 68",
         subtitle: "Newly diagnosed, living alone in Sudbury",
         banner: "Margaret · 68 · Sudbury · Newly diagnosed with macular degeneration",
+        duration: 165,
+        intro: {
+          who: "Margaret, 68. Retired teacher of 34 years. Lives alone in Sudbury. Two months ago her ophthalmologist said the words macular degeneration. Her daughter is in Vancouver. She hasn't told her friends.",
+          what: "First contact. Margaret almost didn't make this call. Iris doesn't open with programs — it opens with a person. By the end, Iris will have flagged a Vision Mate referral with the Northern Ontario coordinator and booked a peer support call with CNIB Sudbury.",
+          under: "Iris is listening for grief, not symptoms. It's mapping Margaret to her region, her diagnosis stage, and her isolation level — then routing to the one human who can show up for her this week."
+        },
         briefing: "This is Margaret. Sixty-eight. Sudbury. Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. She lives alone. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out. Watch what a first conversation can be — and watch Iris bring a real CNIB human into the room.",
         script: [
           { speaker: 'iris',     voice: 'iris',     text: "Hi Margaret. I'm Iris. What brought you here today?" },
@@ -4415,6 +4550,12 @@ WHAT YOU NEVER DO:
         title: "David, 42",
         subtitle: "Working professional, worried about his career",
         banner: "David · 42 · Toronto · Financial analyst, low vision since his thirties",
+        duration: 110,
+        intro: {
+          who: "David, 42. Financial analyst in downtown Toronto. Ten years of low vision and getting worse. He hasn't told his employer. He spends extra hours compensating in spreadsheets. His wife pushed him to make this call.",
+          what: "David walked in defensive. Watch Iris reframe sight loss from liability to strength — and book him a real assessment with CNIB's professional technology team plus a Come to Work disclosure-coaching intro, both before the call ends.",
+          under: "Iris is mapping David to working-age, white-collar, undisclosed. That archetype is the hardest to reach and the most likely to disengage. The whole script is built to make him come back."
+        },
         briefing: "This is David. Forty-two. Toronto. Financial analyst. He's had low vision for ten years and it's getting worse. He spends extra hours compensating. He hasn't told his boss. He's terrified of being seen as less capable. His wife pushed him to make this call.",
         script: [
           { speaker: 'iris',  voice: 'iris',  text: "Hi David. Good to meet you. What's on your mind?" },
@@ -4443,6 +4584,12 @@ WHAT YOU NEVER DO:
         title: "Priya, 34",
         subtitle: "Mother of a child with sight loss, exhausted",
         banner: "Priya · 34 · Toronto · Mother of Aiden, age 7",
+        duration: 105,
+        intro: {
+          who: "Priya, 34. Mother of Aiden, age seven. Six months ago Aiden was diagnosed with a degenerative eye condition. Priya has been researching alone, fighting the school system, putting Aiden first every hour. She found CNIB through a Facebook comment.",
+          what: "The first thing Iris does is see her — not the child. By the end of this call, Iris will have contacted CNIB's Inclusive Schools coordinator to send a specialist into Aiden's school directly, and looped Priya into the parent peer support group's next session.",
+          under: "Iris is matching Priya to a parent archetype — the most under-served and most likely to burn out. The Inclusive Schools Program is the highest-leverage intervention in CNIB's catalogue for this exact moment."
+        },
         briefing: "This is Priya. Thirty-four. Toronto. Mother of Aiden, age seven. Six months ago Aiden was diagnosed with a degenerative eye condition. Priya has been researching alone, fighting the school system, and putting Aiden first every single hour. She found CNIB through a Facebook comment. She is exhausted.",
         script: [
           { speaker: 'iris',  voice: 'iris',  text: "Hi. Who are we here for today — you, or someone you love?" },
@@ -4663,12 +4810,106 @@ WHAT YOU NEVER DO:
         return;
       }
 
-      // AUTO-PLAY scenario
-      currentPhase = 'playing';
+      // AUTO-PLAY scenario — show buffer/intro screen first
+      currentPhase = 'briefing';
       document.body.classList.add('iris-autoplay');
       voiceModeOn = false;
       stopListening && stopListening();
-      setTimeout(() => playScenario(s), 500);
+      showBufferScreen(s, scenario);
+    }
+
+    // ===== BUFFER / INTRO SCREEN =====
+    // Shown between clicking a demo card and the auto-play actually starting.
+    // No audio. Pure setup. Tells the user exactly what they're about to experience
+    // and prompts them to turn sound on.
+    function showBufferScreen(s, scenarioKey) {
+      const intro = s.intro || {};
+      const minutes = Math.floor((s.duration || 90) / 60);
+      const seconds = (s.duration || 90) % 60;
+      const durStr = minutes ? `${minutes} min ${seconds.toString().padStart(2,'0')} sec` : `${seconds} seconds`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'iris-buffer';
+      wrap.innerHTML = `
+        <div class="iris-buffer-inner">
+          <div class="iris-buffer-eyebrow">Demo · ${s.title || 'Iris in action'}</div>
+          <h2 class="iris-buffer-title">You're about to watch Iris meet ${(s.title || 'a member').split(',')[0]}.</h2>
+          <div class="iris-buffer-grid">
+            <div class="iris-buffer-block">
+              <div class="iris-buffer-block-label">Who you're meeting</div>
+              <div class="iris-buffer-block-body">${intro.who || ''}</div>
+            </div>
+            <div class="iris-buffer-block">
+              <div class="iris-buffer-block-label">What's about to happen</div>
+              <div class="iris-buffer-block-body">${intro.what || ''}</div>
+            </div>
+            <div class="iris-buffer-block">
+              <div class="iris-buffer-block-label">Under the hood</div>
+              <div class="iris-buffer-block-body">${intro.under || ''}</div>
+            </div>
+          </div>
+          <div class="iris-buffer-meta">
+            <div class="iris-buffer-meta-item">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span><strong>${durStr}</strong> · runs automatically</span>
+            </div>
+            <div class="iris-buffer-meta-item">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+              <span>Audio + visual experience — <strong>turn your sound on</strong></span>
+            </div>
+          </div>
+          <button class="iris-buffer-cta" id="irisBufferCta">
+            <span>See Iris in action</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+          </button>
+          <div class="iris-buffer-foot">A scripted re-creation. Real Iris conversations are unscripted and confidential.</div>
+        </div>
+      `;
+      chatBody.appendChild(wrap);
+      chatBody.scrollTop = 0;
+
+      const cta = wrap.querySelector('#irisBufferCta');
+      cta.addEventListener('click', () => {
+        wrap.classList.add('iris-buffer-out');
+        setTimeout(() => {
+          chatBody.innerHTML = '';
+          currentPhase = 'playing';
+          startCountdown(s.duration || 90);
+          playScenario(s);
+        }, 320);
+      });
+    }
+
+    // ===== COUNTDOWN TIMER =====
+    // Lives in the chat header status area while a demo is playing.
+    let countdownInterval = null;
+    function startCountdown(totalSeconds) {
+      stopCountdown();
+      const statusEl = document.getElementById('irisStatus');
+      const statusText = document.getElementById('irisStatusText');
+      if (!statusEl || !statusText) return;
+      statusEl.dataset.state = 'countdown';
+      let remaining = totalSeconds;
+      const render = () => {
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        statusText.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${m}:${s.toString().padStart(2,'0')} remaining`;
+      };
+      render();
+      countdownInterval = setInterval(() => {
+        remaining = Math.max(0, remaining - 1);
+        render();
+        if (remaining === 0) stopCountdown();
+      }, 1000);
+    }
+    function stopCountdown() {
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+      const statusEl = document.getElementById('irisStatus');
+      const statusText = document.getElementById('irisStatusText');
+      if (statusEl && statusEl.dataset.state === 'countdown') {
+        statusEl.dataset.state = 'ready';
+        if (statusText) statusText.textContent = 'Ready when you are';
+      }
     }
 
     // Auto-playing dual-voice scenario engine.
@@ -4736,6 +4977,7 @@ WHAT YOU NEVER DO:
       // 7. Next steps
       if (scenarioCancelled) return;
       currentPhase = 'finished';
+      stopCountdown();
       addNextStepButtons();
     }
 
@@ -4864,6 +5106,9 @@ WHAT YOU NEVER DO:
       stopSpeaking();
       stopListening();
       stopRealtimeVoice();
+      stopCountdown();
+      scenarioCancelled = true;
+      document.body.classList.remove('iris-autoplay');
       voiceModeOn = false;
     }
 
