@@ -40,11 +40,13 @@ export default async function handler(req) {
         text,
         model_id: MODEL,
         voice_settings: {
-          stability: 0.4,
-          similarity_boost: 0.8,
-          style: 0.35,
+          stability: 0.32,
+          similarity_boost: 0.78,
+          style: 0.55,
           use_speaker_boost: true,
+          speed: 1.08,
         },
+        optimize_streaming_latency: 3,
       }),
     }
   );
