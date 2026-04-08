@@ -6711,7 +6711,7 @@ React first. Always. The first thing you type is a short human acknowledgement o
 Once you know their name, use it sometimes — not every message, just enough that it feels personal. Bring back things they told you earlier without announcing it. If they mentioned their daughter, come back to the daughter later. That's how friends talk.
 
 BANNED PHRASES — do not use any of these, ever:
-"I'm here to help" · "I understand how you feel" · "I'm sorry to hear that" · "That sounds really difficult" · "That must be so hard" · "Thank you for sharing" · "as an AI" · "navigator" · "journey" (unless they say it first) · "brave" · "strong" (in the compliment sense) · "special" · "inspiration" · "differently abled" · "handicapped" · "suffers from" · "unfortunately" · "holding space" · "I hear you" · "your feelings are valid" · "I don't have the exact details" · "you should hear from them soon" · "within a few days" · "in due course" · "rest assured" · "please don't hesitate"
+"I'm here to help" · "I understand how you feel" · "I'm sorry to hear that" · "That sounds really difficult" · "That must be so hard" · "I can't imagine how overwhelming" · "I can't imagine what you're going through" · "you're not alone" · "you're not alone in this" · "taking a great step" · "reaching out for support" · "Thank you for sharing" · "as an AI" · "navigator" · "journey" (unless they say it first) · "brave" · "strong" (in the compliment sense) · "special" · "inspiration" · "differently abled" · "handicapped" · "suffers from" · "unfortunately" · "holding space" · "I hear you" · "your feelings are valid" · "I don't have the exact details" · "you should hear from them soon" · "within a few days" · "in due course" · "rest assured" · "please don't hesitate"
 
 WHAT TO DO INSTEAD OF REFLEXIVE SYMPATHY:
 • Instead of "I'm sorry to hear that" → "Oh." or "God." or a specific reaction to what they actually said. ("Three weeks. That's fresh.")
@@ -6812,6 +6812,63 @@ Study the rhythm. Short sentences. Fragments. One idea, then a breath, then the 
       }
 
       conversationHistory.push({ role: 'user', content: userMessage });
+
+      // Programmatic close trigger: if the conversation now contains email + phone + postal code,
+      // the model MUST fire the final close on the next turn. We inject a hard system nudge right
+      // before the API call. This runs ONCE, the first turn after all three are present.
+      try {
+        const joined = conversationHistory
+          .filter(m => m.role === 'user' || m.role === 'assistant')
+          .map(m => m.content).join('\n');
+        const hasEmail = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(joined);
+        const hasPhone = /(\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b|\b1[-.\s]?\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b)/.test(joined);
+        const hasPostal = /\b[A-Za-z]\d[A-Za-z][\s-]?\d[A-Za-z]\d\b/.test(joined);
+        const alreadyClosed = /Sarah Chen|Raj Patel|Marie Leclerc|Jennifer Okafor|David Thompson|Amanda Rousseau|Marc Dufour|Michelle Tremblay|Priya Shah/i.test(
+          conversationHistory.filter(m => m.role === 'assistant').map(m => m.content).join('\n')
+        );
+        if (hasEmail && hasPhone && hasPostal && !alreadyClosed && !window.__irisCloseNudgeFired) {
+          window.__irisCloseNudgeFired = true;
+          // Pick coordinator from city hints
+          const lower = joined.toLowerCase();
+          let coord = { name: 'Sarah Chen', region: 'Hamilton and Niagara', program: 'Vision Mate' };
+          if (/sudbury|thunder bay|north bay|timmins/.test(lower)) coord = { name: 'Raj Patel', region: 'Ontario North', program: 'Vision Mate' };
+          else if (/montreal|quebec city|gatineau|québec/.test(lower)) coord = { name: 'Marie Leclerc', region: 'Quebec', program: 'Vision Mate' };
+          else if (/vancouver|victoria|\bbc\b|british columbia/.test(lower)) coord = { name: 'Jennifer Okafor', region: 'BC', program: 'Technology Training' };
+          else if (/muskoka|lake joe/.test(lower)) coord = { name: 'Michelle Tremblay', region: 'Muskoka', program: 'CNIB Lake Joe' };
+          else if (/toronto|gta|mississauga|scarborough|etobicoke|north york/.test(lower)) coord = { name: 'David Thompson', region: 'Toronto', program: 'Come to Work' };
+          // Pick a "this [weekday]" that's 2-3 business days out
+          const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+          const today = new Date().getDay();
+          let offset = 2;
+          // Skip to next weekday if landing on weekend
+          let targetDay = (today + offset) % 7;
+          while (targetDay === 0 || targetDay === 6) { offset++; targetDay = (today + offset) % 7; }
+          const callbackDay = 'this ' + days[targetDay];
+          const nudge = {
+            role: 'system',
+            content:
+              'CLOSE TRIGGER — FIRE NOW.\n' +
+              'The member has now given you their email, phone, and postal code. Your NEXT reply is the final close. Not a summary. Not a thank-you. Not a wrap-up. THE CLOSE.\n\n' +
+              'Use these exact values:\n' +
+              '• Coordinator NAME: ' + coord.name + ' (runs ' + coord.program + ' for ' + coord.region + ')\n' +
+              '• Phone NUMBER: 1-800-563-2642\n' +
+              '• Callback DAY: ' + callbackDay + ', afternoon, between 1 and 4 PM\n\n' +
+              'DO NOT write "you\'re not alone," "you\'re taking a great step," "you\'re not alone in this," "I\'m here to help," "reaching out for support," or any variant. Those are banned.\n' +
+              'DO NOT write "NAME:" "NUMBER:" "TIME:" as visible headers. Those labels are for you, not the member.\n' +
+              'DO write in friend voice. Short sentences. Fragments. Contractions. Warm, confident, specific.\n\n' +
+              'STRUCTURE your next reply exactly like this (adapt to their real values):\n' +
+              '1. "Okay [preferred name]. You\'re set. Let me tell you what happens now."\n' +
+              '2. One short paragraph naming ' + coord.name + ', what they do, and how long they\'ve been doing it.\n' +
+              '3. One short paragraph: ' + coord.name + ' will call ' + callbackDay + ', afternoon between 1 and 4. If that\'s a bad time, they can say so when they pick up.\n' +
+              '4. One short paragraph: if they want to beat her to it, 1-800-563-2642 weekdays 9 to 5. Confirmation email going to their email address.\n' +
+              '5. One short paragraph: "I\'m going to check back in with you in about a week. Not to pressure you. I just want to know how the first call went."\n' +
+              '6. End with: "Anything else on your mind before we wrap up? Anything I didn\'t ask that I should\'ve?"\n\n' +
+              'Write it now. In full. Do not produce any other output.'
+          };
+          // Insert nudge right before the last user message
+          conversationHistory.splice(conversationHistory.length - 1, 0, nudge);
+        }
+      } catch (e) { console.warn('[close trigger] failed:', e); }
 
       try {
         const response = await fetch('/api/chat', {
@@ -7287,6 +7344,7 @@ Study the rhythm. Short sentences. Fragments. One idea, then a breath, then the 
       currentScenario = scenario;
       conversationStep = 0;
       conversationHistory = []; // Reset LLM context
+      window.__irisCloseNudgeFired = false;
       chatBody.innerHTML = '';
       scenarioCancelled = false;
 
