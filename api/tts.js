@@ -23,15 +23,32 @@ const VOICE_SETTINGS = {
 };
 const MODEL = 'eleven_multilingual_v2';
 
-// OpenAI tts-1 fallback map. These are OpenAI's built-in voices, chosen to
-// roughly match each persona's vibe. Iris = nova (bright, warm, upbeat).
-// tts-1 (not tts-1-hd) for lower latency on live chat streaming.
+// OpenAI TTS fallback voices. OpenAI's newer gpt-4o-mini-tts model lets us
+// steer tone via an "instructions" string, which gets a lot closer to
+// "warm friend on the phone" than tts-1/tts-1-hd can manage.
 const OPENAI_VOICE_MAP = {
-  iris:     'nova',
-  narrator: 'nova',
-  margaret: 'shimmer',
-  david:    'onyx',
-  priya:    'nova',
+  iris:     'shimmer', // warm, grounded, more conversational than nova
+  narrator: 'shimmer',
+  margaret: 'shimmer', // older warm woman
+  david:    'onyx',    // mature calm male
+  priya:    'nova',    // younger forward energy
+};
+// Per-persona speed so each voice lands naturally.
+const OPENAI_SPEED_MAP = {
+  iris:     1.00,
+  narrator: 1.00,
+  margaret: 0.94,
+  david:    1.00,
+  priya:    1.03,
+};
+// Per-persona tone instructions (gpt-4o-mini-tts only). These steer
+// delivery toward warmth and realness instead of the flat tts-1 robot read.
+const OPENAI_INSTRUCTIONS = {
+  iris:     "Speak like a warm, caring friend on the phone — calm, present, unhurried but never sluggish. Conversational. Lightly smiling. Real pauses at commas and periods. You are not reading; you are talking to one person you already like.",
+  narrator: "Speak evenly and warmly, like a documentary narrator who cares about the subject. Clear, grounded, never theatrical.",
+  margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle, slightly shaky, thoughtful. Take your time. Little sighs are okay.",
+  david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Not dramatic.",
+  priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy but trails off when the thought runs out. Real.",
 };
 
 export default async function handler(req) {
@@ -98,21 +115,39 @@ export default async function handler(req) {
   if (!oaKey) {
     return new Response('Neither ELEVENLABS_API_KEY nor OPENAI_API_KEY configured', { status: 500 });
   }
-  const openaiVoice = OPENAI_VOICE_MAP[requestedVoice] || 'nova';
-  const oa = await fetch('https://api.openai.com/v1/audio/speech', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${oaKey}`,
-    },
-    body: JSON.stringify({
-      model: 'tts-1',
+  const openaiVoice = OPENAI_VOICE_MAP[requestedVoice] || 'shimmer';
+  const openaiSpeed = OPENAI_SPEED_MAP[requestedVoice] || 1.00;
+  const instructions = OPENAI_INSTRUCTIONS[requestedVoice] || OPENAI_INSTRUCTIONS.iris;
+
+  // Try the newer steerable model first (gpt-4o-mini-tts — supports
+  // `instructions` for real tone control). If it's not available on this
+  // account/region, fall back to tts-1-hd which has no instructions but
+  // is still much better than tts-1.
+  async function tryOpenAI(model, includeInstructions) {
+    const payload = {
+      model,
       voice: openaiVoice,
       input: text,
       response_format: 'mp3',
-      speed: 1.05, // Slightly peppier than default — keeps Iris from sounding sluggish.
-    }),
-  });
+      speed: openaiSpeed,
+    };
+    if (includeInstructions) payload.instructions = instructions;
+    return fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${oaKey}`,
+      },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  let oa = await tryOpenAI('gpt-4o-mini-tts', true);
+  if (!oa.ok) {
+    const errText = await oa.text();
+    console.warn('[tts] gpt-4o-mini-tts failed, falling back to tts-1-hd:', oa.status, errText.slice(0, 200));
+    oa = await tryOpenAI('tts-1-hd', false);
+  }
   if (!oa.ok) {
     const errText = await oa.text();
     return new Response(`OpenAI TTS error: ${errText}`, { status: oa.status });

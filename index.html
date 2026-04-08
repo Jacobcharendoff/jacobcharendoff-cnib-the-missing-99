@@ -7042,7 +7042,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       general: {
         banner: null,
         isLive: true,
-        greeting: "Hey. I'm Iris. I work with CNIB. My whole job is to listen and help you figure out what CNIB actually has for you — the one program that actually fits your life. So. What's going on?",
+        greeting: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it — can I start by asking your name?",
         suggestions: ["I just got diagnosed", "I'm helping someone I love", "I'm not sure where to start"]
       },
       margaret: {
@@ -7745,7 +7745,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         addScriptTurn(turn);
         await playPrefetched(currentAudioReady, turn.text);
         if (nextAudio && nextAudio.then) nextAudio = await nextAudio;
-        await wait(340);
+        await wait(180);
       }
 
       // 3. Mid-point narrator REMOVED — demo plays as a continuous live conversation.
