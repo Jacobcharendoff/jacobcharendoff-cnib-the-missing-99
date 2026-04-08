@@ -3058,6 +3058,347 @@
 
     /* ===== JOURNEY SELECTOR ===== */
     #journeys { padding: 120px 0; }
+
+    /* ===== JOURNEY: shared poster eyebrow ===== */
+    .brain-eyebrow,
+    .arc-eyebrow,
+    .story-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #FFD100;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      margin-bottom: 22px;
+    }
+    .brain-eyebrow::before,
+    .arc-eyebrow::before,
+    .story-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 10px #FFD100;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    /* ===== JOURNEY CHAPTER 2 — IRIS'S BRAIN ===== */
+    .brain-card {
+      margin: 80px auto 0;
+      max-width: 1080px;
+      position: relative;
+      border-radius: 32px;
+      padding: 56px 56px 48px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.22);
+    }
+    .brain-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,209,0,0.30) 0%, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(80,140,255,0.10) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
+    }
+    .brain-headline {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(34px, 4vw, 54px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.02;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .brain-sub {
+      font-size: 16px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.68);
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+    .brain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,209,0,0.18);
+      border: 1px solid rgba(255,209,0,0.18);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .brain-field {
+      background: rgba(10,10,10,0.92);
+      padding: 22px 24px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .brain-field-wide {
+      grid-column: span 3;
+    }
+    .brain-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,209,0,0.7);
+    }
+    .brain-value {
+      font-family: 'Barlow', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.32;
+      color: #fff;
+    }
+    .brain-foot {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.62);
+      font-weight: 500;
+    }
+    .brain-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 12px rgba(255,209,0,0.7);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    @media (max-width: 900px) {
+      .brain-card { padding: 40px 28px; }
+      .brain-grid { grid-template-columns: repeat(2, 1fr); }
+      .brain-field-wide { grid-column: span 2; }
+    }
+    @media (max-width: 560px) {
+      .brain-grid { grid-template-columns: 1fr; }
+      .brain-field-wide { grid-column: span 1; }
+    }
+
+    /* ===== JOURNEY CHAPTER 3 — THE ARC (six stages) ===== */
+    .arc-block {
+      margin: 96px auto 0;
+      max-width: 1180px;
+    }
+    .arc-head {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 48px;
+    }
+    .arc-headline {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(28px, 3.4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .arc-sub {
+      font-size: 16px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.65);
+    }
+    .arc-rail {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+    .arc-stage {
+      position: relative;
+      border-radius: 22px;
+      padding: 28px 22px 26px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.18);
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+    .arc-stage::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(255,209,0,0.04) 0%, rgba(10,10,10,0.95) 100%);
+    }
+    .arc-stage:nth-child(1)::before { background: linear-gradient(180deg, rgba(140,120,200,0.16) 0%, rgba(10,10,10,0.95) 100%); }
+    .arc-stage:nth-child(2)::before { background: linear-gradient(180deg, rgba(80,140,255,0.14) 0%, rgba(10,10,10,0.95) 100%); }
+    .arc-stage:nth-child(3)::before { background: linear-gradient(180deg, rgba(110,200,200,0.14) 0%, rgba(10,10,10,0.95) 100%); }
+    .arc-stage:nth-child(4)::before { background: linear-gradient(180deg, rgba(255,180,90,0.14) 0%, rgba(10,10,10,0.95) 100%); }
+    .arc-stage:nth-child(5)::before { background: linear-gradient(180deg, rgba(255,209,0,0.18) 0%, rgba(10,10,10,0.95) 100%); }
+    .arc-stage:nth-child(6)::before { background: linear-gradient(180deg, rgba(255,209,0,0.30) 0%, rgba(20,15,0,0.96) 100%); }
+    .arc-stage:hover {
+      transform: translateY(-4px);
+    }
+    .arc-num {
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFD100;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .arc-stage-name {
+      font-family: 'Barlow', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: #fff;
+    }
+    .arc-stage-feel {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.62);
+      font-style: italic;
+      padding: 8px 0 6px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin: 6px 0;
+    }
+    .arc-stage-iris {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.78);
+      margin-top: auto;
+    }
+    @media (max-width: 1100px) {
+      .arc-rail { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .arc-rail { grid-template-columns: repeat(2, 1fr); }
+      .arc-stage { min-height: 0; }
+    }
+    @media (max-width: 480px) {
+      .arc-rail { grid-template-columns: 1fr; }
+    }
+
+    /* ===== JOURNEY CHAPTER 4 — THE STORY (Margaret's 18 months) ===== */
+    .story-block {
+      margin: 96px auto 0;
+      max-width: 980px;
+      position: relative;
+      border-radius: 32px;
+      padding: 56px 56px 48px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.22);
+    }
+    .story-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255,209,0,0.22) 0%, transparent 55%),
+        linear-gradient(180deg, #15110a 0%, #0a0a0a 100%);
+    }
+    .story-head {
+      max-width: 680px;
+      margin-bottom: 48px;
+    }
+    .story-headline {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(30px, 3.6vw, 46px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .story-sub {
+      font-size: 16px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.68);
+    }
+    .story-timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+    .story-timeline::before {
+      content: '';
+      position: absolute;
+      left: 9px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, #FFD100 0%, rgba(255,209,0,0.15) 100%);
+    }
+    .story-beat {
+      position: relative;
+      padding: 0 0 28px 28px;
+    }
+    .story-beat:last-child { padding-bottom: 0; }
+    .story-beat::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0a0a0a;
+      border: 2px solid #FFD100;
+      box-shadow: 0 0 12px rgba(255,209,0,0.4);
+    }
+    .story-when {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'Barlow', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #FFD100;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: rgba(255,209,0,0.10);
+      border: 1px solid rgba(255,209,0,0.32);
+      margin-bottom: 10px;
+    }
+    .story-what {
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.82);
+      max-width: 720px;
+    }
+    .story-what strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    .story-foot {
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+    }
+    @media (max-width: 720px) {
+      .brain-card,
+      .story-block { padding: 40px 28px; }
+    }
+
     .journey-tabs {
       display: flex;
       gap: 8px;
@@ -3920,136 +4261,162 @@
     })();
   </script>
 
-  <!-- CHOOSE YOUR JOURNEY — interactive selector -->
-  <section class="section theme-white" id="journeys">
+  <!-- THE MEMBER JOURNEY — Iris's brain, the arc, a real 18-month story -->
+  <section class="section theme-black" id="journeys">
     <div class="container">
+
+      <!-- Chapter 1 — The gap -->
       <div class="section-head reveal">
-        <span class="label">Choose your journey</span>
-        <h2 class="headline-lg">Iris meets every audience<br><span class="accent">on their own terms.</span></h2>
-        <p class="body-lg">Sight loss touches more than the person diagnosed. Iris is built for all of them — the member, the family, the doctor, the educator. Pick a journey to see what Iris does, in their words.</p>
+        <span class="label">The Member Journey</span>
+        <h2 class="headline-lg">Every journey is different.<br><span class="accent">Iris is the GPS.</span></h2>
+        <p class="body-lg">Sight loss isn't a single moment. It's a road that twists for years — diagnosis, adaptation, isolation, reinvention, contribution. CNIB has built a program for every turn. What's never existed is the system that walks with you through them. The thing that remembers where you started, knows what's coming, and is still there twelve months from now when life shifts again. That's the role Iris was built for.</p>
       </div>
 
-      <div class="journey-tabs reveal" role="tablist">
-        <button class="journey-tab active" data-jrn="newdx" role="tab">Newly diagnosed</button>
-        <button class="journey-tab" data-jrn="senior" role="tab">Senior</button>
-        <button class="journey-tab" data-jrn="youth" role="tab">Youth</button>
-        <button class="journey-tab" data-jrn="parent" role="tab">Parent</button>
-        <button class="journey-tab" data-jrn="family" role="tab">Friend / Family</button>
-        <button class="journey-tab" data-jrn="medical" role="tab">Medical Provider</button>
-        <button class="journey-tab" data-jrn="educator" role="tab">Educator</button>
+      <!-- Chapter 2 — Iris's brain (member profile dashboard) -->
+      <div class="brain-card reveal">
+        <div class="brain-eyebrow">What Iris remembers</div>
+        <h3 class="brain-headline">Inside the brain<br>that knows you.</h3>
+        <p class="brain-sub">Every Iris conversation builds and updates a living portrait of the member. Not a database row — a picture of a whole person that gets sharper every time you talk. Here's what that looks like for Margaret, today.</p>
+
+        <div class="brain-grid">
+          <div class="brain-field">
+            <div class="brain-label">Diagnosis</div>
+            <div class="brain-value">Macular degeneration · early-mid stage</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">Living with it for</div>
+            <div class="brain-value">2 months and 14 days</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">Where</div>
+            <div class="brain-value">Sudbury, ON · lives alone · daughter in BC</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">Life stage</div>
+            <div class="brain-value">Retired teacher · 68 · 34 years in the classroom</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">Hardest part right now</div>
+            <div class="brain-value">Losing ease with reading. Identity grief.</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">North star</div>
+            <div class="brain-value">"Talking to someone who actually gets it."</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">Communication style</div>
+            <div class="brain-value">Voice on landline · large print follow-ups · no app</div>
+          </div>
+          <div class="brain-field">
+            <div class="brain-label">Programs in motion</div>
+            <div class="brain-value">Vision Mate (matching) · CNIB Beyond Print (sent)</div>
+          </div>
+          <div class="brain-field brain-field-wide">
+            <div class="brain-label">Next check-in scheduled</div>
+            <div class="brain-value">In 27 days · Iris will ask how the first Vision Mate visit went and whether reading feels different</div>
+          </div>
+        </div>
+
+        <div class="brain-foot">
+          <span class="brain-pulse"></span>
+          Updates in real time. Never asks the same question twice.
+        </div>
       </div>
 
-      <div class="journey-stage reveal" id="journeyStage">
-        <!-- populated by JS -->
+      <!-- Chapter 3 — The arc (six stages over time) -->
+      <div class="arc-block reveal">
+        <div class="arc-head">
+          <div class="arc-eyebrow">The arc</div>
+          <h3 class="arc-headline">From the day the world goes quiet<br>to the day you're someone else's guide.</h3>
+          <p class="arc-sub">Sight loss has six emotional stages. Iris knows where each member is right now, and what's likely coming next. The job at every stage is different. Iris adjusts for all of it.</p>
+        </div>
+
+        <ol class="arc-rail">
+          <li class="arc-stage">
+            <div class="arc-num">01</div>
+            <div class="arc-stage-name">Shock &amp; Disorientation</div>
+            <div class="arc-stage-feel">"My world just got smaller and I don't know who I am."</div>
+            <div class="arc-stage-iris">Iris witnesses. Doesn't fix. Offers one small thing.</div>
+          </li>
+          <li class="arc-stage">
+            <div class="arc-num">02</div>
+            <div class="arc-stage-name">Practical Survival</div>
+            <div class="arc-stage-feel">"How do I cook, read, get to the store?"</div>
+            <div class="arc-stage-iris">Tech training. Vision Mate. Mobility. Restores competence.</div>
+          </li>
+          <li class="arc-stage">
+            <div class="arc-num">03</div>
+            <div class="arc-stage-name">Social Reconnection</div>
+            <div class="arc-stage-feel">"I haven't seen my friends in months."</div>
+            <div class="arc-stage-iris">Peer support. CNIB Connects. The first event back.</div>
+          </li>
+          <li class="arc-stage">
+            <div class="arc-num">04</div>
+            <div class="arc-stage-name">Reclaiming Identity</div>
+            <div class="arc-stage-feel">"I'm more than my diagnosis. I want my life back."</div>
+            <div class="arc-stage-iris">Come to Work. Lake Joe. Recreation. Scholarships. The full ecosystem opens.</div>
+          </li>
+          <li class="arc-stage">
+            <div class="arc-num">05</div>
+            <div class="arc-stage-name">Contribution &amp; Belonging</div>
+            <div class="arc-stage-feel">"I want to help the next person where I was."</div>
+            <div class="arc-stage-iris">Vision Mate as mentor. National Youth Council. Advocacy.</div>
+          </li>
+          <li class="arc-stage">
+            <div class="arc-num">06</div>
+            <div class="arc-stage-name">Lifelong Partnership</div>
+            <div class="arc-stage-feel">"CNIB isn't a charity I use. It's my community."</div>
+            <div class="arc-stage-iris">The relationship deepens. Iris stays.</div>
+          </li>
+        </ol>
       </div>
+
+      <!-- Chapter 4 — A real 18-month journey -->
+      <div class="story-block reveal">
+        <div class="story-head">
+          <div class="story-eyebrow">A real journey</div>
+          <h3 class="story-headline">Margaret · 18 months · one Iris.</h3>
+          <p class="story-sub">This is what continuity actually looks like — not a one-shot Q&amp;A, not a directory lookup. A guide who picks up where she left off, every time.</p>
+        </div>
+
+        <div class="story-timeline">
+          <div class="story-beat">
+            <div class="story-when">Day 1</div>
+            <div class="story-what"><strong>The first call.</strong> Margaret's daughter convinces her to dial in. Iris doesn't open with an intake form. She opens with: "What brought you here today?" The conversation lasts 22 minutes. By the end Iris has matched her with a Vision Mate in Sudbury and sent CNIB Beyond Print.</div>
+          </div>
+          <div class="story-beat">
+            <div class="story-when">Week 1</div>
+            <div class="story-what"><strong>The match lands.</strong> Linda — also a retired teacher, also living with macular degeneration — visits Margaret's home. Iris texts the next morning: "How was it?" Margaret writes back: "I cried. In a good way."</div>
+          </div>
+          <div class="story-beat">
+            <div class="story-when">Month 1</div>
+            <div class="story-what"><strong>The follow-up Iris promised.</strong> Margaret mentions that mornings are still hard. Iris suggests the online peer group — Tuesday at 7pm, three other former teachers in it. Margaret says yes before she has time to talk herself out of it.</div>
+          </div>
+          <div class="story-beat">
+            <div class="story-when">Month 3</div>
+            <div class="story-what"><strong>The doctor's visit.</strong> Margaret's ophthalmologist confirms her vision is stable. She tells Iris before she tells her daughter. Iris asks the question no one else thought to: "What does a good year look like for you?"</div>
+          </div>
+          <div class="story-beat">
+            <div class="story-when">Month 6</div>
+            <div class="story-what"><strong>The first event.</strong> CNIB Sudbury holds a community lunch. Margaret almost doesn't go. Iris reminds her Linda will be there. Margaret goes. She comes home and tells Iris she signed up for the next one.</div>
+          </div>
+          <div class="story-beat">
+            <div class="story-when">Year 1</div>
+            <div class="story-what"><strong>The shift.</strong> Iris notices Margaret asking different questions — less "how do I cope" and more "how do I help." Iris surfaces the Vision Mate volunteer program — this time on the other side of the match.</div>
+          </div>
+          <div class="story-beat">
+            <div class="story-when">Year 1.5</div>
+            <div class="story-what"><strong>The handoff.</strong> Margaret meets a newly-diagnosed retired teacher named Joan. She brings her tea. She tells her: "Talk to Iris. She'll know what to do." The journey closes a loop and starts a new one.</div>
+          </div>
+        </div>
+
+        <div class="story-foot">
+          One member. One Iris. One thread that stays unbroken — even when life doesn't.
+        </div>
+      </div>
+
     </div>
   </section>
-
-  <script>
-    (function(){
-      const JOURNEYS = {
-        newdx: {
-          persona: "Margaret, 68 — newly diagnosed",
-          headline: "From the day the doctor said the words.",
-          steps: [
-            ["First contact","Iris listens. No intake form. Hears the diagnosis, the fear, the things she isn't saying."],
-            ["Emotional landing","Peer counselling referral. A Vision Mate match. Someone who's been there."],
-            ["Practical tools","Tech assessment. Lending library. Phone accessibility set up by a real human."],
-            ["Life navigation","Driving conversation. Workplace rights. The questions she didn't know to ask."],
-            ["Long-term","From member to community. From scared to connected."]
-          ]
-        },
-        senior: {
-          persona: "Phone-first, no app, no email",
-          headline: "Iris calls. Warm. Unhurried.",
-          steps: [
-            ["Warm outreach","Iris places the call. No pressure. Just a real conversation."],
-            ["Safety check","Falls, lighting, kitchen, isolation — the things that get worse in silence."],
-            ["Home visit","A CNIB rehab specialist arrives. Magnifiers. Lighting. Confidence."],
-            ["Follow-up","Iris keeps calling. Adjusts the support. Keeps the door open."],
-            ["Independence","Stays home. Stays safe. Stays connected."]
-          ]
-        },
-        youth: {
-          persona: "Teen — identity, school, future",
-          headline: "No lectures. No pity. Just real talk.",
-          steps: [
-            ["Meet them where they are","Text first. Voice when they want it. Their pace."],
-            ["Tech as equalizer","Phone setup, screen reader, the apps that make school survivable."],
-            ["Peer connection","Other teens who get it. No explanations needed."],
-            ["Sport & belonging","Goalball, cycling, recreation. Belonging through doing."],
-            ["Career launchpad","Venture Studio. Employment prep. University planning."]
-          ]
-        },
-        parent: {
-          persona: "Priya — parent of a child with sight loss",
-          headline: "The parent gets supported first.",
-          steps: [
-            ["Family support","Iris holds the parent first. Because they've been holding everyone else."],
-            ["School advocacy","IEP planning. Teacher resources. Legal rights — without the lawyer."],
-            ["Child programs","Tech training for the child. Adapted recreation. Peer groups."],
-            ["Parent network","Other families. Who've been here. Who made it through."],
-            ["Growing together","Iris stays as the child grows. Teen programs. Career prep. Always available."]
-          ]
-        },
-        family: {
-          persona: "Adult child, spouse, sibling, friend",
-          headline: "The people around the person also need a guide.",
-          steps: [
-            ["What just happened","Iris explains the diagnosis in plain language — without the doom."],
-            ["What you can do","Specific, useful, non-patronizing ways to help. And what to stop doing."],
-            ["What CNIB offers your person","The exact program for their stage, their region, their goals."],
-            ["How to bring it up","Scripts for the hard conversations. Driving. Independence. Identity."],
-            ["Stay involved, gently","Iris keeps you in the loop — only as much as your person wants."]
-          ]
-        },
-        medical: {
-          persona: "Optometrist, ophthalmologist, GP",
-          headline: "Hand off to CNIB without the friction.",
-          steps: [
-            ["One referral, any patient","Send a name. Iris takes it from there. No fax. No portal."],
-            ["Right program, right region","Iris matches the patient to CNIB services that actually fit their life."],
-            ["Closed-loop reporting","You hear back. You know what your patient took up."],
-            ["Patient education","Iris answers the questions there's no time for in a 12-minute appointment."],
-            ["Always available","2am questions. Weekend questions. The ones that don't fit office hours."]
-          ]
-        },
-        educator: {
-          persona: "Guidance counsellor, teacher, TVI",
-          headline: "Iris is the resource hub you've been building from scratch.",
-          steps: [
-            ["One front door","Every CNIB program for kids and youth, organized for educators."],
-            ["IEP support","Accommodation language, assistive tech, classroom modifications."],
-            ["Family connector","Iris brings the family in. So you're not the only adult fighting for this child."],
-            ["Career & transitions","University prep. Employment programs. The next chapter."],
-            ["Peer learning","Connect students to other students who get it."]
-          ]
-        }
-      };
-
-      function renderJourney(key){
-        const j = JOURNEYS[key];
-        if (!j) return;
-        const stage = document.getElementById('journeyStage');
-        if (!stage) return;
-        stage.innerHTML =
-          '<div class="journey-persona">' + j.persona + '</div>' +
-          '<h3 class="journey-headline">' + j.headline + '</h3>' +
-          '<ol class="journey-steps">' +
-            j.steps.map(s => '<li class="journey-step"><h4>' + s[0] + '</h4><p>' + s[1] + '</p></li>').join('') +
-          '</ol>';
-      }
-      document.addEventListener('DOMContentLoaded', function(){
-        const tabs = document.querySelectorAll('.journey-tab');
-        tabs.forEach(t => t.addEventListener('click', function(){
-          tabs.forEach(x => x.classList.remove('active'));
-          this.classList.add('active');
-          renderJourney(this.dataset.jrn);
-        }));
-        renderJourney('newdx');
-      });
-    })();
-  </script>
 
   <section class="section theme-white" id="journey-old" hidden style="display:none">
     <div class="container">
