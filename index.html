@@ -7065,7 +7065,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         },
         briefing: "This is Margaret. Sixty-eight. Sudbury. Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. She lives alone. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out. Here's what a first conversation can sound like — and how Iris brings a real CNIB human into the room.",
         script: [
-          { speaker: 'iris',     voice: 'iris',     text: "What brought you here today?" },
+          { speaker: 'iris',     voice: 'iris',     text: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it — can I start by asking your name?" },
           { speaker: 'margaret', voice: 'margaret', text: "My name is Margaret. My eye doctor told me I have macular degeneration. My daughter found you. I'm honestly not even sure what I'm looking for." },
           { speaker: 'iris',     voice: 'iris',     text: "Margaret. Hi. I'm so glad you reached out — that part is harder than people give it credit for. Is it okay if I ask a couple of things to get oriented?" },
           { speaker: 'margaret', voice: 'margaret', text: "Yes. Go ahead." },
@@ -7124,7 +7124,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         },
         briefing: "This is David. Forty-two. Toronto. Financial analyst. He's had low vision for ten years and it's getting worse. He spends extra hours compensating. He hasn't told his boss. He's terrified of being seen as less capable. His wife pushed him to reach out.",
         script: [
-          { speaker: 'iris',  voice: 'iris',  text: "What's on your mind?" },
+          { speaker: 'iris',  voice: 'iris',  text: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it — can I start by asking your name?" },
           { speaker: 'david', voice: 'david', text: "Hey. I'm David. My wife pushed me to reach out. I've had low vision for ten years. I've managed. Things at work are getting harder." },
           { speaker: 'iris',  voice: 'iris',  text: "David. Hi. Thanks for reaching out — whatever it took to show up here today. Where in the country are you, and what kind of work are we talking about?" },
           { speaker: 'david', voice: 'david', text: "Toronto. I'm a financial analyst. Spreadsheets all day." },
@@ -7176,7 +7176,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         },
         briefing: "This is Priya. Thirty-four. Toronto. Mother of Aiden, age seven. Six months ago Aiden was diagnosed with a degenerative eye condition. Priya has been researching alone, fighting the school system, and putting Aiden first every single hour. She found CNIB through a Facebook comment. She is exhausted.",
         script: [
-          { speaker: 'iris',  voice: 'iris',  text: "Who are we here for today — you, or someone you love?" },
+          { speaker: 'iris',  voice: 'iris',  text: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it — can I start by asking your name?" },
           { speaker: 'priya', voice: 'priya', text: "My son. He's seven. I'm Priya. Six months in. I've been doing all the research myself. I'm just so tired." },
           { speaker: 'iris',  voice: 'iris',  text: "Priya. Hi. Six months alone is a long time. What's your son's name, and where are you two — what city?" },
           { speaker: 'priya', voice: 'priya', text: "His name is Aiden. We're in Toronto. Etobicoke." },
@@ -7671,10 +7671,16 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           // browser SpeechRecognition → /api/chat (gpt-4o) → /api/tts (ElevenLabs Iris).
           // One voice, one path. No Realtime WebRTC, no double-speak, no voice
           // drift between demo mode and live mode.
+          //
+          // IMPORTANT: do NOT call startListening() here. addBotMessage() kicks
+          // off TTS via enqueueTTS → runTTSQueue, which calls
+          // pauseListeningForIris() internally and then resumeListeningForIris()
+          // after Iris finishes speaking. If we also start the mic manually,
+          // it races the pause and ends up ON while Iris is talking — which
+          // makes recognition.onresult fire on Iris's own voice and
+          // `stopSpeaking()` cuts her greeting off mid-sentence.
           addBotMessage(scenarios.general.greeting, scenarios.general.suggestions);
           chatInput.focus();
-          // Start listening so the user can just talk.
-          if (typeof startListening === 'function') startListening();
         }, 320);
       });
     }
