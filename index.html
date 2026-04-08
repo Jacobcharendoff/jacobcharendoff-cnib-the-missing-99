@@ -6068,8 +6068,11 @@
         body: JSON.stringify({ text, voice })
       });
       if (!response.ok) {
-        console.warn('ElevenLabs API error, falling back to browser TTS');
-        speakBrowserTTS(text);
+        // /api/tts already cascades ElevenLabs -> OpenAI server-side. If it
+        // STILL failed, both upstream providers are down. Stay silent rather
+        // than fall back to the robotic built-in speechSynthesis voice, which
+        // makes Iris sound like a sluggish AI bot instead of a person.
+        console.warn('[tts] both upstream providers failed — skipping speech');
         return;
       }
       const audioBlob = await response.blob();
