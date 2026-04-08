@@ -3706,6 +3706,144 @@
       .cta-bookend-btn { padding: 18px 30px; font-size: 16px; }
     }
 
+    /* ===== SOFT YELLOW CLOSING CTA (footer card) ===== */
+    .cta-soft {
+      position: relative;
+      padding: 140px 32px 100px;
+      text-align: center;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 20% 0%, #FFE34D 0%, transparent 55%),
+        radial-gradient(circle at 80% 100%, #F0BD00 0%, transparent 60%),
+        linear-gradient(180deg, #FFD100 0%, #F5C400 100%);
+      color: #0A0A0A;
+    }
+    .cta-soft::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(rgba(10,10,10,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 75%);
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .cta-soft-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .cta-soft-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #0A0A0A;
+      color: #FFD100;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .cta-soft-eyebrow::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: #FFD100;
+      border-radius: 50%;
+      animation: dotPulse 1.8s ease-in-out infinite;
+    }
+    .cta-soft-headline {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: clamp(40px, 6vw, 76px);
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      color: #0A0A0A;
+      margin: 0 0 24px;
+    }
+    .cta-soft-accent { color: rgba(10,10,10,0.7); font-weight: 600; }
+    .cta-soft-body {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(16px, 1.6vw, 19px);
+      line-height: 1.6;
+      color: rgba(10,10,10,0.78);
+      max-width: 580px;
+      margin: 0 auto 44px;
+    }
+    .cta-soft-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: #0A0A0A;
+      color: #FFD100;
+      border: none;
+      padding: 22px 40px;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 14px 0 rgba(0,0,0,0.18), 0 24px 60px rgba(0,0,0,0.22);
+      transition: transform 0.25s cubic-bezier(0.2,0.9,0.2,1), box-shadow 0.25s ease, background 0.25s ease;
+    }
+    .cta-soft-btn svg { width: 22px; height: 22px; transition: transform 0.3s ease; }
+    .cta-soft-btn:hover {
+      transform: translateY(-4px);
+      background: #1a1a1a;
+      box-shadow: 0 18px 0 rgba(0,0,0,0.22), 0 30px 80px rgba(0,0,0,0.32);
+    }
+    .cta-soft-btn:hover svg { transform: translateX(6px); }
+    .cta-soft-btn:active { transform: translateY(0); box-shadow: 0 6px 0 rgba(0,0,0,0.18); }
+    .cta-soft-foot {
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(10,10,10,0.18);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.65);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 700px) {
+      .cta-soft { padding: 96px 24px 72px; }
+      .cta-soft-headline { font-size: clamp(32px, 8vw, 48px); }
+      .cta-soft-btn { padding: 18px 30px; font-size: 16px; }
+    }
+
+    /* Hero variant of the bookend card */
+    .cta-bookend-hero {
+      padding-top: 180px;
+      padding-bottom: 80px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .cta-bookend-hero .cta-bookend-inner { padding-bottom: 40px; }
+    .cta-bookend-wordmark {
+      font-size: clamp(140px, 26vw, 340px);
+      letter-spacing: -0.06em;
+      text-shadow: 0 10px 0 rgba(0,0,0,0.08);
+    }
+    @media (max-width: 700px) {
+      .cta-bookend-hero { padding-top: 130px; }
+      .cta-bookend-wordmark { font-size: clamp(110px, 36vw, 200px); }
+    }
+
     #journeys { padding: 120px 0; }
 
     /* ===== JOURNEY: shared poster eyebrow ===== */
@@ -4552,50 +4690,49 @@
   <main id="main-content">
 
   <!-- HERO -->
-  <section class="hero theme-yellow" id="hero">
-    <div class="hero-eyebrow">Your sight loss navigator</div>
-    <div class="iris-eye" aria-hidden="true">
-      <svg viewBox="0 0 240 240">
-        <defs>
-          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#1a1a1a"/>
-            <stop offset="55%" stop-color="#0A0A0A"/>
-            <stop offset="100%" stop-color="#000"/>
-          </radialGradient>
-          <radialGradient id="pupilGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#000"/>
-            <stop offset="100%" stop-color="#0A0A0A"/>
-          </radialGradient>
-        </defs>
-        <!-- outer almond -->
-        <ellipse cx="120" cy="120" rx="116" ry="68" fill="#FFF8D6" stroke="#0A0A0A" stroke-width="3"/>
-        <!-- iris circle -->
-        <g class="iris-ring">
-          <circle cx="120" cy="120" r="58" fill="url(#irisGrad)"/>
-          <!-- iris striations -->
-          <g stroke="#FFD100" stroke-width="1" opacity="0.55">
-            <line x1="120" y1="62" x2="120" y2="78"/>
-            <line x1="120" y1="178" x2="120" y2="162"/>
-            <line x1="62" y1="120" x2="78" y2="120"/>
-            <line x1="178" y1="120" x2="162" y2="120"/>
-            <line x1="79" y1="79" x2="91" y2="91"/>
-            <line x1="161" y1="79" x2="149" y2="91"/>
-            <line x1="79" y1="161" x2="91" y2="149"/>
-            <line x1="161" y1="161" x2="149" y2="149"/>
+  <section class="cta-bookend cta-bookend-hero theme-yellow" id="hero">
+    <div class="cta-bookend-sun" aria-hidden="true">
+      <svg viewBox="0 0 600 600">
+        <g class="sun-rays">
+          <g stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" opacity="0.55">
+            <line x1="300" y1="40" x2="300" y2="120"/>
+            <line x1="300" y1="480" x2="300" y2="560"/>
+            <line x1="40" y1="300" x2="120" y2="300"/>
+            <line x1="480" y1="300" x2="560" y2="300"/>
+            <line x1="115" y1="115" x2="170" y2="170"/>
+            <line x1="430" y1="430" x2="485" y2="485"/>
+            <line x1="115" y1="485" x2="170" y2="430"/>
+            <line x1="430" y1="170" x2="485" y2="115"/>
+            <line x1="200" y1="60" x2="222" y2="138"/>
+            <line x1="378" y1="462" x2="400" y2="540"/>
+            <line x1="60" y1="200" x2="138" y2="222"/>
+            <line x1="462" y1="378" x2="540" y2="400"/>
+            <line x1="400" y1="60" x2="378" y2="138"/>
+            <line x1="222" y1="462" x2="200" y2="540"/>
+            <line x1="60" y1="400" x2="138" y2="378"/>
+            <line x1="462" y1="222" x2="540" y2="200"/>
           </g>
-          <circle cx="120" cy="120" r="58" fill="none" stroke="#FFD100" stroke-width="1.5" opacity="0.4"/>
         </g>
-        <!-- pupil -->
-        <g class="pupil">
-          <circle cx="120" cy="120" r="22" fill="url(#pupilGrad)"/>
-          <circle cx="113" cy="113" r="6" fill="#FFF8D6" opacity="0.85"/>
-        </g>
+        <circle cx="300" cy="300" r="92" fill="#0A0A0A"/>
+        <circle cx="300" cy="300" r="34" fill="#FFD100"/>
+        <circle cx="288" cy="288" r="9" fill="#0A0A0A"/>
       </svg>
     </div>
-    <h1 class="headline-xl hero-title" style="font-size:clamp(56px,9vw,120px);">Meet Iris.</h1>
-    <p class="body-lg hero-sub" style="font-size:clamp(20px,2.4vw,26px);color:rgba(10,10,10,0.78);font-weight:500;max-width:720px;line-height:1.35;">The first conversation after sight loss shouldn't feel like a phone tree.<br><span style="color:rgba(10,10,10,0.55);font-weight:400;font-size:0.85em;">Iris already knows what this feels like. Start with hello.</span></p>
-    <div class="hero-cta-row">
-      <a href="#demos" class="btn-primary">Experience Iris</a>
+
+    <div class="cta-bookend-inner">
+      <div class="cta-bookend-content">
+        <span class="cta-bookend-eyebrow">Powered by CNIB</span>
+        <h1 class="cta-bookend-stat cta-bookend-wordmark">IRIS.</h1>
+        <p class="cta-bookend-stat-cap">Your guide for life with sight loss.</p>
+        <h2 class="cta-bookend-line">The first conversation shouldn't feel like a <span class="cta-strike">phone tree</span>.</h2>
+        <h2 class="cta-bookend-line cta-bookend-line-bold">Iris already knows what this feels like.</h2>
+        <div class="cta-bookend-row">
+          <a href="#demos" class="cta-bookend-btn">
+            <span>Experience Iris</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -5495,65 +5632,23 @@
 
   <div class="section-divider fade-dark-to-yellow" aria-hidden="true"></div>
 
-  <!-- CTA — closing (yellow bookend) -->
-  <section class="cta-bookend theme-yellow" id="cta-final">
-    <div class="cta-bookend-sun" aria-hidden="true">
-      <svg viewBox="0 0 600 600">
-        <g class="sun-rays">
-          <g stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" opacity="0.55">
-            <line x1="300" y1="40" x2="300" y2="120"/>
-            <line x1="300" y1="480" x2="300" y2="560"/>
-            <line x1="40" y1="300" x2="120" y2="300"/>
-            <line x1="480" y1="300" x2="560" y2="300"/>
-            <line x1="115" y1="115" x2="170" y2="170"/>
-            <line x1="430" y1="430" x2="485" y2="485"/>
-            <line x1="115" y1="485" x2="170" y2="430"/>
-            <line x1="430" y1="170" x2="485" y2="115"/>
-            <line x1="200" y1="60" x2="222" y2="138"/>
-            <line x1="378" y1="462" x2="400" y2="540"/>
-            <line x1="60" y1="200" x2="138" y2="222"/>
-            <line x1="462" y1="378" x2="540" y2="400"/>
-            <line x1="400" y1="60" x2="378" y2="138"/>
-            <line x1="222" y1="462" x2="200" y2="540"/>
-            <line x1="60" y1="400" x2="138" y2="378"/>
-            <line x1="462" y1="222" x2="540" y2="200"/>
-          </g>
-        </g>
-        <circle cx="300" cy="300" r="92" fill="#0A0A0A"/>
-        <circle cx="300" cy="300" r="34" fill="#FFD100"/>
-        <circle cx="288" cy="288" r="9" fill="#0A0A0A"/>
-      </svg>
-    </div>
-
-    <div class="cta-bookend-inner">
-      <div class="reveal cta-bookend-content">
-        <span class="cta-bookend-eyebrow">The ask</span>
-        <h2 class="cta-bookend-stat"><span class="cta-stat-num" data-count="2.2">2.2</span><span class="cta-stat-unit">M</span></h2>
-        <p class="cta-bookend-stat-cap">Canadians live with sight loss.</p>
-        <h3 class="cta-bookend-line">Most of them <span class="cta-strike">navigate alone</span>.</h3>
-        <h3 class="cta-bookend-line cta-bookend-line-bold">Iris is how that ends.</h3>
-        <div class="cta-bookend-row">
-          <button class="cta-bookend-btn" onclick="openChat('general')">
-            <span>Talk to Iris</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          </button>
-        </div>
+  <!-- CTA — closing (clean yellow gradient) -->
+  <section class="cta-soft theme-yellow" id="cta-final">
+    <div class="cta-soft-inner reveal">
+      <span class="cta-soft-eyebrow">The ask</span>
+      <h2 class="cta-soft-headline">2.2 million Canadians.<br><span class="cta-soft-accent">Most of them navigating alone.</span></h2>
+      <p class="cta-soft-body">Iris is how that ends. Not by building more — by making sure what already exists reaches the people it was built for.</p>
+      <button class="cta-soft-btn" onclick="openChat('general')">
+        <span>Talk to Iris</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <div class="cta-soft-foot">
+        <span>Iris</span>
+        <span class="cta-foot-dot">·</span>
+        <span>Powered by CNIB</span>
+        <span class="cta-foot-dot">·</span>
+        <span>See the world differently.</span>
       </div>
-    </div>
-
-    <div class="cta-marquee" aria-hidden="true">
-      <div class="cta-marquee-track">
-        <span>AMD</span><span>·</span><span>Vision Mate</span><span>·</span><span>RP</span><span>·</span><span>CNIB Beyond Print</span><span>·</span><span>Glaucoma</span><span>·</span><span>Peer Support</span><span>·</span><span>Diabetic Retinopathy</span><span>·</span><span>Connecting the Dots</span><span>·</span><span>CVI</span><span>·</span><span>Tech Support</span><span>·</span><span>Cataracts</span><span>·</span><span>Guide Dogs</span><span>·</span><span>Cortical Visual Impairment</span><span>·</span><span>Come To Work</span><span>·</span><span>Deafblindness</span><span>·</span><span>Sudbury</span><span>·</span><span>Gander</span><span>·</span><span>Iqaluit</span><span>·</span><span>Yellowknife</span><span>·</span><span>Halifax</span><span>·</span><span>Calgary</span><span>·</span>
-        <span>AMD</span><span>·</span><span>Vision Mate</span><span>·</span><span>RP</span><span>·</span><span>CNIB Beyond Print</span><span>·</span><span>Glaucoma</span><span>·</span><span>Peer Support</span><span>·</span><span>Diabetic Retinopathy</span><span>·</span><span>Connecting the Dots</span><span>·</span><span>CVI</span><span>·</span><span>Tech Support</span><span>·</span><span>Cataracts</span><span>·</span><span>Guide Dogs</span><span>·</span><span>Cortical Visual Impairment</span><span>·</span><span>Come To Work</span><span>·</span><span>Deafblindness</span><span>·</span><span>Sudbury</span><span>·</span><span>Gander</span><span>·</span><span>Iqaluit</span><span>·</span><span>Yellowknife</span><span>·</span><span>Halifax</span><span>·</span><span>Calgary</span><span>·</span>
-      </div>
-    </div>
-
-    <div class="cta-bookend-foot">
-      <span>Iris</span>
-      <span class="cta-foot-dot">·</span>
-      <span>Powered by CNIB</span>
-      <span class="cta-foot-dot">·</span>
-      <span>See the world differently.</span>
     </div>
   </section>
 
