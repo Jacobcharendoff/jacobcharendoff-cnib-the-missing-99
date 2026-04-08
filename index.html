@@ -2899,6 +2899,68 @@
       line-height: 1.5;
     }
 
+    /* The gap Iris fills — closing beat of the why-iris-exists section */
+    .gap-callout {
+      margin: 96px auto 0;
+      max-width: 920px;
+      position: relative;
+      border-radius: 28px;
+      padding: 56px 56px 52px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.22);
+    }
+    .gap-callout::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,209,0,0.30) 0%, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(255,209,0,0.10) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
+    }
+    .gap-callout-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #FFD100;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      margin-bottom: 22px;
+    }
+    .gap-callout-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 10px #FFD100;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    .gap-callout-body {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.28;
+      letter-spacing: -0.01em;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      max-width: 760px;
+    }
+    .gap-callout-body strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    @media (max-width: 640px) {
+      .gap-callout { padding: 40px 28px; margin-top: 64px; }
+    }
+
     /* Sector benchmark bars */
     .benchmarks {
       margin-top: 96px;
@@ -3487,9 +3549,9 @@
   <section class="section theme-black" id="problem">
     <div class="container">
       <div class="section-head reveal">
-        <span class="label">The Problem</span>
-        <h2 class="headline-lg">CNIB serves Canadians living with sight loss.<br><span class="accent">Most of them don't know it yet.</span></h2>
-        <p class="body-lg">Roughly 1.5 million Canadians live with sight loss today. CNIB connects with about 13,000 of them. That isn't a marketing problem — it's a navigation problem. Most Canadians who need CNIB never find the door.</p>
+        <span class="label">Why Iris Exists</span>
+        <h2 class="headline-lg">Sight loss arrives without a roadmap.<br><span class="accent">Iris is the roadmap.</span></h2>
+        <p class="body-lg">A diagnosis. A doctor's appointment that ends with a pamphlet. A morning in the kitchen when something doesn't look right. And then — nothing. No one tells you what comes next, where to start, or who to call. CNIB has spent a hundred years building the answers. The hard part has always been finding the door. Iris is the door.</p>
       </div>
 
       <div class="problem-grid reveal">
@@ -3506,32 +3568,28 @@
           </svg>
           <div class="donut-99-inner">
             <div class="big" data-count="99" data-suffix="%">0%</div>
-            <div class="small">unreached</div>
+            <div class="small">never find the door</div>
           </div>
         </div>
         <div class="problem-stats">
           <div class="problem-stat">
             <div class="num" data-count="1.5" data-suffix="M" data-decimals="1">0M</div>
-            <div class="lbl">Canadians live with sight loss today, and that number is projected to nearly double by 2050.</div>
+            <div class="lbl">Canadians live with sight loss right now. Most of them are figuring it out alone.</div>
           </div>
           <div class="problem-stat">
             <div class="num" data-count="13" data-suffix="K" data-prefix="~">~0K</div>
-            <div class="lbl">Active CNIB members across all programs nationwide. Less than one percent of the population that needs us.</div>
+            <div class="lbl">Are connected to CNIB today. Not because the support isn't there. Because nobody hands them the map.</div>
           </div>
           <div class="problem-stat">
-            <div class="num" data-count="30" data-prefix="$" data-suffix="M+">$0M+</div>
-            <div class="lbl">FY2025 operating deficit. Every program is fighting for runway. The cost of staying invisible is the highest cost of all.</div>
+            <div class="num">100<span style="font-size:0.55em;">+</span></div>
+            <div class="lbl">Free programs already built and waiting. Vision rehab. Guide Dogs. Peer support. Tech training. Camps. Counselling. Iris knows every one of them by name.</div>
           </div>
         </div>
       </div>
 
-      <div class="benchmarks reveal">
-        <div class="benchmarks-title">Sector benchmark · % of national sight-loss population reached</div>
-        <div class="benchmark-row reveal" style="--w:14%"><div class="org">CNIB <small>Canada</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~1%</div></div>
-        <div class="benchmark-row reveal" style="--w:43%"><div class="org">RNIB <small>United Kingdom</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~3%</div></div>
-        <div class="benchmark-row reveal" style="--w:86%"><div class="org">Vision Australia <small>Australia</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~6%</div></div>
-        <div class="benchmark-row reveal" style="--w:28%"><div class="org">AFB <small>United States</small></div><div class="bar-track"><div class="bar-fill"></div></div><div class="pct">~2%</div></div>
-        <div class="benchmark-source">Bars scaled relative to peer reach. Reach figures are estimates based on published active-service counts vs. national prevalence.</div>
+      <div class="gap-callout reveal">
+        <div class="gap-callout-eyebrow">The gap Iris fills</div>
+        <div class="gap-callout-body">Between the moment a person learns they're losing their sight and the moment they find the people who can help, there is a silence. Sometimes it lasts weeks. Sometimes years. Sometimes forever. <strong>Iris is what lives in that silence.</strong> A guide who picks up on the first try, knows the whole ecosystem, and stays for the next conversation, and the one after that.</div>
       </div>
     </div>
   </section>
