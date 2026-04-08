@@ -4390,6 +4390,21 @@
       .arc-rail { grid-template-columns: 1fr; }
     }
 
+    /* Compact variant — tiny strip, no italic feel, no iris-does line */
+    .arc-rail-compact .arc-stage {
+      min-height: 0;
+      padding: 20px 16px 18px;
+      gap: 4px;
+    }
+    .arc-rail-compact .arc-stage-name {
+      font-size: 15px;
+      line-height: 1.2;
+    }
+    .arc-rail-compact .arc-num {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
     /* ===== JOURNEY CHAPTER 4 — THE STORY (Margaret's 18 months) ===== */
     .story-block {
       margin: 96px auto 0;
@@ -5082,6 +5097,11 @@
         </div>
       </div>
 
+      <!-- Framework caption — the Story→Life→Need→Hope beats as a single line under the demos -->
+      <p class="reveal" style="text-align:center;margin:56px auto 0;max-width:720px;color:rgba(255,255,255,0.62);font-size:15px;line-height:1.5;letter-spacing:0.01em">
+        Every Iris conversation moves through four layers, in order, every time: <strong style="color:#FFD100;font-weight:600">Story &rarr; Life &rarr; Need &rarr; Hope.</strong>
+      </p>
+
       <!-- Or just ask — quick prompt strip -->
       <div class="demos-quickask reveal">
         <div class="demos-quickask-label">Or just ask Iris yourself</div>
@@ -5455,52 +5475,8 @@
   <section class="section theme-black" id="journeys">
     <div class="container">
 
-      <!-- Context: the conversation architecture that makes every Iris journey possible -->
-      <div class="section-head reveal">
-        <span class="label">How Iris works</span>
-        <h2 class="headline-lg">What you just heard<br><span class="accent">wasn't a script.</span></h2>
-        <p class="body-lg">Every Iris conversation moves through four layers, in the same order, every time. Story before solutions. Life before recommendations. The immediate need before anything practical. The bigger hope last — because that's the one Iris is actually navigating toward.</p>
-      </div>
-
-      <div class="how-panel reveal">
-        <div class="how-eyebrow">The conversation</div>
-        <h3 class="how-headline">Story → Life → Need → Hope.</h3>
-
-        <ol class="how-layers">
-          <li class="how-layer">
-            <div class="how-layer-num">01</div>
-            <div class="how-layer-name">The Story</div>
-            <div class="how-layer-q">"How did you get here?"</div>
-            <div class="how-layer-body">When was the diagnosis. What's changed. What's been the hardest part to put into words. Iris listens for the emotional truth beneath the facts before anything else.</div>
-          </li>
-          <li class="how-layer">
-            <div class="how-layer-num">02</div>
-            <div class="how-layer-name">The Life</div>
-            <div class="how-layer-q">"Who are you beyond the diagnosis?"</div>
-            <div class="how-layer-body">Work, family, what you used to love, what you're afraid of losing. This is where Iris builds a picture of a whole person — not a condition.</div>
-          </li>
-          <li class="how-layer">
-            <div class="how-layer-num">03</div>
-            <div class="how-layer-name">The Need</div>
-            <div class="how-layer-q">"What's hardest right now? Today. This week."</div>
-            <div class="how-layer-body">Not in general — specifically. Practical, social, professional, financial, or emotional. The immediate need is where Iris starts. That's what earns trust.</div>
-          </li>
-          <li class="how-layer">
-            <div class="how-layer-num">04</div>
-            <div class="how-layer-name">The Hope</div>
-            <div class="how-layer-q">"What does a good life look like, on your terms?"</div>
-            <div class="how-layer-body">Not CNIB's terms. Yours. The north star Iris navigates toward — for as long as the relationship lasts.</div>
-          </li>
-        </ol>
-
-        <div class="how-closer">
-          <p class="how-closer-line">Iris doesn't end with information. <strong>Iris ends with a name, a number, and a time.</strong></p>
-          <p class="how-closer-sub">A Vision Mate matched. A program enrolled. A follow-up booked. The member leaves having gained something real — not a brochure.</p>
-        </div>
-      </div>
-
       <!-- How people find Iris — the acquisition mechanic -->
-      <div class="section-head reveal" style="margin-top:140px">
+      <div class="section-head reveal">
         <span class="label">How people find Iris</span>
         <h2 class="headline-lg">Iris is the front door.<br><span class="accent">Every path leads here.</span></h2>
         <p class="body-lg">Finding the way in has always been the hardest part. Iris changes that — one place every path can lead to, and every conversation hands off to the right CNIB program before it ends.</p>
@@ -5528,115 +5504,41 @@
       </div>
       <div class="reach-foot-line reveal"><strong>Every door leads to Iris. Iris leads to CNIB.</strong> That's how the missing 99% become members.</div>
 
-      <!-- Beat 2 — The journey (Arc + brain as map + one person on it) -->
+      <!-- The journey — compact strip. Iris as a lifelong relationship, not a one-shot. -->
       <div class="arc-block reveal" style="margin-top:140px">
         <div class="arc-head">
-          <div class="arc-eyebrow">The journey</div>
-          <h3 class="arc-headline">From the day the world goes quiet<br>to the day you're someone else's guide.</h3>
-          <p class="arc-sub">Sight loss has six emotional stages. Iris knows where each member is right now, and what's likely coming next. The job at every stage is different. Iris adjusts for all of it.</p>
+          <div class="arc-eyebrow">The relationship</div>
+          <h3 class="arc-headline">Not a one-time call.<br><span class="accent">A guide for the whole road.</span></h3>
+          <p class="arc-sub">Sight loss moves through six stages. Iris knows where each member is, and adjusts.</p>
         </div>
 
-        <ol class="arc-rail">
+        <ol class="arc-rail arc-rail-compact" style="margin-top:56px">
           <li class="arc-stage">
             <div class="arc-num">01</div>
             <div class="arc-stage-name">Shock &amp; Disorientation</div>
-            <div class="arc-stage-feel">"My world just got smaller and I don't know who I am."</div>
-            <div class="arc-stage-iris">Iris witnesses. Doesn't fix. Offers one small thing.</div>
           </li>
           <li class="arc-stage">
             <div class="arc-num">02</div>
             <div class="arc-stage-name">Practical Survival</div>
-            <div class="arc-stage-feel">"How do I cook, read, get to the store?"</div>
-            <div class="arc-stage-iris">Tech training. Vision Mate. Mobility. Restores competence.</div>
           </li>
           <li class="arc-stage arc-stage-current">
-            <div class="arc-stage-marker"><span class="arc-marker-dot"></span>Margaret is here</div>
             <div class="arc-num">03</div>
             <div class="arc-stage-name">Social Reconnection</div>
-            <div class="arc-stage-feel">"I haven't seen my friends in months."</div>
-            <div class="arc-stage-iris">Peer support groups. Vision Mate. The first event back.</div>
           </li>
           <li class="arc-stage">
             <div class="arc-num">04</div>
             <div class="arc-stage-name">Reclaiming Identity</div>
-            <div class="arc-stage-feel">"I'm more than my diagnosis. I want my life back."</div>
-            <div class="arc-stage-iris">Come to Work. Lake Joe. Recreation. Scholarships. The full ecosystem opens.</div>
           </li>
           <li class="arc-stage">
             <div class="arc-num">05</div>
             <div class="arc-stage-name">Contribution &amp; Belonging</div>
-            <div class="arc-stage-feel">"I want to help the next person where I was."</div>
-            <div class="arc-stage-iris">Vision Mate as mentor. National Youth Council. Advocacy.</div>
           </li>
           <li class="arc-stage">
             <div class="arc-num">06</div>
             <div class="arc-stage-name">Lifelong Partnership</div>
-            <div class="arc-stage-feel">"CNIB isn't a charity I use. It's my community."</div>
-            <div class="arc-stage-iris">The relationship deepens. Iris stays.</div>
           </li>
         </ol>
       </div>
-
-      <!-- Connector: from the map to one person on it -->
-      <div class="arc-to-brain reveal" style="text-align:center;margin:96px auto 48px;max-width:720px">
-        <p style="font-size:22px;line-height:1.5;color:#fff;font-weight:500">That's the map.<br><span style="color:#FFD100">Here's Margaret on it.</span></p>
-      </div>
-
-      <!-- Chapter 2 — Iris's brain (now the zoom-in on stage 3) -->
-      <div class="brain-card reveal">
-        <div class="brain-scan" aria-hidden="true"></div>
-        <div class="brain-eyebrow">Margaret · Stage 03 · Social Reconnection</div>
-        <h3 class="brain-headline">What Iris<br>remembers about her.</h3>
-        <p class="brain-sub">Every Iris conversation builds and updates a living portrait of the member. Not a database row — a picture of a whole person that gets sharper every time you talk. Here's Margaret, today.</p>
-
-        <div class="brain-grid">
-          <div class="brain-field">
-            <div class="brain-label">Diagnosis</div>
-            <div class="brain-value">Macular degeneration · early-mid stage</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">Living with it for</div>
-            <div class="brain-value">2 months and 14 days</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">Where</div>
-            <div class="brain-value">Sudbury, ON · lives alone · daughter in BC</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">Life stage</div>
-            <div class="brain-value">Retired teacher · 68 · 34 years in the classroom</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">Hardest part right now</div>
-            <div class="brain-value">Losing ease with reading. Identity grief.</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">North star</div>
-            <div class="brain-value">"Talking to someone who actually gets it."</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">Communication style</div>
-            <div class="brain-value">Voice on landline · large print follow-ups · no app</div>
-          </div>
-          <div class="brain-field">
-            <div class="brain-label">Programs in motion</div>
-            <div class="brain-value">Vision Mate (matching) · CNIB Beyond Print (sent)</div>
-          </div>
-          <div class="brain-field brain-field-wide">
-            <div class="brain-label">Next check-in scheduled</div>
-            <div class="brain-value">In 27 days · Iris will ask how the first Vision Mate visit went and whether reading feels different</div>
-          </div>
-        </div>
-
-        <div class="brain-foot">
-          <span class="brain-pulse"></span>
-          Updates in real time. Never asks the same question twice.
-        </div>
-      </div>
-
-      <!-- Arc + brain card now paired above. 18-month story removed as redundant. -->
-
-      <div class="act-refrain reveal" style="margin-top:96px">Your life.</div>
 
     </div>
   </section>
