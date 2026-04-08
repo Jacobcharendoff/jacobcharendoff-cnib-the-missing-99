@@ -3057,6 +3057,385 @@
     }
 
     /* ===== JOURNEY SELECTOR ===== */
+    /* ===== HOW IRIS WORKS — panels ===== */
+    #how { padding: 120px 0; }
+    .how-panel {
+      max-width: 1080px;
+      margin: 64px auto 0;
+      position: relative;
+      border-radius: 32px;
+      padding: 56px 56px 48px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.22);
+    }
+    .how-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,209,0,0.28) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
+    }
+    .how-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #FFD100;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      margin-bottom: 22px;
+    }
+    .how-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 10px #FFD100;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    .how-headline {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(30px, 3.6vw, 46px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .how-sub {
+      font-size: 16px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.68);
+      max-width: 680px;
+      margin-bottom: 38px;
+    }
+    .how-sub em { color: #FFD100; font-style: normal; font-weight: 700; }
+
+    /* The four conversation layers */
+    .how-layers {
+      list-style: none;
+      padding: 0;
+      margin: 32px 0 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .how-layer {
+      position: relative;
+      padding: 26px 26px 24px;
+      border-radius: 20px;
+      background: rgba(10,10,10,0.5);
+      border: 1px solid rgba(255,209,0,0.18);
+    }
+    .how-layer-num {
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFD100;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .how-layer-name {
+      font-family: 'Barlow', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .how-layer-q {
+      font-family: 'Barlow', sans-serif;
+      font-size: 17px;
+      font-style: italic;
+      color: rgba(255,209,0,0.85);
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 12px;
+    }
+    .how-layer-body {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Five matching inputs */
+    .how-inputs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .how-input {
+      padding: 24px 18px 22px;
+      border-radius: 18px;
+      background: rgba(10,10,10,0.5);
+      border: 1px solid rgba(255,209,0,0.18);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .how-input-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      color: #FFD100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .how-input-icon svg { width: 18px; height: 18px; }
+    .how-input-label {
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .how-input-body {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.65);
+    }
+    .how-stays {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+    }
+    .how-stays-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 12px rgba(255,209,0,0.7);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    @media (max-width: 1000px) {
+      .how-inputs { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 780px) {
+      .how-panel { padding: 40px 28px; }
+      .how-layers { grid-template-columns: 1fr; }
+      .how-inputs { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .how-inputs { grid-template-columns: 1fr; }
+    }
+
+    /* ===== TWO WAYS IRIS REACHES PEOPLE — reach grid ===== */
+    #reach { padding: 120px 0; }
+    .reach-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 64px;
+      max-width: 1180px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .reach-card {
+      position: relative;
+      border-radius: 28px;
+      padding: 48px 44px 40px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.22);
+      display: flex;
+      flex-direction: column;
+      min-height: 540px;
+    }
+    .reach-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+    .reach-card.persona-amber::before {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255,209,0,0.32) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
+    }
+    .reach-card.persona-azure::before {
+      background:
+        radial-gradient(circle at 80% 0%, rgba(80,140,255,0.28) 0%, transparent 55%),
+        linear-gradient(180deg, #0a1424 0%, #0a0a0a 100%);
+    }
+    .reach-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #FFD100;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      margin-bottom: 22px;
+      width: fit-content;
+    }
+    .reach-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 10px #FFD100;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    .reach-card.persona-azure .reach-eyebrow {
+      color: #6FB4FF;
+      background: rgba(80,140,255,0.14);
+      border-color: rgba(80,140,255,0.4);
+    }
+    .reach-card.persona-azure .reach-eyebrow::before {
+      background: #6FB4FF;
+      box-shadow: 0 0 10px #6FB4FF;
+    }
+    .reach-headline {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(28px, 3vw, 38px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.04;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .reach-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 28px;
+    }
+    .reach-foot {
+      margin-top: auto;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .reach-stat-num {
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(40px, 4.8vw, 60px);
+      font-weight: 800;
+      color: #FFD100;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .reach-stat-cap {
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 8px;
+    }
+    .reach-example {
+      margin-top: auto;
+      padding: 22px 22px 20px;
+      border-radius: 16px;
+      background: rgba(10,10,10,0.5);
+      border: 1px solid rgba(80,140,255,0.22);
+    }
+    .reach-example-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(111,180,255,0.85);
+      margin-bottom: 8px;
+    }
+    .reach-example-body {
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.85);
+    }
+    .reach-example-body strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    .reach-foot-line {
+      max-width: 860px;
+      margin: 56px auto 0;
+      text-align: center;
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 500;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+    @media (max-width: 880px) {
+      .reach-grid { grid-template-columns: 1fr; }
+      .reach-card { min-height: 0; padding: 36px 28px; }
+    }
+
+    /* ===== QUICK-ASK STRIP under demos ===== */
+    .demos-quickask {
+      max-width: 1180px;
+      margin: 56px auto 0;
+      padding: 32px 0 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .demos-quickask-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,209,0,0.85);
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .demos-quickask-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .quickask-pill {
+      background: rgba(255,209,0,0.06);
+      border: 1px solid rgba(255,209,0,0.28);
+      color: rgba(255,255,255,0.88);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .quickask-pill:hover {
+      background: #FFD100;
+      color: #0A0A0A;
+      border-color: #FFD100;
+      transform: translateY(-1px);
+    }
+
+    /* ===== CLOSING CTA foot ===== */
+    .cta-final-foot {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+    }
+
     #journeys { padding: 120px 0; }
 
     /* ===== JOURNEY: shared poster eyebrow ===== */
@@ -3825,11 +4204,12 @@
       <span style="font-size:11px;color:var(--text-dim);font-weight:400;margin-left:4px;letter-spacing:0.3px">Your sight loss navigator</span>
     </div>
     <div class="nav-links">
-      <a href="#problem" data-nav>The Problem</a>
-      <a href="#iris" data-nav>Meet Iris</a>
+      <a href="#problem" data-nav>Why Iris</a>
+      <a href="#how" data-nav>How it works</a>
+      <a href="#reach" data-nav>Two ways in</a>
       <a href="#demos" data-nav>Demos</a>
-      <a href="#journeys" data-nav>Journeys</a>
-      <a href="#further" data-nav>What's Next</a>
+      <a href="#journeys" data-nav>The journey</a>
+      <a href="#further" data-nav>What's next</a>
       <button class="nav-cta" onclick="openChat('general')">Try Iris</button>
     </div>
   </nav>
@@ -3935,35 +4315,100 @@
     </div>
   </section>
 
-  <!-- MEET IRIS — the solution emerges -->
-  <section class="section theme-black" id="iris">
+  <!-- HOW IRIS WORKS — the mechanism, not the marketing -->
+  <section class="section theme-black" id="how">
     <div class="container">
       <div class="section-head reveal">
-        <span class="label">Meet Iris</span>
-        <h2 class="headline-lg">A navigator that knows<br><span class="accent">every program, every member, every door.</span></h2>
-        <p class="body-lg">Iris is an AI navigator designed for CNIB. It listens like a person, knows every program in the ecosystem, and connects each Canadian with sight loss to the support that actually fits their life — the moment they need it.</p>
+        <span class="label">How Iris Works</span>
+        <h2 class="headline-lg">She listens in four layers.<br>She matches on five inputs.<br><span class="accent">Then she stays.</span></h2>
+        <p class="body-lg">Iris isn't a chatbot. It isn't a directory with a voice. It's a structured way of getting to know a person that mirrors what a great human guide would do — without ever asking them to start over, fill out a form, or repeat themselves to the next person in the chain.</p>
       </div>
 
-      <div class="trio reveal">
-        <div class="trio-cell">
-          <span class="trio-num">01 — Listen</span>
-          <h3>Hears the whole person.</h3>
-          <p>Diagnosis, life stage, fears, the things they aren't saying. No intake form. No pity. Just a conversation that meets them where they are.</p>
+      <!-- Panel A — The four conversation layers -->
+      <div class="how-panel reveal">
+        <div class="how-eyebrow">The conversation</div>
+        <h3 class="how-headline">Four layers, in this order, every time.</h3>
+
+        <ol class="how-layers">
+          <li class="how-layer">
+            <div class="how-layer-num">01</div>
+            <div class="how-layer-name">The Story</div>
+            <div class="how-layer-q">"How did you get here?"</div>
+            <div class="how-layer-body">When was the diagnosis. What's changed. What's been the hardest part to put into words. Iris listens for the emotional truth beneath the facts before anything else.</div>
+          </li>
+          <li class="how-layer">
+            <div class="how-layer-num">02</div>
+            <div class="how-layer-name">The Life</div>
+            <div class="how-layer-q">"Who are you beyond the diagnosis?"</div>
+            <div class="how-layer-body">Work, family, what you used to love, what you're afraid of losing. This is where Iris builds a picture of a whole person — not a condition.</div>
+          </li>
+          <li class="how-layer">
+            <div class="how-layer-num">03</div>
+            <div class="how-layer-name">The Need</div>
+            <div class="how-layer-q">"What's hardest right now? Today. This week."</div>
+            <div class="how-layer-body">Not in general — specifically. Practical, social, professional, financial, or emotional. The immediate need is where Iris starts. That's what earns trust.</div>
+          </li>
+          <li class="how-layer">
+            <div class="how-layer-num">04</div>
+            <div class="how-layer-name">The Hope</div>
+            <div class="how-layer-q">"What does a good life look like, on your terms?"</div>
+            <div class="how-layer-body">Not CNIB's terms. Yours. The north star Iris navigates toward — for as long as the relationship lasts.</div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Panel B — The five matching inputs -->
+      <div class="how-panel reveal" style="margin-top:32px">
+        <div class="how-eyebrow">The match</div>
+        <h3 class="how-headline">Five inputs. The one program that's right for you, today.</h3>
+        <p class="how-sub">CNIB has a hundred programs. Most don't fit most people. Iris's job isn't to list them — it's to surface the two or three that fit <em>this</em> person, in <em>this</em> place, at <em>this</em> moment in their life.</p>
+
+        <div class="how-inputs">
+          <div class="how-input">
+            <div class="how-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="how-input-label">Diagnosis</div>
+            <div class="how-input-body">Low vision. Total blindness. Deafblind. Newly diagnosed. Degenerative. Stable.</div>
+          </div>
+          <div class="how-input">
+            <div class="how-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="how-input-label">Geography</div>
+            <div class="how-input-body">Province, city, rural or urban. Many programs are region-locked. Iris only surfaces what's actually available to you.</div>
+          </div>
+          <div class="how-input">
+            <div class="how-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+            </div>
+            <div class="how-input-label">Life stage</div>
+            <div class="how-input-body">Child. Youth. Working age. Senior. New parent. Newly retired. Each stage opens different doors.</div>
+          </div>
+          <div class="how-input">
+            <div class="how-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </div>
+            <div class="how-input-label">Primary concern</div>
+            <div class="how-input-body">Independence. Employment. Connection. Technology. Education. Family. Money. The thing that's loudest right now.</div>
+          </div>
+          <div class="how-input">
+            <div class="how-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
+            </div>
+            <div class="how-input-label">Interests &amp; lifestyle</div>
+            <div class="how-input-body">Active. Creative. Professional. Caregiver. The texture of a real life — so the match feels like a fit, not a referral.</div>
+          </div>
         </div>
-        <div class="trio-cell">
-          <span class="trio-num">02 — Understand</span>
-          <h3>Knows what helps.</h3>
-          <p>Every CNIB program, every eligibility rule, every regional nuance. Vision rehab, Guide Dogs, peer support, employment, technology, advocacy.</p>
-        </div>
-        <div class="trio-cell">
-          <span class="trio-num">03 — Act</span>
-          <h3>Makes the connection.</h3>
-          <p>Books the call. Sends the warm intro. Follows up at 2am or 2pm. Brings the right CNIB human into the loop the moment one is needed.</p>
+
+        <div class="how-stays">
+          <span class="how-stays-pulse"></span>
+          And then she stays. Every conversation makes the next one sharper.
         </div>
       </div>
 
       <!-- Constellation: Iris at the center of CNIB's program ecosystem -->
-      <div class="constellation reveal" aria-label="Iris connects every CNIB program">
+      <div class="constellation reveal" style="margin-top:80px" aria-label="Iris connects every CNIB program">
         <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
@@ -3972,7 +4417,6 @@
               <stop offset="100%" stop-color="#FFD100" stop-opacity="0"/>
             </radialGradient>
           </defs>
-          <!-- links -->
           <g stroke="#FFD100" stroke-opacity="0.55" stroke-width="1.5" fill="none">
             <line class="link-line" x1="450" y1="260" x2="120" y2="90"/>
             <line class="link-line" x1="450" y1="260" x2="450" y2="60"/>
@@ -3983,24 +4427,60 @@
             <line class="link-line" x1="450" y1="260" x2="450" y2="470"/>
             <line class="link-line" x1="450" y1="260" x2="780" y2="430"/>
           </g>
-          <!-- core -->
           <circle cx="450" cy="260" r="150" fill="url(#coreGlow)"/>
           <text x="450" y="268" text-anchor="middle" font-family="Barlow,'Helvetica Neue',Arial,sans-serif" font-size="96" font-weight="800" fill="#FFD100" letter-spacing="2" style="filter:drop-shadow(0 0 24px rgba(255,209,0,0.55))">IRIS</text>
           <text x="450" y="300" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" opacity="0.75" letter-spacing="1.5">YOUR SIGHT LOSS NAVIGATOR</text>
-          <!-- nodes -->
-          <g font-family="Inter,sans-serif" font-size="13" fill="#FFFFFF" text-anchor="middle">
-            <g><circle cx="120" cy="90" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="94">Vision Mate</text></g>
-            <g><circle cx="450" cy="60" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="450" y="64">Guide Dogs</text></g>
-            <g><circle cx="780" cy="90" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="780" y="94">Tech</text></g>
-            <g><circle cx="60" cy="260" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="60" y="264">Peer</text></g>
-            <g><circle cx="840" cy="260" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="840" y="264">Employ</text></g>
-            <g><circle cx="120" cy="430" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="434">Advocacy</text></g>
-            <g><circle cx="450" cy="470" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="450" y="474">Family</text></g>
-            <g><circle cx="780" cy="430" r="34" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="780" y="434">Sport &amp; Rec</text></g>
+          <g font-family="Inter,sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">
+            <g><circle cx="120" cy="90" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="88" font-weight="700">LIVE</text><text x="120" y="104" opacity="0.7" font-size="10">Vision Mate · Peer</text></g>
+            <g><circle cx="450" cy="60" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="450" y="58" font-weight="700">LEARN</text><text x="450" y="74" opacity="0.7" font-size="10">Youth · Braille</text></g>
+            <g><circle cx="780" cy="90" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="780" y="88" font-weight="700">WORK</text><text x="780" y="104" opacity="0.7" font-size="10">Come to Work</text></g>
+            <g><circle cx="60" cy="260" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="60" y="258" font-weight="700">PLAY</text><text x="60" y="274" opacity="0.7" font-size="10">Lake Joe · Sport</text></g>
+            <g><circle cx="840" cy="260" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="840" y="258" font-weight="700">TECH</text><text x="840" y="274" opacity="0.7" font-size="10">SmartLife · Phones</text></g>
+            <g><circle cx="120" cy="430" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="428" font-weight="700">GUIDE</text><text x="120" y="444" opacity="0.7" font-size="10">CNIB Guide Dogs</text></g>
+            <g><circle cx="450" cy="470" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="450" y="468" font-weight="700">FAMILY</text><text x="450" y="484" opacity="0.7" font-size="10">Parents · Caregivers</text></g>
+            <g><circle cx="780" cy="430" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="780" y="428" font-weight="700">ADVOCACY</text><text x="780" y="444" opacity="0.7" font-size="10">Rights · Policy</text></g>
           </g>
         </svg>
-        <p class="constellation-cap">One navigator. Every door into CNIB.</p>
+        <p class="constellation-cap">Six pillars. A hundred programs. One navigator.</p>
       </div>
+
+    </div>
+  </section>
+
+  <!-- TWO WAYS IRIS REACHES PEOPLE — the scale answer -->
+  <section class="section theme-black" id="reach">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="label">Two ways in</span>
+        <h2 class="headline-lg">Reaching members directly.<br><span class="accent">And through every door they already walk through.</span></h2>
+        <p class="body-lg">There are two reasons most Canadians with sight loss never find CNIB. They don't know it exists. Or they do, and the moment they could have used it passed without anyone handing them a card. Iris was built for both.</p>
+      </div>
+
+      <div class="reach-grid reveal">
+        <!-- Prong 1: Direct -->
+        <div class="reach-card persona-amber">
+          <span class="reach-eyebrow">01 · Direct</span>
+          <h3 class="reach-headline">For members<br>and families.</h3>
+          <p class="reach-body">Iris meets people where they already are — on the phone, on the web, on a smart speaker, by text. Someone newly diagnosed, terrified at 2am. A parent fighting the school system alone. A senior who has slowly stopped leaving the house. A working adult quietly burning out from compensating. Iris picks up. Asks the right questions. Surfaces the right support. And stays.</p>
+          <div class="reach-foot">
+            <div class="reach-stat-num">2.2M</div>
+            <div class="reach-stat-cap">Canadians with sight loss. Anywhere. Any device. Any hour.</div>
+          </div>
+        </div>
+
+        <!-- Prong 2: Channel -->
+        <div class="reach-card persona-azure">
+          <span class="reach-eyebrow">02 · Channel</span>
+          <h3 class="reach-headline">For every door<br>they already walk through.</h3>
+          <p class="reach-body">Ophthalmologists. Optometrists. GPs. Hospitals. Social workers. HR teams. Pharmacists. These are the people who encounter someone with sight loss every single day — and who often have nothing to hand them when the appointment ends. Iris becomes the warm referral they make in 30 seconds, extending CNIB into every professional touchpoint where the conversation actually starts.</p>
+          <div class="reach-example">
+            <div class="reach-example-eyebrow">In practice</div>
+            <div class="reach-example-body">An ophthalmologist finishes a difficult diagnosis. She hands the patient a card. It says: <strong>"Talk to Iris."</strong> The patient calls from the parking lot. Iris picks up from there.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reach-foot-line reveal">Two channels. One Iris. The same warm, knowledgeable conversation no matter which door the member walks through.</div>
     </div>
   </section>
 
@@ -4056,13 +4536,47 @@
           </div>
         </div>
       </div>
+
+      <!-- Or just ask — quick prompt strip -->
+      <div class="demos-quickask reveal">
+        <div class="demos-quickask-label">Or just ask Iris yourself</div>
+        <div class="demos-quickask-grid">
+          <button class="quickask-pill" data-q="My doctor just said macular degeneration. What now?">"My doctor just said macular degeneration. What now?"</button>
+          <button class="quickask-pill" data-q="I need to tell my boss I'm losing my vision. How?">"I need to tell my boss I'm losing my vision. How?"</button>
+          <button class="quickask-pill" data-q="My mom won't leave the house anymore. I think it's her vision.">"My mom won't leave the house anymore."</button>
+          <button class="quickask-pill" data-q="What's a Vision Mate?">"What's a Vision Mate?"</button>
+          <button class="quickask-pill" data-q="I'm scared. Can we just talk for a minute?">"I'm scared. Can we just talk?"</button>
+          <button class="quickask-pill" data-q="I can't drive anymore. How do I get groceries?">"I can't drive anymore. How do I get groceries?"</button>
+        </div>
+      </div>
     </div>
   </section>
 
+  <script>
+    // Quick-ask pills under the Demos section — open chat and pre-fill
+    (function(){
+      document.querySelectorAll('.quickask-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const q = btn.dataset.q;
+          if (typeof openChat === 'function') {
+            openChat('general');
+            setTimeout(() => {
+              const input = document.getElementById('irisChatInput');
+              if (input && q) {
+                input.value = q;
+                if (typeof sendIrisMessage === 'function') sendIrisMessage();
+              }
+            }, 900);
+          }
+        });
+      });
+    })();
+  </script>
+
   <div class="section-divider fade-dark-to-white" aria-hidden="true"></div>
 
-  <!-- ASK IRIS — Apple Siri-style category grid -->
-  <section class="section theme-black" id="how">
+  <!-- ASK IRIS — removed; folded into Demos as a question strip -->
+  <section class="section theme-black" id="how-removed" hidden style="display:none">
     <div class="container">
       <div class="section-head reveal">
         <span class="label">Ask Iris</span>
@@ -4642,16 +5156,17 @@
     </div>
   </section>
 
-  <!-- CTA — Talk to Iris -->
+  <!-- CTA — closing -->
   <section class="cta-section theme-black">
     <div class="container">
-      <div class="reveal">
-        <span class="label">Ready?</span>
-        <h2 class="headline-lg" style="margin-top:18px">Iris is here.<br><span class="accent">Start with hello.</span></h2>
-        <p class="body-lg">A first conversation. No forms. No phone tree. No waiting room. Just someone who already knows what this feels like.</p>
+      <div class="reveal cta-final">
+        <span class="label">The ask</span>
+        <h2 class="headline-lg" style="margin-top:18px">2.2 million Canadians.<br><span class="accent">Most of them navigating alone.</span></h2>
+        <p class="body-lg">Iris is how that changes. Not by building more — by making sure what already exists reaches the people it was built for. The first conversation is already here. No forms. No phone tree. No waiting room. Just someone who already knows what this feels like.</p>
         <div class="hero-cta-row" style="margin-top:48px;justify-content:center">
           <button class="btn-primary" onclick="openChat('general')">Talk to Iris</button>
         </div>
+        <div class="cta-final-foot">Iris — Powered by CNIB — See the world differently.</div>
       </div>
     </div>
   </section>
