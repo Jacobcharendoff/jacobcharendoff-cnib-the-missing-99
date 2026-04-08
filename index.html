@@ -4992,27 +4992,39 @@
         <p class="body-lg">CNIB has spent over a hundred years building free programs, services, and community for Canadians with sight loss. Real support. People who understand. The hard part has never been the help. The hard part has always been finding the door.</p>
       </div>
 
-      <!-- The cascade of numbers -->
-      <div class="gap-cascade reveal">
-        <div class="gap-cascade-row">
-          <div class="gap-cascade-num">2.2M</div>
-          <div class="gap-cascade-lbl">Canadians live with sight loss.</div>
+      <!-- Donut + stats split -->
+      <div class="problem-grid reveal">
+        <div class="donut-99" aria-label="99 percent of Canadians with sight loss are not reached by CNIB">
+          <svg class="donut-svg" viewBox="0 0 220 220" aria-hidden="true">
+            <defs>
+              <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFE34D"/>
+                <stop offset="100%" stop-color="#FFD100"/>
+              </linearGradient>
+            </defs>
+            <circle class="donut-track" cx="110" cy="110" r="100"/>
+            <circle class="donut-fill" cx="110" cy="110" r="100"/>
+          </svg>
+          <div class="donut-99-inner">
+            <div class="big">99%</div>
+            <div class="small">Not reached</div>
+          </div>
         </div>
-        <div class="gap-cascade-arrow" aria-hidden="true">↓</div>
-        <div class="gap-cascade-row">
-          <div class="gap-cascade-num">12,227</div>
-          <div class="gap-cascade-lbl">are currently engaged with CNIB.</div>
-        </div>
-        <div class="gap-cascade-arrow" aria-hidden="true">↓</div>
-        <div class="gap-cascade-row">
-          <div class="gap-cascade-num">0.55%</div>
-          <div class="gap-cascade-lbl">of the people who could be reached, are.</div>
-        </div>
-      </div>
 
-      <div class="gap-callout reveal">
-        <div class="gap-callout-eyebrow">What this is</div>
-        <div class="gap-callout-body">It's a connection problem. People who need help don't know it exists — and when they do find it, they don't know where to start. <strong>The hard part has always been finding the door.</strong></div>
+        <div class="problem-stats">
+          <div class="problem-stat">
+            <div class="num">&gt;2M</div>
+            <div class="lbl">Canadians live with sight loss.</div>
+          </div>
+          <div class="problem-stat">
+            <div class="num">&lt;13K</div>
+            <div class="lbl">are currently engaged with CNIB.</div>
+          </div>
+          <div class="problem-stat">
+            <div class="num">&lt;1%</div>
+            <div class="lbl">of the people who could be reached, are.</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
