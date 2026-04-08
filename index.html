@@ -483,74 +483,145 @@
       margin-left: auto;
       margin-right: auto;
     }
+    /* ===== PERSONA POSTER CARDS — same DNA as .further-card ===== */
+    .demos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 64px;
+    }
+    @media (max-width: 1000px) { .demos-grid { grid-template-columns: 1fr; } }
+
     .demo-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 40px 32px;
-      cursor: pointer;
-      transition: all 0.3s;
       position: relative;
+      border-radius: 28px;
+      padding: 48px 40px 40px;
+      min-height: 560px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      border: 1px solid rgba(255,209,0,0.22);
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      isolation: isolate;
+      text-align: left;
     }
-    .demo-card:hover {
-      background: var(--bg-card-hover);
-      border-color: rgba(255, 209, 0,0.2);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    .demo-card::after {
+    .demo-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--yellow);
-      opacity: 0;
-      transition: opacity 0.3s;
+      inset: 0;
+      z-index: -1;
+      transition: opacity 0.5s ease;
     }
-    .demo-card:hover::after { opacity: 1; }
-    .demo-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
+    /* Margaret — warm amber (newly diagnosed) */
+    .demo-card.persona-amber::before {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255,209,0,0.32) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
+    }
+    /* David — cool azure (working professional) */
+    .demo-card.persona-azure::before {
+      background:
+        radial-gradient(circle at 80% 10%, rgba(80,140,255,0.28) 0%, transparent 60%),
+        linear-gradient(180deg, #0a1424 0%, #0a0a0a 100%);
+    }
+    /* Priya — soft rose (parent / advocate) */
+    .demo-card.persona-rose::before {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,120,170,0.26) 0%, transparent 60%),
+        linear-gradient(180deg, #1f0a14 0%, #0a0a0a 100%);
+    }
+    .demo-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,209,0,0.55);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .demo-card .persona-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #FFD100;
+      width: fit-content;
+      margin-bottom: 24px;
+    }
+    .demo-card .persona-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 10px #FFD100;
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    .demo-card .persona-headline {
+      font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(34px, 3.2vw, 46px);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -1px;
+      color: #FFFFFF;
+      margin: 0 0 14px 0;
+    }
+    .demo-card .persona-subline {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.2px;
+      margin-bottom: 22px;
+    }
+    .demo-card .persona-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 28px;
+      max-width: 95%;
+    }
+    .demo-card .persona-foot {
+      margin-top: auto;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
-    .demo-card h3 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .demo-card .demo-age {
-      font-size: 14px;
-      color: var(--text-dim);
-      margin-bottom: 16px;
-    }
-    .demo-card p {
-      font-size: 15px;
-      color: var(--text-body);
-      line-height: 1.6;
-    }
-    .demo-card .demo-tag {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 6px 14px;
-      border-radius: 100px;
+    .demo-card .persona-meta {
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
     }
-    .tag-new { background: rgba(255,87,87,0.12); color: #FF5757; }
-    .tag-lapsed { background: rgba(255,171,64,0.12); color: #FFAB40; }
-    .tag-senior { background: rgba(130,177,255,0.12); color: #82B1FF; }
-    .tag-youth { background: rgba(156,107,255,0.12); color: #9C6BFF; }
-    .tag-parent { background: rgba(77,208,161,0.12); color: #4DD0A1; }
+    .demo-card .persona-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: #FFD100;
+      color: #0A0A0A;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .demo-card:hover .persona-cta {
+      transform: translateX(4px);
+      box-shadow: 0 8px 24px rgba(255,209,0,0.32);
+    }
+    .demo-card .persona-cta svg { width: 14px; height: 14px; }
 
     /* ===== HOW IT WORKS ===== */
     .how-steps {
@@ -3409,36 +3480,45 @@
 
       <div class="demos-grid">
         <!-- Margaret -->
-        <div class="demo-card reveal" onclick="openChat('margaret')">
-          <div class="demo-avatar" style="background: rgba(255,209,0,0.12);">
-            <span>👩‍🦳</span>
+        <div class="demo-card persona-amber reveal" onclick="openChat('margaret')" role="button" tabindex="0" aria-label="Begin Margaret's demo">
+          <span class="persona-eyebrow">01 · Newly diagnosed</span>
+          <h3 class="persona-headline">Margaret,<br>68.</h3>
+          <div class="persona-subline">Retired teacher · Sudbury, Ontario</div>
+          <p class="persona-body">Two months ago her ophthalmologist said the words macular degeneration. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out.</p>
+          <div class="persona-foot">
+            <span class="persona-meta">3 min · Two voices</span>
+            <span class="persona-cta">Begin
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
           </div>
-          <h3>Margaret, 68</h3>
-          <div class="demo-age">Newly diagnosed, living alone in Sudbury</div>
-          <p>Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out.</p>
-          <span class="demo-tag tag-new">Newly diagnosed</span>
         </div>
 
         <!-- David -->
-        <div class="demo-card reveal" onclick="openChat('david')">
-          <div class="demo-avatar" style="background: rgba(130,177,255,0.12);">
-            <span>👨</span>
+        <div class="demo-card persona-azure reveal" onclick="openChat('david')" role="button" tabindex="0" aria-label="Begin David's demo">
+          <span class="persona-eyebrow">02 · Working professional</span>
+          <h3 class="persona-headline">David,<br>42.</h3>
+          <div class="persona-subline">Financial analyst · Toronto</div>
+          <p class="persona-body">Ten years of low vision and getting worse. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.</p>
+          <div class="persona-foot">
+            <span class="persona-meta">3 min · Two voices</span>
+            <span class="persona-cta">Begin
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
           </div>
-          <h3>David, 42</h3>
-          <div class="demo-age">Working professional, worried about his career</div>
-          <p>Financial analyst in Toronto. Diabetic retinopathy. Quietly managing a condition his employer doesn't know about. Two kids. A mortgage. A career he's not ready to lose.</p>
-          <span class="demo-tag tag-lapsed">Career &amp; identity</span>
         </div>
 
         <!-- Priya -->
-        <div class="demo-card reveal" onclick="openChat('priya')">
-          <div class="demo-avatar" style="background: rgba(255,171,64,0.12);">
-            <span>👩‍👧</span>
+        <div class="demo-card persona-rose reveal" onclick="openChat('priya')" role="button" tabindex="0" aria-label="Begin Priya's demo">
+          <span class="persona-eyebrow">03 · Parent &amp; advocate</span>
+          <h3 class="persona-headline">Priya,<br>34.</h3>
+          <div class="persona-subline">Mother of Aiden, age 7 · Etobicoke</div>
+          <p class="persona-body">Six months ago Aiden was diagnosed with a degenerative eye condition. She's been the only person in her son's corner ever since — explaining the school system, fighting alone, putting Aiden first every hour.</p>
+          <div class="persona-foot">
+            <span class="persona-meta">3 min · Two voices</span>
+            <span class="persona-cta">Begin
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
           </div>
-          <h3>Priya, 34</h3>
-          <div class="demo-age">Mother of a child with sight loss, exhausted</div>
-          <p>Her son Aiden is seven. Cortical visual impairment. She's been fighting the school system alone for two years. She isn't here for herself. She's here because she has nowhere else left.</p>
-          <span class="demo-tag tag-parent">Parent / advocate</span>
         </div>
       </div>
     </div>
