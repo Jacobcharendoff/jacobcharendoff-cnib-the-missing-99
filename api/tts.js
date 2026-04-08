@@ -119,35 +119,23 @@ export default async function handler(req) {
   const openaiSpeed = OPENAI_SPEED_MAP[requestedVoice] || 1.00;
   const instructions = OPENAI_INSTRUCTIONS[requestedVoice] || OPENAI_INSTRUCTIONS.iris;
 
-  // Try the newer steerable model first (gpt-4o-mini-tts — supports
-  // `instructions` for real tone control). If it's not available on this
-  // account/region, fall back to tts-1-hd which has no instructions but
-  // is still much better than tts-1.
-  async function tryOpenAI(model, includeInstructions) {
-    const payload = {
-      model,
+  // tts-1-hd — OpenAI's higher-quality TTS model. Not as steerable as
+  // gpt-4o-mini-tts but produces a more natural, less compressed read
+  // per Jacob's preference. Still a meaningful step down from ElevenLabs.
+  const oa = await fetch('https://api.openai.com/v1/audio/speech', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${oaKey}`,
+    },
+    body: JSON.stringify({
+      model: 'tts-1-hd',
       voice: openaiVoice,
       input: text,
       response_format: 'mp3',
       speed: openaiSpeed,
-    };
-    if (includeInstructions) payload.instructions = instructions;
-    return fetch('https://api.openai.com/v1/audio/speech', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${oaKey}`,
-      },
-      body: JSON.stringify(payload),
-    });
-  }
-
-  let oa = await tryOpenAI('gpt-4o-mini-tts', true);
-  if (!oa.ok) {
-    const errText = await oa.text();
-    console.warn('[tts] gpt-4o-mini-tts failed, falling back to tts-1-hd:', oa.status, errText.slice(0, 200));
-    oa = await tryOpenAI('tts-1-hd', false);
-  }
+    }),
+  });
   if (!oa.ok) {
     const errText = await oa.text();
     return new Response(`OpenAI TTS error: ${errText}`, { status: oa.status });
