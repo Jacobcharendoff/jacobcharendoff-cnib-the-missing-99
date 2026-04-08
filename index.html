@@ -4947,10 +4947,9 @@
         <p class="cta-hero-three" aria-label="Your guide. Your way. Your life.">
           <span>Your guide.</span><span>Your way.</span><span>Your life.</span>
         </p>
-        <p class="cta-hero-body"><strong>2.2 million Canadians</strong> live with sight loss. Most of them navigate it alone. Iris is how that changes — a guide who picks up on the first try, knows the whole CNIB ecosystem, and stays for the next conversation, and the one after that.</p>
         <div class="cta-bookend-row">
           <a href="#demos" class="cta-bookend-btn">
-            <span>Watch a real conversation</span>
+            <span>Watch a real call</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </a>
         </div>
@@ -5017,13 +5016,103 @@
     </div>
   </section>
 
-  <!-- HOW IRIS WORKS — the mechanism, not the marketing -->
+  <!-- ACT 3 — SEE IT WORK (the climax — moved up so it's not buried) -->
+  <section class="section theme-black" id="demos">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="label">See it work</span>
+        <h2 class="headline-lg headline-xl">Hear what<br><span class="accent">a first call sounds like.</span></h2>
+        <p class="body-lg">You just met Margaret, David, and Priya. Now hear them. Three real first conversations with Iris — each under three minutes. Pick a story, press play, watch Iris work.</p>
+      </div>
+
+      <div class="demos-grid">
+        <!-- Margaret -->
+        <div class="demo-card persona-amber reveal" onclick="openChat('margaret')" role="button" tabindex="0" aria-label="Begin Margaret's demo">
+          <span class="persona-eyebrow">01 · Newly diagnosed</span>
+          <h3 class="persona-headline">Margaret,<br>68.</h3>
+          <div class="persona-subline">Retired teacher · Sudbury, Ontario</div>
+          <p class="persona-body">Two months ago her ophthalmologist said the words macular degeneration. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out.</p>
+          <div class="persona-foot">
+            <span class="persona-meta">3 min · Two voices</span>
+            <span class="persona-cta">Begin
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <!-- David -->
+        <div class="demo-card persona-azure reveal" onclick="openChat('david')" role="button" tabindex="0" aria-label="Begin David's demo">
+          <span class="persona-eyebrow">02 · Working professional</span>
+          <h3 class="persona-headline">David,<br>42.</h3>
+          <div class="persona-subline">Financial analyst · Toronto</div>
+          <p class="persona-body">Ten years of low vision and getting worse. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.</p>
+          <div class="persona-foot">
+            <span class="persona-meta">3 min · Two voices</span>
+            <span class="persona-cta">Begin
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <!-- Priya -->
+        <div class="demo-card persona-rose reveal" onclick="openChat('priya')" role="button" tabindex="0" aria-label="Begin Priya's demo">
+          <span class="persona-eyebrow">03 · Parent &amp; advocate</span>
+          <h3 class="persona-headline">Priya,<br>34.</h3>
+          <div class="persona-subline">Mother of Aiden, age 7 · Etobicoke</div>
+          <p class="persona-body">Six months ago Aiden was diagnosed with a degenerative eye condition. She's been the only person in her son's corner ever since — explaining the school system, fighting alone, putting Aiden first every hour.</p>
+          <div class="persona-foot">
+            <span class="persona-meta">3 min · Two voices</span>
+            <span class="persona-cta">Begin
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="act-refrain reveal" style="margin-top:64px;margin-bottom:32px;">Your guide.</div>
+
+      <!-- Or just ask — quick prompt strip -->
+      <div class="demos-quickask reveal">
+        <div class="demos-quickask-label">Or just ask Iris yourself</div>
+        <div class="demos-quickask-grid">
+          <button class="quickask-pill" data-q="My doctor just said macular degeneration. What now?">"My doctor just said macular degeneration. What now?"</button>
+          <button class="quickask-pill" data-q="I need to tell my boss I'm losing my vision. How?">"I need to tell my boss I'm losing my vision. How?"</button>
+          <button class="quickask-pill" data-q="My mom won't leave the house anymore. I think it's her vision.">"My mom won't leave the house anymore."</button>
+          <button class="quickask-pill" data-q="What's a Vision Mate?">"What's a Vision Mate?"</button>
+          <button class="quickask-pill" data-q="I'm scared. Can we just talk for a minute?">"I'm scared. Can we just talk?"</button>
+          <button class="quickask-pill" data-q="I can't drive anymore. How do I get groceries?">"I can't drive anymore. How do I get groceries?"</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Quick-ask pills under the Demos section — open chat and pre-fill
+    (function(){
+      document.querySelectorAll('.quickask-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const q = btn.dataset.q;
+          if (typeof openChat === 'function') {
+            openChat('general');
+            setTimeout(() => {
+              const input = document.getElementById('irisChatInput');
+              if (input && q) {
+                input.value = q;
+                if (typeof sendIrisMessage === 'function') sendIrisMessage();
+              }
+            }, 900);
+          }
+        });
+      });
+    })();
+  </script>
+  <!-- ACT 4 — HOW IT WORKS (the explanation, now after the demo) -->
   <section class="section theme-black" id="how">
     <div class="container">
       <div class="section-head reveal">
-        <span class="label">How Iris Works</span>
-        <h2 class="headline-lg">A guide who actually<br><span class="accent">knows you.</span></h2>
-        <p class="body-lg">Iris isn't a chatbot. It isn't a directory with a voice. It's a structured way of getting to know a person — the way a great human guide would — without asking them to start over, fill out a form, or repeat themselves. Every conversation moves through four layers, in this order, every time.</p>
+        <span class="label">Under the hood</span>
+        <h2 class="headline-lg">What you just heard<br><span class="accent">wasn't a script.</span></h2>
+        <p class="body-lg">Every Iris conversation moves through four layers, in the same order, every time. Story before solutions. Life before recommendations. The immediate need before anything practical. The bigger hope last — because that's the one Iris is actually navigating toward.</p>
       </div>
 
       <!-- Panel A — The four conversation layers (the ONE mechanism) -->
@@ -5059,12 +5148,12 @@
         </ol>
 
         <div class="how-closer">
-          <p class="how-closer-line">She doesn't end with information. <strong>She ends with a name, a number, and a time.</strong></p>
+          <p class="how-closer-line">Iris doesn't end with information. <strong>Iris ends with a name, a number, and a time.</strong></p>
           <p class="how-closer-sub">A Vision Mate matched. A program enrolled. A follow-up booked. The member leaves having gained something real — not a brochure.</p>
         </div>
       </div>
 
-      <div class="act-refrain reveal">Your guide.</div>
+      <div class="act-refrain reveal">Your way.</div>
 
       <!-- Panel B — REMOVED (five matching inputs) — folded into Story→Life→Need→Hope -->
       <div class="how-panel reveal" hidden style="display:none">
@@ -5193,96 +5282,6 @@
     </div>
   </section>
 
-  <!-- ACT 4 — SEE IT WORK (the climax) -->
-  <section class="section theme-black" id="demos">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="label">See Iris in Action</span>
-        <h2 class="headline-lg headline-xl">This is what<br><span class="accent">it feels like.</span></h2>
-        <p class="body-lg">You met Margaret, David, and Priya. Now hear them. Three real first conversations with Iris. Under three minutes each. Pick a story — watch Iris work.</p>
-      </div>
-
-      <div class="demos-grid">
-        <!-- Margaret -->
-        <div class="demo-card persona-amber reveal" onclick="openChat('margaret')" role="button" tabindex="0" aria-label="Begin Margaret's demo">
-          <span class="persona-eyebrow">01 · Newly diagnosed</span>
-          <h3 class="persona-headline">Margaret,<br>68.</h3>
-          <div class="persona-subline">Retired teacher · Sudbury, Ontario</div>
-          <p class="persona-body">Two months ago her ophthalmologist said the words macular degeneration. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out.</p>
-          <div class="persona-foot">
-            <span class="persona-meta">3 min · Two voices</span>
-            <span class="persona-cta">Begin
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </span>
-          </div>
-        </div>
-
-        <!-- David -->
-        <div class="demo-card persona-azure reveal" onclick="openChat('david')" role="button" tabindex="0" aria-label="Begin David's demo">
-          <span class="persona-eyebrow">02 · Working professional</span>
-          <h3 class="persona-headline">David,<br>42.</h3>
-          <div class="persona-subline">Financial analyst · Toronto</div>
-          <p class="persona-body">Ten years of low vision and getting worse. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.</p>
-          <div class="persona-foot">
-            <span class="persona-meta">3 min · Two voices</span>
-            <span class="persona-cta">Begin
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </span>
-          </div>
-        </div>
-
-        <!-- Priya -->
-        <div class="demo-card persona-rose reveal" onclick="openChat('priya')" role="button" tabindex="0" aria-label="Begin Priya's demo">
-          <span class="persona-eyebrow">03 · Parent &amp; advocate</span>
-          <h3 class="persona-headline">Priya,<br>34.</h3>
-          <div class="persona-subline">Mother of Aiden, age 7 · Etobicoke</div>
-          <p class="persona-body">Six months ago Aiden was diagnosed with a degenerative eye condition. She's been the only person in her son's corner ever since — explaining the school system, fighting alone, putting Aiden first every hour.</p>
-          <div class="persona-foot">
-            <span class="persona-meta">3 min · Two voices</span>
-            <span class="persona-cta">Begin
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="act-refrain reveal" style="margin-top:64px;margin-bottom:32px;">Your way.</div>
-
-      <!-- Or just ask — quick prompt strip -->
-      <div class="demos-quickask reveal">
-        <div class="demos-quickask-label">Or just ask Iris yourself</div>
-        <div class="demos-quickask-grid">
-          <button class="quickask-pill" data-q="My doctor just said macular degeneration. What now?">"My doctor just said macular degeneration. What now?"</button>
-          <button class="quickask-pill" data-q="I need to tell my boss I'm losing my vision. How?">"I need to tell my boss I'm losing my vision. How?"</button>
-          <button class="quickask-pill" data-q="My mom won't leave the house anymore. I think it's her vision.">"My mom won't leave the house anymore."</button>
-          <button class="quickask-pill" data-q="What's a Vision Mate?">"What's a Vision Mate?"</button>
-          <button class="quickask-pill" data-q="I'm scared. Can we just talk for a minute?">"I'm scared. Can we just talk?"</button>
-          <button class="quickask-pill" data-q="I can't drive anymore. How do I get groceries?">"I can't drive anymore. How do I get groceries?"</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <script>
-    // Quick-ask pills under the Demos section — open chat and pre-fill
-    (function(){
-      document.querySelectorAll('.quickask-pill').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const q = btn.dataset.q;
-          if (typeof openChat === 'function') {
-            openChat('general');
-            setTimeout(() => {
-              const input = document.getElementById('irisChatInput');
-              if (input && q) {
-                input.value = q;
-                if (typeof sendIrisMessage === 'function') sendIrisMessage();
-              }
-            }, 900);
-          }
-        });
-      });
-    })();
-  </script>
 
   <div class="section-divider fade-dark-to-white" aria-hidden="true"></div>
 
@@ -5487,14 +5486,14 @@
   </script>
 
   <!-- THE MEMBER JOURNEY — Iris's brain, the arc, a real 18-month story -->
-  <!-- ACT 5 — THE FULL PICTURE (two beats: how Iris reaches you, then how she stays) -->
+  <!-- ACT 5 — THE FULL PICTURE (two beats: how Iris reaches you, then how it stays) -->
   <section class="section theme-black" id="journeys">
     <div class="container">
 
       <div class="section-head reveal">
         <span class="label">The Full Picture</span>
         <h2 class="headline-lg">Two ways in.<br><span class="accent">One Iris that stays.</span></h2>
-        <p class="body-lg">Iris reaches members through every door they already walk through — and once she finds you, she doesn't leave. The first call is the start of a relationship that grows with you, year after year, as life keeps changing.</p>
+        <p class="body-lg">Iris reaches members through every door they already walk through — and once Iris finds you, Iris doesn't leave. The first call is the start of a relationship that grows with you, year after year, as life keeps changing.</p>
       </div>
 
       <!-- Beat 1 — Two ways in -->
@@ -5523,7 +5522,7 @@
       <!-- Beat 2 — The journey that follows -->
       <div class="section-head reveal" style="margin-top:140px">
         <span class="label">The journey that follows</span>
-        <h2 class="headline-lg">Then she stays.<br><span class="accent">For as long as life keeps changing.</span></h2>
+        <h2 class="headline-lg">Then it stays.<br><span class="accent">For as long as life keeps changing.</span></h2>
         <p class="body-lg">Sight loss isn't a single moment — it's a road that twists for years. Diagnosis. Adaptation. Isolation. Reinvention. Contribution. CNIB has built a program for every turn. Iris is what remembers where you started, knows what's coming, and is still there twelve months from now when life shifts again.</p>
       </div>
 
@@ -5628,49 +5627,7 @@
         </ol>
       </div>
 
-      <!-- Chapter 4 — A real 18-month journey -->
-      <div class="story-block reveal">
-        <div class="story-head">
-          <div class="story-eyebrow">A real journey</div>
-          <h3 class="story-headline">Margaret · 18 months · one Iris.</h3>
-          <p class="story-sub">This is what continuity actually looks like — not a one-shot Q&amp;A, not a directory lookup. A guide who picks up where she left off, every time.</p>
-        </div>
-
-        <div class="story-timeline">
-          <div class="story-beat">
-            <div class="story-when">Day 1</div>
-            <div class="story-what"><strong>The first call.</strong> Margaret's daughter convinces her to dial in. Iris doesn't open with an intake form. She opens with: "What brought you here today?" The conversation lasts 22 minutes. By the end Iris has matched her with a Vision Mate in Sudbury and sent CNIB Beyond Print.</div>
-          </div>
-          <div class="story-beat">
-            <div class="story-when">Week 1</div>
-            <div class="story-what"><strong>The match lands.</strong> Linda — also a retired teacher, also living with macular degeneration — visits Margaret's home. Iris texts the next morning: "How was it?" Margaret writes back: "I cried. In a good way."</div>
-          </div>
-          <div class="story-beat">
-            <div class="story-when">Month 1</div>
-            <div class="story-what"><strong>The follow-up Iris promised.</strong> Margaret mentions that mornings are still hard. Iris suggests the online peer group — Tuesday at 7pm, three other former teachers in it. Margaret says yes before she has time to talk herself out of it.</div>
-          </div>
-          <div class="story-beat">
-            <div class="story-when">Month 3</div>
-            <div class="story-what"><strong>The doctor's visit.</strong> Margaret's ophthalmologist confirms her vision is stable. She tells Iris before she tells her daughter. Iris asks the question no one else thought to: "What does a good year look like for you?"</div>
-          </div>
-          <div class="story-beat">
-            <div class="story-when">Month 6</div>
-            <div class="story-what"><strong>The first event.</strong> CNIB Sudbury holds a community lunch. Margaret almost doesn't go. Iris reminds her Linda will be there. Margaret goes. She comes home and tells Iris she signed up for the next one.</div>
-          </div>
-          <div class="story-beat">
-            <div class="story-when">Year 1</div>
-            <div class="story-what"><strong>The shift.</strong> Iris notices Margaret asking different questions — less "how do I cope" and more "how do I help." Iris surfaces the Vision Mate volunteer program — this time on the other side of the match.</div>
-          </div>
-          <div class="story-beat">
-            <div class="story-when">Year 1.5</div>
-            <div class="story-what"><strong>The handoff.</strong> Margaret meets a newly-diagnosed retired teacher named Joan. She brings her tea. She tells her: "Talk to Iris. She'll know what to do." The journey closes a loop and starts a new one.</div>
-          </div>
-        </div>
-
-        <div class="story-foot">
-          One member. One Iris. One thread that stays unbroken — even when life doesn't.
-        </div>
-      </div>
+      <!-- 18-month Margaret story REMOVED — redundant with the demo + brain card + arc -->
 
       <div class="act-refrain reveal" style="margin-top:96px">Your life.</div>
 
@@ -6468,7 +6425,7 @@ Don't list everything you can do. Don't sound scripted. Sound like a person pick
               },
             },
           });
-          // Have Iris speak first — introduce herself, what she's for, and what she can do.
+          // Have Iris speak first — introduce itself, what it's for, and what it can do.
           sendRealtimeEvent({
             type: 'response.create',
             response: {
@@ -6773,7 +6730,7 @@ WHAT YOU NEVER DO:
           hook: "She almost hung up before Iris said hello.",
           before: "Two months ago her ophthalmologist said the words macular degeneration. Margaret is sixty-eight. She lives alone in Sudbury. Her daughter is in Vancouver. She hasn't told her friends. She taught for thirty-four years and reading was who she was.",
           bridge: "Iris hears what Margaret can't say out loud. Then makes the calls she can't make herself.",
-          anticipation: "Three minutes. Two voices. One first call. Iris won't name a single CNIB program until she's earned the right to. Listen for the moment she stops listening and starts acting on Margaret's behalf — and the one thing Iris refuses to do, because no AI should.",
+          anticipation: "Three minutes. Two voices. One first call. Iris won't name a single CNIB program until it's earned the right to. Listen for the moment Iris stops listening and starts acting on Margaret's behalf — and the one thing Iris refuses to do, because no AI should.",
           thenNow: {
             then: "Alone. Almost didn't call.",
             now:  "Vision Mate on the way. Sudbury peer support team on the calendar. Text confirmation in her pocket tonight."
@@ -6790,7 +6747,7 @@ WHAT YOU NEVER DO:
           { speaker: 'iris',     voice: 'iris',     text: "Two months. That's still raw. How are you doing, Margaret? Not practically. Just — how are you doing?" },
           { speaker: 'margaret', voice: 'margaret', text: "Some days are okay. I taught for thirty-four years. Reading was everything to me. I feel like I'm losing something I can't get back." }
         ],
-        midPoint: "Notice — Iris hasn't named a single program yet. She's earning the right to. The match comes after the listening.",
+        midPoint: "Notice — Iris hasn't named a single program yet. Iris is earning the right to. The match comes after the listening.",
         scriptAfterMid: [
           { speaker: 'iris',     voice: 'iris',     text: "Reading wasn't a hobby. It was who you were. There's something I'd like to tell you about — CNIB's Vision Mate program. One-on-one peer support. Someone who's lived this. The Northern Ontario coordinator is based out of the Sudbury CNIB office. There's usually about a three-week wait in your region, but I can flag the referral as newly diagnosed and that moves things up." },
           { speaker: 'margaret', voice: 'margaret', text: "Three weeks feels like forever." },
@@ -6832,7 +6789,7 @@ WHAT YOU NEVER DO:
           hook: "He's been hiding it from his employer for a decade.",
           before: "Ten years of low vision and getting worse. David is forty-two, a financial analyst in downtown Toronto. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.",
           bridge: "Iris hears what David can't say out loud. Then makes the calls he can't make himself.",
-          anticipation: "Three minutes. Two voices. One conversation David has been avoiding for ten years. Listen for the moment Iris reframes the whole thing — and the small detail Iris notices that proves she's actually listening to him, not running a script.",
+          anticipation: "Three minutes. Two voices. One conversation David has been avoiding for ten years. Listen for the moment Iris reframes the whole thing — and the small detail Iris notices that proves it's actually listening to him, not running a script.",
           thenNow: {
             then: "Hiding it. Exhausted. Spending energy on pretending.",
             now:  "Tech assessment booked. Come to Work coordinator on his side. Personal email — not work."
@@ -6967,7 +6924,11 @@ WHAT YOU NEVER DO:
       }
 
       chatBody.scrollTop = chatBody.scrollHeight;
-      speakText(text);
+      // If realtime WebRTC voice is active, the model speaks the line itself.
+      // Don't double it with the ElevenLabs proxy TTS.
+      if (!(typeof realtimeActive !== 'undefined' && realtimeActive)) {
+        speakText(text);
+      }
     }
 
     function addUserMessage(text) {
