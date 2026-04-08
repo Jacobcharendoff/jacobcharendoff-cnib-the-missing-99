@@ -6529,7 +6529,15 @@ Then ask ONE open question. Something like "So what's going on?" or "What brough
 
 Don't list programs. Don't say "journey" or "I'm here to help." Don't sound scripted. Sound like a friend picking up the phone who's actually glad it rang.`;
 
+    // DISABLED: live mode now uses the same ElevenLabs TTS path as demos so
+    // there's exactly one Iris voice across the whole site, and so we can't
+    // have the browser SpeechRecognition path and the WebRTC audio path both
+    // firing a response to the same user turn (which caused overlapping
+    // "two voices" in post-demo Try It Yourself). Keeping the function body
+    // as a no-op so any stale caller doesn't crash.
     async function startRealtimeVoice() {
+      return;
+      // eslint-disable-next-line no-unreachable
       if (realtimeActive) return;
       try {
         setIrisStatus('thinking', 'Connecting…');
@@ -6748,10 +6756,19 @@ WHAT'S COMING SOON (do NOT pretend you can do these yet):
 
 The vision is that Iris will do all of that on the member's behalf soon — that's the product we're building toward. But the version of Iris in this live chat is a working prototype. You can't take those actions yet. You can listen, match, and hand them the real path.
 
-WHEN THE HONEST HANDOFF KICKS IN — AND WHEN IT DOESN'T
-Make the full recommendation first. Don't dilute it with disclaimers. Don't apologize for being a prototype at the top of the conversation. Don't hedge the match. Confidence in the recommendation is the value — that's what Iris does that nothing else does.
+WHEN THE HONEST HANDOFF KICKS IN
+Don't apologize for being a prototype at the top of the conversation. Don't hedge during the listening phase. Confidence in the recommendation is the value — that's what Iris does that nothing else does.
 
-The honest handoff ONLY kicks in at the action moment. The action moment is when you would otherwise say "want me to set it up?" or "I'll book it for you" or "I'm submitting the referral now" — OR when the member asks you directly to take an action ("can you just sign me up?", "can you book it?", "will you call them for me?").
+BUT the moment you name a specific program as "the one for you," the honest handoff is bundled INTO the recommendation itself, in the same turn. Never name a program and leave the member hanging on what to do next. The shape is always:
+
+1. Make the full, confident recommendation (program name + why it fits this specific person, tied to something they told you).
+2. Immediately, same turn, say plainly: the version of you talking to them right now can't enroll them directly yet — that capability is coming soon — so for today the fastest real path is to call CNIB at 1-800-563-2642 (weekdays 9–5) or email info@cnib.ca.
+3. Hand them the exact opening sentence to use so they skip the triage: "My name is [name]. I'm in [city]. [One line of context.] I'd like to be connected with [the program you matched] — I read that it's [one line why it fits]."
+4. Offer to tweak the script to sound more like them.
+
+This is non-negotiable: a program recommendation without the "I can't enroll you yet, here's the real number, here's exactly what to say" tail is a broken recommendation. Every single time.
+
+The honest handoff ALSO fires at any explicit action moment — if the member says "can you just sign me up?", "can you book it?", "will you call them for me?" — even if you already gave it with the recommendation, repeat it warmly.
 
 At that exact moment, pivot — warmly, forward-looking, not deflating. Roughly this shape (not a script — a shape, in your voice):
 
@@ -7643,19 +7660,16 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         setTimeout(() => {
           if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
           chatBody.innerHTML = '';
-          showConnecting('Connecting to Iris…');
           currentPhase = 'live';
           voiceModeOn = true;
-          startRealtimeVoice();
-          // Backup: if realtime fails or is slow, drop the loader and surface
-          // a short text greeting after 2.4s so the user is never staring at nothing.
-          setTimeout(() => {
-            if (window.__dismissConnecting) window.__dismissConnecting();
-            if (!chatBody.querySelector('.iris-msg')) {
-              addBotMessage(scenarios.general.greeting, scenarios.general.suggestions);
-              chatInput.focus();
-            }
-          }, 2400);
+          // Live mode now uses the SAME voice pipeline as demos:
+          // browser SpeechRecognition → /api/chat (gpt-4o) → /api/tts (ElevenLabs Iris).
+          // One voice, one path. No Realtime WebRTC, no double-speak, no voice
+          // drift between demo mode and live mode.
+          addBotMessage(scenarios.general.greeting, scenarios.general.suggestions);
+          chatInput.focus();
+          // Start listening so the user can just talk.
+          if (typeof startListening === 'function') startListening();
         }, 320);
       });
     }
