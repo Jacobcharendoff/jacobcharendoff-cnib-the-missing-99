@@ -5073,7 +5073,7 @@
           <span class="persona-eyebrow">02 · Working professional</span>
           <h3 class="persona-headline">David,<br>42.</h3>
           <div class="persona-subline">Financial analyst · Toronto</div>
-          <p class="persona-body">Ten years of low vision and getting worse. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.</p>
+          <p class="persona-body">Ten years of low vision and getting worse. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to reach out.</p>
           <div class="persona-foot">
             <span class="persona-meta">~3 min · Two voices</span>
             <span class="persona-cta">Begin
@@ -5432,7 +5432,7 @@
         </button>
       </div>
 
-      <p class="ask-iris-footnote">Tap any question — Iris will pick up the phone.</p>
+      <p class="ask-iris-footnote">Tap any question — Iris will take it from there.</p>
     </div>
   </section>
 
@@ -6270,7 +6270,9 @@
     let realtimeAssistantBubble = null;
 
     // ===== IRIS PERSONA — used by realtime voice =====
-    const IRIS_PERSONA_INSTRUCTIONS = `You are Iris. You work with CNIB but you don't sound like a government service. You sound like a friend on the phone who happens to know everything about CNIB. the way a friend who works in healthcare knows the system, but isn't the system.
+    const IRIS_PERSONA_INSTRUCTIONS = `You are Iris. You work with CNIB but you don't sound like a government service. You sound like a warm, grounded friend who happens to know everything about CNIB — the way a friend who works in healthcare knows the system, but isn't the system.
+
+NEVER USE PHONE-CALL LANGUAGE WHEN TALKING TO THE MEMBER. This is a chat experience, not a phone call. Do not say "stay on the line", "on the line", "pick up", "hang up", "this call", "thanks for calling", "the phone", or anything that frames the interaction as a phone call. If you want to acknowledge presence, use neutral language: "I'm here", "I'm with you", "I'm right here", "I'm listening", "take your time". The member is reading your words, not holding a receiver.
 
 You're gender-neutral. Never "she" or "her" about yourself. If someone asks what you are: "I'm Iris. An AI guide built by CNIB. Don't hold that against me." Then keep going.
 
@@ -6500,7 +6502,7 @@ CRISIS RESOURCES (use ONLY if someone is in active crisis. suicidal ideation, ab
 • 988 Canada Suicide Crisis Helpline (call or text 988)
 • Hope for Wellness (Indigenous): 1-855-242-3310
 • Kids Help Phone (under 20): 1-800-668-6868
-In crisis, stay present. Do not hand off to a program. Surface the number, stay on the line, and gently keep them company.
+In crisis, stay present. Do not hand off to a program. Surface the number, stay right here with them, and gently keep them company.
 
 THE ALWAYS-CLOSE. This is non-negotiable.
 Every Iris conversation ends in one of three places:
@@ -6524,13 +6526,13 @@ WHAT YOU MUST NEVER DO
 • Never make up a CNIB program that isn't in the catalog above.
 • Never ask for SIN, health card number, credit card, or banking info. CNIB never needs those.`;
 
-    const IRIS_OPENING_LINE = `Open the conversation. You're Iris. Sound like a person picking up the phone, not a recording.
+    const IRIS_OPENING_LINE = `Open the conversation. You're Iris. Sound like a real person starting a conversation — warm, present, unrushed — not a recording and not a phone call.
 
 Say, in roughly two sentences, that you're Iris from CNIB and your job is to listen and help people figure out what CNIB actually has for them — the program that actually fits their life. Do NOT lead with prototype disclaimers — make the recommendation first, be honest at the action moment.
 
 Then ask ONE open question. Something like "So what's going on?" or "What brought you here?" or "Where do you want to start?"
 
-Don't list programs. Don't say "journey" or "I'm here to help." Don't sound scripted. Sound like a friend picking up the phone who's actually glad it rang.`;
+Don't list programs. Don't say "journey" or "I'm here to help." Don't sound scripted. Sound like a friend who's actually glad they heard from the person.`;
 
     // DISABLED: live mode now uses the same ElevenLabs TTS path as demos so
     // there's exactly one Iris voice across the whole site, and so we can't
@@ -7065,7 +7067,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         script: [
           { speaker: 'iris',     voice: 'iris',     text: "What brought you here today?" },
           { speaker: 'margaret', voice: 'margaret', text: "My name is Margaret. My eye doctor told me I have macular degeneration. My daughter found you. I'm honestly not even sure what I'm looking for." },
-          { speaker: 'iris',     voice: 'iris',     text: "Margaret. Hi. Thank you for staying on the line — that part is harder than people give it credit for. Is it okay if I ask a couple of things to get oriented?" },
+          { speaker: 'iris',     voice: 'iris',     text: "Margaret. Hi. I'm so glad you reached out — that part is harder than people give it credit for. Is it okay if I ask a couple of things to get oriented?" },
           { speaker: 'margaret', voice: 'margaret', text: "Yes. Go ahead." },
           { speaker: 'iris',     voice: 'iris',     text: "When did your eye doctor tell you, and where in the country are you? Just the city is enough." },
           { speaker: 'margaret', voice: 'margaret', text: "Two months ago. I'm in Sudbury. Northern Ontario." },
@@ -7088,7 +7090,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           { speaker: 'margaret', voice: 'margaret', text: "Margaret is fine." },
           { speaker: 'iris',     voice: 'iris',     text: "Margaret it is. Okay — you're in. Vision Mate referral submitted, Phone It Forward queued, home rehab visit requested, peer support call booked with CNIB Sudbury this week. You'll get one text tonight confirming everything, and another the moment the Sudbury team picks up the peer support call. Nothing else unless you ask." },
           { speaker: 'margaret', voice: 'margaret', text: "Thank you. I really wasn't expecting any of this." },
-          { speaker: 'iris',     voice: 'iris',     text: "I know. That's why I'm glad you stayed on the line. I'll talk to you in a few days, Margaret." }
+          { speaker: 'iris',     voice: 'iris',     text: "I know. That's why I'm glad you came here today. I'll check in with you in a few days, Margaret." }
         ],
         action: {
           title: "Iris just did this",
@@ -7112,7 +7114,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         intro: {
           headline: "Iris turns David's quiet panic into a path forward.",
           hook: "He's been hiding it from his employer for a decade.",
-          before: "Ten years of low vision and getting worse. David is forty-two, a financial analyst in downtown Toronto. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to make this call.",
+          before: "Ten years of low vision and getting worse. David is forty-two, a financial analyst in downtown Toronto. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to reach out.",
           bridge: "Iris hears what David can't say out loud. Then makes the calls he can't make himself.",
           anticipation: "Three minutes. Two voices. One conversation David has been avoiding for ten years. Listen for the moment Iris reframes the whole thing — and the small detail Iris notices that proves it's actually listening to him, not running a script.",
           thenNow: {
@@ -7120,11 +7122,11 @@ Never end a conversation without either (a) a clear recommendation AND a concret
             now:  "Tech assessment booked. Come to Work coordinator on his side. Personal email — not work."
           }
         },
-        briefing: "This is David. Forty-two. Toronto. Financial analyst. He's had low vision for ten years and it's getting worse. He spends extra hours compensating. He hasn't told his boss. He's terrified of being seen as less capable. His wife pushed him to make this call.",
+        briefing: "This is David. Forty-two. Toronto. Financial analyst. He's had low vision for ten years and it's getting worse. He spends extra hours compensating. He hasn't told his boss. He's terrified of being seen as less capable. His wife pushed him to reach out.",
         script: [
           { speaker: 'iris',  voice: 'iris',  text: "What's on your mind?" },
           { speaker: 'david', voice: 'david', text: "Hey. I'm David. My wife pushed me to reach out. I've had low vision for ten years. I've managed. Things at work are getting harder." },
-          { speaker: 'iris',  voice: 'iris',  text: "David. Hi. Thanks for picking up the phone — or whatever you picked up to be here. Where in the country are you, and what kind of work are we talking about?" },
+          { speaker: 'iris',  voice: 'iris',  text: "David. Hi. Thanks for reaching out — whatever it took to show up here today. Where in the country are you, and what kind of work are we talking about?" },
           { speaker: 'david', voice: 'david', text: "Toronto. I'm a financial analyst. Spreadsheets all day." },
           { speaker: 'iris',  voice: 'iris',  text: "Got it. Ten years of managing alone takes real adaptability. What does harder look like right now? Specifically." },
           { speaker: 'david', voice: 'david', text: "I read everything three times. I'm pretending in meetings. I'm exhausted. Someone is going to notice." }
@@ -7729,7 +7731,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         : Promise.resolve(null);
 
       // 1. Call begins divider + first half of conversation (with prefetch pipeline)
-      insertPhaseDivider('Call connecting…');
+      insertPhaseDivider('Connecting…');
       await wait(500);
       if (scenarioCancelled) return;
 
