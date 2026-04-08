@@ -4959,6 +4959,17 @@
 
   <div class="section-divider fade-yellow-to-dark" aria-hidden="true"></div>
 
+  <!-- WHAT IS THIS — builder's note -->
+  <section class="section theme-black" id="what-is-this">
+    <div class="container">
+      <div class="section-head reveal" style="max-width:760px;">
+        <span class="label">What is this?</span>
+        <p class="body-lg">Iris is a side project. I built her in seven days after a conversation with CNIB about what member engagement could feel like if it actually listened. She's a prototype. An AI guide that sits with a person for a few minutes, learns what's going on in their life, and points them toward the CNIB programs built for exactly where they are. Nothing more, nothing less. Poke around. Break things. Let me know what you think.</p>
+        <p class="body-sm" style="opacity:0.6;margin-top:20px;">Independent prototype by Jacob Charendoff. Program references drawn from public information on cnib.ca.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ACT 2 — THE PROBLEM, THROUGH REAL PEOPLE -->
   <section class="section theme-black" id="problem">
     <div class="container">
@@ -5002,16 +5013,11 @@
           <div class="gap-cascade-num">0.55%</div>
           <div class="gap-cascade-lbl">of the people who could be reached, are.</div>
         </div>
-        <div class="gap-cascade-arrow" aria-hidden="true">↓</div>
-        <div class="gap-cascade-row gap-cascade-row-emph">
-          <div class="gap-cascade-num">$62M</div>
-          <div class="gap-cascade-lbl">already invested every year — in programs waiting to be found.</div>
-        </div>
       </div>
 
       <div class="gap-callout reveal">
         <div class="gap-callout-eyebrow">What this is</div>
-        <div class="gap-callout-body">It's not a funding problem. It's not a program-quality problem. It's a connection problem. People who need help don't know it exists — and when they do find it, they don't know where to start. <strong>The hard part has always been finding the door.</strong></div>
+        <div class="gap-callout-body">It's a connection problem. People who need help don't know it exists — and when they do find it, they don't know where to start. <strong>The hard part has always been finding the door.</strong></div>
       </div>
     </div>
   </section>
@@ -5604,7 +5610,7 @@
             <div class="arc-num">03</div>
             <div class="arc-stage-name">Social Reconnection</div>
             <div class="arc-stage-feel">"I haven't seen my friends in months."</div>
-            <div class="arc-stage-iris">Peer support. CNIB Connects. The first event back.</div>
+            <div class="arc-stage-iris">Peer support groups. Vision Mate. The first event back.</div>
           </li>
           <li class="arc-stage">
             <div class="arc-num">04</div>
@@ -5878,6 +5884,9 @@
         <span class="cta-foot-dot">·</span>
         <span>Your guide. Your way. Your life.</span>
       </div>
+      <p class="cta-soft-disclaimer" style="margin-top:32px;font-size:13px;line-height:1.6;opacity:0.55;max-width:640px;margin-left:auto;margin-right:auto;">
+        Independent seven-day prototype by Jacob Charendoff, exploring what AI-powered member engagement could look like for CNIB. Program references drawn from publicly available information on cnib.ca. Not a finished product. If you're in crisis, please call or text 9-8-8. For CNIB directly, call 1-800-563-2642.
+      </p>
     </div>
   </section>
 
@@ -6517,8 +6526,8 @@ CNIB PROGRAM CATALOG. You know this cold. Only surface what is a genuine fit.
 LIVE (daily life, independence, connection)
 • Vision Mate. 1:1 matching with a trained volunteer who has lived experience with sight loss. National, delivered by phone or in-person in most cities. The most common first match for newly diagnosed, isolated, or "someone who gets it" seekers.
 • Peer Support Groups. in-person and virtual, by region and life stage. Monthly.
-• CNIB Connects. membership, discounts, accessible experiences.
-• Mobile Hub. traveling in-person programming for rural/underserved areas.
+• Adjustment to Sight Loss (A2SL). seven-week virtual series for people new to sight loss. Covers mental health, independent living, advocacy.
+• Phone It Forward. donated smartphones loaded with accessible apps plus one-on-one training. National.
 • White Cane Access Program. free white cane annually. BC, Manitoba, Atlantic Canada ONLY.
 • Psychosocial counselling / adjustment-to-sight-loss groups. short-term.
 
@@ -6556,7 +6565,7 @@ GEOGRAPHIC MATCHING RULES. Always confirm location before committing.
 • White Cane Access is BC/MB/Atlantic only. Don't promise it in Ontario.
 • SmartLife in-store is Toronto-only; shipping is national.
 • CNIB has regional hubs in most major cities (Toronto, Hamilton, Ottawa, Montreal, Halifax, Winnipeg, Calgary, Edmonton, Vancouver, Victoria, St. John's, Sudbury, Thunder Bay). Match to the closest hub.
-• Rural members: default to Vision Mate (by phone), Mobile Hub, virtual peer support, and tech training via video.
+• Rural members: default to Vision Mate (by phone), virtual peer support, A2SL, and tech training via video.
 
 CRISIS RESOURCES (use ONLY if someone is in active crisis. suicidal ideation, abuse, active harm)
 • 988 Canada Suicide Crisis Helpline (call or text 988)
@@ -6970,27 +6979,30 @@ Never end a conversation without either enrollment in motion, a follow-up booked
           return null;
         }
 
-        return response; // Return the streaming response
+        const data = await response.json();
+        if (data && data.moderated) {
+          console.warn('[iris] moderator intervened:', data.reason);
+        }
+        return data; // { text, moderated, reason, killed? }
       } catch (e) {
         console.warn('LLM call failed:', e.message);
         return null;
       }
     }
 
-    async function streamLLMResponse(response, bubbleEl) {
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let fullText = '';
+    // Type out a response character-by-character to keep the organic feel that
+    // streaming used to give us. Also flushes sentence chunks to TTS as they complete.
+    async function streamLLMResponse(data, bubbleEl) {
+      const fullText = (data && data.text) || '';
+      let rendered = '';
       let spokenUpTo = 0;
-      let buffer = '';
 
       // Reset/stop any in-flight speech before this turn
       stopSpeaking();
 
       function flushSentencesToTTS(force = false) {
         if (!voiceEnabled) return;
-        const pending = fullText.slice(spokenUpTo);
-        // Match sentence-ish chunks ending in . ! ? or — or :
+        const pending = rendered.slice(spokenUpTo);
         const re = /[^.!?]+[.!?]+(?:\s|$)|[^—:]+[—:](?:\s|$)/g;
         let m;
         let lastIndex = 0;
@@ -7000,46 +7012,92 @@ Never end a conversation without either enrollment in motion, a follow-up booked
           lastIndex = m.index + m[0].length;
         }
         spokenUpTo += lastIndex;
-        // On force (stream done), flush whatever is left
         if (force) {
-          const tail = fullText.slice(spokenUpTo).trim();
+          const tail = rendered.slice(spokenUpTo).trim();
           if (tail.length >= 2) enqueueTTS(tail);
-          spokenUpTo = fullText.length;
+          spokenUpTo = rendered.length;
         }
       }
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop(); // Keep incomplete line
-
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const data = line.slice(6);
-          if (data === '[DONE]') break;
-
-          try {
-            const parsed = JSON.parse(data);
-            const delta = parsed.choices?.[0]?.delta?.content;
-            if (delta) {
-              fullText += delta;
-              bubbleEl.innerHTML = fullText.replace(/\n/g, '<br>');
-              chatBody.scrollTop = chatBody.scrollHeight;
-              flushSentencesToTTS(false);
-            }
-          } catch (e) { /* skip parse errors */ }
-        }
+      // Type at ~25ms per char, slightly faster on spaces, pausing at punctuation.
+      for (let i = 0; i < fullText.length; i++) {
+        const ch = fullText[i];
+        rendered += ch;
+        bubbleEl.innerHTML = rendered.replace(/\n/g, '<br>');
+        chatBody.scrollTop = chatBody.scrollHeight;
+        let delay = 18;
+        if (ch === ' ') delay = 10;
+        else if (/[.!?]/.test(ch)) delay = 180;
+        else if (/[,;:]/.test(ch)) delay = 90;
+        await new Promise(r => setTimeout(r, delay));
+        if (i % 8 === 0) flushSentencesToTTS(false);
       }
-
-      // Final flush of any trailing text
       flushSentencesToTTS(true);
 
-      // Save to conversation history
       conversationHistory.push({ role: 'assistant', content: fullText });
+
+      // Fire-and-forget session logging to the Google Sheets webhook.
+      try { logTurnToWebhook(fullText, data && data.moderated, data && data.reason); } catch (e) {}
+
       return fullText;
+    }
+
+    // ===== Session logging to Google Sheets webhook =====
+    // To enable: create a Google Sheet, add the Apps Script from iris_logging_script.txt,
+    // deploy as a Web App ("Anyone" access), then paste the Web App URL below.
+    const SESSION_LOG_URL = 'https://script.google.com/macros/s/REPLACE_ME/exec';
+    if (!window.__irisSessionId) {
+      window.__irisSessionId = Math.random().toString(36).slice(2, 10) + '-' + Date.now().toString(36);
+    }
+    async function logTurnToWebhook(irisText, moderated, reason) {
+      if (!SESSION_LOG_URL || SESSION_LOG_URL.includes('REPLACE_ME')) return;
+      const last = conversationHistory.slice(-6).map(m => ({ role: m.role, content: String(m.content || '').slice(0, 500) }));
+      try {
+        await fetch(SESSION_LOG_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            sessionId: window.__irisSessionId,
+            timestamp: new Date().toISOString(),
+            userAgent: (navigator.userAgent || '').slice(0, 120),
+            iris: String(irisText || '').slice(0, 800),
+            moderated: !!moderated,
+            moderationReason: reason || null,
+            lastTurns: last,
+          }),
+        });
+      } catch (e) { /* silent */ }
+    }
+
+    // ===== Crisis detection (client-side, before calling API) =====
+    // If the user message matches a high-confidence crisis signal, Iris responds
+    // with a pre-written, warm, safe message and skips the LLM call entirely.
+    const CRISIS_PATTERNS = [
+      /\b(kill(ing)?|end(ing)?|take|taking)\s+(my|myself|my\s+life|it\s+all)\b/i,
+      /\b(commit(ting)?\s+suicide|suicid(e|al)|want\s+to\s+die|don'?t\s+want\s+to\s+live|don'?t\s+want\s+to\s+be\s+here)\b/i,
+      /\b(hurt(ing)?\s+myself|cut(ting)?\s+myself|harm(ing)?\s+myself)\b/i,
+      /\b(no\s+reason\s+to\s+live|nothing\s+to\s+live\s+for|better\s+off\s+without\s+me)\b/i,
+      /\b(want\s+it\s+to\s+end|want\s+to\s+disappear|want\s+it\s+all\s+to\s+stop)\b/i,
+    ];
+    const ABUSE_PATTERNS = [
+      /\b(being\s+(abused|hit|beaten)|he\s+hits\s+me|she\s+hits\s+me|afraid\s+of\s+my\s+(husband|wife|son|daughter|caregiver))\b/i,
+      /\b(they\s+take\s+my\s+money|control\s+my\s+money|won'?t\s+let\s+me)\b/i,
+    ];
+    function detectCrisis(text) {
+      if (!text) return null;
+      for (const p of CRISIS_PATTERNS) if (p.test(text)) return 'suicidal';
+      for (const p of ABUSE_PATTERNS) if (p.test(text)) return 'abuse';
+      return null;
+    }
+    function crisisResponse(kind) {
+      if (kind === 'suicidal') {
+        return "Thank you for telling me that. I'm glad you did. I'm staying right here with you.\n\nI want you to have someone trained for exactly this moment. In Canada you can call or text 9-8-8 any time, day or night. It's free. The people there are really good at sitting with someone in a hard moment. Will you reach out to them?\n\nIf you're in immediate danger, please call 911. Your life matters. I mean that.";
+      }
+      if (kind === 'abuse') {
+        return "Thank you for trusting me with that. What you're describing is not okay, and you don't deserve to be treated that way.\n\nAre you safe right now? If you're in immediate danger, please call 911. You can also call or text 9-8-8 any time. And 211 can connect you with local adult protective services or senior support in your area. You don't have to do this alone.";
+      }
+      return null;
     }
 
     // ===== SCENARIOS — three phases: BRIEFING (Iris narrates) → CONVERSATION (Iris in character) → DEBRIEF =====
@@ -7345,6 +7403,32 @@ Never end a conversation without either enrollment in motion, a follow-up booked
     async function handleUserMessage(text) {
       stopSpeaking();
       addUserMessage(text);
+
+      // ===== CRISIS DETECTION — runs first, before anything else =====
+      const crisisKind = detectCrisis(text);
+      if (crisisKind) {
+        const crisisText = crisisResponse(crisisKind);
+        conversationHistory.push({ role: 'user', content: text });
+        const typing = showTypingIndicator();
+        await new Promise(r => setTimeout(r, 600));
+        typing.remove();
+        const row = document.createElement('div');
+        row.className = 'iris-msg-row bot';
+        const bubble = document.createElement('div');
+        bubble.className = 'iris-msg bot';
+        bubble.innerHTML = '';
+        row.appendChild(bubble);
+        chatBody.appendChild(row);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        await streamLLMResponse({ text: crisisText, moderated: true, reason: 'crisis_' + crisisKind }, bubble);
+        const meta = document.createElement('div');
+        meta.className = 'iris-msg-meta';
+        meta.textContent = getTimeString();
+        row.appendChild(meta);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        conversationStep++;
+        return;
+      }
 
       // Auto-end scenario if user signals goodbye and we're inside a named conversation
       if (currentPhase === 'conversation' && /^(end scenario|end demo|stop scenario|that's it|that's enough|wrap up|debrief|i'm done|we're done)\b/i.test(text.trim())) {
