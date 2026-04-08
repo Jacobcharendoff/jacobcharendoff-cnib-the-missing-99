@@ -5987,12 +5987,32 @@
       }
     }
 
-    function playPrefetched(audio) {
+    // Fallback pacing when we have no audio (TTS disabled or failed).
+    // Roughly models natural speaking pace so demo bubbles don't fire off
+    // in sped-up mode. ~14 chars/sec ≈ 70ms/char, with sensible min/max.
+    function computeReadMs(text) {
+      const plain = (text || '').replace(/<[^>]+>/g, '').trim();
+      const len = plain.length;
+      if (!len) return 900;
+      return Math.max(1400, Math.min(7000, Math.round(len * 58) + 600));
+    }
+
+    function playPrefetched(audio, fallbackText) {
       return new Promise((resolve) => {
-        if (!audio) { resolve(); return; }
+        if (!audio) {
+          // No audio available — pace the bubble against a reading-time
+          // fallback so the conversation still feels live, not sped-up.
+          irisIsSpeaking = true;
+          const ms = computeReadMs(fallbackText);
+          setTimeout(() => { irisIsSpeaking = false; resolve(); }, ms);
+          return;
+        }
         currentAudio = audio;
         irisIsSpeaking = true;
+        let settled = false;
         const cleanup = () => {
+          if (settled) return;
+          settled = true;
           try { URL.revokeObjectURL(audio._objectUrl); } catch(e){}
           if (currentAudio === audio) currentAudio = null;
           irisIsSpeaking = false;
@@ -6001,6 +6021,14 @@
         audio.onplay = () => { if (window.__dismissConnecting) window.__dismissConnecting(); };
         audio.onended = cleanup;
         audio.onerror = cleanup;
+        // Safety net: if audio never actually starts/ends (blocked, 0-duration,
+        // weird blob), fall back to reading-time pacing rather than instant resolve.
+        const safetyMs = computeReadMs(fallbackText) + 1500;
+        setTimeout(() => {
+          if (!settled && (audio.paused || audio.ended || !audio.duration)) {
+            cleanup();
+          }
+        }, safetyMs);
         audio.play().catch(cleanup);
       });
     }
@@ -7698,9 +7726,9 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         const nextTurn = s.script[i + 1];
         nextAudio = nextTurn ? prefetchTTSAudio(nextTurn.text, nextTurn.voice) : null;
         addScriptTurn(turn);
-        await playPrefetched(currentAudioReady);
+        await playPrefetched(currentAudioReady, turn.text);
         if (nextAudio && nextAudio.then) nextAudio = await nextAudio;
-        await wait(160);
+        await wait(340);
       }
 
       // 3. Mid-point narrator REMOVED — demo plays as a continuous live conversation.
@@ -7720,9 +7748,9 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           const nextTurn = s.scriptAfterMid[i + 1];
           nextAudio2 = nextTurn ? prefetchTTSAudio(nextTurn.text, nextTurn.voice) : null;
           addScriptTurn(turn);
-          await playPrefetched(currentAudioReady);
+          await playPrefetched(currentAudioReady, turn.text);
           if (nextAudio2 && nextAudio2.then) nextAudio2 = await nextAudio2;
-          await wait(160);
+          await wait(340);
         }
       }
 
