@@ -3247,6 +3247,43 @@
       max-width: 1180px;
       margin-left: auto;
       margin-right: auto;
+      position: relative;
+    }
+    /* Connector orb that travels between the two reach cards — gives Reach its own signature */
+    .reach-grid::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #FFD100 0%, #F0BD00 60%, #B58900 100%);
+      box-shadow: 0 0 0 6px rgba(10,10,10,0.95), 0 0 30px rgba(255,209,0,0.6), 0 0 80px rgba(255,209,0,0.35);
+      z-index: 5;
+      animation: orbBob 5s ease-in-out infinite;
+    }
+    .reach-grid::after {
+      content: 'IRIS';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Barlow', sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: #0A0A0A;
+      z-index: 6;
+      pointer-events: none;
+    }
+    @keyframes orbBob {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.08); }
+    }
+    @media (max-width: 900px) {
+      .reach-grid::before, .reach-grid::after { display: none; }
     }
     .reach-card {
       position: relative;
@@ -3424,7 +3461,7 @@
       transform: translateY(-1px);
     }
 
-    /* ===== CLOSING CTA foot ===== */
+    /* ===== CLOSING CTA foot (legacy) ===== */
     .cta-final-foot {
       margin-top: 56px;
       padding-top: 28px;
@@ -3434,6 +3471,239 @@
       text-transform: uppercase;
       color: rgba(255,255,255,0.45);
       text-align: center;
+    }
+
+    /* ===== CLOSING CTA — YELLOW BOOKEND ===== */
+    .cta-bookend {
+      position: relative;
+      background: #FFD100;
+      color: #0A0A0A;
+      padding: 140px 24px 0;
+      overflow: hidden;
+      isolation: isolate;
+      text-align: center;
+    }
+    .cta-bookend::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,0.55) 0%, transparent 35%),
+        radial-gradient(circle at 85% 90%, rgba(255,180,0,0.45) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .cta-bookend-sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: clamp(680px, 95vw, 1100px);
+      height: clamp(680px, 95vw, 1100px);
+      transform: translate(-50%, -58%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.92;
+    }
+    .cta-bookend-sun svg { width: 100%; height: 100%; display: block; }
+    .cta-bookend-sun .sun-rays {
+      transform-origin: 300px 300px;
+      animation: sunRotate 60s linear infinite;
+    }
+    @keyframes sunRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .cta-bookend-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 40px 0 80px;
+    }
+    .cta-bookend-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #0A0A0A;
+      color: #FFD100;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+    .cta-bookend-eyebrow::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: #FFD100;
+      border-radius: 50%;
+      animation: dotPulse 1.8s ease-in-out infinite;
+    }
+
+    .cta-bookend-stat {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 900;
+      font-size: clamp(120px, 22vw, 280px);
+      line-height: 0.85;
+      letter-spacing: -0.05em;
+      color: #0A0A0A;
+      margin: 0;
+      display: inline-flex;
+      align-items: flex-start;
+      animation: statRise 1.2s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+      text-shadow: 0 8px 0 rgba(0,0,0,0.06);
+    }
+    .cta-stat-num { font-size: 1em; }
+    .cta-stat-unit {
+      font-size: 0.55em;
+      margin-top: 0.15em;
+      color: #0A0A0A;
+    }
+    @keyframes statRise {
+      from { opacity: 0; transform: translateY(40px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .cta-bookend-stat-cap {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(15px, 1.5vw, 18px);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: rgba(10,10,10,0.75);
+      margin: 12px 0 56px;
+      text-transform: none;
+    }
+
+    .cta-bookend-line {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      font-size: clamp(28px, 4.6vw, 56px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #0A0A0A;
+      margin: 0 auto 12px;
+      max-width: 820px;
+    }
+    .cta-bookend-line-bold {
+      font-weight: 900;
+      margin-top: 8px;
+      margin-bottom: 56px;
+    }
+    .cta-strike {
+      position: relative;
+      display: inline-block;
+      color: rgba(10,10,10,0.55);
+    }
+    .cta-strike::after {
+      content: '';
+      position: absolute;
+      left: -2%;
+      top: 52%;
+      width: 0;
+      height: 6px;
+      background: #0A0A0A;
+      border-radius: 3px;
+      animation: strikeIn 1.4s cubic-bezier(0.7, 0, 0.2, 1) 0.6s forwards;
+    }
+    @keyframes strikeIn {
+      from { width: 0; }
+      to { width: 104%; }
+    }
+
+    .cta-bookend-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .cta-bookend-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: #0A0A0A;
+      color: #FFD100;
+      border: none;
+      padding: 22px 40px;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 14px 0 rgba(0,0,0,0.18), 0 24px 60px rgba(0,0,0,0.25);
+      transition: transform 0.25s cubic-bezier(0.2,0.9,0.2,1), box-shadow 0.25s ease, background 0.25s ease;
+    }
+    .cta-bookend-btn svg {
+      width: 22px;
+      height: 22px;
+      transition: transform 0.3s ease;
+    }
+    .cta-bookend-btn:hover {
+      transform: translateY(-4px);
+      background: #1a1a1a;
+      box-shadow: 0 18px 0 rgba(0,0,0,0.22), 0 30px 80px rgba(0,0,0,0.35);
+    }
+    .cta-bookend-btn:hover svg { transform: translateX(6px); }
+    .cta-bookend-btn:active { transform: translateY(0); box-shadow: 0 6px 0 rgba(0,0,0,0.18); }
+
+    /* Marquee */
+    .cta-marquee {
+      position: relative;
+      z-index: 2;
+      margin-top: 0;
+      padding: 28px 0;
+      border-top: 2px solid #0A0A0A;
+      border-bottom: 2px solid #0A0A0A;
+      background: #FFD100;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    }
+    .cta-marquee-track {
+      display: inline-flex;
+      gap: 22px;
+      white-space: nowrap;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: clamp(22px, 3vw, 36px);
+      letter-spacing: -0.01em;
+      color: #0A0A0A;
+      animation: marqueeScroll 60s linear infinite;
+    }
+    .cta-marquee-track span { display: inline-block; }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .cta-marquee:hover .cta-marquee-track { animation-play-state: paused; }
+
+    .cta-bookend-foot {
+      position: relative;
+      z-index: 2;
+      padding: 36px 24px 44px;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .cta-foot-dot { color: rgba(10,10,10,0.4); }
+
+    @media (max-width: 700px) {
+      .cta-bookend { padding-top: 96px; }
+      .cta-bookend-inner { padding-bottom: 56px; }
+      .cta-bookend-stat { font-size: clamp(96px, 32vw, 180px); }
+      .cta-bookend-line { font-size: clamp(24px, 7vw, 38px); }
+      .cta-bookend-btn { padding: 18px 30px; font-size: 16px; }
     }
 
     #journeys { padding: 120px 0; }
@@ -3489,6 +3759,38 @@
         radial-gradient(circle at 100% 100%, rgba(80,140,255,0.10) 0%, transparent 55%),
         linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
     }
+    /* Live readout grid + scanning beam — gives the brain card its own signature */
+    .brain-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,209,0,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,209,0,0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 75%);
+      pointer-events: none;
+    }
+    .brain-scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 60px;
+      background: linear-gradient(180deg, transparent 0%, rgba(255,209,0,0.18) 50%, transparent 100%);
+      pointer-events: none;
+      animation: brainScan 4.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+      z-index: 1;
+    }
+    @keyframes brainScan {
+      0% { transform: translateY(0%); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(700px); opacity: 0; }
+    }
+    .brain-card > * { position: relative; z-index: 2; }
     .brain-headline {
       font-family: 'Barlow', sans-serif;
       font-size: clamp(34px, 4vw, 54px);
@@ -3623,6 +3925,39 @@
     .arc-stage:nth-child(4)::before { background: linear-gradient(180deg, rgba(255,180,90,0.14) 0%, rgba(10,10,10,0.95) 100%); }
     .arc-stage:nth-child(5)::before { background: linear-gradient(180deg, rgba(255,209,0,0.18) 0%, rgba(10,10,10,0.95) 100%); }
     .arc-stage:nth-child(6)::before { background: linear-gradient(180deg, rgba(255,209,0,0.30) 0%, rgba(20,15,0,0.96) 100%); }
+    .arc-stage-current {
+      border-color: #FFD100 !important;
+      box-shadow: 0 0 0 2px #FFD100, 0 20px 60px rgba(255,209,0,0.18);
+      transform: translateY(-6px);
+    }
+    .arc-stage-marker {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #FFD100;
+      color: #0A0A0A;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 4;
+      box-shadow: 0 6px 24px rgba(255,209,0,0.45);
+    }
+    .arc-marker-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0A0A0A;
+      animation: dotPulse 1.6s ease-in-out infinite;
+    }
     .arc-stage:hover {
       transform: translateY(-4px);
     }
@@ -4788,6 +5123,7 @@
 
       <!-- Chapter 2 — Iris's brain (member profile dashboard) -->
       <div class="brain-card reveal">
+        <div class="brain-scan" aria-hidden="true"></div>
         <div class="brain-eyebrow">What Iris remembers</div>
         <h3 class="brain-headline">Inside the brain<br>that knows you.</h3>
         <p class="brain-sub">Every Iris conversation builds and updates a living portrait of the member. Not a database row — a picture of a whole person that gets sharper every time you talk. Here's what that looks like for Margaret, today.</p>
@@ -4858,7 +5194,8 @@
             <div class="arc-stage-feel">"How do I cook, read, get to the store?"</div>
             <div class="arc-stage-iris">Tech training. Vision Mate. Mobility. Restores competence.</div>
           </li>
-          <li class="arc-stage">
+          <li class="arc-stage arc-stage-current">
+            <div class="arc-stage-marker"><span class="arc-marker-dot"></span>Margaret is here</div>
             <div class="arc-num">03</div>
             <div class="arc-stage-name">Social Reconnection</div>
             <div class="arc-stage-feel">"I haven't seen my friends in months."</div>
@@ -5156,18 +5493,67 @@
     </div>
   </section>
 
-  <!-- CTA — closing -->
-  <section class="cta-section theme-black">
-    <div class="container">
-      <div class="reveal cta-final">
-        <span class="label">The ask</span>
-        <h2 class="headline-lg" style="margin-top:18px">2.2 million Canadians.<br><span class="accent">Most of them navigating alone.</span></h2>
-        <p class="body-lg">Iris is how that changes. Not by building more — by making sure what already exists reaches the people it was built for. The first conversation is already here. No forms. No phone tree. No waiting room. Just someone who already knows what this feels like.</p>
-        <div class="hero-cta-row" style="margin-top:48px;justify-content:center">
-          <button class="btn-primary" onclick="openChat('general')">Talk to Iris</button>
+  <div class="section-divider fade-dark-to-yellow" aria-hidden="true"></div>
+
+  <!-- CTA — closing (yellow bookend) -->
+  <section class="cta-bookend theme-yellow" id="cta-final">
+    <div class="cta-bookend-sun" aria-hidden="true">
+      <svg viewBox="0 0 600 600">
+        <g class="sun-rays">
+          <g stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" opacity="0.55">
+            <line x1="300" y1="40" x2="300" y2="120"/>
+            <line x1="300" y1="480" x2="300" y2="560"/>
+            <line x1="40" y1="300" x2="120" y2="300"/>
+            <line x1="480" y1="300" x2="560" y2="300"/>
+            <line x1="115" y1="115" x2="170" y2="170"/>
+            <line x1="430" y1="430" x2="485" y2="485"/>
+            <line x1="115" y1="485" x2="170" y2="430"/>
+            <line x1="430" y1="170" x2="485" y2="115"/>
+            <line x1="200" y1="60" x2="222" y2="138"/>
+            <line x1="378" y1="462" x2="400" y2="540"/>
+            <line x1="60" y1="200" x2="138" y2="222"/>
+            <line x1="462" y1="378" x2="540" y2="400"/>
+            <line x1="400" y1="60" x2="378" y2="138"/>
+            <line x1="222" y1="462" x2="200" y2="540"/>
+            <line x1="60" y1="400" x2="138" y2="378"/>
+            <line x1="462" y1="222" x2="540" y2="200"/>
+          </g>
+        </g>
+        <circle cx="300" cy="300" r="92" fill="#0A0A0A"/>
+        <circle cx="300" cy="300" r="34" fill="#FFD100"/>
+        <circle cx="288" cy="288" r="9" fill="#0A0A0A"/>
+      </svg>
+    </div>
+
+    <div class="cta-bookend-inner">
+      <div class="reveal cta-bookend-content">
+        <span class="cta-bookend-eyebrow">The ask</span>
+        <h2 class="cta-bookend-stat"><span class="cta-stat-num" data-count="2.2">2.2</span><span class="cta-stat-unit">M</span></h2>
+        <p class="cta-bookend-stat-cap">Canadians live with sight loss.</p>
+        <h3 class="cta-bookend-line">Most of them <span class="cta-strike">navigate alone</span>.</h3>
+        <h3 class="cta-bookend-line cta-bookend-line-bold">Iris is how that ends.</h3>
+        <div class="cta-bookend-row">
+          <button class="cta-bookend-btn" onclick="openChat('general')">
+            <span>Talk to Iris</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
         </div>
-        <div class="cta-final-foot">Iris — Powered by CNIB — See the world differently.</div>
       </div>
+    </div>
+
+    <div class="cta-marquee" aria-hidden="true">
+      <div class="cta-marquee-track">
+        <span>AMD</span><span>·</span><span>Vision Mate</span><span>·</span><span>RP</span><span>·</span><span>CNIB Beyond Print</span><span>·</span><span>Glaucoma</span><span>·</span><span>Peer Support</span><span>·</span><span>Diabetic Retinopathy</span><span>·</span><span>Connecting the Dots</span><span>·</span><span>CVI</span><span>·</span><span>Tech Support</span><span>·</span><span>Cataracts</span><span>·</span><span>Guide Dogs</span><span>·</span><span>Cortical Visual Impairment</span><span>·</span><span>Come To Work</span><span>·</span><span>Deafblindness</span><span>·</span><span>Sudbury</span><span>·</span><span>Gander</span><span>·</span><span>Iqaluit</span><span>·</span><span>Yellowknife</span><span>·</span><span>Halifax</span><span>·</span><span>Calgary</span><span>·</span>
+        <span>AMD</span><span>·</span><span>Vision Mate</span><span>·</span><span>RP</span><span>·</span><span>CNIB Beyond Print</span><span>·</span><span>Glaucoma</span><span>·</span><span>Peer Support</span><span>·</span><span>Diabetic Retinopathy</span><span>·</span><span>Connecting the Dots</span><span>·</span><span>CVI</span><span>·</span><span>Tech Support</span><span>·</span><span>Cataracts</span><span>·</span><span>Guide Dogs</span><span>·</span><span>Cortical Visual Impairment</span><span>·</span><span>Come To Work</span><span>·</span><span>Deafblindness</span><span>·</span><span>Sudbury</span><span>·</span><span>Gander</span><span>·</span><span>Iqaluit</span><span>·</span><span>Yellowknife</span><span>·</span><span>Halifax</span><span>·</span><span>Calgary</span><span>·</span>
+      </div>
+    </div>
+
+    <div class="cta-bookend-foot">
+      <span>Iris</span>
+      <span class="cta-foot-dot">·</span>
+      <span>Powered by CNIB</span>
+      <span class="cta-foot-dot">·</span>
+      <span>See the world differently.</span>
     </div>
   </section>
 
