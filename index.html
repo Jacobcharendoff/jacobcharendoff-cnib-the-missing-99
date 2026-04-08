@@ -6081,10 +6081,22 @@
       audio.playbackRate = 1.0;
       currentAudio = audio;
       await new Promise((resolve) => {
-        audio.onplay = () => { if (window.__dismissConnecting) window.__dismissConnecting(); };
-        audio.onended = () => { URL.revokeObjectURL(audioUrl); resolve(); };
-        audio.onerror = () => { URL.revokeObjectURL(audioUrl); resolve(); };
-        audio.play().catch(() => resolve());
+        let settled = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          try { URL.revokeObjectURL(audioUrl); } catch(e) {}
+          resolve();
+        };
+        audio.onplay  = () => { if (window.__dismissConnecting) window.__dismissConnecting(); };
+        audio.onended = done;
+        audio.onerror = done;
+        // CRITICAL: stopSpeaking() pauses the audio element. Pause does NOT
+        // fire 'ended' or 'error', so without this handler the awaiting promise
+        // would wedge forever — leaving ttsRunning=true and silently breaking
+        // every subsequent enqueueTTS() call (since runTTSQueue won't re-fire).
+        audio.onpause = () => { if (audio.currentTime === 0 || audio.ended || settled) return; done(); };
+        audio.play().catch(done);
       });
       if (currentAudio === audio) currentAudio = null;
     }
@@ -6127,9 +6139,23 @@
       // Resolve any pending awaits so the scenario engine doesn't hang
       ttsQueue.forEach(item => { if (item && item.done) try { item.done(); } catch(e){} });
       ttsQueue = [];
-      if (currentAudio) { try { currentAudio.pause(); currentAudio.currentTime = 0; } catch(e){} currentAudio = null; }
+      if (currentAudio) {
+        try {
+          currentAudio.pause();
+          // Trigger the playElevenLabsChunk pause-handler so its awaiting
+          // promise resolves. Without this, runTTSQueue's `await` wedges
+          // forever and ttsRunning stays true — silently breaking every
+          // subsequent enqueueTTS() call.
+          currentAudio.currentTime = 0;
+        } catch(e) {}
+        currentAudio = null;
+      }
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       irisIsSpeaking = false;
+      // Belt and suspenders: if the runTTSQueue loop somehow stayed marked as
+      // running (e.g. an in-flight playElevenLabsChunk that never resolved),
+      // free it so the next enqueueTTS() can re-fire the queue.
+      ttsRunning = false;
     }
 
     // ===== ALWAYS-ON CONTINUOUS VOICE =====
