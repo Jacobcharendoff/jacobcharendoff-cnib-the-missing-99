@@ -1621,21 +1621,48 @@
     /* ===== ACTION CARD ===== */
     .iris-action-card {
       align-self: stretch;
-      background: linear-gradient(180deg, #FFD100 0%, #F5C700 100%);
+      position: relative;
       color: #0A0A0A;
-      border-radius: 20px;
-      padding: 22px 24px;
-      margin: 6px 0 4px;
-      box-shadow: 0 16px 40px -16px rgba(255,209,0,0.4);
+      border-radius: 24px;
+      padding: 28px 26px 26px;
+      margin: 10px 0 6px;
+      box-shadow: 0 20px 50px -20px rgba(255,209,0,0.5);
       animation: msgIn 0.6s ease both;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(10,10,10,0.12);
+    }
+    .iris-action-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 18% 0%, #FFE34D 0%, transparent 55%),
+        linear-gradient(180deg, #FFD100 0%, #F0BD00 100%);
     }
     .iris-action-card-title {
-      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
       font-weight: 800;
-      letter-spacing: 1.6px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      margin-bottom: 12px;
-      opacity: 0.7;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(10,10,10,0.85);
+      color: #FFD100;
+      margin-bottom: 16px;
+    }
+    .iris-action-card-title::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 6px rgba(255, 209, 0, 0.7);
+      animation: dotPulse 2s ease-in-out infinite;
     }
     .iris-action-list {
       list-style: none;
@@ -1710,7 +1737,9 @@
     /* ===== BUFFER / INTRO SCREEN — full-modal page ===== */
     /* Mounts as an absolute overlay over the entire chat-container so it
        behaves like its own page, not a scrolling block inside the message
-       feed. The CTA stays sticky at the bottom and is always visible. */
+       feed. The CTA stays sticky at the bottom and is always visible.
+       Per-persona gradient inherited from the demo card the user clicked,
+       so the visual world stays continuous from card → buffer → conversation. */
     .iris-buffer {
       position: absolute;
       inset: 0;
@@ -1719,6 +1748,35 @@
       flex-direction: column;
       z-index: 5;
       animation: bufferIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      isolation: isolate;
+    }
+    .iris-buffer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .iris-buffer.persona-amber::before {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255,209,0,0.28) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 60%);
+    }
+    .iris-buffer.persona-azure::before {
+      background:
+        radial-gradient(circle at 80% 5%, rgba(80,140,255,0.24) 0%, transparent 60%),
+        linear-gradient(180deg, #0a1424 0%, #0a0a0a 60%);
+    }
+    .iris-buffer.persona-rose::before {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,120,170,0.22) 0%, transparent 60%),
+        linear-gradient(180deg, #1f0a14 0%, #0a0a0a 60%);
+    }
+    .iris-buffer.persona-live::before {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,209,0,0.30) 0%, transparent 55%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 65%);
     }
     .iris-buffer.iris-buffer-out { animation: bufferOut 0.32s ease forwards; }
     @keyframes bufferIn {
@@ -1746,21 +1804,39 @@
       margin: 0 auto;
     }
     .iris-buffer-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+      font-weight: 700;
+      letter-spacing: 1.4px;
       text-transform: uppercase;
       color: #FFD100;
-      margin-bottom: 14px;
+      width: fit-content;
+      margin-bottom: 22px;
+    }
+    .iris-buffer-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 10px #FFD100;
+      animation: pulseDot 2s ease-in-out infinite;
     }
     .iris-buffer-title {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 30px;
-      line-height: 1.15;
-      font-weight: 500;
+      font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(34px, 5vw, 44px);
+      line-height: 1.02;
+      font-weight: 700;
       color: #fff;
-      letter-spacing: -0.01em;
-      margin: 0 0 26px 0;
+      letter-spacing: -0.02em;
+      margin: 0 0 24px 0;
     }
     .iris-buffer-grid {
       display: flex;
@@ -1970,13 +2046,9 @@
       color: #FFD100;
     }
 
-    /* ===== THEN / NOW transformation card ===== */
+    /* ===== THEN / NOW transformation card — 2-up poster ===== */
     .iris-thennow-card {
-      margin: 16px 14px 18px;
-      padding: 22px;
-      background: linear-gradient(135deg, rgba(255, 209, 0, 0.08), rgba(255, 209, 0, 0.02));
-      border: 1px solid rgba(255, 209, 0, 0.28);
-      border-radius: 18px;
+      margin: 20px 14px 22px;
       animation: thenNowIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
     }
     @keyframes thenNowIn {
@@ -1984,66 +2056,106 @@
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
     .iris-thennow-header {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #FFD100;
+      color: rgba(255,255,255,0.55);
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+    }
+    .iris-thennow-header strong {
+      color: #FFD100;
+      font-weight: 700;
     }
     .iris-thennow-grid {
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 14px;
-      align-items: center;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
     }
     .iris-thennow-col {
-      padding: 14px 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.03);
+      position: relative;
+      padding: 22px 20px 22px;
+      border-radius: 20px;
+      overflow: hidden;
+      isolation: isolate;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+    }
+    .iris-thennow-col::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
     }
     .iris-thennow-then {
-      border: 1px solid rgba(255,255,255,0.10);
+      border: 1px solid rgba(180, 160, 220, 0.22);
+    }
+    .iris-thennow-then::before {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(140, 120, 200, 0.28) 0%, transparent 60%),
+        linear-gradient(180deg, #15121f 0%, #0a0a0a 100%);
     }
     .iris-thennow-now {
-      border: 1px solid rgba(255, 209, 0, 0.35);
-      background: rgba(255, 209, 0, 0.06);
+      border: 1px solid rgba(255, 209, 0, 0.32);
+    }
+    .iris-thennow-now::before {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255, 209, 0, 0.32) 0%, transparent 60%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
     }
     .iris-thennow-label {
-      font-size: 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      align-self: flex-start;
+      margin-bottom: 12px;
     }
-    .iris-thennow-now .iris-thennow-label { color: #FFD100; }
+    .iris-thennow-then .iris-thennow-label {
+      color: rgba(220, 210, 250, 0.85);
+      background: rgba(140, 120, 200, 0.14);
+      border: 1px solid rgba(140, 120, 200, 0.32);
+    }
+    .iris-thennow-now .iris-thennow-label {
+      color: #FFD100;
+      background: rgba(255, 209, 0, 0.12);
+      border: 1px solid rgba(255, 209, 0, 0.4);
+    }
+    .iris-thennow-now .iris-thennow-label::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 8px rgba(255, 209, 0, 0.6);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50%      { opacity: 1;   transform: scale(1.15); }
+    }
     .iris-thennow-body {
-      font-size: 13px;
-      line-height: 1.5;
+      font-family: 'Barlow', sans-serif;
+      font-size: clamp(18px, 2.1vw, 22px);
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      font-weight: 600;
       color: #fff;
     }
-    .iris-thennow-arrow {
-      color: #FFD100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: arrowPulse 1.8s ease-in-out infinite;
-    }
-    @keyframes arrowPulse {
-      0%, 100% { transform: translateX(0); opacity: 0.7; }
-      50%      { transform: translateX(3px); opacity: 1; }
-    }
+    .iris-thennow-then .iris-thennow-body { color: rgba(255,255,255,0.78); }
     @media (max-width: 560px) {
       .iris-thennow-grid {
         grid-template-columns: 1fr;
       }
-      .iris-thennow-arrow { transform: rotate(90deg); }
-      @keyframes arrowPulse {
-        0%, 100% { transform: rotate(90deg) translateX(0); opacity: 0.7; }
-        50%      { transform: rotate(90deg) translateX(3px); opacity: 1; }
-      }
+      .iris-thennow-col { min-height: 0; }
     }
 
     /* ===== BEFORE / BRIDGE / AFTER layout inside buffer ===== */
@@ -2910,39 +3022,61 @@
       border-color: #0A0A0A;
     }
     .journey-stage {
-      max-width: 880px;
+      max-width: 920px;
       margin: 0 auto;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 56px 56px 48px;
       position: relative;
+      border-radius: 28px;
+      padding: 64px 56px 56px;
       overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(255,209,0,0.22);
+      color: #fff;
     }
     .journey-stage::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #FFD100, transparent);
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,209,0,0.32) 0%, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(255,209,0,0.10) 0%, transparent 50%),
+        linear-gradient(180deg, #1a1300 0%, #0a0a0a 100%);
     }
     .journey-persona {
-      font-size: 13px;
-      letter-spacing: 1.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 12px;
+      color: #FFD100;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.35);
+      margin-bottom: 24px;
+    }
+    .journey-persona::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD100;
+      box-shadow: 0 0 8px rgba(255, 209, 0, 0.6);
+      animation: dotPulse 2s ease-in-out infinite;
     }
     .journey-headline {
       font-family: 'Barlow', sans-serif;
-      font-size: clamp(22px, 2.6vw, 32px);
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      line-height: 1.2;
-      color: var(--text);
-      margin-bottom: 40px;
+      font-size: clamp(28px, 3.4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 44px;
+      max-width: 720px;
     }
-    .journey-headline em { font-style: normal; color: #B89500; }
+    .journey-headline em { font-style: normal; color: #FFD100; }
     .theme-black .journey-headline em { color: var(--yellow); }
     .journey-steps {
       display: flex;
@@ -2962,12 +3096,12 @@
       position: absolute;
       left: 0;
       top: 0;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: rgba(255, 209, 0, 0.12);
-      border: 1px solid rgba(255, 209, 0, 0.3);
-      color: #B89500;
+      background: rgba(255, 209, 0, 0.14);
+      border: 1px solid rgba(255, 209, 0, 0.4);
+      color: #FFD100;
       font-family: 'Barlow', sans-serif;
       font-size: 13px;
       font-weight: 700;
@@ -2979,22 +3113,24 @@
     .journey-step::after {
       content: '';
       position: absolute;
-      left: 17px;
-      top: 36px;
+      left: 18px;
+      top: 38px;
       bottom: 0;
       width: 2px;
-      background: rgba(255, 209, 0, 0.18);
+      background: linear-gradient(180deg, rgba(255, 209, 0, 0.4), rgba(255, 209, 0, 0.05));
     }
     .journey-step:last-child::after { display: none; }
     .journey-step h4 {
-      font-size: 16px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 18px;
       font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+      color: #fff;
+      margin-bottom: 6px;
     }
     .journey-step p {
       font-size: 14px;
-      color: var(--text-body);
+      color: rgba(255,255,255,0.72);
       line-height: 1.6;
     }
     .journey-stage[data-loading="true"] .journey-steps { opacity: 0.4; }
@@ -5264,8 +5400,13 @@ WHAT YOU NEVER DO:
       const seconds = (s.duration || 90) % 60;
       const durStr = minutes ? `${minutes} min ${seconds.toString().padStart(2,'0')} sec` : `${seconds} seconds`;
 
+      // Persona color inherits from the demo card the user clicked.
+      const personaClass = scenarioKey === 'margaret' ? 'persona-amber'
+                         : scenarioKey === 'david'    ? 'persona-azure'
+                         : scenarioKey === 'priya'    ? 'persona-rose'
+                         : 'persona-amber';
       const wrap = document.createElement('div');
-      wrap.className = 'iris-buffer';
+      wrap.className = 'iris-buffer ' + personaClass;
       wrap.innerHTML = `
         <div class="iris-buffer-scroll">
           <div class="iris-buffer-inner">
@@ -5381,7 +5522,7 @@ WHAT YOU NEVER DO:
     // explicit consent to start the call. No sight verbs in the copy.
     function showLiveIntro() {
       const wrap = document.createElement('div');
-      wrap.className = 'iris-buffer iris-live-intro';
+      wrap.className = 'iris-buffer iris-live-intro persona-live';
       wrap.innerHTML = `
         <div class="iris-buffer-scroll">
           <div class="iris-buffer-inner iris-live-inner">
@@ -5690,17 +5831,14 @@ WHAT YOU NEVER DO:
       const card = document.createElement('div');
       card.className = 'iris-thennow-card';
       card.innerHTML = `
-        <div class="iris-thennow-header">${member}</div>
+        <div class="iris-thennow-header"><strong>${member}</strong> · the shift</div>
         <div class="iris-thennow-grid">
           <div class="iris-thennow-col iris-thennow-then">
-            <div class="iris-thennow-label">A few minutes ago</div>
+            <span class="iris-thennow-label">Then</span>
             <div class="iris-thennow-body">${tn.then || ''}</div>
           </div>
-          <div class="iris-thennow-arrow" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </div>
           <div class="iris-thennow-col iris-thennow-now">
-            <div class="iris-thennow-label">Right now</div>
+            <span class="iris-thennow-label">Now</span>
             <div class="iris-thennow-body">${tn.now || ''}</div>
           </div>
         </div>
