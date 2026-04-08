@@ -4928,8 +4928,7 @@
       <a href="#problem" data-nav>The missing 99%</a>
       <a href="#meet" data-nav>Meet Iris</a>
       <a href="#demos" data-nav>See it work</a>
-      <a href="#how" data-nav>How Iris works</a>
-      <a href="#journeys" data-nav>The full picture</a>
+      <a href="#journeys" data-nav>How Iris works</a>
       <a href="#further" data-nav>What's next</a>
       <button class="nav-cta" onclick="openChat('general')">Try Iris</button>
     </div>
@@ -5119,53 +5118,9 @@
       });
     })();
   </script>
-  <!-- ACT 4 — HOW IT WORKS (the explanation, now after the demo) -->
-  <section class="section theme-black" id="how">
+  <!-- ACT 4 — HOW IT WORKS — moved into Act 5 (Journeys) as context -->
+  <section class="section theme-black" id="how" hidden style="display:none">
     <div class="container">
-      <div class="section-head reveal">
-        <span class="label">Under the hood</span>
-        <h2 class="headline-lg">What you just heard<br><span class="accent">wasn't a script.</span></h2>
-        <p class="body-lg">Every Iris conversation moves through four layers, in the same order, every time. Story before solutions. Life before recommendations. The immediate need before anything practical. The bigger hope last — because that's the one Iris is actually navigating toward.</p>
-      </div>
-
-      <!-- Panel A — The four conversation layers (the ONE mechanism) -->
-      <div class="how-panel reveal">
-        <div class="how-eyebrow">The conversation</div>
-        <h3 class="how-headline">Story → Life → Need → Hope.</h3>
-
-        <ol class="how-layers">
-          <li class="how-layer">
-            <div class="how-layer-num">01</div>
-            <div class="how-layer-name">The Story</div>
-            <div class="how-layer-q">"How did you get here?"</div>
-            <div class="how-layer-body">When was the diagnosis. What's changed. What's been the hardest part to put into words. Iris listens for the emotional truth beneath the facts before anything else.</div>
-          </li>
-          <li class="how-layer">
-            <div class="how-layer-num">02</div>
-            <div class="how-layer-name">The Life</div>
-            <div class="how-layer-q">"Who are you beyond the diagnosis?"</div>
-            <div class="how-layer-body">Work, family, what you used to love, what you're afraid of losing. This is where Iris builds a picture of a whole person — not a condition.</div>
-          </li>
-          <li class="how-layer">
-            <div class="how-layer-num">03</div>
-            <div class="how-layer-name">The Need</div>
-            <div class="how-layer-q">"What's hardest right now? Today. This week."</div>
-            <div class="how-layer-body">Not in general — specifically. Practical, social, professional, financial, or emotional. The immediate need is where Iris starts. That's what earns trust.</div>
-          </li>
-          <li class="how-layer">
-            <div class="how-layer-num">04</div>
-            <div class="how-layer-name">The Hope</div>
-            <div class="how-layer-q">"What does a good life look like, on your terms?"</div>
-            <div class="how-layer-body">Not CNIB's terms. Yours. The north star Iris navigates toward — for as long as the relationship lasts.</div>
-          </li>
-        </ol>
-
-        <div class="how-closer">
-          <p class="how-closer-line">Iris doesn't end with information. <strong>Iris ends with a name, a number, and a time.</strong></p>
-          <p class="how-closer-sub">A Vision Mate matched. A program enrolled. A follow-up booked. The member leaves having gained something real — not a brochure.</p>
-        </div>
-      </div>
-
       <div class="act-refrain reveal">Your way.</div>
 
       <!-- Panel B — REMOVED (five matching inputs) — folded into Story→Life→Need→Hope -->
@@ -5503,10 +5458,55 @@
   <section class="section theme-black" id="journeys">
     <div class="container">
 
+      <!-- Context: the conversation architecture that makes every Iris journey possible -->
       <div class="section-head reveal">
+        <span class="label">How Iris works</span>
+        <h2 class="headline-lg">What you just heard<br><span class="accent">wasn't a script.</span></h2>
+        <p class="body-lg">Every Iris conversation moves through four layers, in the same order, every time. Story before solutions. Life before recommendations. The immediate need before anything practical. The bigger hope last — because that's the one Iris is actually navigating toward.</p>
+      </div>
+
+      <div class="how-panel reveal">
+        <div class="how-eyebrow">The conversation</div>
+        <h3 class="how-headline">Story → Life → Need → Hope.</h3>
+
+        <ol class="how-layers">
+          <li class="how-layer">
+            <div class="how-layer-num">01</div>
+            <div class="how-layer-name">The Story</div>
+            <div class="how-layer-q">"How did you get here?"</div>
+            <div class="how-layer-body">When was the diagnosis. What's changed. What's been the hardest part to put into words. Iris listens for the emotional truth beneath the facts before anything else.</div>
+          </li>
+          <li class="how-layer">
+            <div class="how-layer-num">02</div>
+            <div class="how-layer-name">The Life</div>
+            <div class="how-layer-q">"Who are you beyond the diagnosis?"</div>
+            <div class="how-layer-body">Work, family, what you used to love, what you're afraid of losing. This is where Iris builds a picture of a whole person — not a condition.</div>
+          </li>
+          <li class="how-layer">
+            <div class="how-layer-num">03</div>
+            <div class="how-layer-name">The Need</div>
+            <div class="how-layer-q">"What's hardest right now? Today. This week."</div>
+            <div class="how-layer-body">Not in general — specifically. Practical, social, professional, financial, or emotional. The immediate need is where Iris starts. That's what earns trust.</div>
+          </li>
+          <li class="how-layer">
+            <div class="how-layer-num">04</div>
+            <div class="how-layer-name">The Hope</div>
+            <div class="how-layer-q">"What does a good life look like, on your terms?"</div>
+            <div class="how-layer-body">Not CNIB's terms. Yours. The north star Iris navigates toward — for as long as the relationship lasts.</div>
+          </li>
+        </ol>
+
+        <div class="how-closer">
+          <p class="how-closer-line">Iris doesn't end with information. <strong>Iris ends with a name, a number, and a time.</strong></p>
+          <p class="how-closer-sub">A Vision Mate matched. A program enrolled. A follow-up booked. The member leaves having gained something real — not a brochure.</p>
+        </div>
+      </div>
+
+      <!-- Bridge into the two ways in + the long journey -->
+      <div class="section-head reveal" style="margin-top:140px">
         <span class="label">The Full Picture</span>
         <h2 class="headline-lg">Two ways in.<br><span class="accent">One Iris that stays.</span></h2>
-        <p class="body-lg">Iris reaches members through every door they already walk through — and once Iris finds you, Iris doesn't leave. The first call is the start of a relationship that grows with you, year after year, as life keeps changing.</p>
+        <p class="body-lg">That same conversation reaches members through every door they already walk through — and once Iris finds you, Iris doesn't leave. The first call is the start of a relationship that grows with you, year after year, as life keeps changing.</p>
       </div>
 
       <!-- Beat 1 — Two ways in -->
