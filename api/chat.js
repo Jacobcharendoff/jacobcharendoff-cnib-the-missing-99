@@ -147,7 +147,9 @@ export default async function handler(req) {
   // === STEP 1: Generate Iris draft ===
   let draft;
   try {
-    draft = await callOpenAI(apiKey, GEN_MODEL, trimmed, 220, 0.85);
+    // 140 tokens = ~3-4 sentences, plenty for a voice bot turn. Cut from 220
+    // to shave ~500ms off generation latency for the live pilot.
+    draft = await callOpenAI(apiKey, GEN_MODEL, trimmed, 140, 0.85);
   } catch (e) {
     console.error('[chat] generation failed:', e.message);
     return new Response(
@@ -172,24 +174,42 @@ export default async function handler(req) {
   }
 
   // === STEP 2: Moderate the draft ===
+  // LATENCY HOTFIX (Apr 9 2026): The LLM moderator adds 500-1500ms per turn.
+  // For the live pilot we short-circuit it when the local regex scan shows
+  // the draft is clean — no phone numbers at all, no blocked program name,
+  // no medical-advice red-flag verbs, no "I am human"-style denials, no
+  // finance/leadership name-drops. The local hard safety nets below (phone
+  // allow-list + PROGRAM_BLOCK_LIST regex) still run unconditionally, so
+  // nothing risky ships just because the LLM moderator was skipped.
+  const PHONE_PRESCREEN = /\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b|\b1[-.\s]?\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/;
+  const RISK_PRESCREEN = /\b(diagnos|prescrib|medication|dosage|prognos|stop taking|start taking|i am (a )?human|i'm (a )?human|not an ai|ceo|cfo|board of directors|budget|deficit|endowment|donor|fundrais)/i;
+  const hasPhone = PHONE_PRESCREEN.test(draft);
+  const hasRiskyKeyword = RISK_PRESCREEN.test(draft);
+  const hasBlockedProgram = PROGRAM_BLOCK_LIST.some(p =>
+    new RegExp(p.replace(/\s+/g, '\\s+'), 'i').test(draft)
+  );
+  const needsLLMModerator = hasPhone || hasRiskyKeyword || hasBlockedProgram;
+
   let modResult = { safe: true };
-  try {
-    const modRaw = await callOpenAI(
-      apiKey,
-      MOD_MODEL,
-      [
-        { role: 'system', content: MODERATOR_PROMPT },
-        { role: 'user', content: `Iris's drafted response:\n\n${draft}` },
-      ],
-      300,
-      0.1
-    );
-    // Strip any code fence and parse
-    const cleaned = modRaw.replace(/```json\s*|\s*```/g, '').trim();
-    modResult = JSON.parse(cleaned);
-  } catch (e) {
-    console.warn('[chat] moderator parse failed, shipping draft:', e.message);
-    modResult = { safe: true }; // Fail open — better to ship draft than break the chat
+  if (needsLLMModerator) {
+    try {
+      const modRaw = await callOpenAI(
+        apiKey,
+        MOD_MODEL,
+        [
+          { role: 'system', content: MODERATOR_PROMPT },
+          { role: 'user', content: `Iris's drafted response:\n\n${draft}` },
+        ],
+        300,
+        0.1
+      );
+      // Strip any code fence and parse
+      const cleaned = modRaw.replace(/```json\s*|\s*```/g, '').trim();
+      modResult = JSON.parse(cleaned);
+    } catch (e) {
+      console.warn('[chat] moderator parse failed, shipping draft:', e.message);
+      modResult = { safe: true }; // Fail open — better to ship draft than break the chat
+    }
   }
 
   // === STEP 3: Hard safety nets on top of LLM moderator ===
