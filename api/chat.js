@@ -7,7 +7,10 @@
 
 export const config = { runtime: 'edge' };
 
-const GEN_MODEL = 'gpt-4o';
+// GEN_MODEL is env-flagged so we can A/B during the pilot without redeploying.
+// Default = gpt-4o-mini for speed (roughly 2x faster than gpt-4o). Flip back
+// via IRIS_GEN_MODEL=gpt-4o if quality regresses.
+const GEN_MODEL = process.env.IRIS_GEN_MODEL || 'gpt-4o-mini';
 const MOD_MODEL = 'gpt-4o-mini';
 
 // Authoritative allow-list of current CNIB programs (public on cnib.ca as of April 2026).
