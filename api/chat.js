@@ -343,16 +343,22 @@ export default async function handler(req) {
   // CNIB") when it runs out of ideas. These are the exact phrases Jacob has
   // flagged as brand-violating. Catch and rewrite server-side so they never
   // ship — even if the rest of the reply is fine.
-  const COLD_CLOSE_RE = /(thanks? (you )?for reaching out|thank you for (reaching out|contacting|connecting)|please (don'?t hesitate|feel free) to (reach out|contact|call)|don'?t hesitate to (reach out|contact|call|ask)|i(?:'m| am) here (if you need|to help|for you)|if you have any (other|more|further) questions|i recommend (calling|contacting) cnib|you can (always )?call cnib|i hope this helps|have a (great|wonderful|nice) day|take care(\.|$)|best (regards|wishes)|warmly,|sincerely,)/i;
+  const COLD_CLOSE_RE = /(thanks?\s+(you\s+)?for\s+reaching\s+out|thank\s+you\s+for\s+(reaching\s+out|contacting|connecting)|please\s+(don'?t\s+hesitate|feel\s+free)\s+to\s+(reach\s+out|contact|call)|don'?t\s+hesitate\s+to\s+(reach\s+out|contact|call|ask)|i(?:'m|\s+am)\s+here\s+(if\s+you\s+need|to\s+help|for\s+you)|if\s+you\s+have\s+any\s+(other|more|further)\s+questions|i\s+recommend\s+(calling|contacting)\s+cnib|you\s+can\s+(always\s+)?call\s+cnib|i\s+hope\s+this\s+helps|have\s+a\s+(great|wonderful|nice)\s+day|take\s+care\b|best\s+(regards|wishes)|warmly,|sincerely,|in\s+the\s+future[,.]?\s*(feel\s+free|please)|(you'?re\s+welcome)[!.])/i;
   if (modResult.safe && COLD_CLOSE_RE.test(draft)) {
-    // Strip the cold-close tail and replace with a warm fragment. We keep the
-    // earlier content of the draft (if any) and append a real Iris sign-off.
-    const cleaned = draft.replace(COLD_CLOSE_RE, '').replace(/\s+[.,]?\s*$/, '').trim();
-    const warmTail = cleaned && cleaned.length > 40
-      ? cleaned + ' What else is on your mind?'
+    // Sentence-level drop. Split on sentence boundaries, discard any sentence
+    // that matches a cold-close phrase, keep the rest. This avoids orphan
+    // fragments like "You're welcome! in the future, ." left behind by
+    // in-place regex excision. If nothing survives, we emit a warm fallback.
+    const sentences = draft.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+    const kept = sentences.filter(s => !COLD_CLOSE_RE.test(s));
+    let cleaned = kept.join(' ').replace(/\s+/g, ' ').trim();
+    // Drop a trailing orphan connector like "Well," or "Okay."
+    cleaned = cleaned.replace(/\s*(well|okay|ok|alright|so|and|but)[,.!?]?\s*$/i, '').trim();
+    const warmTail = cleaned && cleaned.length > 30
+      ? cleaned + (/[.!?]$/.test(cleaned) ? ' ' : '. ') + 'What else is on your mind?'
       : "Hey. I don't want to leave you with a wrap-up line that sounds like a form email. Tell me what's actually on your mind right now and we'll figure out the next step together.";
     modResult = { safe: false, reason: 'cold_close_guard', replacement: warmTail };
-    logServerError('cold_close_guard', 'rewrote draft', { draftPreview: draft.slice(0, 200) });
+    logServerError('cold_close_guard', 'rewrote draft', { draftPreview: draft.slice(0, 200), cleaned: warmTail.slice(0, 200) });
   }
 
   const finalText = modResult.safe ? draft : (modResult.replacement || safeFallback('moderator reject'));
