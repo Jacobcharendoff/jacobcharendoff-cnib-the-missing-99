@@ -16,7 +16,7 @@ export default async function handler(request) {
       JSON.stringify({
         ok: true,
         service: 'iris-log',
-        webhookConfigured: !!process.env.LOG_WEBHOOK_URL,
+        webhookConfigured: true,
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
@@ -28,11 +28,11 @@ export default async function handler(request) {
 
   // Never throw back to the client. Every branch returns 204/200.
   try {
-    const webhook = process.env.LOG_WEBHOOK_URL;
-    if (!webhook) {
-      // No webhook configured yet — silently accept so client never sees an error
-      return new Response(null, { status: 204 });
-    }
+    // Hardcoded = Apps Script "Iris logger v6 memberFirstName" deployment
+    // (Version 6, Apr 9 2026). Overrides the Vercel env var, which still
+    // points at an older deployment without memberFirstName support.
+    const webhook =
+      'https://script.google.com/macros/s/AKfycbyKMjD_WvYtzZrtNH7FfpYkS1lmEh0PGTcrhiUg24PrPB6wEsnN6FxLtEP5TeILHUhI/exec';
 
     // Parse body safely
     let body = {};
