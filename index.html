@@ -7145,6 +7145,9 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       // Fire-and-forget session logging to the Google Sheets webhook.
       try { logTurnToWebhook(fullText, data && data.moderated, data && data.reason); } catch (e) {}
 
+      // Iris finished a real LLM turn — arm the silence check-in timer.
+      try { resetIrisSilenceTimer(); } catch (e) {}
+
       return fullText;
     }
 
@@ -7577,6 +7580,58 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       } catch (e) { console.warn('[iris] session init failed', e); }
     })();
 
+    // ===== SILENCE CHECK-IN =====
+    // Mid-conversation, if the member goes quiet for IRIS_SILENCE_MS, Iris
+    // gently checks back in by name ("Jacob? You still there?"). Fires at
+    // most ONCE per silence window (until the member speaks again), never
+    // during scripted demos, never while the modal is closed, and never
+    // while Iris is already speaking. Copy is hardcoded so we don't spend
+    // API tokens or risk LLM drift on a nudge.
+    const IRIS_SILENCE_MS = 20000;
+    window.__irisSilenceTimer = null;
+    window.__irisNudgeFired = false;
+
+    function clearIrisSilenceTimer() {
+      if (window.__irisSilenceTimer) {
+        clearTimeout(window.__irisSilenceTimer);
+        window.__irisSilenceTimer = null;
+      }
+    }
+
+    function resetIrisSilenceTimer() {
+      clearIrisSilenceTimer();
+      if (currentPhase !== 'live') return;
+      if (!modal || !modal.classList.contains('active')) return;
+      if (window.__irisNudgeFired) return; // already nudged this silence window
+      window.__irisSilenceTimer = setTimeout(fireIrisSilenceNudge, IRIS_SILENCE_MS);
+    }
+
+    function fireIrisSilenceNudge() {
+      window.__irisSilenceTimer = null;
+      // Bail if state changed while we were waiting
+      if (!modal || !modal.classList.contains('active')) return;
+      if (currentPhase !== 'live') return;
+      // If Iris is still speaking (long response still playing), re-arm
+      // the timer so we nudge 20s AFTER she finishes, not while she's
+      // mid-sentence.
+      if (typeof irisIsSpeaking !== 'undefined' && irisIsSpeaking) {
+        window.__irisSilenceTimer = setTimeout(fireIrisSilenceNudge, 3000);
+        return;
+      }
+      const name = (window.__irisSession && window.__irisSession.memberFirstName) || null;
+      const text = name
+        ? `${name}? You still there? Take your time — I'm not going anywhere.`
+        : `Still with me? Take your time — I'm not going anywhere.`;
+      window.__irisNudgeFired = true;
+      // Briefly show the typing indicator first so it feels like Iris is
+      // genuinely checking in, not a canned bot ping.
+      const typing = showTypingIndicator();
+      setTimeout(() => {
+        try { typing && typing.remove && typing.remove(); } catch (e) {}
+        addBotMessage(text);
+      }, 900);
+    }
+
     // ===== CHAT UI FUNCTIONS (iMessage style) =====
     function getTimeString() {
       const now = new Date();
@@ -7618,6 +7673,9 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       if (!(typeof realtimeActive !== 'undefined' && realtimeActive)) {
         speakText(text);
       }
+      // Iris just said something — arm the silence check-in timer. If the
+      // member goes quiet for 20s we'll fire a gentle nudge.
+      try { resetIrisSilenceTimer(); } catch (e) {}
     }
 
     function addUserMessage(text) {
@@ -7640,6 +7698,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       chatBody.appendChild(row);
       chatBody.scrollTop = chatBody.scrollHeight;
       if (typeof logIrisEvent === 'function') logIrisEvent('member', text);
+      // Member just spoke — cancel any pending silence nudge and reset
+      // the nudge-fired flag so the NEXT silence window gets its own
+      // check-in if it goes long.
+      try { clearIrisSilenceTimer(); window.__irisNudgeFired = false; } catch (e) {}
     }
 
     function showTypingIndicator() {
@@ -8309,6 +8371,8 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       scenarioCancelled = true;
       document.body.classList.remove('iris-autoplay');
       voiceModeOn = false;
+      // Kill any pending silence nudge so it doesn't fire into a closed modal
+      try { clearIrisSilenceTimer(); window.__irisNudgeFired = false; } catch (e) {}
     }
 
     // Hide mic prompt on any input interaction
