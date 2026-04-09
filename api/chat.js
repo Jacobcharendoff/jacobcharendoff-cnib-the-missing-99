@@ -353,7 +353,7 @@ export default async function handler(req) {
     'hope you have a', 'wish you well', 'wish you the best', 'take good care',
     'if you have any', 'if there', 'if you need', 'if you ever',
     'is there anything else', 'anything else i can', 'anything else you need',
-    'let me know if', 'let me know how',
+    'let me know if', 'let me know how', 'let me know when', 'let me know anytime', 'let me know whenever', 'just let me know',
     'you can always call', 'i recommend calling',
     "you're welcome", 'you are welcome',
     'i am here for', "i'm here for", 'i am here to help', "i'm here to help",
