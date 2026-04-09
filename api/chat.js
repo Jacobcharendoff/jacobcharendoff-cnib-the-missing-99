@@ -1,5 +1,6 @@
 // Vercel serverless function: OpenAI chat proxy for Iris
-// Architecture: generate -> moderate -> return JSON
+// Architecture: rate-limit -> generate -> moderate -> return JSON
+// - Simple per-IP token bucket to stop runaway clients and scraper loops
 // - gpt-4o generates Iris's response
 // - gpt-4o-mini runs a moderation pass (program allow-list, medical advice, hallucinated content)
 // - If moderation rejects, a safe fallback is returned
@@ -14,6 +15,70 @@ export const config = { runtime: 'edge' };
 // re-enable the experiment.
 const GEN_MODEL = process.env.IRIS_GEN_MODEL || 'gpt-4o';
 const MOD_MODEL = 'gpt-4o-mini';
+
+// ===== Rate limiting =====
+// Per-IP sliding window, in-memory on each edge instance. Not a hard wall —
+// a busy attacker can hit multiple instances — but enough to stop a single
+// runaway browser tab from burning through the OpenAI budget in a loop.
+// Limit: 40 requests / 60 seconds per IP. Override with IRIS_RATE_LIMIT.
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_MAX = parseInt(process.env.IRIS_RATE_LIMIT || '40', 10);
+const rateBuckets = new Map(); // ip -> array of timestamps
+
+function getClientIp(req) {
+  const xff = req.headers.get('x-forwarded-for') || '';
+  if (xff) return xff.split(',')[0].trim();
+  return req.headers.get('x-real-ip') || 'anonymous';
+}
+
+function rateLimitExceeded(ip) {
+  const now = Date.now();
+  const arr = rateBuckets.get(ip) || [];
+  // Drop timestamps outside the window
+  const fresh = arr.filter(ts => now - ts < RATE_WINDOW_MS);
+  if (fresh.length >= RATE_MAX) {
+    rateBuckets.set(ip, fresh);
+    return true;
+  }
+  fresh.push(now);
+  rateBuckets.set(ip, fresh);
+  // Occasional GC so the Map doesn't grow unbounded on a long-lived instance.
+  if (rateBuckets.size > 5000) {
+    for (const [key, stamps] of rateBuckets) {
+      const live = stamps.filter(ts => now - ts < RATE_WINDOW_MS);
+      if (live.length === 0) rateBuckets.delete(key);
+      else rateBuckets.set(key, live);
+    }
+  }
+  return false;
+}
+
+// ===== Error logging =====
+// Fire-and-forget to /api/log so server-side failures are visible in the
+// same pipeline as client-side turns. Silent if it fails — this is the last
+// line of defence and cannot itself break Iris.
+async function logServerError(stage, err, extra) {
+  try {
+    const host = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'https://meet-iris-app.vercel.app';
+    await fetch(`${host}/api/log`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phase: 'server_error',
+        stage,
+        error: String((err && err.message) || err || 'unknown'),
+        extra: extra || null,
+        timestamp: new Date().toISOString(),
+      }),
+      // Don't block the request on the log call.
+      keepalive: true,
+    });
+  } catch (_) {
+    // Swallow — logging must never crash the response path.
+  }
+}
 
 // Authoritative allow-list of current CNIB programs (public on cnib.ca as of April 2026).
 // Any program mentioned by Iris that is NOT on this list is treated as a hallucination.
@@ -83,7 +148,8 @@ Respond with ONLY valid JSON, no code fence, no commentary:
 {"safe": true} if the response passes all checks.
 {"safe": false, "reason": "brief reason", "replacement": "warm short Iris-voice response that acknowledges the member and offers to connect them with a real CNIB coordinator at 1-800-563-2642"} if it fails.
 
-The replacement, if needed, should be 2-4 sentences, casual, in Iris's voice (short, warm, no em dashes, no markdown, no labels), and should gently redirect to the CNIB main line 1-800-563-2642 without being robotic.`;
+The replacement, if needed, should be 2-4 sentences, casual, in Iris's voice (short, warm, no em dashes, no markdown, no labels), and should gently redirect to the CNIB main line 1-800-563-2642 without being robotic.
+`;
 
 async function callOpenAI(apiKey, model, messages, maxTokens, temperature) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -117,6 +183,21 @@ export default async function handler(req) {
     return new Response('Method not allowed', { status: 405 });
   }
 
+  // ===== Rate limit =====
+  const clientIp = getClientIp(req);
+  if (rateLimitExceeded(clientIp)) {
+    // Fire-and-forget visibility ping
+    logServerError('rate_limit', 'exceeded', { ip: clientIp });
+    return new Response(
+      JSON.stringify({
+        text: "Whoa, slow down a sec. Looks like we're talking faster than I can think. Give me a moment and try again in a bit.",
+        moderated: true,
+        reason: 'rate_limited',
+      }),
+      { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '30' } }
+    );
+  }
+
   // Kill switch
   if (process.env.IRIS_CHAT_ENABLED === 'false') {
     return new Response(
@@ -131,6 +212,7 @@ export default async function handler(req) {
 
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
+    logServerError('config', 'OPENAI_API_KEY missing');
     return new Response('OPENAI_API_KEY not configured', { status: 500 });
   }
 
@@ -157,6 +239,7 @@ export default async function handler(req) {
     draft = await callOpenAI(apiKey, GEN_MODEL, trimmed, 140, 0.85);
   } catch (e) {
     console.error('[chat] generation failed:', e.message);
+    logServerError('generation', e, { ip: clientIp });
     return new Response(
       JSON.stringify({
         text: safeFallback('generation error'),
@@ -213,6 +296,7 @@ export default async function handler(req) {
       modResult = JSON.parse(cleaned);
     } catch (e) {
       console.warn('[chat] moderator parse failed, shipping draft:', e.message);
+      logServerError('moderator', e, { ip: clientIp });
       modResult = { safe: true }; // Fail open — better to ship draft than break the chat
     }
   }
