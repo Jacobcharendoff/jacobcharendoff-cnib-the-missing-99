@@ -7243,8 +7243,9 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
 
     // ===== IRIS SESSION LOG =====
-    // Lightweight session history. Lives in memory + localStorage for now.
-    // TODO(pilot): forward to a real CRM endpoint when backend is ready.
+    // Captures every Iris and member turn, persists locally, and forwards to
+    // /api/log (which pipes to Google Sheets + emails Jacob). All network work
+    // is strictly fire-and-forget: a failure here must NEVER break the chat.
     // Shape: { id, startedAt, endedAt, events: [{t, role, text, meta}] }
     (function initIrisSession() {
       try {
@@ -7259,6 +7260,64 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         window.__irisSession = session;
         window.__irisSessions = window.__irisSessions || [];
         window.__irisSessions.push(session);
+
+        // --- Remote log forwarder (fire-and-forget) ---
+        let __irisStartSent = false;
+        let __irisLastFlushAt = 0;
+        let __irisFlushTimer  = null;
+        const __IRIS_FLUSH_DEBOUNCE_MS = 2500;
+
+        function __buildPayload(phase) {
+          try {
+            const s = window.__irisSession || {};
+            return {
+              sessionId: s.id,
+              scenario:  s.scenario || null,
+              startedAt: s.startedAt || null,
+              endedAt:   s.endedAt   || null,
+              events:    (s.events || []).slice(-200), // cap payload size
+              ua:        (navigator && navigator.userAgent) || '',
+              lang:      (navigator && navigator.language) || '',
+              tz:        Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+              url:       (location && location.href) || '',
+              referrer:  document.referrer || '',
+              phase:     phase || 'turn'
+            };
+          } catch (e) { return null; }
+        }
+
+        function __postLog(payload, useBeacon) {
+          if (!payload) return;
+          try {
+            const body = JSON.stringify(payload);
+            if (useBeacon && navigator.sendBeacon) {
+              // Only safe path on unload
+              const blob = new Blob([body], { type: 'application/json' });
+              navigator.sendBeacon('/api/log', blob);
+              return;
+            }
+            fetch('/api/log', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body,
+              keepalive: true
+            }).catch(() => { /* silent */ });
+          } catch (e) { /* silent */ }
+        }
+
+        function __flush(phase) {
+          __irisLastFlushAt = Date.now();
+          __postLog(__buildPayload(phase || 'turn'), false);
+        }
+
+        function __scheduleFlush() {
+          if (__irisFlushTimer) return;
+          __irisFlushTimer = setTimeout(() => {
+            __irisFlushTimer = null;
+            __flush('turn');
+          }, __IRIS_FLUSH_DEBOUNCE_MS);
+        }
+
         window.logIrisEvent = function (role, text, meta) {
           try {
             if (!window.__irisSession) return;
@@ -7268,21 +7327,44 @@ Never end a conversation without either (a) a clear recommendation AND a concret
               text: (text || '').toString(),
               meta: meta || null
             });
-            // Persist last 10 sessions locally. Privacy note: this is a pilot-only
-            // buffer; it will be swapped for a real CRM write in production.
-            const all = JSON.parse(localStorage.getItem('irisSessions') || '[]');
-            const idx = all.findIndex(s => s.id === window.__irisSession.id);
-            if (idx >= 0) all[idx] = window.__irisSession;
-            else all.push(window.__irisSession);
-            while (all.length > 10) all.shift();
-            localStorage.setItem('irisSessions', JSON.stringify(all));
+            // Persist last 10 sessions locally (pilot-only buffer).
+            try {
+              const all = JSON.parse(localStorage.getItem('irisSessions') || '[]');
+              const idx = all.findIndex(s => s.id === window.__irisSession.id);
+              if (idx >= 0) all[idx] = window.__irisSession;
+              else all.push(window.__irisSession);
+              while (all.length > 10) all.shift();
+              localStorage.setItem('irisSessions', JSON.stringify(all));
+            } catch (_) {}
+            // Fire 'start' once, on the first real event (not on page load —
+            // we don't want a ping for every visitor who never opens the chat).
+            if (!__irisStartSent && (role === 'iris' || role === 'member')) {
+              __irisStartSent = true;
+              try { __flush('start'); } catch (_) {}
+            } else {
+              __scheduleFlush();
+            }
           } catch (e) { /* non-blocking */ }
         };
+
         window.setIrisScenario = function (name) {
           if (window.__irisSession) window.__irisSession.scenario = name || null;
         };
-        window.addEventListener('beforeunload', () => {
-          if (window.__irisSession) window.__irisSession.endedAt = new Date().toISOString();
+
+        // Send 'end' on page hide / unload using sendBeacon (survives unload).
+        function __markEndAndFlush() {
+          try {
+            if (!__irisStartSent) return; // never started a real convo
+            if (window.__irisSession && !window.__irisSession.endedAt) {
+              window.__irisSession.endedAt = new Date().toISOString();
+            }
+            __postLog(__buildPayload('end'), true);
+          } catch (_) {}
+        }
+        window.addEventListener('pagehide', __markEndAndFlush);
+        window.addEventListener('beforeunload', __markEndAndFlush);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') __markEndAndFlush();
         });
       } catch (e) { console.warn('[iris] session init failed', e); }
     })();
