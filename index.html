@@ -1175,12 +1175,22 @@
       border: 0;
     }
 
-    /* Site-wide text scaling — 6 steps (WCAG 1.4.4 supports up to 200%) */
-    html.a11y-text-110 { font-size: 110%; }
-    html.a11y-text-125 { font-size: 125%; }
-    html.a11y-text-150 { font-size: 150%; }
-    html.a11y-text-175 { font-size: 175%; }
-    html.a11y-text-200 { font-size: 200%; }
+    /* Site-wide text scaling — 6 steps (WCAG 1.4.4 supports up to 200%).
+       Uses `zoom` scoped to #main-content so every px-based size actually scales
+       and the a11y widget/nav/announcement bar stay at their true size. */
+    html.a11y-text-110 #main-content { zoom: 1.10; }
+    html.a11y-text-125 #main-content { zoom: 1.25; }
+    html.a11y-text-150 #main-content { zoom: 1.50; }
+    html.a11y-text-175 #main-content { zoom: 1.75; }
+    html.a11y-text-200 #main-content { zoom: 2.00; }
+    /* Firefox fallback (Firefox ignores zoom) */
+    @-moz-document url-prefix() {
+      html.a11y-text-110 #main-content { transform: scale(1.10); transform-origin: top left; width: 90.9%; }
+      html.a11y-text-125 #main-content { transform: scale(1.25); transform-origin: top left; width: 80%; }
+      html.a11y-text-150 #main-content { transform: scale(1.50); transform-origin: top left; width: 66.66%; }
+      html.a11y-text-175 #main-content { transform: scale(1.75); transform-origin: top left; width: 57.14%; }
+      html.a11y-text-200 #main-content { transform: scale(2.00); transform-origin: top left; width: 50%; }
+    }
 
     /* Line spacing (WCAG 1.4.12) */
     html.a11y-line-relaxed * { line-height: 1.7 !important; }
@@ -1219,9 +1229,15 @@
     html.a11y-high-contrast li,
     html.a11y-high-contrast span:not([aria-hidden]) { color: #FFF !important; }
 
-    /* Inverted (light-on-dark → dark-on-light for low-vision users who prefer light) */
-    html.a11y-invert body { background: #FFFFFF !important; color: #0A0A0A !important; filter: invert(1) hue-rotate(180deg); }
-    html.a11y-invert img, html.a11y-invert video, html.a11y-invert svg { filter: invert(1) hue-rotate(180deg); }
+    /* Inverted (light-on-dark → dark-on-light for low-vision users who prefer light)
+       Scoped to #main-content so the a11y widget, nav, and version bar stay
+       unaffected. Filter on body breaks position:fixed (CSS containing-block bug)
+       and hides the widget, so we scope to the content wrapper instead. */
+    html.a11y-invert #main-content { filter: invert(1) hue-rotate(180deg); background: #FFFFFF; }
+    html.a11y-invert #main-content img,
+    html.a11y-invert #main-content video,
+    html.a11y-invert #main-content svg,
+    html.a11y-invert #main-content picture { filter: invert(1) hue-rotate(180deg); }
 
     /* Underline all links and buttons */
     html.a11y-underline-links a,
