@@ -212,7 +212,7 @@
     /* ===== NAV ===== */
     nav {
       position: fixed;
-      top: 0;
+      top: 34px;
       left: 0;
       right: 0;
       z-index: 100;
@@ -4933,15 +4933,21 @@
   </div>
 
   <!-- v1.2 ANNOUNCEMENT BAR -->
-  <div id="versionBar" role="banner" aria-label="Version announcement" style="position:relative;z-index:100;background:#0A0A0A;border-bottom:1px solid rgba(255,209,0,0.18);padding:10px 24px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:13px;letter-spacing:0.2px;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
-    <span style="display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,0.78);">
-      <span aria-hidden="true" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFD100;box-shadow:0 0 10px rgba(255,209,0,0.8);"></span>
+  <div id="versionBar" role="banner" aria-label="Version announcement" style="position:fixed;top:0;left:0;right:0;z-index:101;height:34px;background:rgba(10,10,10,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,209,0,0.22);padding:0 24px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:12.5px;letter-spacing:0.2px;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
+    <span style="display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,0.72);">
+      <span aria-hidden="true" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFD100;box-shadow:0 0 8px rgba(255,209,0,0.7);"></span>
       <span>Proudly introducing <strong style="color:#fff;font-weight:600;">Iris&nbsp;v1.2</strong></span>
     </span>
     <button type="button" onclick="openWhatsNew()" aria-haspopup="dialog" aria-controls="whatsNewModal" style="background:transparent;border:none;padding:0;margin:0;color:#FFD100;font:inherit;letter-spacing:0.2px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;">
       See what's inside <span aria-hidden="true" style="display:inline-block;transform:translateY(-1px);margin-left:2px;">&rarr;</span>
     </button>
   </div>
+  <style>
+    @media (max-width: 640px) {
+      #versionBar { font-size: 11.5px; height: 32px; gap: 8px; }
+      nav { top: 32px !important; }
+    }
+  </style>
 
   <!-- NAV -->
   <nav>
