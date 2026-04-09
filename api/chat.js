@@ -338,19 +338,40 @@ export default async function handler(req) {
   }
 
   // === STEP 4: Cold-close guard ===
-  // The generation model sometimes defaults to generic chatbot sign-offs
-  // ("Thanks for reaching out", "Please don't hesitate", "I recommend calling
-  // CNIB") when it runs out of ideas. These are the exact phrases Jacob has
-  // flagged as brand-violating. Catch and rewrite server-side so they never
-  // ship — even if the rest of the reply is fine.
-  const COLD_CLOSE_RE = /(thanks?\s+(you\s+)?for\s+reaching\s+out|thank\s+you\s+for\s+(reaching\s+out|contacting|connecting)|please\s+(don'?t\s+hesitate|feel\s+free)\s+to\s+(reach\s+out|contact|call)|don'?t\s+hesitate\s+to\s+(reach\s+out|contact|call|ask)|i(?:'m|\s+am)\s+here\s+(if\s+you\s+need|to\s+help|for\s+you)|if\s+you\s+have\s+any\s+(other|more|further)\s+questions|i\s+recommend\s+(calling|contacting)\s+cnib|you\s+can\s+(always\s+)?call\s+cnib|i\s+hope\s+this\s+helps|have\s+a\s+(great|wonderful|nice)\s+day|take\s+care\b|best\s+(regards|wishes)|warmly[,!.]?\s*$|warmly[,!]|warm\s+regards|kind\s+regards|sincerely[,!.]?|cheers[,!.]?\s*$|in\s+the\s+future[,.]?\s*(feel\s+free|please)|(you'?re\s+welcome)[!.]|stay\s+safe|stay\s+cozy|stay\s+well|all\s+the\s+best|if\s+there'?s\s+anything\s+else|is\s+there\s+anything\s+else\s+(i\s+can|you\s+(need|want))|feel\s+free\s+to\s+(let\s+me\s+know|ask)|let\s+me\s+know\s+if\s+you\s+(need|have)|happy\s+to\s+help|glad\s+(i\s+could|to\s+help)|hope\s+(that|this)\s+(helps|was\s+helpful)|goodbye[!.]?\s*$|farewell)/i;
-  if (modResult.safe && COLD_CLOSE_RE.test(draft)) {
-    // Sentence-level drop. Split on sentence boundaries, discard any sentence
-    // that matches a cold-close phrase, keep the rest. This avoids orphan
-    // fragments like "You're welcome! in the future, ." left behind by
-    // in-place regex excision. If nothing survives, we emit a warm fallback.
+  // The generation model defaults to generic chatbot sign-offs when it runs
+  // out of ideas. Brand-violating phrases. Approach: build a flat list of
+  // cold-phrase fragments. Any sentence in the draft containing ANY fragment
+  // is dropped. Cleaner and more exhaustive than one giant regex.
+  const COLD_FRAGMENTS = [
+    'reach out', 'reaching out', 'feel free', 'dont hesitate', "don't hesitate",
+    'stay safe', 'stay cozy', 'stay well', 'take care',
+    'have a great day', 'have a wonderful day', 'have a nice day', 'have a good day',
+    'warm regards', 'kind regards', 'best regards', 'best wishes', 'warmly',
+    'sincerely', 'cheers', 'farewell', 'goodbye',
+    'in the future', 'all the best', 'happy to help', 'glad to help',
+    'glad i could help', 'hope this helps', 'hope that helps', 'hope this was helpful',
+    'hope you have a', 'wish you well', 'wish you the best', 'take good care',
+    'if you have any', 'if there', 'if you need', 'if you ever',
+    'is there anything else', 'anything else i can', 'anything else you need',
+    'let me know if', 'let me know how',
+    'you can always call', 'i recommend calling',
+    "you're welcome", 'you are welcome',
+    'i am here for', "i'm here for", 'i am here to help', "i'm here to help",
+    'i am here if', "i'm here if",
+    'thank you for contacting', 'thank you for connecting', 'thanks for reaching',
+    'thank you for reaching',
+  ];
+  const normalizeForScan = (s) => s.toLowerCase().replace(/[^\w\s']/g, ' ').replace(/\s+/g, ' ').trim();
+  const sentenceIsCold = (s) => {
+    const n = normalizeForScan(s);
+    if (!n) return false;
+    return COLD_FRAGMENTS.some(f => n.includes(f));
+  };
+  const draftHasColdSentence = draft.split(/(?<=[.!?])\s+/).some(sentenceIsCold);
+  if (modResult.safe && draftHasColdSentence) {
+    // Sentence-level drop. Keep sentences that do NOT contain a cold fragment.
     const sentences = draft.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
-    const kept = sentences.filter(s => !COLD_CLOSE_RE.test(s));
+    const kept = sentences.filter(s => !sentenceIsCold(s));
     let cleaned = kept.join(' ').replace(/\s+/g, ' ').trim();
     // Drop a trailing orphan connector like "Well," or "Okay."
     cleaned = cleaned.replace(/\s*(well|okay|ok|alright|so|and|but)[,.!?]?\s*$/i, '').trim();
