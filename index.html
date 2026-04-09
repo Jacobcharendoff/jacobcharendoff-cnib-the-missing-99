@@ -6519,7 +6519,27 @@ GUIDE DOGS
 BEYOND PRINT
 • CNIB Beyond Print. free access to thousands of audiobooks, described audio, alternative formats. National. Best for readers losing print access.
 
-THE NO-MATCH PROTOCOL. READ THIS. This is how you stop circling.
+THE PROTOTYPE HANDOFF. READ THIS FIRST. This is the MOST IMPORTANT section of this prompt. Every real conversation ends here.
+
+You are a beta. You cannot actually register anyone for anything, submit a referral, book a call, send an email, or touch CNIB's systems. You are honest about this — but that honesty is NOT a brush-off. It is the setup for a specific, warm, grounded handoff that does real work for the member before they hang up.
+
+THE HANDOFF RITUAL. Fires whenever the member says yes to a program you've offered, or whenever you've gathered enough (Story + Life + Need + Hope) and it's time to land.
+
+(a) Name the program again with specific ownership. "Okay — Beyond Print. That's the right one for what you just told me." Not "here's a program." Name it.
+
+(b) Be transparent about the prototype seam, in YOUR voice, warmly. Exactly this shape: "Being straight with you — in a future version of me, I'd be able to register you for Beyond Print directly and make that intro for you. I can't do that piece yet. So here's what I can do right now, and it's actually the fastest path: I'll give you the real number, and I'll write you an opening line so you land with the right person on the first call."
+
+(c) Give the number: 1-800-563-2642, weekdays nine to five, or info@cnib.ca.
+
+(d) Write the opening line OUT LOUD, in their words, stitched from what they actually told you. Use their name, their city if you have it, their situation, and the specific program by name. Example for a science student losing his sight: "Call that number and say: 'Hi, my name is Jacob. I'm a science student, about three to four months into sight changes, and the hardest part is reading my coursework. I'd like to get set up with Beyond Print so I can get my readings in audio.' That's your opener. Just read it off your screen if it helps."
+
+(e) Offer to tweak it. "Want me to change anything in that line before you call?"
+
+You do all five in ONE turn. That's the ritual. That's the ending. It is NEVER "Thanks for reaching out — I can't help with that specific program." That line is FORBIDDEN. If you catch yourself drifting toward a generic thank-you-and-goodbye, stop and run the ritual above instead.
+
+When the member asks "why can't you just do it for me?" — the answer is NOT a reframe about guidance and information. The answer is: "Honest answer — because I'm a beta and I don't have the hookups into CNIB's systems yet. In a future version of me I will. For today, the best I can do is what I just did: give you the number and the opening line so your first call lands on the right desk. I know it's not the same as me making the call. I'm sorry about that part."
+
+THE NO-MATCH PROTOCOL. READ THIS. This is how you stop circling. This is for a DIFFERENT situation than the handoff ritual above — it fires ONLY when the member asks for something that is not in the CNIB catalog.
 
 Sometimes a member will name a specific thing they want — "I'm a woodworker and I want a group for blind woodworkers," "I want a running club," "I want someone to cook with me," "I want to learn photography again." CNIB may or may not have a dedicated program for that exact thing. Most of the time, there is NO one-to-one program match. You will be tempted to keep asking questions, or to say nothing, or to pivot back to their feelings. DO NOT. That is the circling Jacob keeps catching. It is the single worst failure mode in this whole prompt.
 
@@ -6976,49 +6996,149 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       }
     }
 
-    // Type out a response character-by-character to keep the organic feel that
-    // streaming used to give us. Also flushes sentence chunks to TTS as they complete.
+    // Render the response with text and voice perfectly synchronized.
+    //
+    // OLD (buggy) behavior: typewriter fired char-by-char at a fixed 18ms
+    // cadence and shipped sentence chunks to TTS as they completed. The
+    // typewriter ran ahead of the voice (because TTS has ~600-1200ms network
+    // latency per sentence) and there was dead air between sentences while
+    // each fetch ran serially. Result: text-before-voice and choppy speech.
+    //
+    // NEW behavior: ONE /api/tts call for the whole response. Wait for the
+    // audio blob, start playback, and drive the typewriter off
+    // audio.currentTime / audio.duration so every character lands exactly
+    // when it's being spoken. Text and voice arrive together; there is zero
+    // gap between sentences because there's only one audio stream.
+    //
+    // Fallback paths:
+    // - voiceEnabled === false: use the original char-by-char typewriter.
+    // - TTS fetch fails: render the full text immediately, no voice.
     async function streamLLMResponse(data, bubbleEl) {
       const fullText = (data && data.text) || '';
-      let rendered = '';
-      let spokenUpTo = 0;
 
       // Reset/stop any in-flight speech before this turn
       stopSpeaking();
 
-      function flushSentencesToTTS(force = false) {
-        if (!voiceEnabled) return;
-        const pending = rendered.slice(spokenUpTo);
-        const re = /[^.!?]+[.!?]+(?:\s|$)|[^—:]+[—:](?:\s|$)/g;
-        let m;
-        let lastIndex = 0;
-        while ((m = re.exec(pending)) !== null) {
-          const sentence = m[0].trim();
-          if (sentence.length >= 2) enqueueTTS(sentence);
-          lastIndex = m.index + m[0].length;
+      const renderUpTo = (n) => {
+        const clamped = Math.max(0, Math.min(fullText.length, n));
+        bubbleEl.innerHTML = fullText.slice(0, clamped).replace(/\n/g, '<br>');
+        chatBody.scrollTop = chatBody.scrollHeight;
+      };
+
+      // Voice-disabled path: classic char-by-char typewriter, no TTS.
+      if (!voiceEnabled) {
+        let rendered = '';
+        for (let i = 0; i < fullText.length; i++) {
+          const ch = fullText[i];
+          rendered += ch;
+          bubbleEl.innerHTML = rendered.replace(/\n/g, '<br>');
+          chatBody.scrollTop = chatBody.scrollHeight;
+          let delay = 18;
+          if (ch === ' ') delay = 10;
+          else if (/[.!?]/.test(ch)) delay = 180;
+          else if (/[,;:]/.test(ch)) delay = 90;
+          await new Promise(r => setTimeout(r, delay));
         }
-        spokenUpTo += lastIndex;
-        if (force) {
-          const tail = rendered.slice(spokenUpTo).trim();
-          if (tail.length >= 2) enqueueTTS(tail);
-          spokenUpTo = rendered.length;
-        }
+        conversationHistory.push({ role: 'assistant', content: fullText });
+        try { logTurnToWebhook(fullText, data && data.moderated, data && data.reason); } catch (e) {}
+        return fullText;
       }
 
-      // Type at ~25ms per char, slightly faster on spaces, pausing at punctuation.
-      for (let i = 0; i < fullText.length; i++) {
-        const ch = fullText[i];
-        rendered += ch;
-        bubbleEl.innerHTML = rendered.replace(/\n/g, '<br>');
-        chatBody.scrollTop = chatBody.scrollHeight;
-        let delay = 18;
-        if (ch === ' ') delay = 10;
-        else if (/[.!?]/.test(ch)) delay = 180;
-        else if (/[,;:]/.test(ch)) delay = 90;
-        await new Promise(r => setTimeout(r, delay));
-        if (i % 8 === 0) flushSentencesToTTS(false);
+      // Voice-enabled path: fetch the full audio first, then sync text to it.
+      let audioPlayed = false;
+      try {
+        const ttsResponse = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: fullText, voice: 'iris' })
+        });
+
+        if (ttsResponse.ok) {
+          const audioBlob = await ttsResponse.blob();
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+          audio.playbackRate = 1.0;
+          currentAudio = audio;
+          irisIsSpeaking = true;
+          pauseListeningForIris();
+
+          await new Promise((resolve) => {
+            let settled = false;
+            let rafId = null;
+            const cleanup = () => {
+              if (settled) return;
+              settled = true;
+              if (rafId) cancelAnimationFrame(rafId);
+              try { URL.revokeObjectURL(audioUrl); } catch (e) {}
+              resolve();
+            };
+
+            audio.onplay = () => {
+              if (window.__dismissConnecting) window.__dismissConnecting();
+              if (audioPlayed) return;
+              audioPlayed = true;
+              // Drive the typewriter off audio.currentTime so characters
+              // arrive exactly when they're being spoken.
+              const totalChars = fullText.length;
+              const tick = () => {
+                if (settled) return;
+                const dur = audio.duration;
+                const t = audio.currentTime || 0;
+                let n;
+                if (dur && isFinite(dur) && dur > 0) {
+                  n = Math.min(totalChars, Math.floor(totalChars * (t / dur)));
+                } else {
+                  // Duration metadata not ready yet — fall back to a
+                  // conservative 16 chars/sec elapsed-time estimate.
+                  n = Math.min(totalChars, Math.floor(t * 16));
+                }
+                renderUpTo(n);
+                if (audio.ended || (dur && isFinite(dur) && t >= dur)) {
+                  renderUpTo(totalChars);
+                  return;
+                }
+                rafId = requestAnimationFrame(tick);
+              };
+              tick();
+            };
+
+            audio.onended = () => {
+              renderUpTo(fullText.length);
+              cleanup();
+            };
+            audio.onerror = () => {
+              renderUpTo(fullText.length);
+              cleanup();
+            };
+            // stopSpeaking() pauses the audio; make sure we settle the
+            // awaiting promise so we don't wedge the caller forever.
+            audio.onpause = () => {
+              if (audio.currentTime === 0 || audio.ended || settled) return;
+              cleanup();
+            };
+
+            audio.play().catch((err) => {
+              console.warn('[tts] audio.play() blocked:', err && err.message);
+              renderUpTo(fullText.length);
+              cleanup();
+            });
+          });
+
+          if (currentAudio === audio) currentAudio = null;
+          irisIsSpeaking = false;
+          resumeListeningForIris();
+        } else {
+          console.warn('[tts] /api/tts failed:', ttsResponse.status);
+        }
+      } catch (e) {
+        console.warn('[tts] fetch threw:', e && e.message);
       }
-      flushSentencesToTTS(true);
+
+      // If the audio path never actually played, render the text immediately
+      // so the member still sees Iris's reply.
+      if (!audioPlayed) {
+        renderUpTo(fullText.length);
+      }
 
       conversationHistory.push({ role: 'assistant', content: fullText });
 
@@ -7094,7 +7214,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       general: {
         banner: null,
         isLive: true,
-        greeting: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it — can I start by asking your name?",
+        greeting: "Hi, I'm Iris. Quick heads up before we get into it — I'm a beta, so my abilities today are limited. I can't actually register you for anything or make calls on your behalf yet. But I can listen, I know CNIB's programs inside and out, and I'll do my best to connect some real dots for you. First — what's your name? And then, if you know already: is there anything specific on your mind? A recent diagnosis, a program you're trying to find, work, daily life, or just something that's been weighing on you. Anywhere is a fine place to start.",
         suggestions: ["I just got diagnosed", "I'm helping someone I love", "I'm not sure where to start"]
       },
       margaret: {
@@ -7297,22 +7417,34 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         function __extractFirstName(text) {
           if (!text) return null;
           var t = String(text).trim();
-          // Common intro patterns. Case insensitive on the marker, but we want
-          // a clean Capitalized token after it.
+          var stop = ['Iris','I','Im','Sorry','Just','Looking','Trying','Calling','Here','Yes','No','Hi','Hey','Hello','Ok','Okay','Sure','Maybe','Nothing','Thanks','Fine'];
+          // Common intro patterns. Case insensitive on the marker.
           var patterns = [
-            /\b(?:i['’]?m|i am)\s+([A-Z][a-zA-Z\-']{1,20})/,
-            /\bmy name is\s+([A-Z][a-zA-Z\-']{1,20})/i,
-            /\bthis is\s+([A-Z][a-zA-Z\-']{1,20})/,
-            /\bcall me\s+([A-Z][a-zA-Z\-']{1,20})/i,
-            /\bname['’]?s\s+([A-Z][a-zA-Z\-']{1,20})/i
+            /\b(?:i['’]?m|i am)\s+([A-Za-z][a-zA-Z\-']{1,20})/i,
+            /\bmy name is\s+([A-Za-z][a-zA-Z\-']{1,20})/i,
+            /\bthis is\s+([A-Za-z][a-zA-Z\-']{1,20})/i,
+            /\bcall me\s+([A-Za-z][a-zA-Z\-']{1,20})/i,
+            /\bname['’]?s\s+([A-Za-z][a-zA-Z\-']{1,20})/i,
+            /\bit['’]?s\s+([A-Za-z][a-zA-Z\-']{1,20})/i
           ];
           for (var i = 0; i < patterns.length; i++) {
             var m = t.match(patterns[i]);
             if (m && m[1]) {
               var name = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
-              // Filter common false positives
-              var stop = ['Iris','I','Im','Sorry','Just','Looking','Trying','Calling','Here'];
               if (stop.indexOf(name) === -1) return name;
+            }
+          }
+          // Bare-name fallback: after Iris asks "what's your name?", the most
+          // common reply is just the name itself ("Jacob", "Margaret", "it's
+          // Bob"). If the message is short (1-2 tokens), alphabetic, not in
+          // the stop list, treat it as the first name.
+          var stripped = t.replace(/[.!?,;:]+$/g, '').trim();
+          var tokens = stripped.split(/\s+/);
+          if (tokens.length >= 1 && tokens.length <= 2) {
+            var candidate = tokens[tokens.length - 1];
+            if (/^[A-Za-z][a-zA-Z\-']{1,20}$/.test(candidate)) {
+              var cleaned = candidate.charAt(0).toUpperCase() + candidate.slice(1).toLowerCase();
+              if (stop.indexOf(cleaned) === -1) return cleaned;
             }
           }
           return null;
