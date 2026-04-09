@@ -1160,9 +1160,41 @@
       border-radius: 4px;
     }
 
-    /* Site-wide text scaling (driven by .a11y-text-* on <html>) */
-    html.a11y-text-large { font-size: 112.5%; }
-    html.a11y-text-xlarge { font-size: 125%; }
+    /* ============================================================
+       ACCESSIBILITY SYSTEM v1.2 — AODA / WCAG 2.1 AA + beyond
+       ============================================================ */
+
+    /* Visually hidden live region for screen reader announcements */
+    .a11y-sr-live {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Site-wide text scaling — 6 steps (WCAG 1.4.4 supports up to 200%) */
+    html.a11y-text-110 { font-size: 110%; }
+    html.a11y-text-125 { font-size: 125%; }
+    html.a11y-text-150 { font-size: 150%; }
+    html.a11y-text-175 { font-size: 175%; }
+    html.a11y-text-200 { font-size: 200%; }
+
+    /* Line spacing (WCAG 1.4.12) */
+    html.a11y-line-relaxed * { line-height: 1.7 !important; }
+    html.a11y-line-loose * { line-height: 2 !important; }
+
+    /* Letter spacing (WCAG 1.4.12) */
+    html.a11y-letter-wide * { letter-spacing: 0.05em !important; }
+    html.a11y-letter-wider * { letter-spacing: 0.12em !important; word-spacing: 0.16em !important; }
+
+    /* Dyslexia-friendly font (OpenDyslexic loaded via CDN on demand) */
+    html.a11y-dyslexic,
+    html.a11y-dyslexic * {
+      font-family: 'OpenDyslexic', 'Comic Sans MS', Verdana, sans-serif !important;
+    }
 
     /* High contrast mode */
     html.a11y-high-contrast .theme-white,
@@ -1179,14 +1211,36 @@
       color: #FFFFFF !important;
     }
     html.a11y-high-contrast body { background: #000 !important; color: #FFF !important; }
-    html.a11y-high-contrast .label { color: #FFD100 !important; }
+    html.a11y-high-contrast .label,
     html.a11y-high-contrast .accent { color: #FFD100 !important; }
     html.a11y-high-contrast .iris-msg.bot { background: #000 !important; color: #FFF !important; border: 2px solid #FFD100 !important; }
     html.a11y-high-contrast .iris-msg.user { background: #FFD100 !important; color: #000 !important; border: 2px solid #FFF !important; }
+    html.a11y-high-contrast p,
+    html.a11y-high-contrast li,
+    html.a11y-high-contrast span:not([aria-hidden]) { color: #FFF !important; }
 
-    /* Underline all links */
+    /* Inverted (light-on-dark → dark-on-light for low-vision users who prefer light) */
+    html.a11y-invert body { background: #FFFFFF !important; color: #0A0A0A !important; filter: invert(1) hue-rotate(180deg); }
+    html.a11y-invert img, html.a11y-invert video, html.a11y-invert svg { filter: invert(1) hue-rotate(180deg); }
+
+    /* Underline all links and buttons */
     html.a11y-underline-links a,
-    html.a11y-underline-links button { text-decoration: underline !important; }
+    html.a11y-underline-links button { text-decoration: underline !important; text-underline-offset: 2px; }
+
+    /* Enhanced focus rings (WCAG 2.4.7, 2.4.11 — 3:1 contrast, 2px min, offset) */
+    html.a11y-focus-boost *:focus,
+    html.a11y-focus-boost *:focus-visible {
+      outline: 4px solid #FFD100 !important;
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 2px #000, 0 0 0 6px #FFD100 !important;
+      border-radius: 4px;
+    }
+
+    /* Large cursor */
+    html.a11y-large-cursor,
+    html.a11y-large-cursor * {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><path d='M6 4 L6 40 L16 30 L22 44 L28 42 L22 28 L36 28 Z' fill='%23FFD100' stroke='%23000' stroke-width='2' stroke-linejoin='round'/></svg>") 6 4, auto !important;
+    }
 
     /* Reduce motion */
     html.a11y-reduce-motion *,
@@ -1204,101 +1258,199 @@
       }
     }
 
-    /* Accessibility widget button */
+    /* Reading guide — horizontal bar that tracks cursor */
+    .a11y-reading-guide {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 40px;
+      pointer-events: none;
+      z-index: 99998;
+      display: none;
+      background: rgba(255,209,0,0.14);
+      border-top: 2px solid #FFD100;
+      border-bottom: 2px solid #FFD100;
+      box-shadow: 0 0 0 2000px rgba(0,0,0,0.0);
+    }
+    html.a11y-reading-guide .a11y-reading-guide { display: block; }
+
+    /* Reading mask — dims screen except a band near cursor */
+    .a11y-reading-mask {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 99997;
+      display: none;
+    }
+    html.a11y-reading-mask .a11y-reading-mask { display: block; }
+    html.a11y-reading-mask .a11y-reading-mask::before,
+    html.a11y-reading-mask .a11y-reading-mask::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.78);
+    }
+    html.a11y-reading-mask .a11y-reading-mask::before { top: 0; height: var(--mask-top, 0px); }
+    html.a11y-reading-mask .a11y-reading-mask::after  { top: var(--mask-bottom, 0px); bottom: 0; }
+
+    /* ===== FLOATING ACTION BUTTON ===== */
     .a11y-fab {
       position: fixed;
-      bottom: 32px;
-      left: 32px;
+      bottom: 24px;
+      left: 24px;
       z-index: 9999;
-      width: 56px;
-      height: 56px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      background: #0A0A0A;
-      border: 3px solid #FFD100;
+      background: #FFD100;
+      border: 3px solid #0A0A0A;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      transition: transform 0.2s;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 0 2px #FFD100;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .a11y-fab:hover { transform: scale(1.08); }
-    .a11y-fab svg { width: 28px; height: 28px; stroke: #FFD100; fill: none; stroke-width: 2; }
+    .a11y-fab:hover, .a11y-fab:focus-visible {
+      transform: scale(1.08);
+      box-shadow: 0 12px 36px rgba(255,209,0,0.35), 0 0 0 3px #FFD100;
+      outline: none;
+    }
+    .a11y-fab svg { width: 32px; height: 32px; stroke: #0A0A0A; fill: none; stroke-width: 2.2; }
 
-    /* Accessibility panel */
+    /* ===== PANEL ===== */
     .a11y-panel {
       position: fixed;
       bottom: 100px;
-      left: 32px;
+      left: 24px;
       z-index: 9999;
-      width: 320px;
+      width: 360px;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
       background: #0A0A0A;
       border: 2px solid #FFD100;
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: 20px;
+      padding: 0;
       opacity: 0;
       pointer-events: none;
-      transform: translateY(10px);
+      transform: translateY(10px) scale(0.98);
       transition: opacity 0.2s, transform 0.2s;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.7);
+      font-family: Barlow, 'Helvetica Neue', Arial, sans-serif;
     }
-    .a11y-panel.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .a11y-panel.open { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+    .a11y-panel-header {
+      position: sticky;
+      top: 0;
+      background: #0A0A0A;
+      padding: 22px 24px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 2;
+    }
     .a11y-panel-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2.2px;
       text-transform: uppercase;
       color: #FFD100;
-      margin-bottom: 4px;
+      margin: 0 0 4px;
+    }
+    .a11y-panel-heading {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0 0 4px;
+      letter-spacing: -0.02em;
     }
     .a11y-panel-sub {
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.62);
+      margin: 0;
+      line-height: 1.45;
+    }
+    .a11y-panel-body { padding: 12px 24px 18px; }
+    .a11y-group {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .a11y-group:first-child { margin-top: 4px; padding-top: 0; border-top: none; }
+    .a11y-group-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(255,209,0,0.85);
+      margin: 0 0 12px;
     }
     .a11y-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      gap: 14px;
+      padding: 10px 0;
+      min-height: 44px;
     }
-    .a11y-row:first-of-type { border-top: none; }
+    .a11y-row-main { flex: 1; min-width: 0; }
     .a11y-row-label {
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 14.5px;
+      font-weight: 600;
       color: #FFF;
+      line-height: 1.25;
+      display: block;
     }
-    .a11y-text-buttons { display: flex; gap: 6px; }
-    .a11y-text-buttons button {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(255,255,255,0.15);
-      color: #FFF;
+    .a11y-row-hint {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.4;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* Segmented control (for text size, line spacing, letter spacing) */
+    .a11y-segmented {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      background: rgba(255,255,255,0.05);
+      padding: 3px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .a11y-segmented button {
+      min-width: 36px;
+      min-height: 32px;
+      padding: 0 10px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.75);
       font-family: inherit;
       font-weight: 700;
+      font-size: 12px;
       cursor: pointer;
-      transition: all 0.2s;
+      border-radius: 7px;
+      transition: background 0.15s, color 0.15s;
     }
-    .a11y-text-buttons button.active {
-      background: #FFD100;
-      color: #000;
-      border-color: #FFD100;
-    }
-    .a11y-text-buttons button:nth-child(1) { font-size: 12px; }
-    .a11y-text-buttons button:nth-child(2) { font-size: 14px; }
-    .a11y-text-buttons button:nth-child(3) { font-size: 16px; }
+    .a11y-segmented button:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .a11y-segmented button.active { background: #FFD100; color: #0A0A0A; }
+    .a11y-segmented button:focus-visible { outline: 2px solid #FFD100; outline-offset: 2px; }
+
+    /* Toggle (44x24) */
     .a11y-toggle {
-      width: 44px;
-      height: 24px;
+      width: 48px;
+      height: 28px;
+      min-width: 48px;
       border-radius: 100px;
-      background: rgba(255,255,255,0.15);
-      border: none;
+      background: rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.25);
       cursor: pointer;
       position: relative;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
+      flex-shrink: 0;
     }
     .a11y-toggle::after {
       content: '';
@@ -1310,24 +1462,48 @@
       border-radius: 50%;
       background: #FFF;
       transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
-    .a11y-toggle.on { background: #FFD100; }
-    .a11y-toggle.on::after { transform: translateX(20px); background: #000; }
+    .a11y-toggle.on { background: #FFD100; border-color: #FFD100; }
+    .a11y-toggle.on::after { transform: translateX(20px); background: #0A0A0A; }
+    .a11y-toggle:focus-visible { outline: 3px solid #FFD100; outline-offset: 3px; }
+
     .a11y-reset {
-      margin-top: 16px;
+      margin-top: 18px;
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background: transparent;
-      border: 1.5px solid rgba(255,255,255,0.2);
+      border: 1.5px solid rgba(255,255,255,0.25);
       color: #FFF;
       border-radius: 100px;
       font-family: inherit;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      font-size: 14px;
+      font-size: 13.5px;
+      letter-spacing: 0.3px;
     }
-    .a11y-reset:hover { background: rgba(255,255,255,0.06); border-color: #FFD100; color: #FFD100; }
+    .a11y-reset:hover { background: #FFD100; border-color: #FFD100; color: #0A0A0A; }
+    .a11y-reset:focus-visible { outline: 3px solid #FFD100; outline-offset: 3px; }
+
+    .a11y-footer-note {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.38);
+      text-align: center;
+      margin: 14px 0 4px;
+      line-height: 1.5;
+      letter-spacing: 0.2px;
+    }
+
+    @media (max-width: 520px) {
+      .a11y-panel {
+        left: 12px;
+        right: 12px;
+        width: auto;
+        bottom: 92px;
+      }
+      .a11y-fab { bottom: 18px; left: 18px; }
+    }
 
     /* ===== IRIS CHAT MODAL ===== */
     .iris-modal {
@@ -4906,31 +5082,112 @@
   <button class="a11y-fab" onclick="toggleA11yPanel()" aria-label="Accessibility settings" aria-haspopup="true" aria-expanded="false" id="a11yFab">
     <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><path d="M5 9h14"/><path d="M12 7v4l-3 11M12 11l3 11M9 14h6"/></svg>
   </button>
-  <div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="Accessibility settings">
-    <div class="a11y-panel-title">Accessibility</div>
-    <div class="a11y-panel-sub">Adjust this site to your needs.</div>
-    <div class="a11y-row">
-      <div class="a11y-row-label">Text size</div>
-      <div class="a11y-text-buttons">
-        <button onclick="setTextSize('normal')" id="a11yTextNormal" class="active" aria-label="Normal text size">A</button>
-        <button onclick="setTextSize('large')" id="a11yTextLarge" aria-label="Large text size">A</button>
-        <button onclick="setTextSize('xlarge')" id="a11yTextXlarge" aria-label="Extra large text size">A</button>
+  <div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="Accessibility settings" aria-modal="false">
+    <div class="a11y-panel-header">
+      <div class="a11y-panel-heading">Accessibility</div>
+      <div class="a11y-panel-sub">WCAG 2.1 AA · AODA · Accessible Canada Act</div>
+    </div>
+    <div class="a11y-panel-body">
+
+      <div class="a11y-group" data-first>
+        <div class="a11y-group-label">Reading</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Text size</div>
+          <div class="a11y-segmented" role="group" aria-label="Text size">
+            <button type="button" data-size="100" onclick="a11ySetTextSize(100)" aria-label="Default text size">A</button>
+            <button type="button" data-size="110" onclick="a11ySetTextSize(110)" aria-label="Text 110 percent">A+</button>
+            <button type="button" data-size="125" onclick="a11ySetTextSize(125)" aria-label="Text 125 percent">125%</button>
+            <button type="button" data-size="150" onclick="a11ySetTextSize(150)" aria-label="Text 150 percent">150%</button>
+            <button type="button" data-size="175" onclick="a11ySetTextSize(175)" aria-label="Text 175 percent">175%</button>
+            <button type="button" data-size="200" onclick="a11ySetTextSize(200)" aria-label="Text 200 percent">200%</button>
+          </div>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Line spacing</div>
+          <div class="a11y-segmented" role="group" aria-label="Line spacing">
+            <button type="button" data-line="default" onclick="a11ySetLineSpacing('default')">Default</button>
+            <button type="button" data-line="relaxed" onclick="a11ySetLineSpacing('relaxed')">Relaxed</button>
+            <button type="button" data-line="loose" onclick="a11ySetLineSpacing('loose')">Loose</button>
+          </div>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Letter spacing</div>
+          <div class="a11y-segmented" role="group" aria-label="Letter spacing">
+            <button type="button" data-letter="default" onclick="a11ySetLetterSpacing('default')">Default</button>
+            <button type="button" data-letter="wide" onclick="a11ySetLetterSpacing('wide')">Wide</button>
+            <button type="button" data-letter="wider" onclick="a11ySetLetterSpacing('wider')">Wider</button>
+          </div>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Dyslexia-friendly font</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('dyslexic')" id="a11yDyslexic" aria-label="Toggle dyslexia-friendly font"></button>
+        </div>
       </div>
+
+      <div class="a11y-group">
+        <div class="a11y-group-label">Visual</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">High contrast</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('highContrast')" id="a11yHighContrast" aria-label="Toggle high contrast"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Invert colours</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('invert')" id="a11yInvert" aria-label="Toggle inverted colours"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Underline links</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('underlineLinks')" id="a11yUnderlineLinks" aria-label="Toggle underlined links"></button>
+        </div>
+      </div>
+
+      <div class="a11y-group">
+        <div class="a11y-group-label">Navigation</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Enhanced focus ring</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('focusBoost')" id="a11yFocusBoost" aria-label="Toggle enhanced focus ring"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Large cursor</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('largeCursor')" id="a11yLargeCursor" aria-label="Toggle large cursor"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Reading guide</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('readingGuide')" id="a11yReadingGuide" aria-label="Toggle reading guide"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Reading mask</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('readingMask')" id="a11yReadingMask" aria-label="Toggle reading mask"></button>
+        </div>
+      </div>
+
+      <div class="a11y-group">
+        <div class="a11y-group-label">Motion</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-label">Reduce motion</div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('reduceMotion')" id="a11yReduceMotion" aria-label="Toggle reduced motion"></button>
+        </div>
+      </div>
+
+      <button class="a11y-reset" type="button" onclick="a11yReset()">Reset all settings</button>
+      <div style="margin-top:10px;font-size:10.5px;color:rgba(255,255,255,0.42);text-align:center;letter-spacing:0.2px;">Preferences saved to this device.</div>
     </div>
-    <div class="a11y-row">
-      <div class="a11y-row-label">High contrast</div>
-      <button class="a11y-toggle" onclick="toggleA11y('high-contrast', this)" id="a11yContrast" aria-label="Toggle high contrast"></button>
-    </div>
-    <div class="a11y-row">
-      <div class="a11y-row-label">Underline links</div>
-      <button class="a11y-toggle" onclick="toggleA11y('underline-links', this)" id="a11yUnderline" aria-label="Toggle underlined links"></button>
-    </div>
-    <div class="a11y-row">
-      <div class="a11y-row-label">Reduce motion</div>
-      <button class="a11y-toggle" onclick="toggleA11y('reduce-motion', this)" id="a11yMotion" aria-label="Toggle reduced motion"></button>
-    </div>
-    <button class="a11y-reset" onclick="resetA11y()">Reset all settings</button>
   </div>
+
+  <div class="a11y-reading-guide" aria-hidden="true"></div>
+  <div class="a11y-reading-mask" aria-hidden="true"></div>
+  <div class="a11y-sr-live" aria-live="polite" aria-atomic="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"></div>
 
   <!-- v1.2 ANNOUNCEMENT BAR -->
   <div id="versionBar" role="banner" aria-label="Version announcement" style="position:fixed;top:0;left:0;right:0;z-index:101;height:34px;background:rgba(10,10,10,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,209,0,0.22);padding:0 24px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:12.5px;letter-spacing:0.2px;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
@@ -5062,7 +5319,7 @@
       <div class="section-head reveal" style="max-width:860px;">
         <span class="label">Meet Iris</span>
         <h2 class="headline-lg">No forms. No menus.<br><span class="accent">Just a conversation that goes somewhere.</span></h2>
-        <p class="body-lg">Iris is CNIB's AI guide. Simple to reach. Easy to talk to. Smart enough to know which of the hundred-plus CNIB programs is the right one for <em>this</em> person, at <em>this</em> moment in their life. She listens first, then points to the next step. Meet her below.</p>
+        <p class="body-lg">Iris is CNIB's AI guide. Simple to reach. Easy to talk to. Smart enough to know which of the hundred-plus CNIB programs is the right one for <em>this</em> person, at <em>this</em> moment in their life. Iris listens first, then points to the next step. Meet Iris below.</p>
       </div>
     </div>
   </section>
@@ -8527,56 +8784,136 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       return _origHandleUserMessage.apply(this, arguments);
     };
 
-    // ===== ACCESSIBILITY WIDGET =====
+    // ===== ACCESSIBILITY WIDGET — AODA / ACA / WCAG 2.1 AA =====
     const A11Y_KEY = 'iris-a11y-prefs-v1';
-    const a11yState = {
-      textSize: 'normal',
-      'high-contrast': false,
-      'underline-links': false,
-      'reduce-motion': false,
+    const A11Y_DEFAULTS = {
+      textSize: 100,          // 100, 110, 125, 150, 175, 200
+      lineSpacing: 'default', // default, relaxed, loose
+      letterSpacing: 'default', // default, wide, wider
+      dyslexic: false,
+      highContrast: false,
+      invert: false,
+      underlineLinks: false,
+      focusBoost: false,
+      largeCursor: false,
+      reduceMotion: false,
+      readingGuide: false,
+      readingMask: false,
     };
+    const a11yState = Object.assign({}, A11Y_DEFAULTS);
+    let _dyslexicFontLoaded = false;
 
-    function loadA11y() {
+    function _ensureDyslexicFont() {
+      if (_dyslexicFontLoaded) return;
+      _dyslexicFontLoaded = true;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/open-dyslexic-regular.css';
+      document.head.appendChild(link);
+    }
+
+    function a11yAnnounce(msg) {
+      const live = document.querySelector('.a11y-sr-live');
+      if (live) { live.textContent = ''; setTimeout(() => { live.textContent = msg; }, 50); }
+    }
+
+    function a11yLoad() {
       try {
         const saved = JSON.parse(localStorage.getItem(A11Y_KEY) || '{}');
         Object.assign(a11yState, saved);
       } catch (e) {}
-      applyA11y();
+      a11yApply();
     }
-    function saveA11y() {
+    function a11ySave() {
       try { localStorage.setItem(A11Y_KEY, JSON.stringify(a11yState)); } catch (e) {}
     }
-    function applyA11y() {
+
+    function a11yApply() {
       const html = document.documentElement;
-      html.classList.remove('a11y-text-large', 'a11y-text-xlarge');
-      if (a11yState.textSize === 'large') html.classList.add('a11y-text-large');
-      if (a11yState.textSize === 'xlarge') html.classList.add('a11y-text-xlarge');
-      ['high-contrast', 'underline-links', 'reduce-motion'].forEach(k => {
-        html.classList.toggle('a11y-' + k, !!a11yState[k]);
-        const btn = document.getElementById('a11y' + k.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(''));
-        if (btn) btn.classList.toggle('on', !!a11yState[k]);
+
+      // Text size
+      ['a11y-text-110','a11y-text-125','a11y-text-150','a11y-text-175','a11y-text-200'].forEach(c => html.classList.remove(c));
+      if (a11yState.textSize !== 100) html.classList.add('a11y-text-' + a11yState.textSize);
+
+      // Line spacing
+      html.classList.remove('a11y-line-relaxed','a11y-line-loose');
+      if (a11yState.lineSpacing === 'relaxed') html.classList.add('a11y-line-relaxed');
+      if (a11yState.lineSpacing === 'loose') html.classList.add('a11y-line-loose');
+
+      // Letter spacing
+      html.classList.remove('a11y-letter-wide','a11y-letter-wider');
+      if (a11yState.letterSpacing === 'wide') html.classList.add('a11y-letter-wide');
+      if (a11yState.letterSpacing === 'wider') html.classList.add('a11y-letter-wider');
+
+      // Toggles
+      const toggles = [
+        ['dyslexic','a11y-dyslexic','a11yDyslexic'],
+        ['highContrast','a11y-high-contrast','a11yHighContrast'],
+        ['invert','a11y-invert','a11yInvert'],
+        ['underlineLinks','a11y-underline-links','a11yUnderlineLinks'],
+        ['focusBoost','a11y-focus-boost','a11yFocusBoost'],
+        ['largeCursor','a11y-large-cursor','a11yLargeCursor'],
+        ['reduceMotion','a11y-reduce-motion','a11yReduceMotion'],
+        ['readingGuide','a11y-reading-guide','a11yReadingGuide'],
+        ['readingMask','a11y-reading-mask','a11yReadingMask'],
+      ];
+      toggles.forEach(([key, cls, id]) => {
+        html.classList.toggle(cls, !!a11yState[key]);
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.classList.toggle('on', !!a11yState[key]);
+          btn.setAttribute('aria-checked', String(!!a11yState[key]));
+        }
       });
-      ['normal', 'large', 'xlarge'].forEach(size => {
-        const btn = document.getElementById('a11yText' + size[0].toUpperCase() + size.slice(1));
-        if (btn) btn.classList.toggle('active', a11yState.textSize === size);
+
+      if (a11yState.dyslexic) _ensureDyslexicFont();
+
+      // Segmented button active states
+      document.querySelectorAll('#a11yPanel [data-size]').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.size, 10) === a11yState.textSize);
+      });
+      document.querySelectorAll('#a11yPanel [data-line]').forEach(b => {
+        b.classList.toggle('active', b.dataset.line === a11yState.lineSpacing);
+      });
+      document.querySelectorAll('#a11yPanel [data-letter]').forEach(b => {
+        b.classList.toggle('active', b.dataset.letter === a11yState.letterSpacing);
       });
     }
-    function setTextSize(size) { a11yState.textSize = size; applyA11y(); saveA11y(); }
-    function toggleA11y(key, btn) { a11yState[key] = !a11yState[key]; applyA11y(); saveA11y(); }
-    function resetA11y() {
-      a11yState.textSize = 'normal';
-      a11yState['high-contrast'] = false;
-      a11yState['underline-links'] = false;
-      a11yState['reduce-motion'] = false;
-      applyA11y(); saveA11y();
-    }
-    function toggleA11yPanel() {
+
+    window.a11ySetTextSize = function(size) {
+      a11yState.textSize = size; a11yApply(); a11ySave();
+      a11yAnnounce('Text size ' + size + ' percent');
+    };
+    window.a11ySetLineSpacing = function(v) {
+      a11yState.lineSpacing = v; a11yApply(); a11ySave();
+      a11yAnnounce('Line spacing ' + v);
+    };
+    window.a11ySetLetterSpacing = function(v) {
+      a11yState.letterSpacing = v; a11yApply(); a11ySave();
+      a11yAnnounce('Letter spacing ' + v);
+    };
+    window.a11yToggle = function(key) {
+      a11yState[key] = !a11yState[key]; a11yApply(); a11ySave();
+      a11yAnnounce(key.replace(/([A-Z])/g, ' $1').toLowerCase().trim() + ' ' + (a11yState[key] ? 'on' : 'off'));
+    };
+    window.a11yReset = function() {
+      Object.assign(a11yState, A11Y_DEFAULTS);
+      a11yApply(); a11ySave();
+      a11yAnnounce('Accessibility settings reset');
+    };
+
+    window.toggleA11yPanel = function() {
       const p = document.getElementById('a11yPanel');
       const f = document.getElementById('a11yFab');
       if (!p) return;
       const open = p.classList.toggle('open');
       if (f) f.setAttribute('aria-expanded', String(open));
-    }
+      if (open) {
+        const firstBtn = p.querySelector('button');
+        if (firstBtn) setTimeout(() => firstBtn.focus(), 100);
+      }
+    };
+
     // Close on Escape, click outside
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -8592,100 +8929,113 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       toggleA11yPanel();
     });
 
-    loadA11y();
+    // Reading guide + reading mask — follow cursor
+    (function() {
+      const guide = document.querySelector('.a11y-reading-guide');
+      const mask = document.querySelector('.a11y-reading-mask');
+      let lastY = window.innerHeight / 2;
+      function update(y) {
+        lastY = y;
+        if (a11yState.readingGuide && guide) {
+          guide.style.top = (y - 20) + 'px';
+          guide.style.left = '0';
+          guide.style.right = '0';
+        }
+        if (a11yState.readingMask && mask) {
+          mask.style.setProperty('--mask-top', Math.max(0, y - 70) + 'px');
+          mask.style.setProperty('--mask-bottom', (y + 70) + 'px');
+        }
+      }
+      document.addEventListener('mousemove', (e) => update(e.clientY), { passive: true });
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) update(e.touches[0].clientY);
+      }, { passive: true });
+      // Keyboard: move guide with arrow keys when active
+      document.addEventListener('keydown', (e) => {
+        if (!a11yState.readingGuide && !a11yState.readingMask) return;
+        if (e.key === 'ArrowDown') { update(Math.min(window.innerHeight - 10, lastY + 24)); }
+        if (e.key === 'ArrowUp')   { update(Math.max(10, lastY - 24)); }
+      });
+    })();
+
+    a11yLoad();
   </script>
 
-  <!-- ===== WHAT'S NEW v1.2 MODAL ===== -->
-  <div id="whatsNewModal" role="dialog" aria-modal="true" aria-labelledby="whatsNewHeadline" aria-hidden="true" style="position:fixed;inset:0;z-index:9999;display:none;align-items:flex-start;justify-content:center;padding:6vh 20px 40px;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-y:auto;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
-    <div class="whatsnew-card" style="position:relative;max-width:720px;width:100%;background:#0A0A0A;border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:56px 48px 48px;box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,209,0,0.05);">
+  <!-- ===== WHAT'S NEW v1.2 MODAL — compact popup ===== -->
+  <div id="whatsNewModal" role="dialog" aria-modal="true" aria-labelledby="whatsNewHeadline" aria-hidden="true" style="position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,0.68);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
+    <div class="whatsnew-card" style="position:relative;max-width:460px;width:100%;max-height:calc(100vh - 48px);overflow-y:auto;background:#0A0A0A;border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:36px 32px 28px;box-shadow:0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,209,0,0.04);">
 
-      <button type="button" onclick="closeWhatsNew()" aria-label="Close" style="position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);color:#fff;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
+      <button type="button" onclick="closeWhatsNew()" aria-label="Close" style="position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.05);color:#fff;font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">&times;</button>
 
-      <div style="display:inline-flex;align-items:center;gap:10px;padding:7px 16px;border:1px solid rgba(255,209,0,0.45);border-radius:999px;background:rgba(255,209,0,0.07);margin-bottom:24px;">
-        <span aria-hidden="true" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#FFD100;box-shadow:0 0 12px rgba(255,209,0,0.9);"></span>
-        <span style="font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:#FFD100;font-weight:700;">Now Live — April 2026</span>
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid rgba(255,209,0,0.45);border-radius:999px;background:rgba(255,209,0,0.07);margin-bottom:18px;">
+        <span aria-hidden="true" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFD100;box-shadow:0 0 10px rgba(255,209,0,0.9);"></span>
+        <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#FFD100;font-weight:700;">New</span>
       </div>
 
-      <h2 id="whatsNewHeadline" style="font-size:clamp(36px,5vw,56px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 14px;font-weight:700;color:#fff;">
+      <h2 id="whatsNewHeadline" style="font-size:42px;line-height:1;letter-spacing:-0.035em;margin:0 0 10px;font-weight:700;color:#fff;">
         Iris v1.2.
       </h2>
-      <p style="font-size:20px;line-height:1.45;color:rgba(255,255,255,0.78);margin:0 0 8px;font-style:italic;">
-        She listens better. She holds the thread. She hands off like a pro.
-      </p>
-      <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.62);margin:0 0 40px;">
-        Nine upgrades shipped this week — spanning the conversation, the voice layer, and the ground beneath them both. Here's what changed, and why it matters for the people Iris is built for.
+      <p style="font-size:18px;line-height:1.25;color:#FFD100;margin:0 0 22px;font-weight:500;letter-spacing:-0.015em;">
+        Sharper. Warmer. Unshakeable.
       </p>
 
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
-        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
-        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:2px;color:#FFD100;text-transform:uppercase;font-weight:600;">The Conversation</span>
-        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Continuity.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Iris now holds the whole conversation in mind. Your name. Your city. The worry you shared ten minutes ago. Nothing gets dropped.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She holds the thread.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Iris now remembers the details of your conversation as it unfolds — your name, your city, your diagnosis, the worry you shared ten minutes ago. She weaves them back in when it matters, like a friend who's actually paying attention. No more starting over. No more repeating yourself.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Honest from hello.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Iris opens with the truth — this is a beta. No promises Iris can't keep. Trust, from word one.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She opens with the truth.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Iris tells you upfront she's a beta — that she can't register you for programs or pick up the phone for you yet. It's a small change that earns trust the moment the conversation starts.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">A handoff worth making.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">When the next step is human, Iris gives you the real CNIB number and writes your opening line. Your first call lands on the right desk.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She hands you off like a pro.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">When Iris can't take the action herself, she gives you the real CNIB number and writes you an opening line — so your first call lands on exactly the right desk, with the right person, already halfway there.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Silence, understood.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Twenty seconds of quiet and Iris checks in. Gentle, never pushy. Because a pause is often the whole conversation.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She notices your silence.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Twenty seconds of quiet and Iris checks in — gently, not pushy. Because sometimes a pause isn't a pause. Sometimes it's the hardest part of the conversation.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Voice + text. In lockstep.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Every word on screen now lands exactly when Iris speaks it. No flicker. No lag. Just the rhythm of a real conversation.</p>
       </div>
 
-      <div style="display:flex;align-items:center;gap:14px;margin:36px 0 22px;">
-        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
-        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:2px;color:#FFD100;text-transform:uppercase;font-weight:600;">The Voice Layer</span>
-        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Names. Caught on the fly.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Just your first name. That's all Iris needs. Small detail. Big difference.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">Voice and text, perfectly in sync.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">The words on screen now land exactly when Iris says them. No empty bubble hanging in the air. No lag between what you hear and what you read. Just the rhythm of a real conversation.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Rock-solid on iPhone.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Voice mode on Safari used to drop out. Now it holds the line for as long as you need.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She catches your name.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Say just your first name and Iris picks it up — no full sentence required. The small things that make her feel human.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Guardrails, built in.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">A second AI layer checks every answer before it leaves Iris. No hallucinated programs. No wrong numbers. If Iris isn't sure, Iris says so.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">iPhone voice mode, rock-solid.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Safari used to quietly drop the mic mid-conversation. Not anymore. Heartbeat, backoff, and error recovery now keep voice mode alive for as long as you need it — on any phone.</p>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Accessibility, reimagined.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Fourteen controls. One tap away. Text up to 200%, dyslexia-friendly fonts, a reading guide, reading mask, high contrast, inverted colours, enhanced focus rings. Built to AODA and Accessible Canada Act standards — because a site for blind and low-vision Canadians should feel like it.</p>
       </div>
 
-      <div style="display:flex;align-items:center;gap:14px;margin:36px 0 22px;">
-        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
-        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:2px;color:#FFD100;text-transform:uppercase;font-weight:600;">The Ground Beneath</span>
-        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+      <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);">
+        <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Built to scale.</h3>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">New rate limits and error logging at the core. The pilot is ready for daylight.</p>
       </div>
 
-      <div class="wn-item" style="margin-bottom:28px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">Guardrails that hold.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">A second AI pass now reviews every response before it leaves Iris's mouth — catching hallucinated programs, wrong phone numbers, or anything that drifts from what CNIB actually offers. If Iris isn't sure, she says so.</p>
-      </div>
-
-      <div class="wn-item" style="margin-bottom:10px;">
-        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">Built to run wide.</h3>
-        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">New rate limits and structured error logging on the API layer. The pilot can open its doors without surprise costs or silent failures — and every issue now leaves a trace we can learn from.</p>
-      </div>
-
-      <div style="margin-top:44px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:flex-start;gap:18px;">
-        <div style="font-size:13px;color:rgba(255,255,255,0.48);letter-spacing:0.3px;">
-          <span style="font-family:'JetBrains Mono',ui-monospace,monospace;color:#FFD100;">Coming in v1.3 &rarr;</span> &nbsp;Memory across sessions. Iris will remember you next time.
-        </div>
-        <button type="button" onclick="closeWhatsNew(); openChat('general');" style="padding:15px 30px;font-size:15px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;">
+      <div style="margin-top:24px;display:flex;flex-direction:column;align-items:stretch;gap:12px;">
+        <button type="button" onclick="closeWhatsNew(); openChat('general');" style="padding:14px 24px;font-size:14px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;">
           Talk to Iris v1.2 &rarr;
         </button>
+        <div style="font-size:11.5px;color:rgba(255,255,255,0.42);letter-spacing:0.3px;text-align:center;">
+          <span style="font-family:'JetBrains Mono',ui-monospace,monospace;color:#FFD100;">Next up &rarr;</span> v1.3 · Memory across sessions.
+        </div>
       </div>
 
     </div>
