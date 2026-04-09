@@ -31,6 +31,33 @@ var SHEET_NAME   = 'iris-sessions';
 var SEND_START_EMAIL = true;   // email when a new session opens
 var SEND_END_EMAIL   = true;   // email with full transcript when session ends
 var SEND_TURN_EMAIL  = false;  // set true for firehose (every turn)
+
+// ------ SMS via carrier email-to-SMS gateway ------
+// Free. Works 24/7. Every major Canadian carrier supports this.
+// Set SMS_GATEWAY_EMAIL to YOUR number @ the right gateway for your carrier:
+//
+//   Rogers   → 6476802324@pcs.rogers.com
+//   Fido     → 6476802324@fido.ca
+//   Bell     → 6476802324@txt.bell.ca
+//   Telus    → 6476802324@msg.telus.net
+//   Koodo    → 6476802324@msg.telus.net
+//   Virgin   → 6476802324@vmobile.ca
+//   Freedom  → 6476802324@txt.freedommobile.ca
+//
+// If you don't know your carrier: set all candidates in SMS_GATEWAY_EMAILS
+// below as a comma-separated list. Script sends to every one; the wrong
+// ones bounce silently, the right one lands on your phone as a text.
+// Once you see which one worked, delete the others.
+var SMS_GATEWAY_EMAILS = [
+  '6476802324@pcs.rogers.com',
+  '6476802324@fido.ca',
+  '6476802324@txt.bell.ca',
+  '6476802324@msg.telus.net',
+  '6476802324@vmobile.ca',
+  '6476802324@txt.freedommobile.ca'
+];
+var SEND_SMS_ON_START = true;
+var SEND_SMS_ON_END   = true;
 // ====================
 
 function doPost(e) {
@@ -86,6 +113,17 @@ function doPost(e) {
     } catch (mailErr) {
       // Never let email failure break the log write
       Logger.log('email error: ' + mailErr);
+    }
+
+    // === SMS NOTIFICATIONS (via carrier email-to-SMS gateway) ===
+    try {
+      if (phase === 'start' && SEND_SMS_ON_START) {
+        _sendSmsStart(payload, location);
+      } else if (phase === 'end' && SEND_SMS_ON_END) {
+        _sendSmsEnd(payload, location);
+      }
+    } catch (smsErr) {
+      Logger.log('sms error: ' + smsErr);
     }
 
     return _json({ ok: true });
@@ -176,6 +214,39 @@ function _sendEndEmail(p, location, transcript) {
     transcript + '\n' +
     '===== END =====\n';
   MailApp.sendEmail(NOTIFY_EMAIL, subject, body);
+}
+
+// SMS gateway helpers. Body must stay <160 chars. Send to every candidate
+// gateway — the wrong ones silently bounce or get dropped by the carrier,
+// the right one lands. No subject line (most gateways strip or reject it).
+function _sendSmsToAll(body) {
+  var list = SMS_GATEWAY_EMAILS || [];
+  for (var i = 0; i < list.length; i++) {
+    try {
+      MailApp.sendEmail({
+        to: list[i],
+        subject: '',
+        body: body
+      });
+    } catch (e) {
+      Logger.log('sms send failed for ' + list[i] + ': ' + e);
+    }
+  }
+}
+
+function _sendSmsStart(p, location) {
+  // ~120 chars max — leaves headroom
+  var msg = "Hi Jacob, it's Iris. Someone just started a session (" +
+            (location || 'unknown') + "). Check your email.";
+  _sendSmsToAll(msg);
+}
+
+function _sendSmsEnd(p, location) {
+  var events = p.events || [];
+  var memberTurns = events.filter(function(e){return e.role==='member';}).length;
+  var msg = "Iris session ended: " + memberTurns + " member turns (" +
+            (location || 'unknown') + "). Transcript in your inbox.";
+  _sendSmsToAll(msg);
 }
 
 function _sendTurnEmail(p, location, transcript) {
