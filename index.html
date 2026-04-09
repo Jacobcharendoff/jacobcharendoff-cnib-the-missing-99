@@ -7393,20 +7393,28 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       conversationHistory.push({ role: 'user', content: userMessage });
 
-      // Programmatic close trigger: if the conversation now contains email + phone + postal code,
-      // the model MUST fire the final close on the next turn. We inject a hard system nudge right
-      // before the API call. This runs ONCE, the first turn after all three are present.
+      // Programmatic close trigger: fire on OFFER + ACCEPT pattern, not on contact info.
+      // The member rarely volunteers email/phone/postal — so we detect when Iris has offered
+      // a concrete next step and the member has said yes. On that turn we inject a hard
+      // system nudge that forces the close (asking for first name + best way to reach).
       try {
+        const assistantMsgs = conversationHistory.filter(m => m.role === 'assistant').map(m => m.content);
+        const userMsgs = conversationHistory.filter(m => m.role === 'user').map(m => m.content);
         const joined = conversationHistory
           .filter(m => m.role === 'user' || m.role === 'assistant')
           .map(m => m.content).join('\n');
-        const hasEmail = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(joined);
-        const hasPhone = /(\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b|\b1[-.\s]?\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b)/.test(joined);
-        const hasPostal = /\b[A-Za-z]\d[A-Za-z][\s-]?\d[A-Za-z]\d\b/.test(joined);
+        const lastAssistant = (assistantMsgs[assistantMsgs.length - 1] || '').toLowerCase();
+        const lastUser = (userMsgs[userMsgs.length - 1] || '').toLowerCase();
+        // Did Iris just offer to set something up / connect them / have someone call?
+        const OFFER_RE = /(set (it|that|you) up|set up a (call|chat|meeting)|have (someone|a coordinator|them) (call|reach out|get in touch)|connect you (with|to)|put you in touch|would you (like|want) (me|to)|is that something you('?| wo)uld|want me to|should i|can i (have|get|set)|walk you through|get you (on|connected)|line you up)/i;
+        // Did the member say yes?
+        const ACCEPT_RE = /^(ok(ay)?|yes|yeah|yep|sure|please|that'?s? (good|great|fine|perfect)|sounds (good|great|fine|perfect)|i'?d like that|love that|would love|let'?s do it|go ahead|do it|i'?m in|absolutely|definitely|for sure|plz|pls|k|y)\b|\b(yes please|yes thanks|sounds good|that works|works for me|i'?d appreciate|would appreciate)\b/i;
+        const offerMade = OFFER_RE.test(lastAssistant);
+        const accepted = ACCEPT_RE.test(lastUser.trim());
         const alreadyClosed = /Sarah Chen|Raj Patel|Marie Leclerc|Jennifer Okafor|David Thompson|Amanda Rousseau|Marc Dufour|Michelle Tremblay|Priya Shah/i.test(
-          conversationHistory.filter(m => m.role === 'assistant').map(m => m.content).join('\n')
+          assistantMsgs.join('\n')
         );
-        if (hasEmail && hasPhone && hasPostal && !alreadyClosed && !window.__irisCloseNudgeFired) {
+        if (offerMade && accepted && !alreadyClosed && !window.__irisCloseNudgeFired) {
           window.__irisCloseNudgeFired = true;
           // Pick coordinator from city hints
           const lower = joined.toLowerCase();
@@ -7428,25 +7436,24 @@ Never end a conversation without either (a) a clear recommendation AND a concret
             role: 'system',
             content:
               'CLOSE TRIGGER. FIRE NOW.\n\n' +
-              'The member has just given you enough info to set this up. Your NEXT reply is the close. Not a summary. Not a thank-you. Not a wrap-up. Not a bridge sentence like "Got it. Alright." or "Perfect. Here\'s what happens next." Just the close.\n\n' +
+              'The member just said yes to your offer. Your NEXT reply is the warm close. Not a summary. Not a thank-you. Not a wrap-up. And absolutely NOT "Thanks for reaching out" or "I recommend calling CNIB" or any generic chatbot sign-off. This is a real moment with a real person. Treat it that way.\n\n' +
               'Real values to use (do not invent, do not substitute):\n' +
               '  Coordinator: ' + coord.name + ' (runs ' + coord.program + ' for ' + coord.region + ')\n' +
-              '  Phone: 1-800-563-2642\n' +
               '  Callback day: ' + callbackDay + ', afternoon, between 1 and 4 PM\n\n' +
+              'You don\'t have the member\'s first name or best contact method yet, so your close ASKS FOR BOTH inside the warmth. One gentle ask, not an interrogation.\n\n' +
               'HARD BANS for this reply. If any of these appear you have failed:\n' +
-              '  No em dashes anywhere. Periods and commas only.\n' +
-              '  No "you\'re not alone," "you\'re taking a great step," "reaching out for support," "I\'m here to help," "I\'m sorry to hear."\n' +
-              '  No visible "NAME:" "NUMBER:" "TIME:" labels. Those are for you, not the member.\n' +
-              '  No numbered lists, no bullets, no headers.\n' +
-              '  No opener like "Alright" or "Perfect" or "Got it." Just start with their name.\n\n' +
-              'VOICE. Short sentences. Fragments. Contractions. Confident. Specific. Sound like a friend reporting back, not a case manager wrapping a file.\n\n' +
-              'SHAPE your reply like this, but say it in YOUR voice, not as a template:\n\n' +
-              '"[First name]. You\'re set. Here\'s how this goes.\n' +
-              'There\'s a person named ' + coord.name + '. They run ' + coord.program + ' for ' + coord.region + '. That\'s who\'s going to call you, so you\'ll know the name when the phone rings.\n' +
-              'They\'ll reach out ' + callbackDay + ', usually some time between 1 and 4 in the afternoon. If that\'s a bad time, just say so when you pick up. They\'ll move it, they\'re flexible that way.\n' +
-              'If you want to beat them to it, the CNIB line is 1-800-563-2642, weekdays nine to five. I\'m also sending a confirmation to your email in a couple of minutes so you\'ve got everything in writing.\n' +
-              'One more thing. I\'m going to check back with you in about a week. Not to pressure you. I just want to know how the first call went.\n' +
-              'Anything else on your mind before we wrap? Anything I didn\'t ask that I should\'ve?"\n\n' +
+              '  "Thanks for reaching out." "Thank you for reaching out." (literal banned phrases)\n' +
+              '  "I recommend calling CNIB." "Please call CNIB." Any version of bouncing them to a phone line as the whole answer.\n' +
+              '  "You\'re not alone," "you\'re taking a great step," "I\'m here to help," "I\'m sorry to hear."\n' +
+              '  No em dashes. Periods and commas only.\n' +
+              '  No numbered lists, no bullets, no headers, no "NAME:" labels.\n' +
+              '  No generic opener like "Alright" or "Perfect" or "Got it."\n\n' +
+              'VOICE. Short sentences. Fragments. Contractions. Confident. Specific. Sound like a friend reporting back, not a case manager.\n\n' +
+              'SHAPE your reply like this, but say it in YOUR voice:\n\n' +
+              '"Okay. Here\'s what happens next.\n' +
+              'There\'s someone at CNIB named ' + coord.name + '. They run ' + coord.program + ' for ' + coord.region + '. That\'s who\'s going to reach out to you, so you\'ll know the name when they get in touch.\n' +
+              'It\'ll be ' + callbackDay + ', some time between 1 and 4 in the afternoon. If that window\'s bad, just say so and they\'ll move it.\n' +
+              'Quick thing before I let you go. What should I tell them your first name is? And what\'s the best way for them to reach you, phone or email? Whatever you\'re comfortable sharing. If you\'d rather be the one to call, CNIB\'s line is 1-800-563-2642, weekdays nine to five, and you can ask for ' + coord.name + ' directly."\n\n' +
               'Write it now. In full. Nothing before it, nothing after it.'
           };
           // Insert nudge right before the last user message
@@ -7533,7 +7540,14 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         return fullText;
       }
 
-      // Voice-enabled path: fetch the full audio first, then sync text to it.
+      // Voice-enabled path: render text IMMEDIATELY so the bubble appears with
+      // no lag, then fetch TTS audio in parallel. Previously we waited for the
+      // TTS blob before showing any text, which stacked ~2-4s of silence on top
+      // of the generation latency. Text-first feels instant; audio catches up.
+      fireReady();
+      if (window.__dismissConnecting) window.__dismissConnecting();
+      renderUpTo(fullText.length);
+
       let audioPlayed = false;
       try {
         const ttsResponse = await fetch('/api/tts', {
@@ -7563,36 +7577,8 @@ Never end a conversation without either (a) a clear recommendation AND a concret
             };
 
             audio.onplay = () => {
-              if (window.__dismissConnecting) window.__dismissConnecting();
-              // Now that audio is actually playing, it's safe to swap the
-              // typing indicator for the empty bubble. Any earlier and the
-              // bubble sits blank for 600-1200ms while TTS is still fetching.
-              fireReady();
-              if (audioPlayed) return;
+              // Text is already fully rendered. Just mark that audio started.
               audioPlayed = true;
-              // Drive the typewriter off audio.currentTime so characters
-              // arrive exactly when they're being spoken.
-              const totalChars = fullText.length;
-              const tick = () => {
-                if (settled) return;
-                const dur = audio.duration;
-                const t = audio.currentTime || 0;
-                let n;
-                if (dur && isFinite(dur) && dur > 0) {
-                  n = Math.min(totalChars, Math.floor(totalChars * (t / dur)));
-                } else {
-                  // Duration metadata not ready yet — fall back to a
-                  // conservative 16 chars/sec elapsed-time estimate.
-                  n = Math.min(totalChars, Math.floor(t * 16));
-                }
-                renderUpTo(n);
-                if (audio.ended || (dur && isFinite(dur) && t >= dur)) {
-                  renderUpTo(totalChars);
-                  return;
-                }
-                rafId = requestAnimationFrame(tick);
-              };
-              tick();
             };
 
             audio.onended = () => {
@@ -8097,6 +8083,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       if (currentPhase !== 'live') return;
       if (!modal || !modal.classList.contains('active')) return;
       if (window.__irisNudgeFired) return; // already nudged this silence window
+      // If the conversation has already fired the close nudge, don't re-arm.
+      // The member might still be around but the close has been delivered,
+      // and a "still with me?" ping post-close reads as a cold restart.
+      if (window.__irisCloseNudgeFired) return;
       window.__irisSilenceTimer = setTimeout(fireIrisSilenceNudge, IRIS_SILENCE_MS);
     }
 

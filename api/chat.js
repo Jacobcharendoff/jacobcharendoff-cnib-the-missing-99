@@ -234,9 +234,10 @@ export default async function handler(req) {
   // === STEP 1: Generate Iris draft ===
   let draft;
   try {
-    // 140 tokens = ~3-4 sentences, plenty for a voice bot turn. Cut from 220
-    // to shave ~500ms off generation latency for the live pilot.
-    draft = await callOpenAI(apiKey, GEN_MODEL, trimmed, 140, 0.85);
+    // 260 tokens = ~6-7 sentences. Bumped from 140 because the short cap was
+    // truncating warm closes and making replies feel clipped/cold. Moderator
+    // pass still gates safety, so extra tokens don't raise risk meaningfully.
+    draft = await callOpenAI(apiKey, GEN_MODEL, trimmed, 260, 0.85);
   } catch (e) {
     console.error('[chat] generation failed:', e.message);
     logServerError('generation', e, { ip: clientIp });
@@ -334,6 +335,24 @@ export default async function handler(req) {
         break;
       }
     }
+  }
+
+  // === STEP 4: Cold-close guard ===
+  // The generation model sometimes defaults to generic chatbot sign-offs
+  // ("Thanks for reaching out", "Please don't hesitate", "I recommend calling
+  // CNIB") when it runs out of ideas. These are the exact phrases Jacob has
+  // flagged as brand-violating. Catch and rewrite server-side so they never
+  // ship — even if the rest of the reply is fine.
+  const COLD_CLOSE_RE = /(thanks? (you )?for reaching out|thank you for (reaching out|contacting|connecting)|please (don'?t hesitate|feel free) to (reach out|contact|call)|don'?t hesitate to (reach out|contact|call|ask)|i(?:'m| am) here (if you need|to help|for you)|if you have any (other|more|further) questions|i recommend (calling|contacting) cnib|you can (always )?call cnib|i hope this helps|have a (great|wonderful|nice) day|take care(\.|$)|best (regards|wishes)|warmly,|sincerely,)/i;
+  if (modResult.safe && COLD_CLOSE_RE.test(draft)) {
+    // Strip the cold-close tail and replace with a warm fragment. We keep the
+    // earlier content of the draft (if any) and append a real Iris sign-off.
+    const cleaned = draft.replace(COLD_CLOSE_RE, '').replace(/\s+[.,]?\s*$/, '').trim();
+    const warmTail = cleaned && cleaned.length > 40
+      ? cleaned + ' What else is on your mind?'
+      : "Hey. I don't want to leave you with a wrap-up line that sounds like a form email. Tell me what's actually on your mind right now and we'll figure out the next step together.";
+    modResult = { safe: false, reason: 'cold_close_guard', replacement: warmTail };
+    logServerError('cold_close_guard', 'rewrote draft', { draftPreview: draft.slice(0, 200) });
   }
 
   const finalText = modResult.safe ? draft : (modResult.replacement || safeFallback('moderator reject'));
