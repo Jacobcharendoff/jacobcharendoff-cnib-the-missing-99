@@ -4932,6 +4932,17 @@
     <button class="a11y-reset" onclick="resetA11y()">Reset all settings</button>
   </div>
 
+  <!-- v1.2 ANNOUNCEMENT BAR -->
+  <div id="versionBar" role="banner" aria-label="Version announcement" style="position:relative;z-index:100;background:#0A0A0A;border-bottom:1px solid rgba(255,209,0,0.18);padding:10px 24px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:13px;letter-spacing:0.2px;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
+    <span style="display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,0.78);">
+      <span aria-hidden="true" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFD100;box-shadow:0 0 10px rgba(255,209,0,0.8);"></span>
+      <span>Proudly introducing <strong style="color:#fff;font-weight:600;">Iris&nbsp;v1.2</strong></span>
+    </span>
+    <button type="button" onclick="openWhatsNew()" aria-haspopup="dialog" aria-controls="whatsNewModal" style="background:transparent;border:none;padding:0;margin:0;color:#FFD100;font:inherit;letter-spacing:0.2px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;">
+      See what's inside <span aria-hidden="true" style="display:inline-block;transform:translateY(-1px);margin-left:2px;">&rarr;</span>
+    </button>
+  </div>
+
   <!-- NAV -->
   <nav>
     <div class="nav-brand">
@@ -4992,99 +5003,6 @@
   </section>
 
   <div class="section-divider fade-yellow-to-dark" aria-hidden="true"></div>
-
-  <!-- v1.2 WHAT'S NEW — Apple-keynote changelog strip -->
-  <section class="section theme-black" id="whats-new" aria-labelledby="whats-new-title" style="padding:96px 0 88px;">
-    <div class="container" style="max-width:960px;">
-      <div class="whats-new-wrap reveal" style="text-align:center;">
-        <div class="whats-new-badge" aria-hidden="true" style="display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border:1px solid rgba(255,209,0,0.4);border-radius:999px;background:rgba(255,209,0,0.06);margin-bottom:28px;">
-          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#FFD100;box-shadow:0 0 12px rgba(255,209,0,0.8);"></span>
-          <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#FFD100;font-weight:600;">Iris v1.2 — now live</span>
-        </div>
-        <h2 id="whats-new-title" style="font-size:clamp(44px,6vw,72px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 20px;font-weight:700;">
-          What's new.
-        </h2>
-        <p class="body-lg" style="max-width:620px;margin:0 auto 56px;color:var(--text-body);font-size:19px;line-height:1.5;">
-          Nine upgrades shipped this week. Iris is faster, warmer, harder to trip up — and she remembers the conversation you're actually having.
-        </p>
-
-        <ul class="whats-new-list" style="list-style:none;padding:0;margin:0;text-align:left;display:grid;gap:0;border-top:1px solid rgba(255,255,255,0.08);">
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">01</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">Honest beta opener.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">Iris tells you upfront she's a prototype. No pretending she can book things she can't.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">02</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">Within-session memory.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">She holds your name, your city, your situation — and weaves them back in at the moments that matter. No more repeating yourself.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">03</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">Prototype handoff ritual.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">When she can't take the action herself, she gives you the real phone number and an opening line to use — so your first call lands on the right desk.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">04</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">Voice and text, perfectly in sync.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">The words on screen now land exactly when Iris says them. The empty-bubble flicker before she spoke — gone.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">05</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">She catches your name.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">Say just your first name and Iris picks it up. No more "I'm Dave" being heard as a question.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">06</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">She notices the silence.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">Twenty seconds of quiet and Iris checks in — gently, not pushy. Because sometimes a pause means something.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">07</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">iOS voice mode, rock-solid.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">Safari's speech recognition used to quietly die mid-conversation. Heartbeat, backoff, error recovery — now it holds the line.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">08</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">Server-side guardrails.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">Rate limiting and structured error logging on the API layer. The pilot can run wide without surprise bills or silent failures.</div>
-            </div>
-          </li>
-          <li style="padding:22px 8px;border-bottom:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFD100;letter-spacing:1px;">09</span>
-            <div>
-              <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:4px;">Moderation layer, tighter.</div>
-              <div style="font-size:15px;color:var(--text-body);line-height:1.5;">A second AI pass catches hallucinated programs and phone numbers before they ever reach the member. If Iris isn't sure, she says so.</div>
-            </div>
-          </li>
-        </ul>
-
-        <div style="margin-top:56px;display:flex;flex-direction:column;align-items:center;gap:14px;">
-          <button class="nav-cta" onclick="openChat('general')" style="padding:16px 32px;font-size:16px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;">
-            Talk to Iris v1.2
-          </button>
-          <span style="font-size:12px;color:var(--text-dim);letter-spacing:0.5px;">Coming in v1.3 — memory across sessions.</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider" aria-hidden="true" style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);"></div>
 
   <!-- ACT 2 — THE DISCONNECT -->
   <section class="section theme-black" id="problem">
@@ -8669,6 +8587,130 @@ Never end a conversation without either (a) a clear recommendation AND a concret
     });
 
     loadA11y();
+  </script>
+
+  <!-- ===== WHAT'S NEW v1.2 MODAL ===== -->
+  <div id="whatsNewModal" role="dialog" aria-modal="true" aria-labelledby="whatsNewHeadline" aria-hidden="true" style="position:fixed;inset:0;z-index:9999;display:none;align-items:flex-start;justify-content:center;padding:6vh 20px 40px;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-y:auto;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
+    <div class="whatsnew-card" style="position:relative;max-width:720px;width:100%;background:#0A0A0A;border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:56px 48px 48px;box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,209,0,0.05);">
+
+      <button type="button" onclick="closeWhatsNew()" aria-label="Close" style="position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);color:#fff;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
+
+      <div style="display:inline-flex;align-items:center;gap:10px;padding:7px 16px;border:1px solid rgba(255,209,0,0.45);border-radius:999px;background:rgba(255,209,0,0.07);margin-bottom:24px;">
+        <span aria-hidden="true" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#FFD100;box-shadow:0 0 12px rgba(255,209,0,0.9);"></span>
+        <span style="font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:#FFD100;font-weight:700;">Now Live — April 2026</span>
+      </div>
+
+      <h2 id="whatsNewHeadline" style="font-size:clamp(36px,5vw,56px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 14px;font-weight:700;color:#fff;">
+        Iris v1.2.
+      </h2>
+      <p style="font-size:20px;line-height:1.45;color:rgba(255,255,255,0.78);margin:0 0 8px;font-style:italic;">
+        She listens better. She holds the thread. She hands off like a pro.
+      </p>
+      <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.62);margin:0 0 40px;">
+        Nine upgrades shipped this week — spanning the conversation, the voice layer, and the ground beneath them both. Here's what changed, and why it matters for the people Iris is built for.
+      </p>
+
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:2px;color:#FFD100;text-transform:uppercase;font-weight:600;">The Conversation</span>
+        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She holds the thread.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Iris now remembers the details of your conversation as it unfolds — your name, your city, your diagnosis, the worry you shared ten minutes ago. She weaves them back in when it matters, like a friend who's actually paying attention. No more starting over. No more repeating yourself.</p>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She opens with the truth.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Iris tells you upfront she's a beta — that she can't register you for programs or pick up the phone for you yet. It's a small change that earns trust the moment the conversation starts.</p>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She hands you off like a pro.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">When Iris can't take the action herself, she gives you the real CNIB number and writes you an opening line — so your first call lands on exactly the right desk, with the right person, already halfway there.</p>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She notices your silence.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Twenty seconds of quiet and Iris checks in — gently, not pushy. Because sometimes a pause isn't a pause. Sometimes it's the hardest part of the conversation.</p>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;margin:36px 0 22px;">
+        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:2px;color:#FFD100;text-transform:uppercase;font-weight:600;">The Voice Layer</span>
+        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">Voice and text, perfectly in sync.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">The words on screen now land exactly when Iris says them. No empty bubble hanging in the air. No lag between what you hear and what you read. Just the rhythm of a real conversation.</p>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">She catches your name.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Say just your first name and Iris picks it up — no full sentence required. The small things that make her feel human.</p>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">iPhone voice mode, rock-solid.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">Safari used to quietly drop the mic mid-conversation. Not anymore. Heartbeat, backoff, and error recovery now keep voice mode alive for as long as you need it — on any phone.</p>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;margin:36px 0 22px;">
+        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+        <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:2px;color:#FFD100;text-transform:uppercase;font-weight:600;">The Ground Beneath</span>
+        <span style="flex:1;height:1px;background:rgba(255,255,255,0.12);"></span>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:28px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">Guardrails that hold.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">A second AI pass now reviews every response before it leaves Iris's mouth — catching hallucinated programs, wrong phone numbers, or anything that drifts from what CNIB actually offers. If Iris isn't sure, she says so.</p>
+      </div>
+
+      <div class="wn-item" style="margin-bottom:10px;">
+        <h3 style="font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.01em;">Built to run wide.</h3>
+        <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.7);margin:0;">New rate limits and structured error logging on the API layer. The pilot can open its doors without surprise costs or silent failures — and every issue now leaves a trace we can learn from.</p>
+      </div>
+
+      <div style="margin-top:44px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:flex-start;gap:18px;">
+        <div style="font-size:13px;color:rgba(255,255,255,0.48);letter-spacing:0.3px;">
+          <span style="font-family:'JetBrains Mono',ui-monospace,monospace;color:#FFD100;">Coming in v1.3 &rarr;</span> &nbsp;Memory across sessions. Iris will remember you next time.
+        </div>
+        <button type="button" onclick="closeWhatsNew(); openChat('general');" style="padding:15px 30px;font-size:15px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;">
+          Talk to Iris v1.2 &rarr;
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var modal = document.getElementById('whatsNewModal');
+      if (!modal) return;
+      var lastFocus = null;
+      window.openWhatsNew = function(){
+        lastFocus = document.activeElement;
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        var closeBtn = modal.querySelector('button[aria-label="Close"]');
+        if (closeBtn) setTimeout(function(){ closeBtn.focus(); }, 0);
+      };
+      window.closeWhatsNew = function(){
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
+      };
+      modal.addEventListener('click', function(e){
+        if (e.target === modal) window.closeWhatsNew();
+      });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && modal.style.display === 'flex') window.closeWhatsNew();
+      });
+    })();
   </script>
 </body>
 </html>
