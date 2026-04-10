@@ -1,1 +1,227 @@
-USE_FILE:/tmp/iris_deploy.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>iris. — Your personal AI navigator for life with sight loss</title>
+  <meta name="description" content="Meet iris. Your personal AI navigator for life with sight loss — built as a working prototype for CNIB.">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="iris.">
+  <meta name="author" content="Jacob Charendoff">
+
+  <!-- Favicon: iris. app icon -->
+  <link rel="icon" type="image/svg+xml" href="/iris-app-icon.svg">
+  <link rel="apple-touch-icon" href="/iris-app-icon.svg">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="iris.">
+  <meta property="og:title" content="iris. — Your personal AI navigator for life with sight loss">
+  <meta property="og:description" content="Meet Iris. Your personal AI navigator for life with sight loss — built as a working prototype for CNIB.">
+  <meta property="og:url" content="https://meet-iris-app.vercel.app/">
+  <meta property="og:image" content="https://meet-iris-app.vercel.app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="iris. — Your personal AI navigator for life with sight loss.">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="iris. — Your personal AI navigator for life with sight loss">
+  <meta name="twitter:description" content="Meet Iris. Your personal AI navigator for life with sight loss — built as a working prototype for CNIB.">
+  <meta name="twitter:image" content="https://meet-iris-app.vercel.app/og.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== MOBILE TOUCH: eliminate 300ms tap delay ===== */
+    button, a, input, .iris-fab, .a11y-fab, .demo-card,
+    .iris-suggestions button, .iris-buffer-cta {
+      touch-action: manipulation;
+    }
+
+    /* Screen reader only utility */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .sr-only-focusable:focus { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; background: #FFD100; color: #0A0A0A; padding: 8px 16px; font-size: 14px; z-index: 10000; }
+
+    /* Keyboard focus indicators — WCAG 2.1 AA requires visible focus */
+    :focus-visible {
+      outline: 3px solid #FFD100 !important;
+      outline-offset: 2px !important;
+    }
+    .iris-chat-input:focus-visible,
+    .iris-send-btn:focus-visible,
+    .iris-mic-btn:focus-visible,
+    .iris-close-btn:focus-visible,
+    .iris-buffer-cta:focus-visible,
+    .demo-card:focus-visible {
+      outline: 3px solid #FFD100 !important;
+      outline-offset: 2px !important;
+      box-shadow: 0 0 0 6px rgba(255,209,0,0.2);
+    }
+
+    :root {
+      --yellow: #FFD100;
+      --yellow-dim: rgba(255, 209, 0, 0.08);
+      --yellow-glow: rgba(255, 209, 0, 0.15);
+      --bg: #0A0A0A;
+      --bg-card: #141414;
+      --bg-card-hover: #1a1a1a;
+      --text: #FFFFFF;
+      --text-dim: rgba(255,255,255,0.5);
+      --text-body: rgba(255,255,255,0.7);
+      --border: rgba(255,255,255,0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+
+    /* ===== SECTION THEMES — CNIB Yellow / Dark / White / Black ===== */
+    /* Themes set ONLY text/card colors. Backgrounds are handled by .bleed-* classes
+       so sections smoothly flow into one another like a pitch deck. */
+    .theme-black {
+      --bg: #0A0A0A;
+      --bg-card: #161616;
+      --bg-card-hover: #1f1f1f;
+      --text: #FFFFFF;
+      --text-dim: rgba(255,255,255,0.5);
+      --text-body: rgba(255,255,255,0.72);
+      --border: rgba(255,255,255,0.08);
+      --yellow: #FFD100;
+      --yellow-dim: rgba(255, 209, 0, 0.08);
+      --yellow-glow: rgba(255, 209, 0, 0.15);
+      color: #FFFFFF;
+    }
+    .theme-white {
+      --bg: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F4F4F4;
+      --text: #0A0A0A;
+      --text-dim: rgba(10,10,10,0.55);
+      --text-body: rgba(10,10,10,0.74);
+      --border: rgba(10,10,10,0.1);
+      --yellow: #0A0A0A;
+      --yellow-dim: rgba(10,10,10,0.05);
+      --yellow-glow: rgba(255, 209, 0, 0.4);
+      color: #0A0A0A;
+    }
+    .theme-white .label { color: #B89500; }
+    .theme-yellow {
+      --bg: #0A0A0A;
+      --bg-card: #FFD100;
+      --bg-card-hover: #e6bc00;
+      --text: #FFFFFF;
+      --text-dim: rgba(255,255,255,0.62);
+      --text-body: rgba(255,255,255,0.82);
+      --border: rgba(255,255,255,0.18);
+      --yellow: #FFD100;
+      --yellow-dim: rgba(255,209,0,0.08);
+      --yellow-glow: rgba(255,209,0,0.15);
+      color: #FFFFFF;
+    }
+    .theme-yellow .label { color: #0A0A0A; }
+
+    /* ===== SECTION BACKGROUNDS — solid blocks, dividers do the bleeding ===== */
+    body { background: #0A0A0A; }
+    .theme-black, .theme-black.hero, .theme-black.section, .theme-black.data-strip, .theme-black.cta-section { background: #0A0A0A; }
+    .theme-white, .theme-white.section, .theme-white.data-strip { background: #FAFAFA; }
+    .theme-yellow, .theme-yellow.hero, .theme-yellow.section, .theme-yellow.data-strip { background: var(--bg); }
+
+    /* ===== SECTION DIVIDERS — silky 96px gradient blends between section colors ===== */
+    .section-divider {
+      height: 96px;
+      width: 100%;
+      position: relative;
+      pointer-events: none;
+    }
+    .section-divider.fade-yellow-to-dark { background: linear-gradient(to bottom, #0A0A0A, #0A0A0A); }
+    .section-divider.fade-dark-to-yellow { background: linear-gradient(to bottom, #0A0A0A, #FFD100); }
+    .section-divider.fade-dark-to-white { background: linear-gradient(to bottom, #0A0A0A, #FAFAFA); }
+    .section-divider.fade-white-to-dark { background: linear-gradient(to bottom, #FAFAFA, #0A0A0A); }
+    .section-divider.fade-yellow-to-white { background: linear-gradient(to bottom, #FFD100, #FAFAFA); }
+    .section-divider.fade-white-to-yellow { background: linear-gradient(to bottom, #FAFAFA, #FFD100); }
+
+    /* Theme-specific component overrides */
+    .theme-white .chat-bubble.bot {
+      background: #FFD100;
+      color: #0A0A0A;
+      border: 1px solid rgba(10,10,10,0.12);
+    }
+    .theme-white .chat-bubble.user {
+      background: rgba(10,10,10,0.06);
+      color: rgba(10,10,10,0.78);
+    }
+    .theme-white .what-visual {
+      box-shadow: 0 24px 80px rgba(10,10,10,0.08);
+    }
+    .theme-yellow .how-icon {
+      background: #0A0A0A;
+      border-color: #0A0A0A;
+    }
+    .theme-yellow .how-icon svg { stroke: #FFD100; }
+    .theme-yellow .accent { color: #0A0A0A; }
+    .theme-white .accent { color: #0A0A0A; }
+    .theme-white .data-strip {
+      border-top-color: rgba(10,10,10,0.08);
+      border-bottom-color: rgba(10,10,10,0.08);
+    }
+    .theme-white .reach-visual::before { border-top-color: #FFD100; }
+    .theme-white .reach-number { color: #0A0A0A; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      font-weight: 400;
+    }
+
+    /* ===== TYPOGRAPHY (CNIB-aligned: Barlow as Stag Sans Web stand-in) ===== */
+    .headline-xl {
+      font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(52px, 8vw, 104px);
+      line-height: 1.02;
+      letter-spacing: -0.5px;
+      font-weight: 600;
+    }
+    .headline-lg {
+      font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 1.08;
+      letter-spacing: -0.3px;
+      font-weight: 600;
+    }
+    .headline-xl {
+      font-size: clamp(44px, 7vw, 88px) !important;
+      line-height: 1 !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.025em !important;
+    }
+    .headline-md {
+      font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(24px, 3vw, 38px);
+      font-weight: 500;
+      line-height: 1.18;
+      letter-spacing: -0.2px;
+    }
+    .body-lg {
+      font-size: clamp(17px, 1.5vw, 20px);
+      color: var(--text-body);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    .label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+    .accent { color: var(--yellow); }
