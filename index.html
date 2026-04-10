@@ -90,17 +90,17 @@
     }
     .theme-white .label { color: #B89500; }
     .theme-yellow {
-      --bg: #FFD100;
-      --bg-card: #0A0A0A;
-      --bg-card-hover: #1a1a1a;
-      --text: #0A0A0A;
-      --text-dim: rgba(10,10,10,0.62);
-      --text-body: rgba(10,10,10,0.82);
-      --border: rgba(10,10,10,0.18);
-      --yellow: #0A0A0A;
-      --yellow-dim: rgba(10,10,10,0.08);
-      --yellow-glow: rgba(10,10,10,0.15);
-      color: #0A0A0A;
+      --bg: #0A0A0A;
+      --bg-card: #FFD100;
+      --bg-card-hover: #e6bc00;
+      --text: #FFFFFF;
+      --text-dim: rgba(255,255,255,0.62);
+      --text-body: rgba(255,255,255,0.82);
+      --border: rgba(255,255,255,0.18);
+      --yellow: #FFD100;
+      --yellow-dim: rgba(255,209,0,0.08);
+      --yellow-glow: rgba(255,209,0,0.15);
+      color: #FFFFFF;
     }
     .theme-yellow .label { color: #0A0A0A; }
 
@@ -117,7 +117,7 @@
       position: relative;
       pointer-events: none;
     }
-    .section-divider.fade-yellow-to-dark { background: linear-gradient(to bottom, #FFD100, #0A0A0A); }
+    .section-divider.fade-yellow-to-dark { background: linear-gradient(to bottom, #0A0A0A, #0A0A0A); }
     .section-divider.fade-dark-to-yellow { background: linear-gradient(to bottom, #0A0A0A, #FFD100); }
     .section-divider.fade-dark-to-white { background: linear-gradient(to bottom, #0A0A0A, #FAFAFA); }
     .section-divider.fade-white-to-dark { background: linear-gradient(to bottom, #FAFAFA, #0A0A0A); }
@@ -373,8 +373,9 @@
     }
     /* On yellow sections: invert primary button to black-fill / yellow-text for contrast */
     .theme-yellow .btn-primary {
-      background: #0A0A0A;
+      background: transparent;
       color: #FFD100;
+      border: 1.5px solid rgba(255,209,0,0.5);
     }
     @media (hover: hover) {
       .theme-yellow .btn-primary:hover {
@@ -4184,8 +4185,8 @@
       display: inline-flex;
       align-items: center;
       gap: 14px;
-      background: #0A0A0A;
-      color: #FFD100;
+      background: #FFD100;
+      color: #0A0A0A;
       border: none;
       padding: 22px 40px;
       border-radius: 999px;
@@ -4432,7 +4433,7 @@
       font-size: clamp(120px, 22vw, 260px);
       line-height: 0.82;
       letter-spacing: -0.055em;
-      text-shadow: 0 8px 0 rgba(0,0,0,0.07);
+      text-shadow: 0 4px 40px rgba(255,209,0,0.15);
       margin: 0 0 18px;
     }
     .cta-hero-tagline {
@@ -5581,7 +5582,7 @@
     <div class="cta-bookend-sun" aria-hidden="true">
       <svg viewBox="0 0 600 600">
         <g class="sun-rays">
-          <g stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" opacity="0.55">
+          <g stroke="#FFD100" stroke-width="2" stroke-linecap="round" opacity="0.55">
             <line x1="300" y1="40" x2="300" y2="120"/>
             <line x1="300" y1="480" x2="300" y2="560"/>
             <line x1="40" y1="300" x2="120" y2="300"/>
@@ -5610,7 +5611,7 @@
         <p class="cta-hero-tagline">Your personal AI navigator<br>for life with sight loss.</p>
         <div class="cta-bookend-row">
           <a href="#demos" class="cta-bookend-btn">
-            <span>See how Iris works</span>
+            <span>See how iris. works</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </a>
         </div>
@@ -6430,10 +6431,7 @@
       <div class="iris-chat-header">
         <div class="iris-chat-header-left">
           <div class="iris-chat-avatar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
+            <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="256" cy="162" r="28" fill="#FFD100"/><rect x="228" y="212" width="56" height="160" rx="8" fill="currentColor"/><circle cx="320" cy="372" r="18" fill="#FFD100"/></svg>
           </div>
           <div>
             <div class="iris-chat-name">iris.</div>
@@ -8688,10 +8686,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           <div class="iris-orb-pulse iris-orb-pulse-2"></div>
           <div class="iris-orb-pulse iris-orb-pulse-3"></div>
           <div class="iris-orb-core">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
+            <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="256" cy="162" r="28" fill="#FFD100"/><rect x="228" y="212" width="56" height="160" rx="8" fill="currentColor"/><circle cx="320" cy="372" r="18" fill="#FFD100"/></svg>
           </div>
         </div>
         <div class="iris-connecting-label">${label || 'Connecting to iris.â¦'}</div>
@@ -8724,10 +8719,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
               <div class="iris-orb-pulse"></div>
               <div class="iris-orb-pulse iris-orb-pulse-2"></div>
               <div class="iris-orb-core">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
+                <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="256" cy="162" r="28" fill="#FFD100"/><rect x="228" y="212" width="56" height="160" rx="8" fill="currentColor"/><circle cx="320" cy="372" r="18" fill="#FFD100"/></svg>
               </div>
             </div>
             <div class="iris-buffer-eyebrow">Powered by CNIB</div>
