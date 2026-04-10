@@ -108,7 +108,7 @@
     body { background: #0A0A0A; }
     .theme-black, .theme-black.hero, .theme-black.section, .theme-black.data-strip, .theme-black.cta-section { background: #0A0A0A; }
     .theme-white, .theme-white.section, .theme-white.data-strip { background: #FAFAFA; }
-    .theme-yellow, .theme-yellow.hero, .theme-yellow.section, .theme-yellow.data-strip { background: #FFD100; }
+    .theme-yellow, .theme-yellow.hero, .theme-yellow.section, .theme-yellow.data-strip { background: var(--bg); }
 
     /* ===== SECTION DIVIDERS â silky 96px gradient blends between section colors ===== */
     .section-divider {
@@ -4039,8 +4039,8 @@
     /* ===== CLOSING CTA â YELLOW BOOKEND ===== */
     .cta-bookend {
       position: relative;
-      background: #FFD100;
-      color: #0A0A0A;
+      background: var(--bg);
+      color: var(--text);
       padding: 140px 24px 0;
       overflow: hidden;
       isolation: isolate;
