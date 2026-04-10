@@ -4436,6 +4436,21 @@
       text-shadow: 0 4px 40px rgba(255,209,0,0.15);
       margin: 0 0 18px;
     }
+    /* Branded iris. wordmark — yellow dots on "i" characters and yellow period */
+    .iris-wordmark .yi { position: relative; display: inline-block; }
+    .iris-wordmark .yi::after {
+      content: '';
+      position: absolute;
+      background: #FFD100;
+      border-radius: 50%;
+      width: 0.135em;
+      height: 0.135em;
+      top: 0.04em;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    .iris-wordmark .yp { color: #FFD100; }
     .cta-hero-tagline {
       font-family: 'Barlow', serif;
       font-style: italic;
@@ -5607,7 +5622,7 @@
     <div class="cta-bookend-inner">
       <div class="cta-bookend-content">
         <span class="cta-bookend-eyebrow">Powered by CNIB</span>
-        <h1 class="cta-bookend-stat cta-bookend-wordmark">iris.</h1>
+        <h1 class="cta-bookend-stat cta-bookend-wordmark iris-wordmark"><span class="yi">i</span>r<span class="yi">i</span>s<span class="yp">.</span></h1>
         <p class="cta-hero-tagline">Your personal AI navigator<br>for life with sight loss.</p>
         <div class="cta-bookend-row">
           <a href="#demos" class="cta-bookend-btn">
