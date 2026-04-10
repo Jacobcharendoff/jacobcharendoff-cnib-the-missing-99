@@ -5587,7 +5587,7 @@
       <a href="#demos" data-nav>The conversation</a>
       <a href="#journeys" data-nav>The bigger picture</a>
       <a href="#further" data-nav>What's next</a>
-      <button class="nav-cta" onclick="openChat('general')">Try Iris</button>
+      <a class="nav-cta" href="#demos" style="text-decoration:none">Watch Demos</a>
     </div>
   </nav>
 
@@ -6417,8 +6417,8 @@
       <h2 class="cta-soft-headline">2.2 million Canadians.<br><span class="cta-soft-accent">Most of them navigating alone.</span></h2>
       <p class="cta-soft-body">iris. is how that ends. Not by building more â by making sure what CNIB already built reaches the people it was built for.</p>
       <p class="cta-soft-tagline">Your personal AI navigator for life with sight loss.</p>
-      <button class="cta-soft-btn" onclick="openChat('general')">
-        <span>Talk to iris.</span>
+      <a class="cta-soft-btn" href="#demos" style="text-decoration:none">
+        <span>Watch iris. in action</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </button>
       <div class="cta-soft-foot">
@@ -6435,7 +6435,7 @@
   </main>
 
   <!-- FAB -->
-  <button class="iris-fab" onclick="openChat('general')" aria-label="Talk to iris.">
+  <button class="iris-fab" onclick="openChat('general')" aria-label="Talk to iris." style="display:none">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
       <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
     </svg>
@@ -8553,6 +8553,12 @@ Never end a conversation without either (a) a clear recommendation AND a concret
     let scenarioCancelled = false;
 
     function openChat(scenario) {
+      // Live chat temporarily disabled — demos only
+      if (scenario === 'general') {
+        const demos = document.getElementById('demos');
+        if (demos) demos.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
       currentScenario = scenario;
       conversationStep = 0;
       conversationHistory = []; // Reset LLM context
@@ -9074,7 +9080,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       const goLive = document.createElement('button');
       goLive.className = 'iris-next-btn';
       goLive.textContent = 'Talk to me yourself';
-      goLive.onclick = () => { closeChat(); setTimeout(() => openChat('general'), 350); };
+      goLive.onclick = () => { closeChat(); setTimeout(() => { const d = document.getElementById('demos'); if(d) d.scrollIntoView({behavior:'smooth'}); }, 350); };
       wrap.appendChild(goLive);
 
       const replay = document.createElement('button');
@@ -9468,8 +9474,8 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       </div>
 
       <div style="margin-top:24px;display:flex;flex-direction:column;align-items:stretch;gap:12px;">
-        <button type="button" onclick="closeWhatsNew(); openChat('general');" style="padding:14px 24px;font-size:14px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;">
-          Talk to iris. v1.2 &rarr;
+        <button type="button" onclick="closeWhatsNew(); document.getElementById('demos')?.scrollIntoView({behavior:'smooth'});" style="padding:14px 24px;font-size:14px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;">
+          Watch the demos &rarr;
         </button>
         <div style="font-size:11.5px;color:rgba(255,255,255,0.42);letter-spacing:0.3px;text-align:center;">
           <span style="font-family:'JetBrains Mono',ui-monospace,monospace;color:#FFD100;">Next up &rarr;</span> v1.3 Â· Memory across sessions.
