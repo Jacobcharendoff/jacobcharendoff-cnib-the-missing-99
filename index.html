@@ -1337,7 +1337,14 @@
       box-shadow: 0 10px 36px rgba(0,0,0,0.6), 0 0 0 3px #FFD100;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .a11y-fab:hover, .a11y-fab:focus-visible {
+    @media (hover: hover) {
+      .a11y-fab:hover {
+        transform: scale(1.06);
+        box-shadow: 0 14px 42px rgba(255,209,0,0.45), 0 0 0 4px #FFD100, 0 0 0 7px #0A0A0A;
+        outline: none;
+      }
+    }
+    .a11y-fab:focus-visible {
       transform: scale(1.06);
       box-shadow: 0 14px 42px rgba(255,209,0,0.45), 0 0 0 4px #FFD100, 0 0 0 7px #0A0A0A;
       outline: none;
@@ -2983,9 +2990,11 @@
       box-shadow: 0 4px 20px rgba(255, 209, 0,0.3);
       transition: all 0.3s;
     }
-    .iris-fab:hover {
-      transform: scale(1.08);
-      box-shadow: 0 8px 30px rgba(255, 209, 0,0.4);
+    @media (hover: hover) {
+      .iris-fab:hover {
+        transform: scale(1.08);
+        box-shadow: 0 8px 30px rgba(255, 209, 0,0.4);
+      }
     }
     .iris-fab svg { width: 28px; height: 28px; stroke: #000; }
 
@@ -8647,24 +8656,48 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       container.appendChild(wrap);
 
       wrap.querySelector('#irisLiveCta').addEventListener('click', () => {
+        // ── MOBILE UNLOCK: audio + mic ──────────────────────────────
+        // Mobile browsers gate audio playback and mic access behind a
+        // user-gesture. We're inside the click handler right now, so:
+        //  1. Play a silent audio buffer to permanently unlock Audio.
+        //  2. Start (then stop) SpeechRecognition to trigger the mic
+        //     permission prompt while we still have gesture context.
+        try {
+          var _ctx = new (window.AudioContext || window.webkitAudioContext)();
+          var _buf = _ctx.createBuffer(1, 1, 22050);
+          var _src = _ctx.createBufferSource();
+          _src.buffer = _buf;
+          _src.connect(_ctx.destination);
+          _src.start(0);
+          // Also play a <audio> element so the HTMLAudioElement path is unlocked
+          var _sil = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=');
+          _sil.volume = 0;
+          _sil.play().catch(function(){});
+        } catch(_e) {}
+
+        // Kick mic permission prompt while user gesture is live
+        if (recognition && !isListening) {
+          try { recognition.start(); } catch(_e) {}
+          // Immediately stop — resumeListeningForIris() will restart
+          // after IRIS finishes her greeting.
+          setTimeout(function(){ try { recognition.stop(); } catch(_e){} }, 120);
+        }
+
         wrap.classList.add('iris-buffer-out');
         setTimeout(() => {
           if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
           chatBody.innerHTML = '';
           currentPhase = 'live';
           voiceModeOn = true;
-          // Live mode now uses the SAME voice pipeline as demos:
-          // browser SpeechRecognition â /api/chat (gpt-4o) â /api/tts (ElevenLabs Iris).
-          // One voice, one path. No Realtime WebRTC, no double-speak, no voice
-          // drift between demo mode and live mode.
-          //
-          // IMPORTANT: do NOT call startListening() here. addBotMessage() kicks
-          // off TTS via enqueueTTS â runTTSQueue, which calls
-          // pauseListeningForIris() internally and then resumeListeningForIris()
-          // after Iris finishes speaking. If we also start the mic manually,
-          // it races the pause and ends up ON while Iris is talking â which
-          // makes recognition.onresult fire on Iris's own voice and
-          // `stopSpeaking()` cuts her greeting off mid-sentence.
+
+          // Show the connecting orb while IRIS's greeting TTS loads.
+          // It auto-dismisses when the first audio.onplay fires.
+          showConnecting('Iris is getting ready\u2026');
+
+          // IMPORTANT: do NOT call startListening() here. addBotMessage()
+          // kicks off TTS via enqueueTTS \u2192 runTTSQueue, which calls
+          // pauseListeningForIris() internally and then
+          // resumeListeningForIris() after Iris finishes speaking.
           addBotMessage(scenarios.general.greeting, scenarios.general.suggestions);
           chatInput.focus();
         }, 320);
