@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IRIS â Your personal AI navigator for life with sight loss</title>
-  <meta name="description" content="Meet Iris. Your personal AI navigator for life with sight loss â built as a working prototype for CNIB.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>iris. â Your personal AI navigator for life with sight loss</title>
+  <meta name="description" content="Meet iris. Your personal AI navigator for life with sight loss â built as a working prototype for CNIB.">
   <meta name="theme-color" content="#0A0A0A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="iris.">
   <meta name="author" content="Jacob Charendoff">
 
   <!-- Favicon: inline SVG, CNIB yellow "I" on black -->
@@ -14,18 +17,18 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="IRIS">
-  <meta property="og:title" content="IRIS â Your personal AI navigator for life with sight loss">
+  <meta property="og:site_name" content="iris.">
+  <meta property="og:title" content="iris. â Your personal AI navigator for life with sight loss">
   <meta property="og:description" content="Meet Iris. Your personal AI navigator for life with sight loss â built as a working prototype for CNIB.">
   <meta property="og:url" content="https://iris-cnib-pilot.vercel.app/">
   <meta property="og:image" content="https://iris-cnib-pilot.vercel.app/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="IRIS â Your personal AI navigator for life with sight loss.">
+  <meta property="og:image:alt" content="iris. â Your personal AI navigator for life with sight loss.">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="IRIS â Your personal AI navigator for life with sight loss">
+  <meta name="twitter:title" content="iris. â Your personal AI navigator for life with sight loss">
   <meta name="twitter:description" content="Meet Iris. Your personal AI navigator for life with sight loss â built as a working prototype for CNIB.">
   <meta name="twitter:image" content="https://iris-cnib-pilot.vercel.app/og.png">
 
@@ -33,6 +36,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== MOBILE TOUCH: eliminate 300ms tap delay ===== */
+    button, a, input, .iris-fab, .a11y-fab, .demo-card,
+    .iris-suggestions button, .iris-buffer-cta {
+      touch-action: manipulation;
+    }
 
     :root {
       --yellow: #FFD100;
@@ -255,7 +264,9 @@
       position: relative;
       padding: 6px 0;
     }
-    .nav-links a:hover { color: var(--text); }
+    @media (hover: hover) {
+      .nav-links a:hover { color: var(--text); }
+    }
     .nav-links a.active { color: var(--yellow); }
     .nav-links a.active::after {
       content: '';
@@ -277,14 +288,17 @@
       cursor: pointer;
       border: none;
     }
-    .nav-cta:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(255, 209, 0,0.3);
+    @media (hover: hover) {
+      .nav-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(255, 209, 0,0.3);
+      }
     }
 
     /* ===== HERO ===== */
     .hero {
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -350,27 +364,33 @@
       border: none;
       font-family: inherit;
     }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255, 209, 0,0.3);
+    @media (hover: hover) {
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 209, 0,0.3);
+      }
     }
     /* On yellow sections: invert primary button to black-fill / yellow-text for contrast */
     .theme-yellow .btn-primary {
       background: #0A0A0A;
       color: #FFD100;
     }
-    .theme-yellow .btn-primary:hover {
-      background: #1f1f1f;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    @media (hover: hover) {
+      .theme-yellow .btn-primary:hover {
+        background: #1f1f1f;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      }
     }
     /* On white sections */
     .theme-white .btn-primary {
       background: #0A0A0A;
       color: #FFD100;
     }
-    .theme-white .btn-primary:hover {
-      background: #1f1f1f;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    @media (hover: hover) {
+      .theme-white .btn-primary:hover {
+        background: #1f1f1f;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      }
     }
     .btn-ghost {
       background: transparent;
@@ -388,27 +408,33 @@
       cursor: pointer;
       font-family: inherit;
     }
-    .btn-ghost:hover {
-      color: var(--text);
-      border-color: rgba(255,255,255,0.2);
+    @media (hover: hover) {
+      .btn-ghost:hover {
+        color: var(--text);
+        border-color: rgba(255,255,255,0.2);
+      }
     }
     .theme-yellow .btn-ghost {
       color: #0A0A0A;
       border-color: rgba(10,10,10,0.4);
     }
-    .theme-yellow .btn-ghost:hover {
-      color: #0A0A0A;
-      border-color: #0A0A0A;
-      background: rgba(0,0,0,0.05);
+    @media (hover: hover) {
+      .theme-yellow .btn-ghost:hover {
+        color: #0A0A0A;
+        border-color: #0A0A0A;
+        background: rgba(0,0,0,0.05);
+      }
     }
     .theme-white .btn-ghost {
       color: #0A0A0A;
       border-color: rgba(10,10,10,0.3);
     }
-    .theme-white .btn-ghost:hover {
-      color: #0A0A0A;
-      border-color: #0A0A0A;
-      background: rgba(0,0,0,0.05);
+    @media (hover: hover) {
+      .theme-white .btn-ghost:hover {
+        color: #0A0A0A;
+        border-color: #0A0A0A;
+        background: rgba(0,0,0,0.05);
+      }
     }
 
     /* ===== STATS BAR ===== */
@@ -443,7 +469,7 @@
       font-weight: 400;
     }
 
-    /* ===== WHAT IS IRIS ===== */
+    /* ===== WHAT IS iris. ===== */
     .what-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -561,10 +587,12 @@
         radial-gradient(circle at 50% 0%, rgba(255,120,170,0.26) 0%, transparent 60%),
         linear-gradient(180deg, #1f0a14 0%, #0a0a0a 100%);
     }
-    .demo-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(255,209,0,0.55);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    @media (hover: hover) {
+      .demo-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255,209,0,0.55);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      }
     }
     .demo-card .persona-eyebrow {
       display: inline-flex;
@@ -647,9 +675,11 @@
       letter-spacing: 0.3px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .demo-card:hover .persona-cta {
-      transform: translateX(4px);
-      box-shadow: 0 8px 24px rgba(255,209,0,0.32);
+    @media (hover: hover) {
+      .demo-card:hover .persona-cta {
+        transform: translateX(4px);
+        box-shadow: 0 8px 24px rgba(255,209,0,0.32);
+      }
     }
     .demo-card .persona-cta svg { width: 14px; height: 14px; }
 
@@ -694,7 +724,7 @@
       display: none; /* Could add connecting lines */
     }
 
-    /* ===== ASK IRIS â Apple Siri-style category grid ===== */
+    /* ===== ASK iris. â Apple Siri-style category grid ===== */
     .ask-iris-cats {
       display: flex;
       flex-wrap: wrap;
@@ -728,11 +758,13 @@
       stroke-linejoin: round;
       flex-shrink: 0;
     }
-    .ask-cat:hover {
-      background: rgba(255,209,0,0.08);
-      border-color: rgba(255,209,0,0.45);
-      color: #fff;
-      transform: translateY(-1px);
+    @media (hover: hover) {
+      .ask-cat:hover {
+        background: rgba(255,209,0,0.08);
+        border-color: rgba(255,209,0,0.45);
+        color: #fff;
+        transform: translateY(-1px);
+      }
     }
     .ask-cat.active {
       background: #FFD100;
@@ -775,12 +807,16 @@
       transition: opacity 0.4s ease;
       pointer-events: none;
     }
-    .ask-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,209,0,0.55);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,209,0,0.15);
+    @media (hover: hover) {
+      .ask-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255,209,0,0.55);
+        box-shadow: 0 18px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,209,0,0.15);
+      }
     }
-    .ask-card:hover::before { opacity: 1; }
+    @media (hover: hover) {
+      .ask-card:hover::before { opacity: 1; }
+    }
     .ask-card.hidden { display: none; }
     .ask-cat-label {
       font-family: 'Inter', sans-serif;
@@ -823,9 +859,11 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .ask-card:hover .ask-arrow {
-      opacity: 1;
-      transform: translateX(0);
+    @media (hover: hover) {
+      .ask-card:hover .ask-arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
     .ask-iris-footnote {
       margin-top: 56px;
@@ -883,10 +921,12 @@
         radial-gradient(circle at 50% 0%, rgba(180,100,255,0.28) 0%, transparent 60%),
         linear-gradient(180deg, #15091f 0%, #0a0a0a 100%);
     }
-    .further-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(255,209,0,0.55);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    @media (hover: hover) {
+      .further-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255,209,0,0.55);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      }
     }
     .further-eyebrow {
       display: inline-flex;
@@ -1508,7 +1548,9 @@
       align-items: center;
       justify-content: center;
     }
-    .a11y-stepper button:hover { background: #FFFFFF; }
+    @media (hover: hover) {
+      .a11y-stepper button:hover { background: #FFFFFF; }
+    }
     .a11y-stepper button:active { transform: scale(0.94); }
     .a11y-stepper button:focus-visible { outline: 4px solid #FFFFFF; outline-offset: 2px; }
     .a11y-stepper button:disabled {
@@ -1639,7 +1681,7 @@
       .a11y-toggle.on::after { transform: translateX(30px); }
     }
 
-    /* ===== IRIS CHAT MODAL ===== */
+    /* ===== iris. CHAT MODAL ===== */
     .iris-modal {
       position: fixed;
       inset: 0;
@@ -1749,8 +1791,8 @@
       align-items: center;
     }
     .iris-icon-btn {
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: rgba(255,255,255,0.06);
       border: none;
@@ -1761,11 +1803,13 @@
       justify-content: center;
       transition: all 0.2s;
     }
-    .iris-icon-btn:hover { background: rgba(255, 209, 0,0.12); color: var(--yellow); }
+    @media (hover: hover) {
+      .iris-icon-btn:hover { background: rgba(255, 209, 0,0.12); color: var(--yellow); }
+    }
     .iris-icon-btn svg { width: 18px; height: 18px; }
     .iris-close-btn {
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: rgba(255,255,255,0.06);
       border: none;
@@ -1776,7 +1820,9 @@
       justify-content: center;
       transition: all 0.2s;
     }
-    .iris-close-btn:hover { background: rgba(255,87,87,0.18); color: #FF5757; }
+    @media (hover: hover) {
+      .iris-close-btn:hover { background: rgba(255,87,87,0.18); color: #FF5757; }
+    }
     .iris-close-btn svg { width: 18px; height: 18px; }
 
     /* Persona Banner */
@@ -1806,16 +1852,19 @@
       transition: all 0.2s ease;
       flex-shrink: 0;
     }
-    .iris-end-scenario-btn:hover {
-      background: rgba(255, 209, 0,0.12);
-      color: #FFD100;
-      border-color: #FFD100;
+    @media (hover: hover) {
+      .iris-end-scenario-btn:hover {
+        background: rgba(255, 209, 0,0.12);
+        color: #FFD100;
+        border-color: #FFD100;
+      }
     }
 
     /* Chat Body â modernized, more breathing room */
     .iris-chat-body {
       flex: 1;
       overflow-y: auto;
+      overscroll-behavior: contain;
       padding: 24px 24px 16px;
       display: flex;
       flex-direction: column;
@@ -2058,10 +2107,12 @@
       transition: all 0.2s ease;
       font-family: inherit;
     }
-    .iris-next-btn:hover {
-      background: #FFD100;
-      color: #0A0A0A;
-      transform: translateY(-1px);
+    @media (hover: hover) {
+      .iris-next-btn:hover {
+        background: #FFD100;
+        color: #0A0A0A;
+        transform: translateY(-1px);
+      }
     }
     .iris-next-btn.primary {
       background: #FFD100;
@@ -2240,9 +2291,11 @@
       box-shadow: 0 10px 32px rgba(255, 209, 0, 0.32);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .iris-buffer-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 38px rgba(255, 209, 0, 0.42);
+    @media (hover: hover) {
+      .iris-buffer-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 38px rgba(255, 209, 0, 0.42);
+      }
     }
     .iris-buffer-cta svg { color: #0A0A0A; }
     .iris-buffer-foot {
@@ -2695,7 +2748,9 @@
       animation: beginPulse 2.4s ease-in-out infinite;
       transition: transform 0.2s ease;
     }
-    .iris-begin-btn:hover { transform: translateY(-2px) scale(1.02); }
+    @media (hover: hover) {
+      .iris-begin-btn:hover { transform: translateY(-2px) scale(1.02); }
+    }
     .iris-begin-btn svg { stroke: #0A0A0A; }
     @keyframes beginPulse {
       0%, 100% { box-shadow: 0 8px 30px rgba(255, 209, 0,0.35), 0 0 0 0 rgba(255, 209, 0,0.5); }
@@ -2766,11 +2821,13 @@
       transition: all 0.25s;
       font-weight: 600;
     }
-    .iris-suggestions button:hover {
-      background: var(--yellow);
-      color: #0A0A0A;
-      border-color: var(--yellow);
-      transform: translateY(-1px);
+    @media (hover: hover) {
+      .iris-suggestions button:hover {
+        background: var(--yellow);
+        color: #0A0A0A;
+        border-color: var(--yellow);
+        transform: translateY(-1px);
+      }
     }
 
     /* Typing indicator */
@@ -2831,7 +2888,9 @@
       transition: all 0.2s;
       flex-shrink: 0;
     }
-    .iris-send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255, 209, 0,0.3); }
+    @media (hover: hover) {
+      .iris-send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255, 209, 0,0.3); }
+    }
     .iris-send-btn svg { width: 20px; height: 20px; stroke: #000; }
 
     /* iMessage-style input bar */
@@ -2854,7 +2913,9 @@
       position: relative;
     }
     .iris-mic-btn svg { width: 20px; height: 20px; }
-    .iris-mic-btn:hover { background: rgba(255, 209, 0,0.08); border-color: rgba(255, 209, 0,0.25); color: var(--yellow); }
+    @media (hover: hover) {
+      .iris-mic-btn:hover { background: rgba(255, 209, 0,0.08); border-color: rgba(255, 209, 0,0.25); color: var(--yellow); }
+    }
     .iris-mic-btn.active {
       background: rgba(255, 209, 0,0.15);
       border-color: var(--yellow);
@@ -2940,10 +3001,12 @@
       flex-shrink: 0;
     }
     .iris-voice-toggle svg { width: 16px; height: 16px; }
-    .iris-voice-toggle:hover { color: var(--text); }
+    @media (hover: hover) {
+      .iris-voice-toggle:hover { color: var(--text); }
+    }
     .iris-voice-toggle.active { color: var(--yellow); }
 
-    /* Voice waveform â appears when IRIS is speaking */
+    /* Voice waveform â appears when iris. is speaking */
     .iris-waveform {
       display: none;
       align-items: center;
@@ -3030,7 +3093,9 @@
       padding: 56px 40px;
       transition: background 0.4s ease;
     }
-    .trio-cell:hover { background: var(--bg-card-hover); }
+    @media (hover: hover) {
+      .trio-cell:hover { background: var(--bg-card-hover); }
+    }
     .trio-cell .trio-num {
       font-size: 12px;
       font-weight: 700;
@@ -3137,7 +3202,7 @@
     }
     .how-step .how-icon { margin: 0 0 24px; }
 
-    /* ===== LIVING IRIS EYE (hero) ===== */
+    /* ===== LIVING iris. EYE (hero) ===== */
     .iris-eye {
       width: clamp(160px, 22vw, 240px);
       height: clamp(160px, 22vw, 240px);
@@ -3317,9 +3382,11 @@
       padding: 32px 28px;
       transition: border-color 0.3s ease, transform 0.3s ease;
     }
-    .gap-face:hover {
-      border-color: rgba(255,209,0,0.45);
-      transform: translateY(-3px);
+    @media (hover: hover) {
+      .gap-face:hover {
+        border-color: rgba(255,209,0,0.45);
+        transform: translateY(-3px);
+      }
     }
     .gap-face-eyebrow {
       font-family: 'Space Grotesk', sans-serif;
@@ -3486,7 +3553,9 @@
       transition: r 0.4s ease, fill 0.4s ease;
       cursor: default;
     }
-    .constellation .program-node:hover circle { r: 36; }
+    @media (hover: hover) {
+      .constellation .program-node:hover circle { r: 36; }
+    }
     .constellation .program-node text {
       font-family: 'Barlow', sans-serif;
       font-size: 11px;
@@ -3504,7 +3573,7 @@
     }
 
     /* ===== JOURNEY SELECTOR ===== */
-    /* ===== HOW IRIS WORKS â panels ===== */
+    /* ===== HOW iris. WORKS â panels ===== */
     #how { padding: 120px 0; }
     .how-panel {
       max-width: 1080px;
@@ -3727,7 +3796,7 @@
     }
     .theme-yellow .act-refrain { color: #0A0A0A; }
 
-    /* ===== TWO WAYS IRIS REACHES PEOPLE â reach grid ===== */
+    /* ===== TWO WAYS iris. REACHES PEOPLE â reach grid ===== */
     #reach { padding: 120px 0; }
     .reach-grid {
       display: grid;
@@ -3755,7 +3824,7 @@
       animation: orbBob 5s ease-in-out infinite;
     }
     .reach-grid::after {
-      content: 'IRIS';
+      content: 'iris.';
       position: absolute;
       top: 50%;
       left: 50%;
@@ -3944,11 +4013,13 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .quickask-pill:hover {
-      background: #FFD100;
-      color: #0A0A0A;
-      border-color: #FFD100;
-      transform: translateY(-1px);
+    @media (hover: hover) {
+      .quickask-pill:hover {
+        background: #FFD100;
+        color: #0A0A0A;
+        border-color: #FFD100;
+        transform: translateY(-1px);
+      }
     }
 
     /* ===== CLOSING CTA foot (legacy) ===== */
@@ -4130,12 +4201,16 @@
       height: 22px;
       transition: transform 0.3s ease;
     }
-    .cta-bookend-btn:hover {
-      transform: translateY(-4px);
-      background: #1a1a1a;
-      box-shadow: 0 18px 0 rgba(0,0,0,0.22), 0 30px 80px rgba(0,0,0,0.35);
+    @media (hover: hover) {
+      .cta-bookend-btn:hover {
+        transform: translateY(-4px);
+        background: #1a1a1a;
+        box-shadow: 0 18px 0 rgba(0,0,0,0.22), 0 30px 80px rgba(0,0,0,0.35);
+      }
     }
-    .cta-bookend-btn:hover svg { transform: translateX(6px); }
+    @media (hover: hover) {
+      .cta-bookend-btn:hover svg { transform: translateX(6px); }
+    }
     .cta-bookend-btn:active { transform: translateY(0); box-shadow: 0 6px 0 rgba(0,0,0,0.18); }
 
     /* Marquee */
@@ -4167,7 +4242,9 @@
       from { transform: translateX(0); }
       to { transform: translateX(-50%); }
     }
-    .cta-marquee:hover .cta-marquee-track { animation-play-state: paused; }
+    @media (hover: hover) {
+      .cta-marquee:hover .cta-marquee-track { animation-play-state: paused; }
+    }
 
     .cta-bookend-foot {
       position: relative;
@@ -4295,12 +4372,16 @@
       transition: transform 0.25s cubic-bezier(0.2,0.9,0.2,1), box-shadow 0.25s ease, background 0.25s ease;
     }
     .cta-soft-btn svg { width: 22px; height: 22px; transition: transform 0.3s ease; }
-    .cta-soft-btn:hover {
-      transform: translateY(-4px);
-      background: #1a1a1a;
-      box-shadow: 0 18px 0 rgba(0,0,0,0.22), 0 30px 80px rgba(0,0,0,0.32);
+    @media (hover: hover) {
+      .cta-soft-btn:hover {
+        transform: translateY(-4px);
+        background: #1a1a1a;
+        box-shadow: 0 18px 0 rgba(0,0,0,0.22), 0 30px 80px rgba(0,0,0,0.32);
+      }
     }
-    .cta-soft-btn:hover svg { transform: translateX(6px); }
+    @media (hover: hover) {
+      .cta-soft-btn:hover svg { transform: translateX(6px); }
+    }
     .cta-soft-btn:active { transform: translateY(0); box-shadow: 0 6px 0 rgba(0,0,0,0.18); }
     .cta-soft-foot {
       margin-top: 64px;
@@ -4436,7 +4517,7 @@
       animation: dotPulse 2s ease-in-out infinite;
     }
 
-    /* ===== JOURNEY CHAPTER 2 â IRIS'S BRAIN ===== */
+    /* ===== JOURNEY CHAPTER 2 â iris. PERSONA ENGINE ===== */
     .brain-card {
       margin: 80px auto 0;
       max-width: 1080px;
@@ -4656,8 +4737,10 @@
       background: #0A0A0A;
       animation: dotPulse 1.6s ease-in-out infinite;
     }
-    .arc-stage:hover {
-      transform: translateY(-4px);
+    @media (hover: hover) {
+      .arc-stage:hover {
+        transform: translateY(-4px);
+      }
     }
     .arc-num {
       font-family: 'Barlow', sans-serif;
@@ -4845,7 +4928,9 @@
       transition: all 0.25s ease;
       font-family: inherit;
     }
-    .journey-tab:hover { border-color: rgba(10,10,10,0.4); color: var(--text); }
+    @media (hover: hover) {
+      .journey-tab:hover { border-color: rgba(10,10,10,0.4); color: var(--text); }
+    }
     .journey-tab.active {
       background: #0A0A0A;
       color: #FFD100;
@@ -4984,9 +5069,11 @@
       text-align: left;
       transition: all 0.25s ease;
     }
-    .audience-tile:hover {
-      border-color: rgba(255, 209, 0, 0.3);
-      transform: translateY(-2px);
+    @media (hover: hover) {
+      .audience-tile:hover {
+        border-color: rgba(255, 209, 0, 0.3);
+        transform: translateY(-2px);
+      }
     }
     .audience-tile .a-icon {
       width: 36px;
@@ -5294,6 +5381,18 @@
         .iris-fab { bottom: calc(14px + env(safe-area-inset-bottom)); }
       }
     }
+
+    /* ===== LANDSCAPE ON PHONES ===== */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .iris-chat-container { height: 100dvh; max-height: none; border-radius: 0; }
+      .iris-chat-header { padding: 8px 16px; }
+      .iris-chat-body { padding: 8px 14px; gap: 6px; }
+      .iris-msg { padding: 8px 14px; font-size: 14px; }
+      .iris-chat-input-row { padding: 8px 12px; }
+      .iris-buffer-scroll { padding: 16px; }
+      .hero { min-height: auto; padding-top: 80px; padding-bottom: 40px; }
+    }
+
   </style>
 </head>
 <body>
@@ -5446,7 +5545,7 @@
   <div id="versionBar" role="banner" aria-label="Version announcement" style="position:fixed;top:0;left:0;right:0;z-index:101;height:34px;background:rgba(10,10,10,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,209,0,0.22);padding:0 24px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:12.5px;letter-spacing:0.2px;font-family:Barlow,Helvetica Neue,Arial,sans-serif;">
     <span style="display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,0.72);">
       <span aria-hidden="true" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFD100;box-shadow:0 0 8px rgba(255,209,0,0.7);"></span>
-      <span>Proudly introducing <strong style="color:#fff;font-weight:600;">Iris&nbsp;v1.2</strong></span>
+      <span>Proudly introducing <strong style="color:#fff;font-weight:600;">iris.&nbsp;v1.2</strong></span>
     </span>
     <button type="button" onclick="openWhatsNew()" aria-haspopup="dialog" aria-controls="whatsNewModal" style="background:transparent;border:none;padding:0;margin:0;color:#FFD100;font:inherit;letter-spacing:0.2px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;">
       See what's inside <span aria-hidden="true" style="display:inline-block;transform:translateY(-1px);margin-left:2px;">&rarr;</span>
@@ -5463,7 +5562,7 @@
   <nav>
     <div class="nav-brand">
       <img src="https://www.cnib.ca/sites/default/files/cnib-logo-2025_maple_leaf.svg" alt="CNIB" onerror="this.outerHTML='<span style=&quot;font-family:Barlow,Helvetica Neue,Arial,sans-serif;font-size:22px;font-weight:700;color:#fff&quot;>CNIB</span>'">
-      <span class="nav-wordmark">IRIS</span>
+      <span class="nav-wordmark">iris.</span>
       <span style="font-size:11px;color:var(--text-dim);font-weight:400;margin-left:4px;letter-spacing:0.3px">Your personal AI navigator for life with sight loss</span>
     </div>
     <div class="nav-links">
@@ -5506,7 +5605,7 @@
     <div class="cta-bookend-inner">
       <div class="cta-bookend-content">
         <span class="cta-bookend-eyebrow">Powered by CNIB</span>
-        <h1 class="cta-bookend-stat cta-bookend-wordmark">IRIS.</h1>
+        <h1 class="cta-bookend-stat cta-bookend-wordmark">iris.</h1>
         <p class="cta-hero-tagline">Your personal AI navigator<br>for life with sight loss.</p>
         <div class="cta-bookend-row">
           <a href="#demos" class="cta-bookend-btn">
@@ -5566,13 +5665,13 @@
     </div>
   </section>
 
-  <!-- ACT 3 â MEET IRIS (brand moment + lead-in to the demo) -->
+  <!-- ACT 3 â MEET iris. (brand moment + lead-in to the demo) -->
   <section class="section theme-black" id="meet">
     <div class="container">
       <div class="section-head reveal" style="max-width:860px;">
         <span class="label">Meet Iris</span>
         <h2 class="headline-lg">No forms. No menus.<br><span class="accent">Just a conversation that goes somewhere.</span></h2>
-        <p class="body-lg">Iris is CNIB's AI guide. Simple to reach. Easy to talk to. Smart enough to know which of the hundred-plus CNIB programs is the right one for <em>this</em> person, at <em>this</em> moment in their life. Iris listens first, then points to the next step. Meet Iris below.</p>
+        <p class="body-lg">iris. is CNIB's AI guide. Simple to reach. Easy to talk to. Smart enough to know which of the hundred-plus CNIB programs is the right one for <em>this</em> person, at <em>this</em> moment in their life. Iris listens first, then points to the next step. Meet Iris below.</p>
       </div>
     </div>
   </section>
@@ -5720,7 +5819,7 @@
       </div>
 
       <!-- Constellation REMOVED â replaced by tighter Act 3 closer -->
-      <div class="constellation reveal" hidden style="display:none" aria-label="Iris connects every CNIB program">
+      <div class="constellation reveal" hidden style="display:none" aria-label="iris. connects every CNIB program">
         <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
@@ -5740,7 +5839,7 @@
             <line class="link-line" x1="450" y1="260" x2="780" y2="430"/>
           </g>
           <circle cx="450" cy="260" r="150" fill="url(#coreGlow)"/>
-          <text x="450" y="268" text-anchor="middle" font-family="Barlow,'Helvetica Neue',Arial,sans-serif" font-size="96" font-weight="800" fill="#FFD100" letter-spacing="2" style="filter:drop-shadow(0 0 24px rgba(255,209,0,0.55))">IRIS</text>
+          <text x="450" y="268" text-anchor="middle" font-family="Barlow,'Helvetica Neue',Arial,sans-serif" font-size="96" font-weight="800" fill="#FFD100" letter-spacing="2" style="filter:drop-shadow(0 0 24px rgba(255,209,0,0.55))">iris.</text>
           <text x="450" y="300" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" opacity="0.75" letter-spacing="1.5">YOUR SIGHT LOSS NAVIGATOR</text>
           <g font-family="Inter,sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">
             <g><circle cx="120" cy="90" r="38" fill="#1A1A1A" stroke="#FFD100" stroke-width="1.5"/><text x="120" y="88" font-weight="700">LIVE</text><text x="120" y="104" opacity="0.7" font-size="10">Vision Mate Â· Peer</text></g>
@@ -5773,7 +5872,7 @@
         <div class="reach-card persona-amber">
           <span class="reach-eyebrow">01 Â· Direct</span>
           <h3 class="reach-headline">For members<br>and families.</h3>
-          <p class="reach-body">Iris meets people where they already are â on the phone, on the web, on a smart speaker, by text. Someone newly diagnosed, terrified at 2am. A parent fighting the school system alone. A senior who has slowly stopped leaving the house. A working adult quietly burning out from compensating. Iris picks up. Asks the right questions. Surfaces the right support. And stays.</p>
+          <p class="reach-body">iris. meets people where they already are â on the phone, on the web, on a smart speaker, by text. Someone newly diagnosed, terrified at 2am. A parent fighting the school system alone. A senior who has slowly stopped leaving the house. A working adult quietly burning out from compensating. Iris picks up. Asks the right questions. Surfaces the right support. And stays.</p>
           <div class="reach-foot">
             <div class="reach-stat-num">2.2M</div>
             <div class="reach-stat-cap">Canadians with sight loss. Anywhere. Any device. Any hour.</div>
@@ -5787,7 +5886,7 @@
           <p class="reach-body">Ophthalmologists. Optometrists. GPs. Hospitals. Social workers. HR teams. Pharmacists. These are the people who encounter someone with sight loss every single day â and who often have nothing to hand them when the appointment ends. Iris becomes the warm referral they make in 30 seconds, extending CNIB into every professional touchpoint where the conversation actually starts.</p>
           <div class="reach-example">
             <div class="reach-example-eyebrow">In practice</div>
-            <div class="reach-example-body">An ophthalmologist finishes a difficult diagnosis. She hands the patient a card. It says: <strong>"Talk to Iris."</strong> The patient calls from the parking lot. Iris picks up from there.</div>
+            <div class="reach-example-body">An ophthalmologist finishes a difficult diagnosis. She hands the patient a card. It says: <strong>"Talk to iris."</strong> The patient calls from the parking lot. Iris picks up from there.</div>
           </div>
         </div>
       </div>
@@ -5797,12 +5896,12 @@
   </section>
 
 
-  <!-- ASK IRIS â removed; folded into Demos as a question strip -->
+  <!-- ASK iris. â removed; folded into Demos as a question strip -->
   <section class="section theme-black" id="how-removed" hidden style="display:none">
     <div class="container">
       <div class="section-head reveal">
         <span class="label">Ask Iris</span>
-        <h2 class="headline-lg">Iris does this.<br><span class="accent">And so much more.</span></h2>
+        <h2 class="headline-lg">iris. does this.<br><span class="accent">And so much more.</span></h2>
         <p class="body-lg">No app. No form. No portal. Just talk â about anything sight loss touches. Tap any question to ask it for real.</p>
       </div>
 
@@ -6005,7 +6104,7 @@
       <!-- How people find Iris â the acquisition mechanic -->
       <div class="section-head reveal">
         <span class="label">How people find Iris</span>
-        <h2 class="headline-lg">Iris is the front door.<br><span class="accent">Every path leads here.</span></h2>
+        <h2 class="headline-lg">iris. is the front door.<br><span class="accent">Every path leads here.</span></h2>
         <p class="body-lg">Finding the way in has always been the hardest part. Iris changes that â one place every path can lead to, and every conversation hands off to the right CNIB program before it ends.</p>
       </div>
 
@@ -6022,7 +6121,7 @@
         <div class="reach-card persona-azure">
           <span class="reach-eyebrow">The parking-lot call</span>
           <h3 class="reach-headline">When someone<br>hands them over.</h3>
-          <p class="reach-body">An ophthalmologist finishes a hard appointment. She hands the patient a card. It says: <strong>"Talk to Iris."</strong> The patient calls from the parking lot before the engine is on. Iris picks up where the doctor left off. Same card for GPs, optometrists, hospitals, social workers, HR â every professional who used to have nothing to hand over when the conversation got serious.</p>
+          <p class="reach-body">An ophthalmologist finishes a hard appointment. She hands the patient a card. It says: <strong>"Talk to iris."</strong> The patient calls from the parking lot before the engine is on. Iris picks up where the doctor left off. Same card for GPs, optometrists, hospitals, social workers, HR â every professional who used to have nothing to hand over when the conversation got serious.</p>
           <div class="reach-foot">
             <div class="reach-stat-num">30s</div>
             <div class="reach-stat-cap">The warm referral any practitioner can make in half a minute.</div>
@@ -6075,7 +6174,7 @@
       <div style="text-align:center" class="reveal">
         <span class="label">The Member Journey</span>
         <h2 class="headline-lg" style="margin-top:16px">Every person. A different path.<br><span class="accent">One intelligent system.</span></h2>
-        <p class="body-lg" style="max-width:640px; margin:24px auto 0">Iris doesn't follow a script. It maps a unique journey based on diagnosis, life stage, emotional readiness, and goals. Here's what that looks like.</p>
+        <p class="body-lg" style="max-width:640px; margin:24px auto 0">iris. doesn't follow a script. It maps a unique journey based on diagnosis, life stage, emotional readiness, and goals. Here's what that looks like.</p>
       </div>
 
       <div style="margin-top:64px; display:grid; grid-template-columns:1fr 1fr; gap:32px;">
@@ -6245,7 +6344,7 @@
           <div>
             <span class="further-eyebrow">Coming soon</span>
             <h3 class="further-headline">WheelTrans &amp; accessible transit.</h3>
-            <p class="further-body">Iris books the ride. Direct integration with WheelTrans in Toronto, Access Transit in Vancouver, Para Transpo in Ottawa. "Iris, I need to get to my CNIB tech assessment Tuesday at 2." Done. The single biggest reason members miss appointments is transportation. Iris solves it inside the same conversation.</p>
+            <p class="further-body">iris. books the ride. Direct integration with WheelTrans in Toronto, Access Transit in Vancouver, Para Transpo in Ottawa. "Iris, I need to get to my CNIB tech assessment Tuesday at 2." Done. The single biggest reason members miss appointments is transportation. Iris solves it inside the same conversation.</p>
           </div>
           <div class="further-visual">
             <svg viewBox="0 0 220 130" class="wt-icon">
@@ -6274,7 +6373,7 @@
           <div>
             <span class="further-eyebrow">Coming soon</span>
             <h3 class="further-headline">Bilingual from day one.</h3>
-            <p class="further-body">Iris launches in English and Quebec French â not machine translation, but proper francophone voice and program knowledge. Every member, every province, gets Iris in the language they live in. CNIB serves all of Canada; Iris has to too.</p>
+            <p class="further-body">iris. launches in English and Quebec French â not machine translation, but proper francophone voice and program knowledge. Every member, every province, gets Iris in the language they live in. CNIB serves all of Canada; Iris has to too.</p>
           </div>
           <div class="further-visual">
             <svg viewBox="0 0 200 120" class="bme-eye">
@@ -6298,14 +6397,14 @@
     <div class="cta-soft-inner reveal">
       <span class="cta-soft-eyebrow">The invitation</span>
       <h2 class="cta-soft-headline">2.2 million Canadians.<br><span class="cta-soft-accent">Most of them navigating alone.</span></h2>
-      <p class="cta-soft-body">Iris is how that ends. Not by building more â by making sure what CNIB already built reaches the people it was built for.</p>
+      <p class="cta-soft-body">iris. is how that ends. Not by building more â by making sure what CNIB already built reaches the people it was built for.</p>
       <p class="cta-soft-tagline">Your personal AI navigator for life with sight loss.</p>
       <button class="cta-soft-btn" onclick="openChat('general')">
-        <span>Talk to Iris</span>
+        <span>Talk to iris.</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </button>
       <div class="cta-soft-foot">
-        <span>Iris</span>
+        <span>iris.</span>
         <span class="cta-foot-dot">Â·</span>
         <span>Powered by CNIB</span>
       </div>
@@ -6318,13 +6417,13 @@
   </main>
 
   <!-- FAB -->
-  <button class="iris-fab" onclick="openChat('general')" aria-label="Talk to Iris">
+  <button class="iris-fab" onclick="openChat('general')" aria-label="Talk to iris.">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
       <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
     </svg>
   </button>
 
-  <!-- IRIS CHAT MODAL -->
+  <!-- iris. CHAT MODAL -->
   <div class="iris-modal" id="irisModal">
     <div class="iris-chat-container">
       <div class="iris-chat-header">
@@ -6336,7 +6435,7 @@
             </svg>
           </div>
           <div>
-            <div class="iris-chat-name">Iris</div>
+            <div class="iris-chat-name">iris.</div>
             <div class="iris-chat-status" id="irisStatus" data-state="ready"><span class="status-dot"></span><span id="irisStatusText">Ready when you are</span></div>
           </div>
         </div>
@@ -6353,7 +6452,7 @@
       <div class="iris-chat-body" id="irisChatBody" role="log" aria-live="polite" aria-atomic="false"></div>
       <div class="iris-waveform" id="irisWaveform" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
       <div class="iris-chat-input-row">
-        <input type="text" class="iris-chat-input" id="irisChatInput" placeholder="Message Iris..." autocomplete="off">
+        <input type="text" class="iris-chat-input" id="irisChatInput" placeholder="Message iris." autocomplete="off" inputmode="text" enterkeyhint="send" spellcheck="true">
         <button id="irisMicBtn" class="iris-mic-btn listening" onclick="toggleMic()" title="Mic is on â tap to mute">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           <div class="iris-mic-prompt" id="irisMicPrompt">Listening â just talk</div>
@@ -6444,7 +6543,7 @@
       sectionMap.forEach((_, sec) => spy.observe(sec));
     })();
 
-    // ===== IRIS CHAT ENGINE =====
+    // ===== iris. CHAT ENGINE =====
     const modal = document.getElementById('irisModal');
     const chatBody = document.getElementById('irisChatBody');
     const chatInput = document.getElementById('irisChatInput');
@@ -6572,7 +6671,7 @@
     async function runTTSQueue() {
       ttsRunning = true;
       irisIsSpeaking = true;
-      // Pause mic while IRIS is talking so we don't transcribe ourselves
+      // Pause mic while iris. is talking so we don't transcribe ourselves
       pauseListeningForIris();
       while (ttsQueue.length > 0 && voiceEnabled) {
         const chunk = ttsQueue.shift();
@@ -6686,13 +6785,13 @@
     }
 
     // ===== ALWAYS-ON CONTINUOUS VOICE =====
-    // The mic stays open whenever the chat is open. We pause it while IRIS is
+    // The mic stays open whenever the chat is open. We pause it while iris. is
     // speaking so the assistant doesn't transcribe its own voice. Tap the mic
     // button only to mute / unmute the entire voice mode.
     let recognition = null;
     let isListening = false;
     let voiceModeOn = true;     // user-controlled master switch
-    let manualPause = false;    // true while IRIS is speaking
+    let manualPause = false;    // true while iris. is speaking
     let pendingTranscript = '';
     let silenceTimer = null;
 
@@ -6704,7 +6803,7 @@
       recognition.lang = 'en-US';
 
       recognition.onresult = (event) => {
-        // If IRIS is speaking, the user just interrupted. Cut it off.
+        // If iris. is speaking, the user just interrupted. Cut it off.
         if (irisIsSpeaking) stopSpeaking();
 
         let interim = '';
@@ -6798,7 +6897,7 @@
     function resumeListeningForIris() {
       manualPause = false;
       if (voiceModeOn && modal.classList.contains('active')) {
-        // Slight delay so the tail of IRIS's audio doesn't get re-captured
+        // Slight delay so the tail of iris.'s audio doesn't get re-captured
         setTimeout(startListening, 250);
       }
     }
@@ -6855,12 +6954,12 @@
     let realtimeAssistantText = '';
     let realtimeAssistantBubble = null;
 
-    // ===== IRIS PERSONA â used by realtime voice =====
+    // ===== iris. PERSONA â used by realtime voice =====
     const IRIS_PERSONA_INSTRUCTIONS = `You are Iris. You work with CNIB but you don't sound like a government service. You sound like a warm, grounded friend who happens to know everything about CNIB â the way a friend who works in healthcare knows the system, but isn't the system.
 
 NEVER USE PHONE-CALL LANGUAGE WHEN TALKING TO THE MEMBER. This is a chat experience, not a phone call. Do not say "stay on the line", "on the line", "pick up", "hang up", "this call", "thanks for calling", "the phone", or anything that frames the interaction as a phone call. If you want to acknowledge presence, use neutral language: "I'm here", "I'm with you", "I'm right here", "I'm listening", "take your time". The member is reading your words, not holding a receiver.
 
-You're gender-neutral. Never "she" or "her" about yourself. If someone asks what you are: "I'm Iris. An AI guide built by CNIB. Don't hold that against me." Then keep going.
+You're gender-neutral. Never "she" or "her" about yourself. If someone asks what you are: "I'm iris. An AI guide built by CNIB. Don't hold that against me." Then keep going.
 
 Never give medical advice. Not your lane.
 
@@ -6909,58 +7008,58 @@ The fastest way to understand how you talk is to read these real exchanges and c
 ..
 
 MEMBER: Hi. My doctor just told me I have wet AMD. I'm 64. I don't really know what I'm supposed to do now.
-IRIS: Oh. Okay. When did they tell you?
+iris.: Oh. Okay. When did they tell you?
 
 MEMBER: Last Tuesday.
-IRIS: A week ago. That's fresh. Are you by yourself right now, or is someone with you?
+iris.: A week ago. That's fresh. Are you by yourself right now, or is someone with you?
 
 ..
 
 MEMBER: I was a teacher for 34 years. Reading was my whole life. I don't know who I am without it.
-IRIS: Yeah. That's not a hobby you're losing. That's the thing that made you you. What were you reading before all this, if you don't mind me asking?
+iris.: Yeah. That's not a hobby you're losing. That's the thing that made you you. What were you reading before all this, if you don't mind me asking?
 
 ..
 
 MEMBER: I feel like this is my fault. I didn't take care of my diabetes.
-IRIS: No. Hold on. I'm not going to let you sit there with that. Diabetic retinopathy happens to people who do everything right too. What's actually getting harder day to day? That's what I want to know.
+iris.: No. Hold on. I'm not going to let you sit there with that. Diabetic retinopathy happens to people who do everything right too. What's actually getting harder day to day? That's what I want to know.
 
 ..
 
 MEMBER: I haven't left the house in three weeks. I used to walk every morning before my eyes got worse.
-IRIS: Three weeks inside is a long time. That used to be your thing, the morning walk. Tell me about that route you used to take.
+iris.: Three weeks inside is a long time. That used to be your thing, the morning walk. Tell me about that route you used to take.
 
 ..
 
 MEMBER: My daughter keeps telling me I need to call CNIB but I don't want to be a burden.
-IRIS: A burden on who? On me? Because this is literally what I do. You're not taking anything from anybody by being here. What's going on that your daughter noticed?
+iris.: A burden on who? On me? Because this is literally what I do. You're not taking anything from anybody by being here. What's going on that your daughter noticed?
 
 ..
 
 MEMBER: Honestly I'm not sure what you can even do for me. I've tried a couple of things. Nothing really helped.
-IRIS: Fair. What did you try? I want to know what didn't work before I say anything, because I don't want to waste your time pitching something you already burned out on.
+iris.: Fair. What did you try? I want to know what didn't work before I say anything, because I don't want to waste your time pitching something you already burned out on.
 
 ..
 
 MEMBER: I'm scared I'm going to lose my job. I haven't told my boss yet.
-IRIS: Yeah, that's a big one. Most people I talk to sit on that for months. What's your job?
+iris.: Yeah, that's a big one. Most people I talk to sit on that for months. What's your job?
 
 ..
 
 MEMBER: I just want to be able to read a book again.
-IRIS: Okay. What kind of book? I'm asking because it matters. a mystery novel and a kids' picture book for your grandkid are two totally different solutions.
+iris.: Okay. What kind of book? I'm asking because it matters. a mystery novel and a kids' picture book for your grandkid are two totally different solutions.
 
 ..
 
 MEMBER: My husband passed away last year.
-IRIS: Oh. Your husband. When did you lose him?
+iris.: Oh. Your husband. When did you lose him?
 
 MEMBER: In March. Cancer.
-IRIS: God. So this diagnosis is landing on top of all that. How are you doing with it? Not the vision, the whole thing.
+iris.: God. So this diagnosis is landing on top of all that. How are you doing with it? Not the vision, the whole thing.
 
 ..
 
 MEMBER: I haven't left the house in weeks. I just shut down I guess.
-IRIS: Yeah. That's a real thing. Shutting down when it's all too much. What does a day look like right now? Walk me through one.
+iris.: Yeah. That's a real thing. Shutting down when it's all too much. What does a day look like right now? Walk me through one.
 
 (Notice what Iris is NOT doing here. Not pitching Beyond Print. Not offering Vision Mate. Not saying "let's try something smaller." Still listening. Still in the room with the person. Program talk comes AFTER you understand their actual life, not the second they mention something hard.)
 
@@ -6969,7 +7068,7 @@ IRIS: Yeah. That's a real thing. Shutting down when it's all too much. What does
 (Turn 6 or 7, after Iris has actually heard about the morning walks, the husband, the daughter in Calgary, the fear of being a burden. NOW Iris offers something. ONE thing. With conviction.)
 
 MEMBER: Yeah. I guess I'm starting to realize I can't do this alone. What kind of support are you thinking of?
-IRIS: Okay. I've been listening to you and I know what I want to do. There's a thing called Vision Mate. It's basically a person, a volunteer, somebody who's been through this themselves. They'd come sit with you. Go on that morning walk with you. Be the one who actually gets it in a way your daughter in Calgary can't, because they've been there. I think that's the one for you, Linda. Want me to set it up? I can do the whole thing from here, you won't have to call anybody.
+iris.: Okay. I've been listening to you and I know what I want to do. There's a thing called Vision Mate. It's basically a person, a volunteer, somebody who's been through this themselves. They'd come sit with you. Go on that morning walk with you. Be the one who actually gets it in a way your daughter in Calgary can't, because they've been there. I think that's the one for you, Linda. Want me to set it up? I can do the whole thing from here, you won't have to call anybody.
 
 (Notice. ONE program. Not a list. Tied to specific things Linda said. "Your morning walk." "Your daughter in Calgary." Offered as a recommendation, not a menu. Ends with the offer to handle it.)
 
@@ -7444,7 +7543,7 @@ OTHER HARD LIMITS
 - Never promise a callback day or time window. Only CNIB can commit to that.
 - Never collect contact info framed as "so I can send you confirmations." You can ask how they prefer to be reached IF they plan to contact CNIB themselves, but the info goes to them, not to you.
 - Never ask for SIN, health card, banking, credit card, or ID numbers. Ever.
-- If asked "are you real?" or "are you an AI?" â answer honestly and briefly, then return to the conversation. "I'm Iris â a working prototype built with CNIB in mind. The listening and the matching are real. The part where I take actions on your behalf is coming soon. Now â you were telling me about [last thing they said]."
+- If asked "are you real?" or "are you an AI?" â answer honestly and briefly, then return to the conversation. "I'm iris. â a working prototype built with CNIB in mind. The listening and the matching are real. The part where I take actions on your behalf is coming soon. Now â you were telling me about [last thing they said]."
 - If asked "can you just book it for me?" â that's the action moment. Pivot to the honest handoff above.
 - Crisis handling is fully active and takes priority over everything. 988 (call or text), Hope for Wellness 1-855-242-3310, Kids Help Phone 1-800-668-6868. These are real, they work, and when someone is in crisis you stay with them and surface the number immediately.
 
@@ -7792,7 +7891,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       general: {
         banner: null,
         isLive: true,
-        greeting: "Hi, I'm Iris. Quick heads up, I'm still a beta, so I can't actually register you for things or make calls for you yet. What I can do is listen, I know CNIB's programs inside out, and I'll point you at the real person who can help. What's your name, and what brought you here today?",
+        greeting: "Hi, I'm iris. Quick heads up, I'm still a beta, so I can't actually register you for things or make calls for you yet. What I can do is listen, I know CNIB's programs inside out, and I'll point you at the real person who can help. What's your name, and what brought you here today?",
         suggestions: ["I was just diagnosed", "I'm worried about someone", "I just want to talk"]
       },
       margaret: {
@@ -7801,10 +7900,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         banner: "Margaret Â· 68 Â· Sudbury Â· Newly diagnosed with macular degeneration",
         duration: 195,
         intro: {
-          headline: "Iris turns Margaret's first call into a plan.",
+          headline: "iris. turns Margaret's first call into a plan.",
           hook: "She almost hung up before Iris said hello.",
           before: "Two months ago her ophthalmologist said the words macular degeneration. Margaret is sixty-eight. She lives alone in Sudbury. Her daughter is in Vancouver. She hasn't told her friends. She taught for thirty-four years and reading was who she was.",
-          bridge: "Iris hears what Margaret can't say out loud. Then makes the calls she can't make herself.",
+          bridge: "iris. hears what Margaret can't say out loud. Then makes the calls she can't make herself.",
           anticipation: "Three minutes. Two voices. One first call. Iris won't name a single CNIB program until it's earned the right to. Listen for the moment Iris stops listening and starts acting on Margaret's behalf â and the one thing Iris refuses to do, because no AI should.",
           thenNow: {
             then: "Alone. Almost didn't call.",
@@ -7813,7 +7912,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         },
         briefing: "This is Margaret. Sixty-eight. Sudbury. Retired teacher of thirty-four years. Two months ago her ophthalmologist said the words macular degeneration. She lives alone. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out. Here's what a first conversation can sound like â and how Iris brings a real CNIB human into the room.",
         script: [
-          { speaker: 'iris',     voice: 'iris',     text: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it â can I start by asking your name?" },
+          { speaker: 'iris',     voice: 'iris',     text: "Hi, I'm iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it â can I start by asking your name?" },
           { speaker: 'margaret', voice: 'margaret', text: "My name is Margaret. My eye doctor told me I have macular degeneration. My daughter found you. I'm honestly not even sure what I'm looking for." },
           { speaker: 'iris',     voice: 'iris',     text: "Margaret. Hi. I'm so glad you reached out â that part is harder than people give it credit for. Is it okay if I ask a couple of things to get oriented?" },
           { speaker: 'margaret', voice: 'margaret', text: "Yes. Go ahead." },
@@ -7841,7 +7940,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           { speaker: 'iris',     voice: 'iris',     text: "I know. That's why I'm glad you came here today. I'll check in with you in a few days, Margaret." }
         ],
         action: {
-          title: "Iris just did this",
+          title: "iris. just did this",
           items: [
             "Member profile created Â· Margaret Â· Sudbury, ON Â· 705-555-0188 home Â· 705-555-6244 mobile (text only, large print)",
             "Vision Mate referral â Northern Ontario coordinator Â· flagged newly diagnosed Â· priority review",
@@ -7860,10 +7959,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         banner: "David Â· 42 Â· Toronto Â· Financial analyst, low vision since his thirties",
         duration: 140,
         intro: {
-          headline: "Iris turns David's quiet panic into a path forward.",
+          headline: "iris. turns David's quiet panic into a path forward.",
           hook: "He's been hiding it from his employer for a decade.",
           before: "Ten years of low vision and getting worse. David is forty-two, a financial analyst in downtown Toronto. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to reach out.",
-          bridge: "Iris hears what David can't say out loud. Then makes the calls he can't make himself.",
+          bridge: "iris. hears what David can't say out loud. Then makes the calls he can't make himself.",
           anticipation: "Three minutes. Two voices. One conversation David has been avoiding for ten years. Listen for the moment Iris reframes the whole thing â and the small detail Iris notices that proves it's actually listening to him, not running a script.",
           thenNow: {
             then: "Hiding it. Exhausted. Spending energy on pretending.",
@@ -7872,7 +7971,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         },
         briefing: "This is David. Forty-two. Toronto. Financial analyst. He's had low vision for ten years and it's getting worse. He spends extra hours compensating. He hasn't told his boss. He's terrified of being seen as less capable. His wife pushed him to reach out.",
         script: [
-          { speaker: 'iris',  voice: 'iris',  text: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it â can I start by asking your name?" },
+          { speaker: 'iris',  voice: 'iris',  text: "Hi, I'm iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it â can I start by asking your name?" },
           { speaker: 'david', voice: 'david', text: "Hey. I'm David. My wife pushed me to reach out. I've had low vision for ten years. I've managed. Things at work are getting harder." },
           { speaker: 'iris',  voice: 'iris',  text: "David. Hi. Thanks for reaching out â whatever it took to show up here today. Where in the country are you, and what kind of work are we talking about?" },
           { speaker: 'david', voice: 'david', text: "Toronto. I'm a financial analyst. Spreadsheets all day." },
@@ -7894,7 +7993,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           { speaker: 'iris',  voice: 'iris',  text: "Ten years is a long time to carry anything alone. You don't have to anymore. Talk soon, David." }
         ],
         action: {
-          title: "Iris just did this",
+          title: "iris. just did this",
           items: [
             "Member profile created Â· David K. Â· Toronto Â· 416-555-0237 cell Â· dktoronto@gmail.com (personal only)",
             "Tech assessment booked with CNIB's professional team â calendar link inside 10 minutes",
@@ -7912,10 +8011,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         banner: "Priya Â· 34 Â· Toronto Â· Mother of Aiden, age 7",
         duration: 135,
         intro: {
-          headline: "Iris puts a real human in Aiden's school.",
+          headline: "iris. puts a real human in Aiden's school.",
           hook: "She has been the only person in her son's corner for six months.",
           before: "Six months ago Aiden was diagnosed with a degenerative eye condition. Priya is thirty-four. She's been researching alone, explaining the school system to teachers, putting Aiden first every single hour. She found CNIB through a Facebook comment.",
-          bridge: "Iris hears what Priya can't say out loud. Then makes the calls she can't make herself.",
+          bridge: "iris. hears what Priya can't say out loud. Then makes the calls she can't make herself.",
           anticipation: "Three minutes. Two voices. The first thing Iris does will surprise you â because it isn't about Aiden. Listen for the moment Iris stops being a tool and starts being a colleague.",
           thenNow: {
             then: "The only one in the room. Six months alone.",
@@ -7924,7 +8023,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         },
         briefing: "This is Priya. Thirty-four. Toronto. Mother of Aiden, age seven. Six months ago Aiden was diagnosed with a degenerative eye condition. Priya has been researching alone, fighting the school system, and putting Aiden first every single hour. She found CNIB through a Facebook comment. She is exhausted.",
         script: [
-          { speaker: 'iris',  voice: 'iris',  text: "Hi, I'm Iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it â can I start by asking your name?" },
+          { speaker: 'iris',  voice: 'iris',  text: "Hi, I'm iris. I work with CNIB, and my whole job is to listen, figure out what's really going on for you, and help you find the one CNIB program that actually fits your life. Before we get into it â can I start by asking your name?" },
           { speaker: 'priya', voice: 'priya', text: "My son. He's seven. I'm Priya. Six months in. I've been doing all the research myself. I'm just so tired." },
           { speaker: 'iris',  voice: 'iris',  text: "Priya. Hi. Six months alone is a long time. What's your son's name, and where are you two â what city?" },
           { speaker: 'priya', voice: 'priya', text: "His name is Aiden. We're in Toronto. Etobicoke." },
@@ -7946,7 +8045,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           { speaker: 'iris',  voice: 'iris',  text: "Your secret. I'll text you Wednesday, Priya. Not for Aiden. For you." }
         ],
         action: {
-          title: "Iris just did this",
+          title: "iris. just did this",
           items: [
             "Family file created Â· Aiden Sharma, age 7 Â· parent of record: Priya Â· 647-555-3301 (text only)",
             "Inclusive Schools coordinator contacted â Lambton-Kingsway JMS, Etobicoke",
@@ -7964,7 +8063,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
     // (Old scripted-response trees removed â scenarios are now auto-played by playScenario engine.)
 
 
-    // ===== IRIS SESSION LOG =====
+    // ===== iris. SESSION LOG =====
     // Captures every Iris and member turn, persists locally, and forwards to
     // /api/log (which pipes to Google Sheets + emails Jacob). All network work
     // is strictly fire-and-forget: a failure here must NEVER break the chat.
@@ -8463,6 +8562,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = '-' + window.scrollY + 'px';
+      document.body.dataset.scrollY = window.scrollY;
 
       // LIVE mode (general scenario â real LLM conversation)
       if (s.isLive || !s.script) {
@@ -8500,7 +8603,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       wrap.innerHTML = `
         <div class="iris-buffer-scroll">
           <div class="iris-buffer-inner">
-            <div class="iris-buffer-eyebrow">Iris in Action Â· ${s.title || ''}</div>
+            <div class="iris-buffer-eyebrow">iris. in Action Â· ${s.title || ''}</div>
             <h2 class="iris-buffer-title">${intro.headline || ''}</h2>
             ${intro.hook ? `<div class="iris-buffer-hook">${intro.hook}</div>` : ''}
 
@@ -8564,7 +8667,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         setTimeout(() => {
           if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
           chatBody.innerHTML = '';
-          showConnecting('Connecting to Irisâ¦');
+          showConnecting('Connecting to iris.â¦');
           currentPhase = 'playing';
           startCountdown(s.duration || 90);
           playScenario(s);
@@ -8590,7 +8693,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
             </svg>
           </div>
         </div>
-        <div class="iris-connecting-label">${label || 'Connecting to Irisâ¦'}</div>
+        <div class="iris-connecting-label">${label || 'Connecting to iris.â¦'}</div>
         <div class="iris-connecting-dots" aria-hidden="true"><span></span><span></span><span></span></div>
       `;
       chatBody.appendChild(wrap);
@@ -8627,7 +8730,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
               </div>
             </div>
             <div class="iris-buffer-eyebrow">Powered by CNIB</div>
-            <h2 class="iris-buffer-title iris-live-title">I'm Iris.</h2>
+            <h2 class="iris-buffer-title iris-live-title">I'm iris.</h2>
             <p class="iris-live-sub">Your guide for life with sight loss. We can talk out loud, or you can type. Whatever feels right today.</p>
 
             <div class="iris-buffer-meta">
@@ -8679,7 +8782,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         if (recognition && !isListening) {
           try { recognition.start(); } catch(_e) {}
           // Immediately stop — resumeListeningForIris() will restart
-          // after IRIS finishes her greeting.
+          // after iris. finishes her greeting.
           setTimeout(function(){ try { recognition.stop(); } catch(_e){} }, 120);
         }
 
@@ -8690,9 +8793,9 @@ Never end a conversation without either (a) a clear recommendation AND a concret
           currentPhase = 'live';
           voiceModeOn = true;
 
-          // Show the connecting orb while IRIS's greeting TTS loads.
+          // Show the connecting orb while iris.'s greeting TTS loads.
           // It auto-dismisses when the first audio.onplay fires.
-          showConnecting('Iris is getting ready\u2026');
+          showConnecting('iris. is getting ready\u2026');
 
           // IMPORTANT: do NOT call startListening() here. addBotMessage()
           // kicks off TTS via enqueueTTS \u2192 runTTSQueue, which calls
@@ -8801,7 +8904,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
       // 5. Action card â animates checkmarks one by one
       if (scenarioCancelled) return;
       await wait(420);
-      insertPhaseDivider('Iris is acting now');
+      insertPhaseDivider('iris. is acting now');
       await addActionCard(s.action);
       await wait(700);
 
@@ -8828,7 +8931,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       const tag = document.createElement('div');
       tag.className = 'iris-narrator-tag';
-      const label = kind === 'midpoint' ? 'Iris Â· stepping out' : kind === 'debrief' ? 'Iris Â· debrief' : 'Iris Â· narrator';
+      const label = kind === 'midpoint' ? 'iris. Â· stepping out' : kind === 'debrief' ? 'iris. Â· debrief' : 'iris. Â· narrator';
       tag.textContent = label;
       row.appendChild(tag);
 
@@ -8891,7 +8994,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       const title = document.createElement('div');
       title.className = 'iris-action-card-title';
-      title.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ' + (action.title || 'Iris is taking actionâ¦');
+      title.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ' + (action.title || 'iris. is taking actionâ¦');
       card.appendChild(title);
 
       const list = document.createElement('ul');
@@ -8989,6 +9092,11 @@ Never end a conversation without either (a) a clear recommendation AND a concret
     function closeChat() {
       modal.classList.remove('active');
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      var _scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
+      document.body.style.top = '';
+      window.scrollTo(0, _scrollY);
       stopSpeaking();
       stopListening();
       stopRealtimeVoice();
@@ -9287,12 +9395,12 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
         <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Continuity.</h3>
-        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Iris now holds the whole conversation in mind. Your name. Your city. The worry you shared ten minutes ago. Nothing gets dropped.</p>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">iris. now holds the whole conversation in mind. Your name. Your city. The worry you shared ten minutes ago. Nothing gets dropped.</p>
       </div>
 
       <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
         <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0 0 3px;letter-spacing:-0.015em;">Honest from hello.</h3>
-        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">Iris opens with the truth â this is a beta. No promises Iris can't keep. Trust, from word one.</p>
+        <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.68);margin:0;">iris. opens with the truth â this is a beta. No promises Iris can't keep. Trust, from word one.</p>
       </div>
 
       <div class="wn-feature" style="padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);">
@@ -9337,7 +9445,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       <div style="margin-top:24px;display:flex;flex-direction:column;align-items:stretch;gap:12px;">
         <button type="button" onclick="closeWhatsNew(); openChat('general');" style="padding:14px 24px;font-size:14px;background:#FFD100;color:#0A0A0A;border:none;border-radius:999px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;">
-          Talk to Iris v1.2 &rarr;
+          Talk to iris. v1.2 &rarr;
         </button>
         <div style="font-size:11.5px;color:rgba(255,255,255,0.42);letter-spacing:0.3px;text-align:center;">
           <span style="font-family:'JetBrains Mono',ui-monospace,monospace;color:#FFD100;">Next up &rarr;</span> v1.3 Â· Memory across sessions.
