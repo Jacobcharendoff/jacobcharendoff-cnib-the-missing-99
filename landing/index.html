@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>iris. — Your guide for life with sight loss | Powered by CNIB</title>
+  <meta name="description" content="iris. is CNIB's member engagement guide. Connecting Canadians with sight loss to programs, community, and support — personally, specifically, at no cost.">
+  <meta name="theme-color" content="#0A0A0A">
+  <link rel="icon" type="image/svg+xml" href="/iris-app-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#0A0A0A;color:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    :focus-visible{outline:3px solid #FFD100!important;outline-offset:2px!important}
+    /* Beta bars */
+    .bb{position:fixed;left:0;right:0;z-index:9999;height:36px;background:rgba(10,22,48,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:500;letter-spacing:.3px;color:rgba(160,195,245,.7)}
+    .bb--t{top:0;border-bottom:1px solid rgba(60,130,220,.18)}
+    .bb--b{bottom:0;border-top:1px solid rgba(60,130,220,.18)}
+    .bb i{width:5px;height:5px;border-radius:50%;background:rgba(100,160,240,.6);display:inline-block;margin-right:4px}
+    /* Nav */
+    .nv{position:fixed;top:36px;left:0;right:0;z-index:200;height:56px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nv-b{display:flex;align-items:center;gap:10px}
+    .nv-w{font-size:20px;font-weight:700;color:#FFD100}
+    .nv-p{font-size:11px;color:rgba(255,255,255,.4)}
+    /* Reveals */
+    .rv{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+    .rv.v{opacity:1;transform:translateY(0)}
+    .rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.25s}.rv-d3{transition-delay:.4s}
+    @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+    /* Shared */
+    .sec{padding:140px 0;position:relative;overflow:hidden}
+    .ctn{max-width:1080px;margin:0 auto;padding:0 40px}
+    .ey{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFD100;margin-bottom:20px}
+    .body{font-size:clamp(17px,1.4vw,20px);color:rgba(255,255,245,.55);line-height:1.65}
+    .body p+p{margin-top:1.4em}
+    /* Iris mark */
+    .im{position:relative;margin:0 auto 48px}.im svg{width:100%;height:100%}
+    .im{width:180px;height:180px}
+    .im--lg{width:280px;height:280px;margin-bottom:56px}
+    .im-r{fill:none;stroke:#FFD100;transform-origin:center}
+    .im-r1{stroke-width:2;opacity:.2;animation:bo 4.5s ease-in-out infinite}
+    .im-r2{stroke-width:2.5;opacity:.4;animation:bm 4.5s ease-in-out infinite}
+    .im-r3{stroke-width:3;opacity:.7;animation:bi 4.5s ease-in-out infinite}
+    .im-p{fill:#FFD100;animation:bp 4.5s ease-in-out infinite}
+    @keyframes bo{0%,100%{transform:scale(1);opacity:.15}50%{transform:scale(1.06);opacity:.3}}
+    @keyframes bm{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.04);opacity:.55}}
+    @keyframes bi{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.02);opacity:.85}}
+    @keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+    /* S1 Hero */
+    .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 40px 100px;position:relative;background:#0A0A0A;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(255,180,60,.05) 0%,transparent 65%);pointer-events:none}
+    .hero h1{font-size:clamp(72px,12vw,140px);font-weight:700;line-height:.92;letter-spacing:-.035em;margin-bottom:16px}
+    .hero-tl{font-size:clamp(22px,2.8vw,34px);font-weight:400;font-style:italic;color:rgba(255,255,245,.6);letter-spacing:-.01em;margin-bottom:12px}
+    .hero-sh{font-size:clamp(18px,2vw,24px);font-weight:500;color:rgba(255,255,245,.45);margin-bottom:40px}
+    .hero-bd{max-width:620px;margin-bottom:60px}
+    .hero-sc{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.25);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:500;animation:sp 2.4s ease-in-out infinite}
+    .hero-sc svg{width:20px;height:20px;stroke:rgba(255,209,0,.4);fill:none;stroke-width:2}
+    @keyframes sp{0%,100%{transform:translateX(-50%) translateY(0);opacity:.6}50%{transform:translateX(-50%) translateY(6px);opacity:1}}
+    /* S2 Problem */
+    .s2{background:#0A0A0A}
+    .s2 .body{max-width:700px}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:80px;background:rgba(255,255,255,.06);border-radius:20px;overflow:hidden}
+    .st{background:#0A0A0A;padding:48px 32px;text-align:center}
+    .st-n{font-size:clamp(40px,5vw,64px);font-weight:700;color:#FFD100;line-height:1;letter-spacing:-.02em;margin-bottom:10px}
+    .st-l{font-size:14px;color:rgba(255,255,255,.45);line-height:1.4}
+    /* S3 Brand moment */
+    .s3{background:#0A0A0A;text-align:center}
+    .s3::before{content:'';position:absolute;top:10%;left:50%;transform:translateX(-50%);width:1000px;height:1000px;background:radial-gradient(circle,rgba(255,180,60,.04) 0%,transparent 55%);pointer-events:none}
+    .s3 h2{font-size:clamp(56px,9vw,120px);font-weight:700;line-height:.92;letter-spacing:-.035em;margin-bottom:16px}
+    .s3-truth{font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.55;color:rgba(255,255,245,.65);max-width:720px;margin:0 auto 40px}
+    .s3-desc{font-size:clamp(16px,1.3vw,19px);line-height:1.65;color:rgba(255,255,245,.45);max-width:680px;margin:0 auto 48px}
+    .s3-ft{font-size:13px;color:rgba(255,255,255,.3);letter-spacing:.5px}
+    /* Responsive */
+    @media(max-width:640px){
+      .bb{font-size:10.5px;height:32px}
+      .nv{top:32px;padding:0 20px;height:48px}
+      .nv-p{display:none}
+      .sec{padding:100px 0}
+      .ctn{padding:0 24px}
+      .hero{padding:120px 24px 80px}
+      .im{width:140px;height:140px}
+      .im--lg{width:200px;height:200px}
+      .stats{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="sr-only" style="position:absolute;top:-100px;left:16px;background:#FFD100;color:#0A0A0A;padding:12px 20px;border-radius:8px;font-weight:700;z-index:10001;text-decoration:none">Skip to main content</a>
+  <div class="bb bb--t"><i></i><span>Prototype demo &middot; Does not represent full product functionality &middot; Built for CNIB</span></div>
+  <nav class="nv" aria-label="Main navigation"><div class="nv-b"><span class="nv-w">iris.</span><span class="nv-p">Powered by CNIB</span></div></nav>
+  <main id="main">
+
+  <!-- S1: HERO -->
+  <section class="hero" id="hero">
+    <div class="im rv"><svg viewBox="0 0 200 200"><circle class="im-r im-r1" cx="100" cy="100" r="90"/><circle class="im-r im-r2" cx="100" cy="100" r="65"/><circle class="im-r im-r3" cx="100" cy="100" r="42"/><circle class="im-p" cx="100" cy="100" r="14"/></svg></div>
+    <div class="ey rv rv-d1">Powered by CNIB</div>
+    <h1 class="rv rv-d1">iris.</h1>
+    <div class="hero-tl rv rv-d2">Your guide for life with sight loss.</div>
+    <div class="hero-sh rv rv-d2">So you can get back to living.</div>
+    <p class="body hero-bd rv rv-d3">More than 1.5 million Canadians live with sight loss. Most of them don't know what CNIB offers. And most of them are navigating alone. iris. changes that.</p>
+    <div class="hero-sc" aria-hidden="true"><span>Scroll to meet iris.</span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+  </section>
+
+  <!-- S2: THE PROBLEM -->
+  <section class="sec s2" id="problem">
+    <div class="ctn">
+      <div class="ey rv">The Gap</div>
+      <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em;margin-bottom:40px">The support exists.<br>Most people never find it.</h2>
+      <div class="body rv rv-d1" style="max-width:700px">
+        <p>Sight loss arrives fast and without a roadmap. A diagnosis. A doctor's appointment. A moment in the kitchen when something doesn't look right. And then — nothing. No one tells you what comes next.</p>
+        <p>CNIB has been building programs, services, and community for Canadians with sight loss for over a hundred years. Free programs. Real support. People who understand. And yet, of the more than 1.5 million Canadians living with sight loss, fewer than 13,000 are currently engaged with what CNIB offers.</p>
+        <p>That's not a funding problem. It's not a program quality problem. It's a connection problem. People who need support don't know it exists. And when they do find it, they don't know where to start.</p>
+        <p>iris. is built to solve that. Not by adding more programs. By making sure the right person finds the right one — at the right moment in their life.</p>
+      </div>
+      <div class="stats rv rv-d2">
+        <div class="st"><div class="st-n" data-count="1.5" data-decimals="1" data-suffix="M+">0</div><div class="st-l">Canadians living with sight loss</div></div>
+        <div class="st"><div class="st-n">&lt;1%</div><div class="st-l">currently engaged with CNIB</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3: IRIS ARRIVES -->
+  <section class="sec s3" id="meet">
+    <div class="ctn">
+      <div class="ey rv">Meet iris.</div>
+      <div class="im im--lg rv rv-d1"><svg viewBox="0 0 200 200"><circle class="im-r im-r1" cx="100" cy="100" r="90"/><circle class="im-r im-r2" cx="100" cy="100" r="65"/><circle class="im-r im-r3" cx="100" cy="100" r="42"/><circle class="im-p" cx="100" cy="100" r="14"/></svg></div>
+      <h2 class="rv rv-d1">iris.</h2>
+      <div class="hero-tl rv rv-d2" style="margin-bottom:12px">Your guide for life with sight loss.</div>
+      <div class="hero-sh rv rv-d2" style="margin-bottom:48px">So you can get back to living.</div>
+      <p class="s3-truth rv rv-d2">When sight loss changes everything, knowing what's available to you shouldn't be another thing to figure out alone.</p>
+      <p class="s3-desc rv rv-d3">iris. is CNIB's member engagement guide. iris. gets to know each member — their diagnosis, their location, their stage of life, what matters to them — and connects them to the programs, community, and support built for exactly where they are. Personally. Specifically. At no cost.</p>
+      <div class="s3-ft rv rv-d3">Powered by CNIB. Built for the 1.5 million.</div>
+    </div>
+  </section>
+
+  </main>
+  <div class="bb bb--b"><i></i><span>Prototype demo &middot; Does not represent full product functionality &middot; Built for CNIB</span></div>
+  <script>
+    const ro=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:.15});
+    document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+    // Count-up
+    document.querySelectorAll('[data-count]').forEach(el=>{
+      const io=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){io.unobserve(el);const t=parseFloat(el.dataset.count),d=parseInt(el.dataset.decimals||'0'),s=el.dataset.suffix||'',p=el.dataset.prefix||'',dur=1600,st=performance.now();(function tick(n){const pr=Math.min(1,(n-st)/dur),ez=1-Math.pow(1-pr,3);el.textContent=p+(t*ez).toFixed(d)+s;if(pr<1)requestAnimationFrame(tick);else el.textContent=p+t.toFixed(d)+s})(st)}})},{threshold:.4});
+      io.observe(el)});
+  </script>
+</body>
+</html>
