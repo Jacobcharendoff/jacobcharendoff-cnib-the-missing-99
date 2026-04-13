@@ -127,6 +127,49 @@
     .s6-cl-t{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:#FFD100;letter-spacing:-.01em}
     @media(max-width:900px){.eg{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:540px){.eg{grid-template-columns:1fr}}
+    /* S7 Two-pronged */
+    .s7{background:#0A0A0A}
+    .sp{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px}
+    .spl{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:22px;padding:48px 40px}
+    .spl-t{font-size:22px;font-weight:600;margin-bottom:20px;letter-spacing:-.01em}
+    .spl-b{font-size:16px;line-height:1.65;color:rgba(255,255,255,.5)}
+    .spl-b p+p{margin-top:1.2em}
+    .spl-st{margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);font-size:15px;font-weight:600;color:#FFD100}
+    .spl-ex{margin-top:28px;padding:20px 24px;background:rgba(255,209,0,.04);border:1px solid rgba(255,209,0,.12);border-radius:14px;font-size:15px;line-height:1.55;color:rgba(255,255,255,.55);font-style:italic}
+    .s7-cl{text-align:center;margin-top:56px;font-size:16px;color:rgba(255,255,255,.4);font-style:italic}
+    @media(max-width:768px){.sp{grid-template-columns:1fr}.spl{padding:36px 28px}}
+    /* S8 Pilot */
+    .s8{background:#0f0f0f}
+    .s8::before{content:'';position:absolute;top:20%;left:0;width:800px;height:800px;background:radial-gradient(circle,rgba(80,140,255,.04) 0%,transparent 60%);pointer-events:none}
+    .s8-q{font-size:clamp(22px,2.8vw,34px);font-weight:500;font-style:italic;line-height:1.35;color:#FFD100;max-width:760px;margin:40px 0 48px;letter-spacing:-.01em}
+    .ap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:48px 0}
+    .apc{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:36px 32px}
+    .apc-t{font-size:18px;font-weight:700;margin-bottom:16px}
+    .apc-b{font-size:15px;line-height:1.6;color:rgba(255,255,255,.5)}
+    .tl{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin:48px 0}
+    .tlp{background:#0f0f0f;padding:36px 28px}
+    .tlp-m{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FFD100;margin-bottom:12px}
+    .tlp-t{font-size:17px;font-weight:600;margin-bottom:12px}
+    .tlp-b{font-size:14px;line-height:1.6;color:rgba(255,255,255,.45)}
+    .s8-st{margin-top:48px}
+    .s8-st-t{font-size:20px;font-weight:600;margin-bottom:16px}
+    .s8-cl{margin-top:48px;max-width:720px}
+    @media(max-width:768px){.ap{grid-template-columns:1fr}.tl{grid-template-columns:1fr}}
+    /* S9 Closing */
+    .s9{background:#0A0A0A;text-align:center;padding:160px 40px;position:relative;overflow:hidden}
+    .s9::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(255,209,0,.03) 0%,transparent 65%);pointer-events:none}
+    .s9-bd{max-width:600px;margin:24px auto 48px}
+    .cta-r{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:#FFD100;color:#0A0A0A;padding:16px 40px;border-radius:100px;font-family:inherit;font-weight:700;font-size:15px;text-decoration:none;border:none;cursor:pointer;transition:all .3s;letter-spacing:.2px}
+    @media(hover:hover){.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,209,0,.3)}}
+    .btn-s{display:inline-flex;align-items:center;gap:8px;background:transparent;color:rgba(255,255,255,.5);padding:16px 40px;border-radius:100px;font-family:inherit;font-weight:600;font-size:15px;text-decoration:none;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:all .3s}
+    @media(hover:hover){.btn-s:hover{color:#fff;border-color:rgba(255,255,255,.25)}}
+    .s9-fl{margin-top:80px;font-size:13px;color:rgba(255,255,255,.2);letter-spacing:.5px}
+    /* Footer */
+    .ft{background:#0A0A0A;border-top:1px solid rgba(255,255,255,.06);padding:48px 40px 120px;text-align:center}
+    .ft-a{max-width:640px;margin:0 auto 32px;font-size:14px;line-height:1.65;color:rgba(255,255,255,.35)}
+    .ft-a a{color:#FFD100;text-decoration:underline;text-underline-offset:2px}
+    .ft-br{font-size:13px;color:rgba(255,255,255,.2);letter-spacing:.3px}
     /* Responsive */
     @media(max-width:640px){
       .bb{font-size:10.5px;height:32px}
@@ -287,6 +330,86 @@
       <div class="s6-cl rv"><div class="s6-cl-t">All of it free. All of it waiting. iris. is the way in.</div></div>
     </div>
   </section>
+
+  <!-- S7: TWO-PRONGED MODEL -->
+  <section class="sec s7" id="reach">
+    <div class="ctn">
+      <div class="ey rv">Who iris. Serves</div>
+      <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em">Reaching members directly.<br>And through every door they already walk through.</h2>
+      <div class="sp">
+        <div class="spl rv">
+          <div class="spl-t">For members and families.</div>
+          <div class="spl-b">
+            <p>iris. connects directly with Canadians living with sight loss, their families, and caregivers. Someone newly diagnosed who doesn't know where to start. A parent fighting the school system alone. A senior who has withdrawn from everything they used to love. A working adult quietly managing a condition their employer doesn't know about.</p>
+            <p>iris. meets them where they are. Asks the right questions. Surfaces the right support. Stays.</p>
+          </div>
+          <div class="spl-st">1.5 million+ Canadians. Less than 1% currently reached.</div>
+        </div>
+        <div class="spl rv rv-d1">
+          <div class="spl-t">For channel partners.</div>
+          <div class="spl-b">
+            <p>Ophthalmologists. Optometrists. Family doctors. Hospitals. HR departments. Social workers. These are the people who encounter Canadians with sight loss every day — and who often have nothing to offer them when the appointment ends.</p>
+            <p>iris. becomes the thing they hand every patient, client, or employee the moment sight loss enters the conversation. A simple, trusted handoff that extends CNIB's reach into every professional touchpoint where sight loss shows up.</p>
+          </div>
+          <div class="spl-ex">An ophthalmologist finishes a diagnosis conversation. They hand the patient a card. It says: "Talk to iris." The patient calls. iris. picks up from there.</div>
+        </div>
+      </div>
+      <p class="s7-cl rv">Two channels. One iris. The same warm, knowledgeable conversation wherever the member comes from.</p>
+    </div>
+  </section>
+
+  <!-- S8: THE PILOT -->
+  <section class="sec s8" id="pilot">
+    <div class="ctn">
+      <div class="ey rv">The Pilot</div>
+      <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em">Three months. Two approaches.<br>One question.</h2>
+      <p class="s8-q rv rv-d1">What is the most effective way to reach Canadians with sight loss and connect them to what CNIB has built for them?</p>
+      <p class="body rv rv-d1" style="max-width:720px">This is not a product launch. It's a structured learning exercise. We pilot two distinct approaches in parallel, with real members, across three months. We measure what works. We learn who responds to what. And at the end, we have the evidence and confidence to build what we know works — not what we think might.</p>
+      <div class="ap">
+        <div class="apc rv">
+          <div class="apc-t">Approach 1 — Direct member engagement.</div>
+          <div class="apc-b">iris. delivered through voice and conversation — phone, smart device, or voice assistant. Accessible to members regardless of technology comfort or visual capability. Designed to reach the full demographic spectrum: seniors, newly diagnosed adults, families, long-term members who don't know everything available to them.</div>
+        </div>
+        <div class="apc rv rv-d1">
+          <div class="apc-t">Approach 2 — Channel partner distribution.</div>
+          <div class="apc-b">iris. delivered as a simple referral tool for healthcare and professional partners. An ophthalmologist finishes a difficult conversation and hands a card. A social worker makes a call. A pharmacist passes along a number. iris. picks up from there. Testing whether warm professional referrals drive stronger member engagement than direct outreach.</div>
+        </div>
+      </div>
+      <div class="tl rv">
+        <div class="tlp"><div class="tlp-m">Month 1</div><div class="tlp-t">Strategy and build.</div><div class="tlp-b">Define the target member for each approach. Map the specific problems each prototype solves. Build both prototypes. Identify and onboard channel partners. Establish how we'll measure success.</div></div>
+        <div class="tlp"><div class="tlp-m">Month 2</div><div class="tlp-t">Live testing.</div><div class="tlp-b">Both approaches live with real members. iris. has real conversations. Partners begin referrals. Weekly learning reviews. Rapid iteration based on what members actually say and do.</div></div>
+        <div class="tlp"><div class="tlp-m">Month 3</div><div class="tlp-t">Learning and confidence.</div><div class="tlp-b">Synthesize what worked and what didn't across both channels. Understand which member types respond best to which approach. Build the evidence base for what comes next. Present findings and recommendation.</div></div>
+      </div>
+      <div class="s8-st rv">
+        <div class="s8-st-t">What success looks like.</div>
+        <p class="body">We're measuring three things. Members who enroll in at least one CNIB program they didn't know existed before talking to iris. Members who return for a second conversation — the signal that iris. earned their trust. Channel partners who refer more than one patient — the signal that the tool is genuinely useful, not just novel.</p>
+      </div>
+      <div class="s8-cl rv body" style="margin-top:48px">
+        <p>The pilot is not the product. It's the evidence that makes the product worth building properly. Three months of real conversations with real Canadians tells us more than any amount of planning — and gives CNIB the confidence to invest in what we know works.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- S9: CLOSING CTA -->
+  <section class="s9" id="close">
+    <div class="im im--sm rv" style="width:100px;height:100px;margin-bottom:32px"><svg viewBox="0 0 200 200"><circle class="im-r im-r1" cx="100" cy="100" r="90"/><circle class="im-r im-r2" cx="100" cy="100" r="65"/><circle class="im-r im-r3" cx="100" cy="100" r="42"/><circle class="im-p" cx="100" cy="100" r="14"/></svg></div>
+    <div class="ey rv">What's Next</div>
+    <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em">More than 1.5 million Canadians<br>with sight loss.<br>Most of them navigating alone.</h2>
+    <div class="s9-bd body rv rv-d1">
+      <p>iris. is how CNIB changes that. Not by building more — by making sure what's already been built reaches the people it was built for.</p>
+      <p>We're ready to test it. We're looking for the right partner to test it with.</p>
+    </div>
+    <div class="cta-r rv rv-d2">
+      <a class="btn-p" href="#pilot">Join the Pilot</a>
+      <a class="btn-s" href="#meet">Learn More About iris.</a>
+    </div>
+    <div class="s9-fl rv rv-d3">iris. — Powered by CNIB — Your guide for life with sight loss.</div>
+  </section>
+
+  <footer class="ft">
+    <p class="ft-a">iris. is built for the community it serves. This site is designed to meet WCAG 2.1 AA accessibility standards — high contrast, screen reader compatible, keyboard navigable, and fully functional without images. If you encounter any accessibility barrier on this site, please <a href="mailto:accessibility@cnib.ca">contact us</a>. We take that seriously.</p>
+    <div class="ft-br">iris. — Powered by CNIB</div>
+  </footer>
 
   </main>
   <div class="bb bb--b"><i></i><span>Prototype demo &middot; Does not represent full product functionality &middot; Built for CNIB</span></div>
