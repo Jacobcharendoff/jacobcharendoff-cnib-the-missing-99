@@ -73,6 +73,60 @@
     .s3-truth{font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.55;color:rgba(255,255,245,.65);max-width:720px;margin:0 auto 40px}
     .s3-desc{font-size:clamp(16px,1.3vw,19px);line-height:1.65;color:rgba(255,255,245,.45);max-width:680px;margin:0 auto 48px}
     .s3-ft{font-size:13px;color:rgba(255,255,255,.3);letter-spacing:.5px}
+    /* S4 Demos */
+    .s4{background:#0A0A0A}
+    .s4-intro{text-align:center;max-width:700px;margin:0 auto 64px}
+    .s4-g{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .dc{position:relative;border-radius:24px;padding:44px 36px 36px;min-height:480px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;border:1px solid rgba(255,209,0,.15);transition:all .5s cubic-bezier(.22,1,.36,1);isolation:isolate;text-align:left;text-decoration:none;color:#fff}
+    .dc::before{content:'';position:absolute;inset:0;z-index:-1;transition:opacity .5s ease}
+    .dc--a::before{background:radial-gradient(circle at 20% 0%,rgba(255,209,0,.25) 0%,transparent 55%),linear-gradient(180deg,#1a1300,#0a0a0a)}
+    .dc--z::before{background:radial-gradient(circle at 80% 10%,rgba(80,140,255,.22) 0%,transparent 60%),linear-gradient(180deg,#0a1424,#0a0a0a)}
+    .dc--r::before{background:radial-gradient(circle at 50% 0%,rgba(255,120,170,.20) 0%,transparent 60%),linear-gradient(180deg,#1f0a14,#0a0a0a)}
+    @media(hover:hover){.dc:hover{transform:translateY(-6px);border-color:rgba(255,209,0,.45);box-shadow:0 30px 80px rgba(0,0,0,.5)}}
+    .dc-ey{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(255,209,0,.10);border:1px solid rgba(255,209,0,.25);border-radius:999px;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFD100;width:fit-content;margin-bottom:28px}
+    .dc-ey::before{content:'';width:6px;height:6px;border-radius:50%;background:#FFD100;box-shadow:0 0 8px rgba(255,209,0,.8);animation:pd 2s ease-in-out infinite}
+    @keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+    .dc-nm{font-size:clamp(30px,3vw,42px);font-weight:700;line-height:1.05;letter-spacing:-.5px;margin-bottom:10px}
+    .dc-ag{font-size:14px;font-weight:500;color:rgba(255,255,255,.45);margin-bottom:20px}
+    .dc-ds{font-size:16px;line-height:1.6;color:rgba(255,255,255,.6);flex:1}
+    .dc-ft{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06)}
+    .dc-snd{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,209,0,.08);border:1px solid rgba(255,209,0,.2);border-radius:999px;font-size:11px;font-weight:600;color:#FFD100;letter-spacing:.3px}
+    .dc-snd svg{width:14px;height:14px;stroke:#FFD100;fill:none;stroke-width:2}
+    .dc-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:#FFD100;color:#0A0A0A;border-radius:100px;font-size:13px;font-weight:700;transition:transform .3s,box-shadow .3s}
+    @media(hover:hover){.dc:hover .dc-cta{transform:translateX(3px);box-shadow:0 6px 20px rgba(255,209,0,.3)}}
+    .dc-cta svg{width:14px;height:14px}
+    .s4-fn{text-align:center;margin-top:48px;font-size:16px;color:rgba(255,255,255,.35);font-style:italic}
+    @media(max-width:900px){.s4-g{grid-template-columns:1fr;max-width:480px;margin-left:auto;margin-right:auto}.dc{min-height:380px}}
+    /* S5 How it works */
+    .s5{background:#0f0f0f}
+    .s5::before{content:'';position:absolute;top:15%;right:0;width:800px;height:800px;background:radial-gradient(circle,rgba(140,100,255,.04) 0%,transparent 60%);pointer-events:none}
+    .s5-intro{text-align:center;max-width:700px;margin:0 auto 80px}
+    .stg{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+    .sg{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:40px 28px 36px;text-align:left;transition:border-color .3s}
+    @media(hover:hover){.sg:hover{border-color:rgba(255,209,0,.2)}}
+    .sg-ic{width:52px;height:52px;margin-bottom:24px}
+    .sg-ic svg{width:100%;height:100%}
+    .sg-ic circle,.sg-ic path,.sg-ic line{fill:none;stroke:#FFD100;stroke-width:1.5}
+    .sg-ic .sf{fill:#FFD100;stroke:none}
+    .sg-t{font-size:19px;font-weight:700;margin-bottom:12px;letter-spacing:-.01em}
+    .sg-b{font-size:15px;line-height:1.6;color:rgba(255,255,255,.5)}
+    .s5-cl{text-align:center;margin-top:64px;font-size:17px;color:rgba(255,255,255,.4);font-style:italic}
+    @media(max-width:900px){.stg{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:540px){.stg{grid-template-columns:1fr}}
+    /* S6 Ecosystem */
+    .s6{background:#0A0A0A}
+    .s6::before{content:'';position:absolute;bottom:10%;left:0;width:800px;height:800px;background:radial-gradient(circle,rgba(255,120,170,.04) 0%,transparent 60%);pointer-events:none}
+    .s6-intro{max-width:700px;margin-bottom:64px}
+    .eg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .ec{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:32px 28px;transition:border-color .3s,transform .3s}
+    @media(hover:hover){.ec:hover{border-color:rgba(255,209,0,.2);transform:translateY(-2px)}}
+    .ec-lb{font-size:12px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#FFD100;margin-bottom:14px}
+    .ec-t{font-size:18px;font-weight:600;margin-bottom:14px;letter-spacing:-.01em}
+    .ec-p{font-size:14px;line-height:1.65;color:rgba(255,255,255,.4)}
+    .s6-cl{text-align:center;margin-top:64px}
+    .s6-cl-t{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:#FFD100;letter-spacing:-.01em}
+    @media(max-width:900px){.eg{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:540px){.eg{grid-template-columns:1fr}}
     /* Responsive */
     @media(max-width:640px){
       .bb{font-size:10.5px;height:32px}
@@ -133,6 +187,104 @@
       <p class="s3-truth rv rv-d2">When sight loss changes everything, knowing what's available to you shouldn't be another thing to figure out alone.</p>
       <p class="s3-desc rv rv-d3">iris. is CNIB's member engagement guide. iris. gets to know each member — their diagnosis, their location, their stage of life, what matters to them — and connects them to the programs, community, and support built for exactly where they are. Personally. Specifically. At no cost.</p>
       <div class="s3-ft rv rv-d3">Powered by CNIB. Built for the 1.5 million.</div>
+    </div>
+  </section>
+
+  <!-- S4: DEMOS -->
+  <section class="sec s4" id="demos">
+    <div class="ctn">
+      <div class="s4-intro">
+        <div class="ey rv">See iris. in Action</div>
+        <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em;margin-bottom:20px">This is what it feels like.</h2>
+        <p class="body rv rv-d1">Select a story. Watch iris. work. This is a real conversation — not a script.</p>
+      </div>
+      <div class="s4-g">
+        <a class="dc dc--a rv" href="/#demos" target="_blank" role="button" tabindex="0">
+          <div class="dc-ey">Live Demo</div>
+          <div class="dc-nm">Margaret, 68</div>
+          <div class="dc-ag">Newly diagnosed, living alone in Sudbury</div>
+          <div class="dc-ds">Retired teacher. Macular degeneration diagnosis two months ago. Daughter in BC. Hasn't told her friends. Doesn't want to be treated differently.</div>
+          <div class="dc-ft">
+            <div class="dc-snd"><svg viewBox="0 0 24 24" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/></svg>Best with sound</div>
+            <div class="dc-cta">Watch<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+          </div>
+        </a>
+        <a class="dc dc--z rv rv-d1" href="/#demos" target="_blank" role="button" tabindex="0">
+          <div class="dc-ey">Live Demo</div>
+          <div class="dc-nm">David, 42</div>
+          <div class="dc-ag">Working professional, worried about his career</div>
+          <div class="dc-ds">Financial analyst. Low vision for ten years, now progressing. Compensating at work. Nobody knows. Exhausted from hiding it.</div>
+          <div class="dc-ft">
+            <div class="dc-snd"><svg viewBox="0 0 24 24" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/></svg>Best with sound</div>
+            <div class="dc-cta">Watch<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+          </div>
+        </a>
+        <a class="dc dc--r rv rv-d2" href="/#demos" target="_blank" role="button" tabindex="0">
+          <div class="dc-ey">Live Demo</div>
+          <div class="dc-nm">Priya, 34</div>
+          <div class="dc-ag">Mother of a child with sight loss, exhausted</div>
+          <div class="dc-ds">Son Aiden, 7, diagnosed six months ago. Fighting the school system alone. Hasn't had space to process her own feelings. Found CNIB through a Facebook comment.</div>
+          <div class="dc-ft">
+            <div class="dc-snd"><svg viewBox="0 0 24 24" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/></svg>Best with sound</div>
+            <div class="dc-cta">Watch<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+          </div>
+        </a>
+      </div>
+      <p class="s4-fn rv">Every conversation is different. iris. learns who you are and adjusts in real time.</p>
+    </div>
+  </section>
+
+  <!-- S5: HOW IRIS WORKS -->
+  <section class="sec s5" id="how">
+    <div class="ctn">
+      <div class="s5-intro">
+        <div class="ey rv">The Experience</div>
+        <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em;margin-bottom:24px">A guide who actually knows you.</h2>
+        <p class="body rv rv-d1">Not a directory. Not a chatbot. A guide that gets to know each member the way a good mentor would — through conversation, over time, across the real moments of their life.</p>
+      </div>
+      <div class="stg">
+        <div class="sg rv">
+          <div class="sg-ic"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20"/><circle cx="26" cy="26" r="10"/><circle class="sf" cx="26" cy="26" r="3"/></svg></div>
+          <div class="sg-t">Listens first.</div>
+          <div class="sg-b">iris. opens with the human question, not the intake form. What brought you here? What's changed? What's been the hardest part? iris. builds a picture of the whole person before suggesting anything.</div>
+        </div>
+        <div class="sg rv rv-d1">
+          <div class="sg-ic"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20"/><circle cx="26" cy="26" r="12"/><path d="M26 14v24M14 26h24" stroke-width="1.5"/></svg></div>
+          <div class="sg-t">Matches precisely.</div>
+          <div class="sg-b">Based on diagnosis, geography, life stage, and what matters most right now, iris. surfaces two or three programs that are actually right — not a list of everything CNIB offers.</div>
+        </div>
+        <div class="sg rv rv-d2">
+          <div class="sg-ic"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20"/><path d="M20 26h12M26 20l6 6-6 6" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="sg-t">Takes the next step.</div>
+          <div class="sg-b">iris. doesn't end with information. iris. ends with action. A referral booked. A connection made. A follow-up scheduled. The member leaves having gained something real.</div>
+        </div>
+        <div class="sg rv rv-d3">
+          <div class="sg-ic"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20"/><circle cx="26" cy="26" r="13"/><circle cx="26" cy="26" r="7"/><circle class="sf" cx="26" cy="26" r="2.5"/></svg></div>
+          <div class="sg-t">Stays.</div>
+          <div class="sg-b">iris. checks in. As life changes — diagnosis progresses, circumstances shift, new needs emerge — iris. adjusts. The relationship deepens over time. From newly diagnosed to engaged community member.</div>
+        </div>
+      </div>
+      <p class="s5-cl rv">Not a one-time interaction. A lifelong guide.</p>
+    </div>
+  </section>
+
+  <!-- S6: CNIB ECOSYSTEM -->
+  <section class="sec s6" id="ecosystem">
+    <div class="ctn">
+      <div class="s6-intro">
+        <div class="ey rv">The CNIB Ecosystem</div>
+        <h2 class="rv" style="font-size:clamp(36px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.025em;margin-bottom:24px">Everything CNIB offers.<br>Finally findable.</h2>
+        <p class="body rv rv-d1">CNIB has spent over a century building programs, services, and community for Canadians with sight loss. Most members only know a fraction of what exists. iris. knows all of it — and knows which part is right for you.</p>
+      </div>
+      <div class="eg">
+        <div class="ec rv"><div class="ec-lb">Live</div><div class="ec-t">Daily life and independence</div><div class="ec-p">Vision Mate. Peer support groups. CNIB Connects. Mobile Hub. White Cane Access. Financial literacy. Psychosocial counselling.</div></div>
+        <div class="ec rv rv-d1"><div class="ec-lb">Learn</div><div class="ec-t">Education and skills</div><div class="ec-p">Children and youth programs. National Youth Council. Braille and literacy. Scholarships and bursaries. Inclusive Schools Program.</div></div>
+        <div class="ec rv rv-d2"><div class="ec-lb">Work</div><div class="ec-t">Career and entrepreneurship</div><div class="ec-p">Come to Work. The Venture Zone. Connecting the Dots Conference.</div></div>
+        <div class="ec rv"><div class="ec-lb">Play</div><div class="ec-t">Recreation and community</div><div class="ec-p">Culture, sports and recreation programs. CNIB Lake Joe.</div></div>
+        <div class="ec rv rv-d1"><div class="ec-lb">Tech</div><div class="ec-t">Technology and independence</div><div class="ec-p">Technology training. iPhone and iPad workshops. Phone It Forward. CNIB SmartLife.</div></div>
+        <div class="ec rv rv-d2"><div class="ec-lb">Guide Dogs</div><div class="ec-t">CNIB Guide Dogs</div><div class="ec-p">Raising and training guide dogs exclusively for Canadians with sight loss.</div></div>
+      </div>
+      <div class="s6-cl rv"><div class="s6-cl-t">All of it free. All of it waiting. iris. is the way in.</div></div>
     </div>
   </section>
 
