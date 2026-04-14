@@ -199,6 +199,128 @@
   }
 
   // ================================================================
+  // Scene 4 — Retain (12 months in motion)
+  // Timeline auto-advances through 6 check-in points. Engagement graph
+  // fills on the right; LTV factors tick up as Margaret's journey compounds.
+  // ================================================================
+  window.demoSceneRenderers.retain = function(stage) {
+    var m = (data.margaret || {});
+    var tl = m.retentionTimeline || [];
+    var retention = (data.client && data.client.success) ? data.client.success.retentionAt24mProb : 0.84;
+
+    stage.innerHTML = [
+      '<div class="s4-layout">',
+      '  <header class="s4-head">',
+      '    <span class="s4-eye">12 months \u2014 iris. stays</span>',
+      '    <h2 class="s4-title">Retention isn\u2019t a report. It\u2019s a relationship.</h2>',
+      '  </header>',
+      '  <div class="s4-split">',
+      '    <ol class="s4-timeline" id="s4Timeline" aria-label="Retention timeline"></ol>',
+      '    <aside class="s4-metrics">',
+      '      <div class="s4-metric">',
+      '        <span class="s4-metric-label">Engagement score</span>',
+      '        <div class="s4-graph" aria-hidden="true"><svg viewBox="0 0 300 120" preserveAspectRatio="none"><path id="s4GraphPath" d="M 0 120" fill="none" stroke="url(#s4grad)" stroke-width="2.4" stroke-linecap="round"/><defs><linearGradient id="s4grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F59B3C"/><stop offset="1" stop-color="#FFD100"/></linearGradient></defs></svg></div>',
+      '        <span class="s4-metric-now" id="s4Now">0</span>',
+      '      </div>',
+      '      <div class="s4-ltv">',
+      '        <span class="s4-metric-label">LTV factors compounding</span>',
+      '        <div class="s4-ltv-row"><span>Programs accessed</span>    <span id="s4LtvPrograms">0</span></div>',
+      '        <div class="s4-ltv-row"><span>Months engaged</span>        <span id="s4LtvMonths">0</span></div>',
+      '        <div class="s4-ltv-row"><span>Peer connections</span>      <span id="s4LtvPeers">0</span></div>',
+      '        <div class="s4-ltv-row s4-ltv-row--hi"><span>Retention prob. at 24mo</span><span id="s4LtvProb">\u2014</span></div>',
+      '      </div>',
+      '    </aside>',
+      '  </div>',
+      '</div>'
+    ].join('');
+
+    var timelineEl = stage.querySelector('#s4Timeline');
+    var nowEl      = stage.querySelector('#s4Now');
+    var pathEl     = stage.querySelector('#s4GraphPath');
+    var ltvPrograms = stage.querySelector('#s4LtvPrograms');
+    var ltvMonths   = stage.querySelector('#s4LtvMonths');
+    var ltvPeers    = stage.querySelector('#s4LtvPeers');
+    var ltvProb     = stage.querySelector('#s4LtvProb');
+
+    // LTV stages — simple table mapping timeline index -> running factors
+    var ltvStages = [
+      { programs: 0, months: 0,  peers: 0 },
+      { programs: 1, months: 0,  peers: 1 },
+      { programs: 1, months: 1,  peers: 2 },
+      { programs: 2, months: 3,  peers: 3 },
+      { programs: 2, months: 6,  peers: 4 },
+      { programs: 3, months: 12, peers: 5 }
+    ];
+
+    // Build timeline nodes (dim at first)
+    tl.forEach(function(node, i) {
+      var li = document.createElement('li');
+      li.className = 's4-node';
+      li.dataset.index = String(i);
+      li.innerHTML = [
+        '<div class="s4-node-dot" aria-hidden="true"><span></span></div>',
+        '<div class="s4-node-label"></div>',
+        '<div class="s4-node-event"></div>'
+      ].join('');
+      li.querySelector('.s4-node-label').textContent = node.label;
+      li.querySelector('.s4-node-event').textContent = node.event;
+      timelineEl.appendChild(li);
+    });
+
+    // Auto-walk through the timeline, one node every 3.5s
+    var intervalMs = 3500;
+    function animatePath(toScore) {
+      if (!pathEl) return;
+      // Scale: x from 0..300, y inverted from score 0..100 -> 120..0
+      var pts = tl.slice(0, lastLit + 1).map(function(n, idx) {
+        var x = (idx / (tl.length - 1)) * 300;
+        var y = 120 - (n.engagementScore / 100) * 120;
+        return [x, y];
+      });
+      if (pts.length === 0) return;
+      var d = pts.map(function(p, idx) { return (idx === 0 ? 'M ' : 'L ') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+      pathEl.setAttribute('d', d);
+    }
+
+    var lastLit = -1;
+    tl.forEach(function(node, i) {
+      setTimeout(function() {
+        if (!timelineEl.parentNode) return;
+        lastLit = i;
+        // Light up the node
+        var li = timelineEl.children[i];
+        if (li) li.classList.add('is-lit');
+        // Tick engagement score
+        animateCount(nowEl, i === 0 ? 0 : tl[i-1].engagementScore, node.engagementScore, 900);
+        // Redraw graph
+        animatePath(node.engagementScore);
+        // LTV factors
+        var ltv = ltvStages[i] || ltvStages[ltvStages.length - 1];
+        ltvPrograms.textContent = ltv.programs;
+        ltvMonths.textContent   = ltv.months;
+        ltvPeers.textContent    = ltv.peers;
+        if (i === tl.length - 1) {
+          ltvProb.textContent = Math.round(retention * 100) + '%';
+          ltvProb.classList.add('is-on');
+        }
+      }, 400 + i * intervalMs);
+    });
+  };
+
+  function animateCount(el, from, to, dur) {
+    if (!el) return;
+    var start = performance.now();
+    function step(now) {
+      var p = Math.min(1, (now - start) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      var v = Math.round(from + (to - from) * eased);
+      el.textContent = v;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
