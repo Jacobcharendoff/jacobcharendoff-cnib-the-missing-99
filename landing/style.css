@@ -472,3 +472,32 @@ p{line-height:1.65}
 /* --- Better paragraph rhythm --- */
 .bd p+p{margin-top:1.1em}
 .s3-truth+.s3-desc{margin-top:28px}
+
+/* ================================================================
+   HERO — Simple / Systematic / Scalable triad
+   The four-word thesis lands here, in the first viewport.
+   ================================================================ */
+.hero-triad{
+  display:flex;gap:22px;flex-wrap:wrap;margin-bottom:28px;
+  font-size:clamp(15px,1.25vw,18px);font-weight:600;letter-spacing:.2px;
+}
+.hero-triad span{
+  display:inline-flex;align-items:center;gap:8px;
+  color:#FFD100;
+}
+.hero-triad span::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:#FFD100;
+  box-shadow:0 0 10px rgba(255,209,0,.6);
+}
+
+/* Third stat (100% possible) — slightly different treatment to feel aspirational */
+.hero-stats .hero-stat:nth-child(3) .hero-stat-n{
+  background:linear-gradient(110deg,#FFD100 0%,#FF9F40 50%,#FF6B9D 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+
+@media(max-width:640px){
+  .hero-triad{gap:14px;margin-bottom:20px}
+  .hero-triad span{font-size:14px}
+}
