@@ -277,15 +277,17 @@
   var audioUnlocked = false;
   function unlockAudio() {
     if (audioUnlocked) return;
-    // Silent audio trick: play a 0-duration clip during the user
-    // gesture that opened the tour. Unlocks future programmatic plays
-    // on iOS Safari. Same pattern iris-chat.js uses.
+    // Silent-unlock trick: play a data URI during the user gesture
+    // so iOS Safari whitelists this audio element for programmatic
+    // plays. Do NOT touch .volume here — we used to set it to 0
+    // and restore in .then(), but a subsequent src change aborts
+    // the play and the .then never fires, leaving volume stuck at 0.
     try {
       tourAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
-      tourAudio.volume = 0;
+      tourAudio.muted = false;
       var p = tourAudio.play();
-      if (p && p.then) p.then(function(){ tourAudio.volume = 1; audioUnlocked = true; }).catch(function(){});
-      else { tourAudio.volume = 1; audioUnlocked = true; }
+      if (p && p.then) p.catch(function(){});
+      audioUnlocked = true;
     } catch (_) {}
   }
 
@@ -338,7 +340,12 @@
     var cached = chapterAudioCache[ch.id];
     if (cached && current === i && !isPaused) {
       try {
+        // Ensure we're unmuted and at full volume every time — safety
+        // net in case anything earlier reduced volume (e.g. unlock).
+        tourAudio.muted = false;
+        tourAudio.volume = 1;
         tourAudio.src = cached;
+        dbg('SYNC play src set, vol=' + tourAudio.volume + ' muted=' + tourAudio.muted);
         var pSync = tourAudio.play();
         if (pSync && pSync.then) {
           pSync.then(function(){ dbg('SYNC PLAY OK'); if (root) root.classList.add('speaking'); })
@@ -362,7 +369,10 @@
     fetchChapterAudio(i).then(function(url){
       if (current !== i || isPaused || !url) return;
       try {
+        tourAudio.muted = false;
+        tourAudio.volume = 1;
         tourAudio.src = url;
+        dbg('ASYNC play src set, vol=' + tourAudio.volume + ' muted=' + tourAudio.muted);
         var p = tourAudio.play();
         if (p && p.then) {
           p.then(function(){ if (root) root.classList.add('speaking'); })
