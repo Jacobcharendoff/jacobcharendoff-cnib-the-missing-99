@@ -65,3 +65,54 @@ body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#080808;c
 .im--hero{width:min(44vw,400px);height:min(44vw,400px)}
 .im--brand{width:min(50vw,460px);height:min(50vw,460px);margin-bottom:48px}
 .im--close{width:96px;height:96px;margin-bottom:36px}
+
+/* ================================================================
+   SECTION BACKGROUNDS — Gradient meshes, alternating light/dark
+   ================================================================ */
+
+/* S1 HERO — Dark · Violet/Gold */
+.hero{
+  min-height:100vh;min-height:100dvh;
+  display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  padding:140px 48px 100px;position:relative;overflow:hidden;gap:48px;
+  background:
+    radial-gradient(ellipse 110% 70% at 85% 15%,rgba(123,104,255,.20) 0%,transparent 58%),
+    radial-gradient(ellipse 80% 55% at 5% 88%,rgba(255,180,60,.11) 0%,transparent 52%),
+    #080808;
+}
+.hero-text{position:relative;z-index:2}
+.hero-mark{display:flex;align-items:center;justify-content:center}
+.hero h1{font-size:clamp(68px,10vw,128px);font-weight:700;line-height:.88;letter-spacing:-.04em;margin-bottom:22px}
+.hero-tl{font-size:clamp(19px,2vw,27px);font-weight:400;font-style:italic;color:rgba(255,255,245,.46);letter-spacing:-.01em;margin-bottom:10px}
+.hero-sh{font-size:clamp(15px,1.5vw,20px);font-weight:500;color:rgba(255,255,245,.28);margin-bottom:40px}
+.hero-bd{max-width:500px}
+.hero-sc{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.16);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:600;animation:sc 3s ease-in-out infinite;z-index:2}
+.hero-sc svg{width:16px;height:16px;stroke:rgba(255,209,0,.26);fill:none;stroke-width:1.8}
+@keyframes sc{0%,100%{transform:translateX(-50%) translateY(0);opacity:.3}50%{transform:translateX(-50%) translateY(9px);opacity:.72}}
+
+/* S2 THE PROBLEM — Light · #f5f5f2 */
+.s2{
+  background:#f5f5f2;
+  color:#0a0a0a;
+}
+.s2 .ey{color:rgba(0,0,0,.32)}
+.s2 h2{color:#0a0a0a}
+.s2 .body{color:rgba(0,0,0,.52)}
+.s2-stats{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px}
+.s2-stat{padding:44px 36px;text-align:center;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.07);border-radius:20px;box-shadow:0 2px 24px rgba(0,0,0,.06)}
+.s2-stat-n{font-size:clamp(44px,6vw,72px);font-weight:700;color:#c8960a;line-height:1;letter-spacing:-.03em;margin-bottom:8px}
+.s2-stat-l{font-size:13.5px;color:rgba(0,0,0,.38);line-height:1.45}
+.s2-kicker{margin-top:52px;font-size:clamp(18px,1.6vw,22px);font-weight:500;color:rgba(0,0,0,.58);line-height:1.52;max-width:680px}
+
+/* S3 MEET IRIS. — Dark · Amber/Rose */
+.s3{
+  text-align:center;padding:200px 0;
+  background:
+    radial-gradient(ellipse 100% 65% at 50% 5%,rgba(255,150,60,.13) 0%,transparent 55%),
+    radial-gradient(ellipse 65% 45% at 85% 92%,rgba(255,90,150,.08) 0%,transparent 50%),
+    #080808;
+}
+.s3 h2{font-size:clamp(60px,10vw,128px);font-weight:700;line-height:.88;letter-spacing:-.04em;margin-bottom:24px}
+.s3-truth{font-size:clamp(19px,1.9vw,26px);font-weight:400;line-height:1.62;color:rgba(255,255,245,.5);max-width:660px;margin:0 auto 40px}
+.s3-desc{font-size:clamp(15px,1.1vw,17px);line-height:1.75;color:rgba(255,255,245,.33);max-width:600px;margin:0 auto 52px}
+.s3-ft{font-size:12px;color:rgba(255,255,255,.16);letter-spacing:.8px}
