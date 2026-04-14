@@ -4,9 +4,9 @@
    modifications should be made upstream in v1 and re-extracted.
    ================================================================ */
 
-/* === Accessibility system (v1 lines 1226-1704) === */
-       ACCESSIBILITY SYSTEM v1.2 â AODA / WCAG 2.1 AA + beyond
-       ============================================================ */
+/* === Accessibility system (v1 lines 1226-1704) ===
+   ACCESSIBILITY SYSTEM v1.2 - AODA / WCAG 2.1 AA + beyond
+   =========================================================== */
 
     /* Visually hidden live region for screen reader announcements */
     .a11y-sr-live {
@@ -19,21 +19,21 @@
       border: 0;
     }
 
-    /* Site-wide text scaling â 6 steps (WCAG 1.4.4 supports up to 200%).
-       Uses `zoom` scoped to #main-content so every px-based size actually scales
+    /* Site-wide text scaling — 6 steps (WCAG 1.4.4 supports up to 200%).
+       Uses `zoom` scoped to #main so every px-based size actually scales
        and the a11y widget/nav/announcement bar stay at their true size. */
-    html.a11y-text-110 #main-content { zoom: 1.10; }
-    html.a11y-text-125 #main-content { zoom: 1.25; }
-    html.a11y-text-150 #main-content { zoom: 1.50; }
-    html.a11y-text-175 #main-content { zoom: 1.75; }
-    html.a11y-text-200 #main-content { zoom: 2.00; }
+    html.a11y-text-110 #main { zoom: 1.10; }
+    html.a11y-text-125 #main { zoom: 1.25; }
+    html.a11y-text-150 #main { zoom: 1.50; }
+    html.a11y-text-175 #main { zoom: 1.75; }
+    html.a11y-text-200 #main { zoom: 2.00; }
     /* Firefox fallback (Firefox ignores zoom) */
     @-moz-document url-prefix() {
-      html.a11y-text-110 #main-content { transform: scale(1.10); transform-origin: top left; width: 90.9%; }
-      html.a11y-text-125 #main-content { transform: scale(1.25); transform-origin: top left; width: 80%; }
-      html.a11y-text-150 #main-content { transform: scale(1.50); transform-origin: top left; width: 66.66%; }
-      html.a11y-text-175 #main-content { transform: scale(1.75); transform-origin: top left; width: 57.14%; }
-      html.a11y-text-200 #main-content { transform: scale(2.00); transform-origin: top left; width: 50%; }
+      html.a11y-text-110 #main { transform: scale(1.10); transform-origin: top left; width: 90.9%; }
+      html.a11y-text-125 #main { transform: scale(1.25); transform-origin: top left; width: 80%; }
+      html.a11y-text-150 #main { transform: scale(1.50); transform-origin: top left; width: 66.66%; }
+      html.a11y-text-175 #main { transform: scale(1.75); transform-origin: top left; width: 57.14%; }
+      html.a11y-text-200 #main { transform: scale(2.00); transform-origin: top left; width: 50%; }
     }
 
     /* Line spacing (WCAG 1.4.12) */
@@ -73,21 +73,21 @@
     html.a11y-high-contrast li,
     html.a11y-high-contrast span:not([aria-hidden]) { color: #FFF !important; }
 
-    /* Inverted (light-on-dark â dark-on-light for low-vision users who prefer light)
-       Scoped to #main-content so the a11y widget, nav, and version bar stay
+    /* Inverted (light-on-dark → dark-on-light for low-vision users who prefer light)
+       Scoped to #main so the a11y widget, nav, and version bar stay
        unaffected. Filter on body breaks position:fixed (CSS containing-block bug)
        and hides the widget, so we scope to the content wrapper instead. */
-    html.a11y-invert #main-content { filter: invert(1) hue-rotate(180deg); background: #FFFFFF; }
-    html.a11y-invert #main-content img,
-    html.a11y-invert #main-content video,
-    html.a11y-invert #main-content svg,
-    html.a11y-invert #main-content picture { filter: invert(1) hue-rotate(180deg); }
+    html.a11y-invert #main { filter: invert(1) hue-rotate(180deg); background: #FFFFFF; }
+    html.a11y-invert #main img,
+    html.a11y-invert #main video,
+    html.a11y-invert #main svg,
+    html.a11y-invert #main picture { filter: invert(1) hue-rotate(180deg); }
 
     /* Underline all links and buttons */
     html.a11y-underline-links a,
     html.a11y-underline-links button { text-decoration: underline !important; text-underline-offset: 2px; }
 
-    /* Enhanced focus rings (WCAG 2.4.7, 2.4.11 â 3:1 contrast, 2px min, offset) */
+    /* Enhanced focus rings (WCAG 2.4.7, 2.4.11 — 3:1 contrast, 2px min, offset) */
     html.a11y-focus-boost *:focus,
     html.a11y-focus-boost *:focus-visible {
       outline: 4px solid #FFD100 !important;
@@ -118,7 +118,7 @@
       }
     }
 
-    /* Reading guide â horizontal bar that tracks cursor */
+    /* Reading guide — horizontal bar that tracks cursor */
     .a11y-reading-guide {
       position: fixed;
       left: 0;
@@ -134,7 +134,7 @@
     }
     html.a11y-reading-guide .a11y-reading-guide { display: block; }
 
-    /* Reading mask â dims screen except a band near cursor */
+    /* Reading mask — dims screen except a band near cursor */
     .a11y-reading-mask {
       position: fixed;
       left: 0;
@@ -157,7 +157,7 @@
     html.a11y-reading-mask .a11y-reading-mask::before { top: 0; height: var(--mask-top, 0px); }
     html.a11y-reading-mask .a11y-reading-mask::after  { top: var(--mask-bottom, 0px); bottom: 0; }
 
-    /* ===== FLOATING ACTION BUTTON â low-vision first ===== */
+    /* ===== FLOATING ACTION BUTTON — low-vision first ===== */
     .a11y-fab {
       position: fixed;
       bottom: 24px;
@@ -201,7 +201,7 @@
       .a11y-fab svg { width: 34px; height: 34px; }
     }
 
-    /* ===== PANEL â low-vision first ===== */
+    /* ===== PANEL — low-vision first ===== */
     .a11y-panel {
       position: fixed;
       bottom: 116px;
@@ -324,7 +324,7 @@
       display: block;
     }
 
-    /* Stepper control â big â [value] + */
+    /* Stepper control — big − [value] + */
     .a11y-stepper {
       display: flex;
       align-items: stretch;
@@ -378,7 +378,7 @@
       padding: 0 8px;
     }
 
-    /* Big toggle â 72x40 with ON/OFF text */
+    /* Big toggle — 72x40 with ON/OFF text */
     .a11y-toggle {
       position: relative;
       width: 78px;
@@ -437,7 +437,7 @@
       outline-offset: 3px;
     }
 
-    /* Reset button â full width, prominent */
+    /* Reset button — full width, prominent */
     .a11y-reset {
       margin-top: 24px;
       width: 100%;
@@ -525,7 +525,7 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Chat Header â modernized */
+    /* Chat Header — modernized */
     .iris-chat-header {
       padding: 18px 22px;
       display: flex;
@@ -665,7 +665,7 @@
       }
     }
 
-    /* Chat Body â modernized, more breathing room */
+    /* Chat Body — modernized, more breathing room */
     .iris-chat-body {
       flex: 1;
       overflow-y: auto;
@@ -875,7 +875,7 @@
       line-height: 1.4;
     }
     .iris-action-list li::before {
-      content: 'â';
+      content: '✓';
       flex-shrink: 0;
       width: 20px;
       height: 20px;
@@ -930,12 +930,12 @@
     body.iris-autoplay .iris-waveform { display: none !important; }
     body.iris-autoplay .iris-chat-body { padding-bottom: 32px; }
 
-    /* ===== BUFFER / INTRO SCREEN â full-modal page ===== */
+    /* ===== BUFFER / INTRO SCREEN — full-modal page ===== */
     /* Mounts as an absolute overlay over the entire chat-container so it
        behaves like its own page, not a scrolling block inside the message
        feed. The CTA stays sticky at the bottom and is always visible.
        Per-persona gradient inherited from the demo card the user clicked,
-       so the visual world stays continuous from card â buffer â conversation. */
+       so the visual world stays continuous from card → buffer → conversation. */
     .iris-buffer {
       position: absolute;
       inset: 0;
@@ -1147,7 +1147,7 @@
     }
     .iris-format-pill-cta svg { color: #FFD100; }
 
-    /* Anticipation block â replaces the spoiler-y "After" block */
+    /* Anticipation block — replaces the spoiler-y "After" block */
     .iris-baf-anticipation {
       border-left: 3px solid #FFD100;
       background: rgba(255, 209, 0, 0.04);
@@ -1244,7 +1244,7 @@
       color: #FFD100;
     }
 
-    /* ===== THEN / NOW transformation card â 2-up poster ===== */
+    /* ===== THEN / NOW transformation card — 2-up poster ===== */
     .iris-thennow-card {
       margin: 20px 14px 22px;
       animation: thenNowIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
@@ -1701,7 +1701,7 @@
     /* iMessage-style input bar */
     .iris-chat-controls { display: none; }
 
-    /* Mic button â prominent, pulsing */
+    /* Mic button — prominent, pulsing */
     .iris-mic-btn {
       width: 44px;
       height: 44px;
@@ -1811,7 +1811,7 @@
     }
     .iris-voice-toggle.active { color: var(--yellow); }
 
-    /* Voice waveform â appears when iris. is speaking */
+    /* Voice waveform — appears when iris. is speaking */
     .iris-waveform {
       display: none;
       align-items: center;
