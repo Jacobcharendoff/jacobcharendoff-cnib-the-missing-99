@@ -283,5 +283,102 @@
     <p class="ft-br">iris. &nbsp;&middot;&nbsp; Powered by CNIB &nbsp;&middot;&nbsp; Prototype demo — does not represent full product functionality</p>
   </footer>
 
+<script>
+/* === Scroll Reveal === */
+(function(){
+  var ro=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('v');ro.unobserve(e.target);}});
+  },{threshold:0.12});
+  document.querySelectorAll('.rv').forEach(function(el){ro.observe(el);});
+})();
+
+/* === Stat Count-Up === */
+(function(){
+  var co=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting)return;
+      co.unobserve(e.target);
+      var el=e.target,end=parseFloat(el.dataset.count),dec=parseInt(el.dataset.decimals||'0'),suf=el.dataset.suffix||'',dur=1800,start=null;
+      function step(ts){if(!start)start=ts;var p=Math.min((ts-start)/dur,1),ease=1-Math.pow(1-p,3);el.textContent=(end*ease).toFixed(dec)+suf;if(p<1)requestAnimationFrame(step);else el.textContent=end.toFixed(dec)+suf;}
+      requestAnimationFrame(step);
+    });
+  },{threshold:0.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){co.observe(el);});
+})();
+
+/* === Ecosystem Node Expand === */
+document.querySelectorAll('[data-node]').forEach(function(node){
+  node.setAttribute('role','button');node.setAttribute('tabindex','0');
+  node.addEventListener('click',function(){
+    var open=node.classList.contains('open');
+    document.querySelectorAll('[data-node]').forEach(function(n){n.classList.remove('open');});
+    if(!open)node.classList.add('open');
+  });
+  node.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();node.click();}});
+});
+
+/* === Demo Transcript === */
+(function(){
+  var scenarios={
+    margaret:{status:'Newly diagnosed \u00b7 Sudbury, ON',messages:[
+      {t:'bot',d:700,text:'Hi, I\'m iris. I\'m so glad you found me. What\'s been going on?'},
+      {t:'user',d:2400,text:'I was just diagnosed with macular degeneration. I don\'t know what to do.'},
+      {t:'bot',d:1900,text:'I hear you. That\'s a lot to take in all at once. Are you still processing the news, or are you starting to look for next steps?'},
+      {t:'user',d:2600,text:'Both, I think. My doctor told me last week and I\'ve just been sitting with it.'},
+      {t:'bot',d:2100,text:'A week is nothing. You don\'t have to have it figured out yet. The first thing I want you to know is that you\'re not alone — and there\'s real support available right in Sudbury. Would it help to start with someone who can just talk through what AMD means for your daily life?'}
+    ]},
+    david:{status:'Retinitis Pigmentosa \u00b7 Toronto, ON',messages:[
+      {t:'bot',d:700,text:'Hi David. I know you\'ve been navigating this for a while. What\'s on your mind today?'},
+      {t:'user',d:2200,text:'I\'m worried about my job. My peripheral vision is getting worse and I haven\'t told my employer.'},
+      {t:'bot',d:2000,text:'That\'s one of the hardest parts — the professional side of vision loss. Have you had any workplace accommodation support yet?'},
+      {t:'user',d:2100,text:'No. I don\'t even know where to start.'},
+      {t:'bot',d:2200,text:'There\'s a CNIB program called CNIB WORK — they pair you with a vocational specialist who\'s helped people in exactly your situation. Keeping a career going with the right tools and the right conversation with your employer. Want me to connect you?'}
+    ]},
+    priya:{status:'Diabetic Retinopathy \u00b7 Vancouver, BC',messages:[
+      {t:'bot',d:700,text:'Hi Priya. Tell me — what does a typical week look like for you right now?'},
+      {t:'user',d:2400,text:'Honestly? Chaotic. Managing my diabetes, the retinopathy, a toddler. I feel like I\'m failing at all of it.'},
+      {t:'bot',d:2100,text:'You\'re not failing. You\'re carrying a lot. Of everything on your plate, what\'s the one thing that would make the biggest difference if it got a little easier?'},
+      {t:'user',d:2600,text:'Probably the driving. I had to give up my licence and I can\'t get my daughter to her appointments.'},
+      {t:'bot',d:2300,text:'CNIB LIVE has a transportation and mobility program specifically for parents with sight loss in Vancouver. They also connect you with peer support — other moms navigating the exact same thing. Want me to set that up for you?'}
+    ]}
+  };
+  var timer=null;
+  function playScenario(key){
+    if(timer)clearTimeout(timer);
+    var box=document.getElementById('demoMsgs');
+    if(box)box.innerHTML='';
+    var s=scenarios[key];if(!s)return;
+    var statusEl=document.getElementById('demoStatus');
+    if(statusEl)statusEl.textContent=s.status;
+    var t=0;
+    s.messages.forEach(function(m){
+      t+=m.d;
+      (function(msg,delay){
+        timer=setTimeout(function(){
+          var el=document.createElement('div');
+          el.className='s4-msg s4-msg--'+(msg.t==='bot'?'bot':'user');
+          el.textContent=msg.text;
+          box.appendChild(el);
+          requestAnimationFrame(function(){el.classList.add('show');});
+          box.scrollTop=box.scrollHeight;
+        },delay);
+      })(m,t);
+    });
+  }
+  document.querySelectorAll('.s4-tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.s4-tab').forEach(function(b){b.classList.remove('active');b.setAttribute('aria-selected','false');});
+      btn.classList.add('active');btn.setAttribute('aria-selected','true');
+      playScenario(btn.dataset.scenario);
+    });
+  });
+  var started=false;
+  var demoObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting&&!started){started=true;playScenario('margaret');}});
+  },{threshold:0.3});
+  var demoEl=document.getElementById('demoWindow');
+  if(demoEl)demoObs.observe(demoEl);
+})();
+</script>
 </body>
 </html>
