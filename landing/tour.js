@@ -107,6 +107,82 @@
   var advanceTimer = null;
   var lastFocusBeforeTour = null;
 
+  // ----------------------------------------------------------------
+  // TTS — persistent <audio> element pattern (mobile-Safari safe).
+  // Same approach as iris-chat.js:110-112 but isolated to the tour
+  // so it doesn't collide with the live-chat voice queue.
+  // ----------------------------------------------------------------
+  var tourAudio = new Audio();
+  tourAudio.playsInline = true;
+  tourAudio.setAttribute('playsinline', '');
+  tourAudio.preload = 'auto';
+
+  var audioUnlocked = false;
+  function unlockAudio() {
+    if (audioUnlocked) return;
+    // Silent audio trick: play a 0-duration clip during the user
+    // gesture that opened the tour. Unlocks future programmatic plays
+    // on iOS Safari. Same pattern iris-chat.js uses.
+    try {
+      tourAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+      tourAudio.volume = 0;
+      var p = tourAudio.play();
+      if (p && p.then) p.then(function(){ tourAudio.volume = 1; audioUnlocked = true; }).catch(function(){});
+      else { tourAudio.volume = 1; audioUnlocked = true; }
+    } catch (_) {}
+  }
+
+  // Per-chapter URL cache so we don't re-fetch on replay.
+  var chapterAudioCache = Object.create(null);
+  // AbortController per chapter so a skip/close cancels in-flight fetches.
+  var currentAudioCtrl = null;
+
+  function fetchChapterAudio(i) {
+    var ch = CHAPTERS[i];
+    if (!ch || !ch.voice) return Promise.resolve(null);
+    if (chapterAudioCache[ch.id]) return Promise.resolve(chapterAudioCache[ch.id]);
+    var ctrl = new AbortController();
+    currentAudioCtrl = ctrl;
+    return fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: ch.voice, voice: 'iris' }),
+      signal: ctrl.signal,
+    })
+      .then(function(res){ if (!res.ok) throw new Error('TTS ' + res.status); return res.blob(); })
+      .then(function(blob){
+        var url = URL.createObjectURL(blob);
+        chapterAudioCache[ch.id] = url;
+        return url;
+      })
+      .catch(function(err){
+        // Silent failure — transcript still shown, tour still advances.
+        console.warn('[tour] tts fetch failed:', err && err.message);
+        return null;
+      });
+  }
+
+  function playChapterAudio(i) {
+    var ch = CHAPTERS[i];
+    if (!ch || !ch.voice) return;
+    fetchChapterAudio(i).then(function(url){
+      // Only play if this chapter is still the current one.
+      if (current !== i || isPaused || !url) return;
+      try {
+        tourAudio.src = url;
+        var p = tourAudio.play();
+        if (p && p.catch) p.catch(function(){});
+      } catch (_) {}
+    });
+    // Pre-fetch next chapter's audio while current plays.
+    if (CHAPTERS[i + 1]) fetchChapterAudio(i + 1);
+  }
+
+  function stopChapterAudio() {
+    try { tourAudio.pause(); tourAudio.currentTime = 0; } catch (_) {}
+    if (currentAudioCtrl) { try { currentAudioCtrl.abort(); } catch (_) {} currentAudioCtrl = null; }
+  }
+
   function build() {
     if (root) return;
     root = document.createElement('div');
@@ -232,8 +308,10 @@
 
   function goTo(i) {
     if (i < 0 || i >= CHAPTERS.length) return;
+    stopChapterAudio();
     current = i;
     renderChapter(i);
+    if (!isPaused) playChapterAudio(i);
     scheduleAdvance();
   }
 
@@ -255,14 +333,23 @@
       : '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
     if (isPaused) {
       if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+      try { tourAudio.pause(); } catch (_) {}
     } else {
       scheduleAdvance();
+      // Resume current chapter's voice from where it left off.
+      try {
+        var p = tourAudio.play();
+        if (p && p.catch) p.catch(function(){});
+      } catch (_) {}
     }
   }
 
   function open() {
     build();
     if (isOpen) return;
+    // Unlock audio playback during the user gesture that started the tour
+    // (the "See how" click). Required for iOS Safari TTS.
+    unlockAudio();
     lastFocusBeforeTour = document.activeElement;
     isOpen = true;
     isPaused = false;
@@ -275,6 +362,7 @@
   function close() {
     if (!isOpen) return;
     if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+    stopChapterAudio();
     isOpen = false;
     root.classList.remove('open');
     document.body.style.overflow = '';
