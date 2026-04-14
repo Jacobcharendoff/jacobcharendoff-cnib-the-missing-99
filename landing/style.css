@@ -552,3 +552,87 @@ p{line-height:1.65}
   .jm-fw-arrow::after{right:-4px;top:auto;bottom:-4px;border:none;border-top:6px solid rgba(255,209,0,.6);border-left:4px solid transparent;border-right:4px solid transparent}
   .jm-fw-loop{margin-left:0}
 }
+
+/* ================================================================
+   THE THREE PILLARS — Clients · Volunteers · Partners
+   Replaces the old 2-column Journey Map narrative.
+   Systematic grid, A/E/R flow inside each pillar card.
+   ================================================================ */
+.pillars{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  max-width:1200px;margin:0 auto;
+}
+.pillar{
+  position:relative;padding:36px 32px 32px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;overflow:hidden;
+  transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s,border-color .4s,background .4s;
+}
+.pillar::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0;
+  pointer-events:none;
+}
+.pillar--clients::before{background:linear-gradient(90deg,#FFD100 0%,rgba(255,159,64,.6) 100%)}
+.pillar--volunteers::before{background:linear-gradient(90deg,#FF6B9D 0%,rgba(181,123,255,.6) 100%)}
+.pillar--partners::before{background:linear-gradient(90deg,#5ACFFF 0%,rgba(45,212,191,.6) 100%)}
+.pillar::after{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.55;
+}
+.pillar--clients::after{background:radial-gradient(ellipse 120% 90% at 30% 0%,rgba(255,209,0,.04),transparent 70%)}
+.pillar--volunteers::after{background:radial-gradient(ellipse 120% 90% at 30% 0%,rgba(255,107,157,.04),transparent 70%)}
+.pillar--partners::after{background:radial-gradient(ellipse 120% 90% at 30% 0%,rgba(90,207,255,.04),transparent 70%)}
+.pillar>*{position:relative;z-index:1}
+@media(hover:hover){
+  .pillar--clients:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(255,209,0,.14);border-color:rgba(255,209,0,.28)}
+  .pillar--volunteers:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(255,107,157,.14);border-color:rgba(255,107,157,.28)}
+  .pillar--partners:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(90,207,255,.14);border-color:rgba(90,207,255,.28)}
+}
+.pillar-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:18px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.pillar-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,209,0,.12);border:1px solid rgba(255,209,0,.38);
+  font-size:11px;font-weight:700;color:#FFD100;letter-spacing:.5px;flex-shrink:0;
+}
+.pillar--volunteers .pillar-num{background:rgba(255,107,157,.12);border-color:rgba(255,107,157,.38);color:#FF6B9D}
+.pillar--partners .pillar-num{background:rgba(90,207,255,.12);border-color:rgba(90,207,255,.38);color:#5ACFFF}
+.pillar-icon{
+  width:26px;height:26px;color:#FFD100;flex-shrink:0;opacity:.65;
+}
+.pillar--volunteers .pillar-icon{color:#FF6B9D}
+.pillar--partners .pillar-icon{color:#5ACFFF}
+.pillar-icon svg{width:100%;height:100%}
+.pillar-name{
+  font-size:clamp(20px,1.9vw,24px);font-weight:700;color:#fff;
+  letter-spacing:-.01em;margin:0;line-height:1.1;
+}
+.pillar-desc{
+  font-size:15px;line-height:1.6;color:rgba(255,255,245,.78);font-weight:400;
+  margin-bottom:22px;
+}
+.pillar-flow{
+  display:grid;grid-template-columns:auto 1fr;column-gap:18px;row-gap:14px;
+  margin:0;
+}
+.pillar-flow dt{
+  font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,209,0,.75);padding-top:2px;white-space:nowrap;
+}
+.pillar--volunteers .pillar-flow dt{color:rgba(255,107,157,.85)}
+.pillar--partners .pillar-flow dt{color:rgba(90,207,255,.85)}
+.pillar-flow dd{
+  font-size:14px;line-height:1.6;color:rgba(255,255,245,.62);margin:0;
+}
+.pillar-flow dd em{color:rgba(255,255,245,.88);font-style:italic;font-weight:500}
+.pillar-flow dd strong{color:#FFD100;font-weight:600}
+.pillar--volunteers .pillar-flow dd strong{color:#FF6B9D}
+.pillar--partners .pillar-flow dd strong{color:#5ACFFF}
+
+@media(max-width:1024px){
+  .pillars{grid-template-columns:1fr;gap:18px}
+  .pillar{padding:28px 24px}
+}
