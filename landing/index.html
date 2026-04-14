@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="iris-chat.css">
 </head>
 <body>
   <a href="#main" class="sr-only" style="position:absolute;top:-100px;left:16px;background:#FFD100;color:#0A0A0A;padding:12px 20px;border-radius:8px;font-weight:700;z-index:10001;text-decoration:none">Skip to main content</a>
@@ -452,5 +453,200 @@ document.querySelectorAll('[data-node]').forEach(function(node){
   if(demoEl)demoObs.observe(demoEl);
 })();
 </script>
+
+  <!-- ================================================================
+       iris. chat modal + accessibility panel — extracted from v1
+       JS via landing/iris-chat.js exposes openChat() / sendIrisMessage()
+       ================================================================ -->
+
+  <!-- ACCESSIBILITY WIDGET -->
+  <button class="a11y-fab" onclick="toggleA11yPanel()" aria-label="Accessibility settings" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11yPanel" id="a11yFab">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M5 9h14"/><path d="M12 7v4l-3 11M12 11l3 11M9 14h6"/></svg>
+    <span class="a11y-fab-label">Accessibility</span>
+  </button>
+  <div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="Accessibility settings" aria-modal="false">
+    <div class="a11y-panel-header">
+      <div class="a11y-panel-titlewrap">
+        <div class="a11y-panel-heading">Accessibility</div>
+        <div class="a11y-panel-sub">WCAG 2.1 AA Â· AODA Â· ACA</div>
+      </div>
+      <button type="button" class="a11y-panel-close" onclick="toggleA11yPanel()" aria-label="Close accessibility settings">&times;</button>
+    </div>
+    <div class="a11y-panel-body">
+
+      <div class="a11y-group" data-first>
+        <div class="a11y-group-label">Text &amp; reading</div>
+
+        <div class="a11y-row-stacked">
+          <div class="a11y-row-label">Text size</div>
+          <div class="a11y-row-hint">Make everything on the page bigger.</div>
+          <div class="a11y-stepper" role="group" aria-label="Text size">
+            <button type="button" onclick="a11yStepTextSize(-1)" aria-label="Decrease text size" id="a11yTextDec">&minus;</button>
+            <div class="a11y-stepper-value" id="a11yTextValue" aria-live="polite">100%</div>
+            <button type="button" onclick="a11yStepTextSize(1)" aria-label="Increase text size" id="a11yTextInc">+</button>
+          </div>
+        </div>
+
+        <div class="a11y-row-stacked">
+          <div class="a11y-row-label">Line spacing</div>
+          <div class="a11y-row-hint">Add breathing room between lines.</div>
+          <div class="a11y-stepper" role="group" aria-label="Line spacing">
+            <button type="button" onclick="a11yStepLineSpacing(-1)" aria-label="Decrease line spacing" id="a11yLineDec">&minus;</button>
+            <div class="a11y-stepper-value" id="a11yLineValue" aria-live="polite">Default</div>
+            <button type="button" onclick="a11yStepLineSpacing(1)" aria-label="Increase line spacing" id="a11yLineInc">+</button>
+          </div>
+        </div>
+
+        <div class="a11y-row-stacked">
+          <div class="a11y-row-label">Letter spacing</div>
+          <div class="a11y-row-hint">Add space between letters and words.</div>
+          <div class="a11y-stepper" role="group" aria-label="Letter spacing">
+            <button type="button" onclick="a11yStepLetterSpacing(-1)" aria-label="Decrease letter spacing" id="a11yLetterDec">&minus;</button>
+            <div class="a11y-stepper-value" id="a11yLetterValue" aria-live="polite">Default</div>
+            <button type="button" onclick="a11yStepLetterSpacing(1)" aria-label="Increase letter spacing" id="a11yLetterInc">+</button>
+          </div>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Dyslexia-friendly font</div>
+            <div class="a11y-row-hint">Uses OpenDyslexic.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('dyslexic')" id="a11yDyslexic" aria-label="Dyslexia-friendly font"></button>
+        </div>
+      </div>
+
+      <div class="a11y-group">
+        <div class="a11y-group-label">Contrast &amp; colour</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">High contrast</div>
+            <div class="a11y-row-hint">Black background, yellow accents.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('highContrast')" id="a11yHighContrast" aria-label="High contrast"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Invert colours</div>
+            <div class="a11y-row-hint">Light theme for bright rooms.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('invert')" id="a11yInvert" aria-label="Invert colours"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Underline links</div>
+            <div class="a11y-row-hint">Make every link obvious.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('underlineLinks')" id="a11yUnderlineLinks" aria-label="Underline links"></button>
+        </div>
+      </div>
+
+      <div class="a11y-group">
+        <div class="a11y-group-label">Navigation &amp; focus</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Enhanced focus ring</div>
+            <div class="a11y-row-hint">A thick yellow outline on the active control.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('focusBoost')" id="a11yFocusBoost" aria-label="Enhanced focus ring"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Large cursor</div>
+            <div class="a11y-row-hint">Easier to find the pointer.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('largeCursor')" id="a11yLargeCursor" aria-label="Large cursor"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Reading guide</div>
+            <div class="a11y-row-hint">A yellow bar that follows where you look.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('readingGuide')" id="a11yReadingGuide" aria-label="Reading guide"></button>
+        </div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Reading mask</div>
+            <div class="a11y-row-hint">Dim everything except the current line.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('readingMask')" id="a11yReadingMask" aria-label="Reading mask"></button>
+        </div>
+      </div>
+
+      <div class="a11y-group">
+        <div class="a11y-group-label">Motion</div>
+
+        <div class="a11y-row">
+          <div class="a11y-row-main">
+            <div class="a11y-row-label">Reduce motion</div>
+            <div class="a11y-row-hint">Stops animations and transitions.</div>
+          </div>
+          <button class="a11y-toggle" type="button" role="switch" aria-checked="false" onclick="a11yToggle('reduceMotion')" id="a11yReduceMotion" aria-label="Reduce motion"></button>
+        </div>
+      </div>
+
+      <button class="a11y-reset" type="button" onclick="a11yReset()">Reset all settings</button>
+      <div class="a11y-footer-note">Preferences are saved to this device.</div>
+    </div>
+  </div>
+
+  <div class="a11y-reading-guide" aria-hidden="true"></div>
+  <div class="a11y-reading-mask" aria-hidden="true"></div>
+  <div class="a11y-sr-live" aria-live="polite" aria-atomic="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"></div>
+
+  <!-- FAB -->
+  <button class="iris-fab" onclick="openChat('general')" aria-label="Talk to iris.">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+  </button>
+
+  <!-- iris. CHAT MODAL -->
+  <div class="iris-modal" id="irisModal" role="dialog" aria-modal="true" aria-label="iris. conversation">
+    <div class="iris-chat-container">
+      <div class="iris-chat-header">
+        <div class="iris-chat-header-left">
+          <div class="iris-chat-avatar">
+            <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="256" cy="162" r="28" fill="#FFD100"/><rect x="228" y="212" width="56" height="160" rx="8" fill="currentColor"/><circle cx="320" cy="372" r="18" fill="#FFD100"/></svg>
+          </div>
+          <div>
+            <div class="iris-chat-name">iris.</div>
+            <div class="iris-chat-status" id="irisStatus" data-state="ready"><span class="status-dot"></span><span id="irisStatusText">Ready when you are</span></div>
+          </div>
+        </div>
+        <div class="iris-header-actions">
+          <button class="iris-icon-btn" onclick="toggleA11yPanel()" title="Accessibility settings" aria-label="Accessibility settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><path d="M5 9h14"/><path d="M12 7v4l-3 11M12 11l3 11M9 14h6"/></svg>
+          </button>
+          <button class="iris-close-btn" onclick="closeChat()" aria-label="Close conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="iris-persona-banner" id="irisBanner" style="display:none"></div>
+      <div class="iris-chat-body" id="irisChatBody" role="log" aria-live="polite" aria-atomic="false"></div>
+      <div class="iris-waveform" id="irisWaveform" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="iris-chat-input-row">
+        <input type="text" class="iris-chat-input" id="irisChatInput" placeholder="Message iris." autocomplete="off" aria-label="Type a message to iris." inputmode="text" enterkeyhint="send" spellcheck="true">
+        <button id="irisMicBtn" class="iris-mic-btn listening" onclick="toggleMic()" aria-label="Microphone toggle" title="Mic is on â tap to mute">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <div class="iris-mic-prompt" id="irisMicPrompt">Listening â just talk</div>
+        </button>
+        <button class="iris-send-btn" onclick="sendIrisMessage()" aria-label="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat widget engine (extracted from v1) -->
+  <script src="iris-chat.js" defer></script>
 </body>
 </html>
