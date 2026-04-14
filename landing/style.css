@@ -335,3 +335,11 @@ p{line-height:1.65}
 @media(max-width:900px){
   .persona-grid{grid-template-columns:1fr;gap:16px}
 }
+
+/* S3 sight-metaphor caption — earns the prismatic spectrum */
+.s3-spectrum{
+  font-size:clamp(13px,1.05vw,15px);
+  color:rgba(255,255,245,.42);
+  font-style:italic;letter-spacing:.2px;line-height:1.55;
+  max-width:520px;margin:0 auto 16px;font-weight:300;
+}
