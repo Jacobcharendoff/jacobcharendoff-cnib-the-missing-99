@@ -202,7 +202,21 @@
       '    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
       '  </button>',
       '</div>',
-      '<div class="tour-scene"><div class="tour-scene-inner" id="tourSceneInner" aria-live="polite"></div></div>',
+      '<div class="tour-scene">',
+      '  <div class="tour-iris" id="tourIris" aria-hidden="true">',
+      '    <svg viewBox="0 0 400 400">',
+      '      <circle class="im-r im-r1" cx="200" cy="200" r="195"/>',
+      '      <circle class="im-r im-r1" cx="200" cy="200" r="170"/>',
+      '      <circle class="im-r im-r2" cx="200" cy="200" r="140"/>',
+      '      <circle class="im-r im-r2" cx="200" cy="200" r="112"/>',
+      '      <circle class="im-r im-r3" cx="200" cy="200" r="86"/>',
+      '      <circle class="im-r im-r4" cx="200" cy="200" r="62"/>',
+      '      <circle class="im-r im-r5" cx="200" cy="200" r="42"/>',
+      '      <circle class="im-p" cx="200" cy="200" r="18"/>',
+      '    </svg>',
+      '  </div>',
+      '  <div class="tour-scene-inner" id="tourSceneInner" aria-live="polite"></div>',
+      '</div>',
       '<div class="tour-transcript" id="tourTranscript" aria-live="polite"></div>',
       '<div class="tour-controls">',
       '  <nav class="tour-nav" aria-label="Tour controls">',
@@ -279,6 +293,12 @@
     // Apply backdrop wash
     backdrop.style.setProperty('--tour-wash-primary', ch.wash.primary);
     backdrop.style.setProperty('--tour-wash-secondary', ch.wash.secondary);
+
+    // Toggle per-chapter class on the tour root so CSS can choreograph the
+    // iris mark + chapter-specific visuals. Remove prior ch-* class first.
+    var prior = Array.prototype.filter.call(root.classList, function(c){ return c.indexOf('ch-') === 0; });
+    prior.forEach(function(c){ root.classList.remove(c); });
+    root.classList.add('ch-' + ch.id);
 
     // Scene content (replace with chapter-specific visuals in Batch 5)
     sceneInner.innerHTML = '';

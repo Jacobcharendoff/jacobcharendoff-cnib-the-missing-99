@@ -163,3 +163,94 @@
   .tour-nav .tour-btn--play{width:48px;height:48px}
   .tour-rail{gap:8px}
 }
+
+/* ================================================================
+   PERSISTENT IRIS MARK — the through-line across all chapters.
+   Never teleports, never fades to zero. Transforms between scenes.
+   ================================================================ */
+.tour-iris{
+  position:absolute;left:50%;top:50%;
+  width:min(45vw,420px);aspect-ratio:1;
+  transform:translate(-50%,-50%) scale(1);
+  transition:transform 1.1s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;z-index:2;
+}
+.tour-iris svg{width:100%;height:100%;display:block;overflow:visible}
+/* Ring colors match the landing's chromatic treatment (brand reference) */
+.tour-iris .im-r{fill:none;transform-origin:center}
+.tour-iris .im-r1{stroke:#9B7BE8;stroke-width:.9;opacity:.22}
+.tour-iris .im-r2{stroke:#B074C4;stroke-width:1.1;opacity:.35}
+.tour-iris .im-r3{stroke:#D66E9B;stroke-width:1.3;opacity:.5}
+.tour-iris .im-r4{stroke:#F59B3C;stroke-width:1.5;opacity:.72}
+.tour-iris .im-r5{stroke:#FFD100;stroke-width:2;opacity:.95}
+.tour-iris .im-p{
+  fill:#FFD100;
+  filter:
+    drop-shadow(0 0 12px rgba(255,209,0,.85))
+    drop-shadow(0 0 32px rgba(255,209,0,.4))
+    drop-shadow(0 0 64px rgba(245,155,60,.22));
+}
+
+/* --- Per-chapter iris mark choreography ---
+   Each chapter positions / scales the iris mark to match the motion
+   director's storyboard. Transitions happen via the 1.1s transform
+   transition above, so chapter swaps feel continuous. */
+
+/* Ch 1 — center, full scale. The mark arrives. */
+.tour.ch-meet .tour-iris{transform:translate(-50%,-50%) scale(1)}
+
+/* Ch 2 — small, upper-left third. Makes room for the stat reveal. */
+.tour.ch-gap .tour-iris{transform:translate(-180%,-30%) scale(.45)}
+
+/* Ch 3 — center, mid scale. Labels will surround it. */
+.tour.ch-framework .tour-iris{transform:translate(-50%,-50%) scale(.8)}
+
+/* Ch 4 — right third, small-medium. Margaret's story to the left. */
+.tour.ch-clients .tour-iris{transform:translate(100%,-50%) scale(.7)}
+
+/* Ch 5 — center-right, rose-ring active. Flywheel begins. */
+.tour.ch-volunteers .tour-iris{transform:translate(70%,-50%) scale(.85)}
+
+/* Ch 6 — slight left of center, partner network orbits. */
+.tour.ch-partners .tour-iris{transform:translate(-70%,-50%) scale(.9)}
+
+/* Ch 7 — dead center, full scale. All rings equal weight. The flywheel. */
+.tour.ch-loop .tour-iris{transform:translate(-50%,-50%) scale(1.2)}
+
+/* Ch 8 — center, slightly smaller. Room for CTAs below. */
+.tour.ch-ask .tour-iris{transform:translate(-50%,-62%) scale(.85)}
+
+/* Animated ring pulse (same cadence as landing hero so they feel like
+   the same creature) — applied here scoped to the tour iris. */
+.tour-iris .im-r1{animation:tourR1 7s ease-in-out infinite}
+.tour-iris .im-r2{animation:tourR2 7s ease-in-out infinite}
+.tour-iris .im-r3{animation:tourR3 7s ease-in-out infinite}
+.tour-iris .im-r4{animation:tourR4 7s ease-in-out infinite}
+.tour-iris .im-r5{animation:tourR5 7s ease-in-out infinite}
+.tour-iris .im-p{animation:tourRp 7s ease-in-out infinite}
+@keyframes tourR1{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.06);opacity:.28}}
+@keyframes tourR2{0%,100%{transform:scale(1);opacity:.28}50%{transform:scale(1.05);opacity:.44}}
+@keyframes tourR3{0%,100%{transform:scale(1);opacity:.42}50%{transform:scale(1.04);opacity:.62}}
+@keyframes tourR4{0%,100%{transform:scale(1);opacity:.62}50%{transform:scale(1.025);opacity:.82}}
+@keyframes tourR5{0%,100%{transform:scale(1);opacity:.82}50%{transform:scale(1.015);opacity:.98}}
+@keyframes tourRp{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.08);opacity:1}}
+
+/* Reduced motion — kill scale transforms, keep positional choreography */
+@media(prefers-reduced-motion:reduce){
+  .tour-iris,
+  .tour-iris .im-r1,
+  .tour-iris .im-r2,
+  .tour-iris .im-r3,
+  .tour-iris .im-r4,
+  .tour-iris .im-r5,
+  .tour-iris .im-p{animation:none !important;transition:opacity .3s linear !important}
+}
+
+/* Mobile — tighter iris size, positions collapse toward center */
+@media(max-width:780px){
+  .tour-iris{width:min(56vw,280px)}
+  .tour.ch-gap .tour-iris{transform:translate(-50%,-150%) scale(.55)}
+  .tour.ch-clients .tour-iris,
+  .tour.ch-volunteers .tour-iris,
+  .tour.ch-partners .tour-iris{transform:translate(-50%,-150%) scale(.65)}
+}
