@@ -253,6 +253,25 @@
   </footer>
 
 <script>
+/* === Chapter 1 Waveform — generate breathing bars === */
+(function(){
+  var wave=document.getElementById('waveBars');
+  if(!wave)return;
+  var count=54;
+  var frag=document.createDocumentFragment();
+  for(var i=0;i<count;i++){
+    var bar=document.createElement('div');
+    bar.className='wave-bar';
+    /* staggered pulse delay + slight duration variance for organic feel */
+    var delay=(Math.sin(i*0.42)*0.5+0.5)*1.6 - (i*0.02);
+    var dur=2.4+Math.sin(i*0.31)*0.6;
+    bar.style.animationDelay=delay.toFixed(2)+'s';
+    bar.style.animationDuration=dur.toFixed(2)+'s';
+    frag.appendChild(bar);
+  }
+  wave.appendChild(frag);
+})();
+
 /* === Scroll Reveal === */
 (function(){
   var ro=new IntersectionObserver(function(entries){
