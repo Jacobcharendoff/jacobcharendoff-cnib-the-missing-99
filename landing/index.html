@@ -17,14 +17,6 @@
 </head>
 <body>
   <a href="#main" class="sr-only" style="position:absolute;top:-100px;left:16px;background:#FFD100;color:#0A0A0A;padding:12px 20px;border-radius:8px;font-weight:700;z-index:10001;text-decoration:none">Skip to main content</a>
-  <div class="bb bb--t"><i></i><span>Prototype demo &middot; Does not represent full product functionality &middot; Built for CNIB</span></div>
-  <nav class="nv" aria-label="Main navigation">
-    <div class="nv-b"><span class="nv-w">iris.</span><span class="nv-p">Powered by CNIB</span></div>
-    <button type="button" class="nv-a11y" onclick="toggleA11yPanel()" aria-label="Accessibility settings" aria-haspopup="dialog" aria-controls="a11yPanel">
-      <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M5 9h14"/><path d="M12 7v4l-3 11M12 11l3 11M9 14h6"/></svg>
-      <span>Accessibility</span>
-    </button>
-  </nav>
 
   <main id="main" class="stage-wrap">
     <!-- ============ STAGE: single-viewport landing ============ -->
@@ -40,7 +32,6 @@
           </button>
         </div>
         <p class="stage-meta rv rv-d3">100 seconds · Best with sound on</p>
-        <button type="button" class="stage-talk rv rv-d4" onclick="openChat('general')">or, talk to iris. now</button>
       </div>
 
       <div class="stage-mark">
@@ -58,7 +49,10 @@
         </div>
       </div>
 
-      <a href="detail.html" class="stage-detail rv rv-d4" aria-label="Read the detail — a longer-form overview">Read the detail &rarr;</a>
+      <a href="detail.html" class="stage-detail rv rv-d4" aria-label="Read the detail — a longer-form overview">
+        <span class="stage-detail-eye">The detail</span>
+        <span class="stage-detail-t">Read the long-form &rarr;</span>
+      </a>
     </section>
   </main>
 

@@ -698,8 +698,8 @@ p{line-height:1.65}
   flex:1;
   min-height:100vh;min-height:100dvh;
   display:grid;grid-template-columns:1.08fr .92fr;align-items:center;
-  gap:clamp(32px,5vw,80px);
-  padding:clamp(80px,11vh,160px) clamp(32px,5vw,80px) clamp(80px,10vh,140px);
+  gap:clamp(24px,3.5vw,64px);
+  padding:clamp(40px,5vh,80px) clamp(32px,5vw,72px) clamp(88px,9vh,120px);
   position:relative;overflow:hidden;
   background:
     radial-gradient(ellipse 70% 55% at 75% 50%,rgba(255,180,60,.10) 0%,transparent 58%),
@@ -767,21 +767,41 @@ p{line-height:1.65}
   color:#fff;text-decoration-color:#FFD100;
 }
 
+/* Detail card — clean, unified, one element at bottom. No pill treatment. */
 .stage-detail{
-  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-  display:inline-flex;align-items:center;gap:6px;
-  color:rgba(255,255,255,.36);font-size:11px;letter-spacing:1.2px;
-  text-transform:uppercase;font-weight:600;text-decoration:none;
-  padding:9px 18px;border-radius:100px;
-  border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  transition:color .3s,border-color .3s,background .3s,transform .3s;
-  z-index:3;white-space:nowrap;
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:22px 32px 24px;
+  text-decoration:none;white-space:nowrap;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.015) 100%);
+  transition:background .3s,border-color .3s;
+  z-index:3;
 }
 .stage-detail:hover,.stage-detail:focus-visible{
-  color:#fff;border-color:rgba(255,255,255,.22);
-  background:rgba(255,255,255,.05);transform:translateX(-50%) translateY(-2px);
+  background:linear-gradient(180deg,rgba(255,255,255,.015) 0%,rgba(255,209,0,.04) 100%);
+  border-color:rgba(255,209,0,.18);
 }
+.stage-detail-eye{
+  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  color:rgba(255,209,0,.55);
+  padding-right:14px;border-right:1px solid rgba(255,255,255,.1);
+  transition:color .3s;
+}
+.stage-detail:hover .stage-detail-eye,.stage-detail:focus-visible .stage-detail-eye{color:#FFD100}
+.stage-detail-t{
+  font-size:13.5px;letter-spacing:.1px;font-weight:500;
+  color:rgba(255,255,255,.58);
+  transition:color .3s,transform .3s;
+}
+.stage-detail:hover .stage-detail-t,.stage-detail:focus-visible .stage-detail-t{
+  color:#fff;
+}
+
+/* Un-hide the accessibility FAB since nav link was removed.
+   Kept subtle bottom-left — won't compete with iris chat FAB bottom-right. */
+.a11y-fab{display:inline-flex !important;opacity:.55;transition:opacity .3s}
+.a11y-fab:hover,.a11y-fab:focus-visible{opacity:1}
 
 /* Tablet — tighter grid */
 @media(max-width:1100px){
