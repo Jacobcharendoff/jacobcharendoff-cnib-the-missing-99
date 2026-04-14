@@ -1,0 +1,230 @@
+/* ================================================================
+   iris. — System Demonstration v3 styles
+   Companion to demo.js. Replaces tour.css for the new artifact.
+
+   Phase A skeleton: scene shell, top bar, controls, rail, progress,
+   placeholder card, unified type scale (CSS custom props), monotonic
+   backdrop. Per-scene visuals arrive in Phase B onward.
+   ================================================================ */
+
+.demo {
+  /* === Unified type scale (the 6-size cap per UX review) ===
+     Use these everywhere. No raw font-sizes inside scenes. */
+  --t-eye:    11px;     /* uppercase labels, eyebrows */
+  --t-meta:   13px;     /* footnotes, captions, meta lines */
+  --t-body:   clamp(15px, 1.25vw, 18px);  /* paragraphs, chat */
+  --t-lead:   clamp(20px, 1.6vw, 26px);   /* subheads, leads */
+  --t-h2:     clamp(34px, 4.2vw, 56px);   /* scene titles */
+  --t-hero:   clamp(56px, 7.5vw, 110px);  /* big numbers, wordmarks */
+
+  /* === Backdrop washes per scene (monotonic hue progression) ===
+     Set on .demo via class .s-{id}; .demo-backdrop reads these. */
+  --bg-base: #060606;
+  --bg-wash-a: rgba(255,180,60,.08);   /* warm amber */
+  --bg-wash-b: rgba(255,209,0,.04);    /* gold */
+
+  /* === Surface tokens === */
+  --c-fg-1:    rgba(255,255,245,.94);
+  --c-fg-2:    rgba(255,255,245,.72);
+  --c-fg-3:    rgba(255,255,245,.45);
+  --c-accent:  #FFD100;
+  --c-amber:   #F59B3C;
+  --c-rose:    #E87CA0;
+  --c-violet:  #B57BFF;
+  --c-cyan:    #5AC8FF;
+
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; flex-direction: column;
+  background: var(--bg-base);
+  color: var(--c-fg-1);
+  font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  opacity: 0; visibility: hidden;
+  transition: opacity .55s cubic-bezier(.22,1,.36,1), visibility 0s linear .55s;
+}
+.demo.open {
+  opacity: 1; visibility: visible;
+  transition: opacity .55s cubic-bezier(.22,1,.36,1);
+}
+
+/* ================================================================
+   Backdrop — wavelength shifts per scene via custom-property override.
+   Monotonic progression: amber → cool → amber → rose → rose → cool → prismatic → calm.
+   ================================================================ */
+.demo-backdrop {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 65% at 50% 45%, var(--bg-wash-a) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 15% 80%, var(--bg-wash-b) 0%, transparent 55%),
+    var(--bg-base);
+  transition: background 1.4s cubic-bezier(.22,1,.36,1);
+}
+
+/* Per-scene backdrop palettes (monotonic) */
+.demo.s-intro       { --bg-wash-a: rgba(255,180,60,.10); --bg-wash-b: rgba(255,209,0,.04); }  /* warm welcome */
+.demo.s-acquire     { --bg-wash-a: rgba(245,155,60,.12); --bg-wash-b: rgba(255,209,0,.05); }  /* warm member */
+.demo.s-engage      { --bg-wash-a: rgba(245,155,60,.10); --bg-wash-b: rgba(232,124,160,.04); }/* warm → rose drift */
+.demo.s-retain      { --bg-wash-a: rgba(232,124,160,.10); --bg-wash-b: rgba(245,155,60,.04); }/* rose stable */
+.demo.s-readiness   { --bg-wash-a: rgba(232,124,160,.12); --bg-wash-b: rgba(181,123,255,.05); }/* rose → violet */
+.demo.s-volonboard  { --bg-wash-a: rgba(181,123,255,.10); --bg-wash-b: rgba(232,124,160,.04); }/* violet stable */
+.demo.s-partneracq  { --bg-wash-a: rgba(90,200,255,.10); --bg-wash-b: rgba(181,123,255,.04); } /* cool partner */
+.demo.s-partnerdash { --bg-wash-a: rgba(90,200,255,.12); --bg-wash-b: rgba(45,212,191,.04); }  /* deep cool */
+.demo.s-loop        {                                                                         /* full prismatic */
+  --bg-wash-a: rgba(255,209,0,.08);
+  --bg-wash-b: rgba(181,123,255,.06);
+}
+.demo.s-loop .demo-backdrop {
+  background:
+    radial-gradient(ellipse 90% 65% at 50% 45%, rgba(255,209,0,.08) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 30% 70%, rgba(232,124,160,.06) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 70% 30%, rgba(181,123,255,.06) 0%, transparent 55%),
+    var(--bg-base);
+}
+.demo.s-scoreboard  { --bg-wash-a: rgba(255,180,60,.06); --bg-wash-b: rgba(232,124,160,.03); } /* calm warm */
+.demo.s-ask         { --bg-wash-a: rgba(255,209,0,.05); --bg-wash-b: rgba(181,123,255,.03); }  /* invitation */
+
+/* ================================================================
+   Top bar — scene meta + close
+   ================================================================ */
+.demo-top {
+  position: relative; z-index: 6;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 28px;
+}
+.demo-meta {
+  display: inline-flex; align-items: baseline; gap: 12px;
+}
+.demo-meta-eye {
+  font-size: var(--t-eye);
+  font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--c-accent); opacity: .82;
+}
+.demo-meta-pos {
+  font-size: var(--t-eye);
+  font-weight: 600; letter-spacing: 1px;
+  color: var(--c-fg-3); font-variant-numeric: tabular-nums;
+}
+
+/* ================================================================
+   Stage — full-bleed scene area
+   ================================================================ */
+.demo-stage {
+  position: relative; z-index: 2;
+  flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 32px 120px;
+  overflow: hidden;
+}
+
+.demo-scene {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+  pointer-events: none;
+}
+.demo-scene[data-state="active"] { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.demo-scene[data-state="exit"]   { opacity: 0; transform: translateY(-10px); transition-duration: .55s; }
+
+/* Phase A placeholder card */
+.demo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  text-align: center; max-width: 720px;
+}
+.demo-placeholder-eye {
+  margin: 0; font-size: var(--t-eye); font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--c-fg-3);
+}
+.demo-placeholder-title {
+  margin: 0; font-size: var(--t-h2); font-weight: 700;
+  letter-spacing: -.025em; line-height: 1.05; color: var(--c-fg-1);
+}
+.demo-placeholder-body {
+  margin: 0; font-size: var(--t-body); line-height: 1.6;
+  color: var(--c-fg-2); max-width: 50ch;
+}
+
+/* ================================================================
+   Bottom controls — prev / pause / next + scene rail
+   ================================================================ */
+.demo-controls {
+  position: absolute; left: 0; right: 0; bottom: 36px; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+
+.demo-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--c-fg-2);
+  font-family: inherit; cursor: pointer; padding: 0;
+  transition: background .25s, border-color .25s, color .25s, transform .25s;
+}
+.demo-btn:hover, .demo-btn:focus-visible {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.22);
+  color: var(--c-fg-1);
+}
+.demo-btn--play {
+  width: 52px; height: 52px;
+  background: var(--c-accent); border-color: var(--c-accent); color: #0A0A0A;
+}
+.demo-btn--play:hover { background: #FFDD33; transform: scale(1.04); color: #0A0A0A; }
+.demo-btn--play svg { stroke: #0A0A0A; stroke-width: 2.2; fill: none; }
+.demo-btn--play svg polygon { fill: #0A0A0A; }
+.demo-btn--play svg rect { fill: #0A0A0A; }
+
+.demo-controls > .demo-btn,
+.demo-controls .demo-btn:not(.demo-btn--play) { background: transparent; }
+
+/* group of nav buttons in a single row */
+.demo-controls::before { content: ''; }
+.demo-controls .demo-btn,
+.demo-controls .demo-btn--play { position: relative; }
+
+/* layout helper — wrap the three nav buttons in a horizontal row */
+.demo-controls > #demoPrev,
+.demo-controls > #demoPause,
+.demo-controls > #demoNext { /* fallback if not wrapped */ }
+
+/* Progress rail: one dot per scene */
+.demo-rail {
+  display: flex; gap: 10px; align-items: center;
+  list-style: none; margin: 0; padding: 0;
+}
+.demo-rail-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.22);
+  cursor: pointer; padding: 0;
+  transition: background .35s, border-color .35s, transform .25s, box-shadow .35s;
+}
+.demo-rail-dot:hover { transform: scale(1.25); border-color: rgba(255,255,255,.5); }
+.demo-rail-dot[data-state="past"] {
+  background: rgba(255,209,0,.42); border-color: rgba(255,209,0,.6);
+}
+.demo-rail-dot[data-state="current"] {
+  background: var(--c-accent); border-color: var(--c-accent);
+  transform: scale(1.35); box-shadow: 0 0 12px rgba(255,209,0,.55);
+}
+.demo-rail-dot:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 4px; }
+
+/* ================================================================
+   Reduced motion + responsive
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .demo, .demo-backdrop, .demo-scene, .demo-rail-dot {
+    transition: opacity .25s linear !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-top { padding: 16px 18px; }
+  .demo-stage { padding: 0 20px 132px; }
+  .demo-controls { bottom: 26px; gap: 14px; }
+  .demo-btn { width: 38px; height: 38px; }
+  .demo-btn--play { width: 46px; height: 46px; }
+  .demo-rail { gap: 8px; }
+  .demo-placeholder-title { font-size: clamp(26px, 8vw, 38px); }
+}
