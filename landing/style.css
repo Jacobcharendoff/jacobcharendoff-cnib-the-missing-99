@@ -266,3 +266,72 @@ p{line-height:1.65}
   .nv-a11y span{display:none}
   .nv-a11y{padding:8px}
 }
+
+/* ================================================================
+   Persona cards — launch live chat with a scripted scenario
+   Replaces the old tabbed auto-play demo per UX review.
+   ================================================================ */
+.persona-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  max-width:1100px;margin:0 auto;
+}
+.persona-card{
+  position:relative;text-align:left;
+  padding:28px 26px 24px;border-radius:18px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 2px 24px rgba(0,0,0,.06);
+  color:#0a0a0a;font-family:inherit;cursor:pointer;overflow:hidden;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s;
+  display:flex;flex-direction:column;gap:12px;
+}
+.persona-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  border-radius:18px 18px 0 0;pointer-events:none;
+}
+.persona-card--margaret::before{background:linear-gradient(90deg,#FFD100 0%,rgba(255,159,64,.6) 100%)}
+.persona-card--david::before{background:linear-gradient(90deg,#5ACFFF 0%,rgba(90,140,255,.6) 100%)}
+.persona-card--priya::before{background:linear-gradient(90deg,#FF6B9D 0%,rgba(181,123,255,.6) 100%)}
+@media(hover:hover){
+  .persona-card:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.12);border-color:rgba(0,0,0,.16)}
+}
+.persona-card:focus-visible{outline:3px solid #FFD100;outline-offset:3px}
+.persona-card-badge{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#a07800;margin-bottom:4px;
+}
+.persona-card-name{
+  font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.1;
+  color:#0a0a0a;
+}
+.persona-card-ctx{
+  font-size:13px;color:rgba(0,0,0,.5);letter-spacing:.2px;font-weight:500;
+}
+.persona-card-story{
+  font-size:14.5px;line-height:1.6;color:rgba(0,0,0,.7);font-weight:400;
+  margin:4px 0 8px;
+}
+.persona-card-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:100px;
+  background:#0a0a0a;color:#FFD100;
+  font-size:13px;font-weight:700;letter-spacing:.2px;
+  align-self:flex-start;margin-top:auto;
+  transition:background .25s,transform .25s;
+}
+.persona-card-cta svg{fill:#FFD100}
+@media(hover:hover){
+  .persona-card:hover .persona-card-cta{background:#1a1a1a;transform:translateX(2px)}
+}
+
+/* inline "talk to iris. yourself" button inside the footnote */
+.linkish{
+  background:none;border:none;padding:0;margin:0;
+  color:#b88300;font-family:inherit;font-size:inherit;font-weight:600;
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer;
+}
+.linkish:hover,.linkish:focus-visible{color:#0a0a0a}
+
+@media(max-width:900px){
+  .persona-grid{grid-template-columns:1fr;gap:16px}
+}
