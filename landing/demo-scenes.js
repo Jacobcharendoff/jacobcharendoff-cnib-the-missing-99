@@ -813,6 +813,12 @@
   window.demoSceneRenderers.loop = function(stage) {
     var data = (window.demoData && window.demoData.clinic && window.demoData.clinic.loop) || {};
     var loop = data || {};
+    var comp = loop.compounding || {
+      year1Clients:     1000,
+      year2Volunteers:   120,
+      year2NewClients:   360,
+      year3TotalEngaged: 1500
+    };
     // Node geometry (viewBox 400x400)
     // Wheel centre (200,200), radius ~140. Nodes sit ON the ring at
     // 12 / 4 / 8 o'clock (angles -90, 30, 150 deg).
@@ -851,7 +857,29 @@
       '  <div class="s9-right">',
       '    <span class="s9-eye">The loop</span>',
       '    <h3 class="s9-title">One client, <em>met well once</em>, becomes the supply chain.</h3>',
-      '    <div class="s9-math" id="s9Math"></div>',
+      '    <div class="s9-math" id="s9Math">',
+      '      <div class="s9-year y1">',
+      '        <span class="s9-year-dot">Y1</span>',
+      '        <div class="s9-year-head">Seed cohort</div>',
+      '        <div class="s9-year-big"><span id="s9y1">0</span><span class="s9-unit">clients met well</span></div>',
+      '        <div class="s9-year-eq">from a single clinic, first 12 months</div>',
+      '      </div>',
+      '      <div class="s9-year y2">',
+      '        <span class="s9-year-dot">Y2</span>',
+      '        <div class="s9-year-head">Client \u2192 Volunteer \u2192 Client</div>',
+      '        <div class="s9-year-big"><span id="s9y2v">0</span><span class="s9-unit">volunteers \u00b7 <span id="s9y2c">0</span> new clients</span></div>',
+      '        <div class="s9-year-eq"><b>1,000</b> \u00d7 <b>10%</b> = 120 \u00b7 <b>120</b> \u00d7 <b>3</b> = 360</div>',
+      '      </div>',
+      '      <div class="s9-year y3">',
+      '        <span class="s9-year-dot">Y3</span>',
+      '        <div class="s9-year-head">Compounding</div>',
+      '        <div class="s9-year-big"><span id="s9y3">0</span><span class="s9-unit">members engaged, one clinic</span></div>',
+      '        <div class="s9-year-eq">same budget. Retention became the acquisition engine.</div>',
+      '      </div>',
+      '    </div>',
+      '    <div class="s9-headline" id="s9Headline">',
+      '      <b>Retention is the acquisition engine.</b> Every client met well becomes a volunteer, a peer, a referral path back to the next client. The loop pays for itself.',
+      '    </div>',
       '  </div>',
       '</div>'
     ].join('');
@@ -873,6 +901,23 @@
     setTimeout(function(){
       animateCount(stage.querySelector('#s9n3'), 0, mult, 1000, function(v){ return v + '\u00d7'; });
     }, 1200);
+
+    // --- Compounding math: stepped reveal with per-year count-ups ---
+    var math = stage.querySelector('#s9Math');
+    var fmtComma = function(v){ return v.toLocaleString(); };
+    setTimeout(function(){ math.classList.add('drawn'); }, 1600);
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s9y1'), 0, comp.year1Clients, 1100, fmtComma);
+    }, 1800);
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s9y2v'), 0, comp.year2Volunteers, 900, fmtComma);
+      animateCount(stage.querySelector('#s9y2c'), 0, comp.year2NewClients, 1100, fmtComma);
+    }, 2500);
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s9y3'), 0, comp.year3TotalEngaged, 1400, function(v){
+        return v.toLocaleString() + '+';
+      });
+    }, 3300);
   };
 
   // ================================================================

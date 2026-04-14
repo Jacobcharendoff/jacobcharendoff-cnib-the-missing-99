@@ -1415,3 +1415,70 @@
   .s9-node-value { font-size:18px; }
   .s9-title { font-size:24px; }
 }
+
+/* --- Scene 9: compounding math panel (right column) --- */
+.s9-math {
+  display:flex;flex-direction:column;gap:14px;
+  position:relative;padding-left:24px;
+}
+/* Vertical connector that grows as years reveal */
+.s9-math::before {
+  content:"";position:absolute;left:9px;top:10px;bottom:10px;
+  width:1px;background:rgba(90,200,255,.12);
+}
+.s9-math::after {
+  content:"";position:absolute;left:9px;top:10px;width:1px;height:0;
+  background:linear-gradient(to bottom, var(--c-cyan), rgba(90,200,255,0));
+  transition:height 1.6s cubic-bezier(.22,1,.36,1) .4s;
+  box-shadow:0 0 8px rgba(90,200,255,.6);
+}
+.s9-math.drawn::after { height:calc(100% - 20px); }
+
+.s9-year {
+  position:relative;opacity:0;transform:translateY(6px);
+  transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1);
+}
+.s9-math.drawn .s9-year { opacity:1;transform:translateY(0); }
+.s9-math.drawn .s9-year.y2 { transition-delay:.7s; }
+.s9-math.drawn .s9-year.y3 { transition-delay:1.4s; }
+
+.s9-year-dot {
+  position:absolute;left:-24px;top:6px;width:19px;height:19px;
+  border-radius:50%;
+  background:#0A0A0A;border:1px solid rgba(90,200,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;letter-spacing:.2px;color:var(--c-cyan);
+}
+.s9-year.y3 .s9-year-dot {
+  border-color:rgba(255,209,0,.55);color:#FFD100;
+  box-shadow:0 0 12px rgba(255,209,0,.25);
+}
+
+.s9-year-head {
+  font-size:10px;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--c-fg-3);font-weight:700;margin-bottom:4px;
+}
+.s9-year-big {
+  font-size:26px;font-weight:200;color:#fff;letter-spacing:-.02em;
+  line-height:1.05;font-variant-numeric:tabular-nums;
+}
+.s9-year-big .s9-unit {
+  font-size:13px;color:var(--c-fg-2);font-weight:400;margin-left:4px;
+  letter-spacing:0;
+}
+.s9-year-eq {
+  font-size:11px;color:var(--c-fg-2);margin-top:4px;
+  font-family:ui-monospace, Menlo, monospace;letter-spacing:.2px;
+}
+.s9-year-eq b { color:#fff;font-weight:500; }
+
+.s9-headline {
+  margin-top:18px;padding:12px 14px;border-radius:10px;
+  background:rgba(255,209,0,.06);border:1px solid rgba(255,209,0,.2);
+  font-size:12.5px;line-height:1.5;color:#fff;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .7s ease 2.0s,transform .7s cubic-bezier(.22,1,.36,1) 2.0s;
+}
+.s9-math.drawn ~ .s9-headline,
+.s9-math.drawn + .s9-headline { opacity:1;transform:translateY(0); }
+.s9-headline b { color:#FFD100;font-weight:600; }
