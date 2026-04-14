@@ -564,6 +564,102 @@
   };
 
   // ================================================================
+  // Scene 8 — Partner engagement + retention dashboard
+  // The mock product surface. Live-ticking counters, conversion funnel,
+  // recent-outcomes feed, SLA + retention panels. iris.'s institutional
+  // face to a clinic partner, 12 months into the relationship.
+  // ================================================================
+  window.demoSceneRenderers.partnerdash = function(stage) {
+    var c = (data.clinic || {});
+    var dash = c.dashboard || {};
+
+    stage.innerHTML = [
+      '<div class="s8-layout">',
+      '  <header class="s8-head">',
+      '    <div class="s8-head-l">',
+      '      <span class="s8-eye">Partner dashboard \u2014 live</span>',
+      '      <h2 class="s8-title">What the clinic sees, every day.</h2>',
+      '    </div>',
+      '    <div class="s8-clinic">',
+      '      <span class="s8-clinic-dot" aria-hidden="true"></span>',
+      '      <span>' + (c.name || 'Sudbury Eye Centre') + ' \u00b7 month 12</span>',
+      '    </div>',
+      '  </header>',
+      '  <div class="s8-grid">',
+      '    <div class="s8-card s8-counters" id="s8Counters">',
+      '      <div class="s8-counter">',
+      '        <span class="s8-counter-label">Referred</span>',
+      '        <span class="s8-counter-val" id="s8cRef">0</span>',
+      '        <span class="s8-counter-hint">patients with iris. QR</span>',
+      '      </div>',
+      '      <div class="s8-counter">',
+      '        <span class="s8-counter-label">Engaged</span>',
+      '        <span class="s8-counter-val" id="s8cEng">0</span>',
+      '        <span class="s8-counter-hint">had an iris. conversation</span>',
+      '      </div>',
+      '      <div class="s8-counter">',
+      '        <span class="s8-counter-label">Booked next step</span>',
+      '        <span class="s8-counter-val" id="s8cStep">0</span>',
+      '        <span class="s8-counter-hint">program, peer, or callback</span>',
+      '      </div>',
+      '      <div class="s8-counter">',
+      '        <span class="s8-counter-label">Became volunteer</span>',
+      '        <span class="s8-counter-val" id="s8cVol">0</span>',
+      '        <span class="s8-counter-hint">loop closed</span>',
+      '      </div>',
+      '    </div>',
+      '    <div class="s8-card s8-funnel-wrap" id="s8Funnel">',
+      '      <span class="s8-card-eye">Conversion funnel \u00b7 12 months</span>',
+      '      <div class="s8-funnel" id="s8FunnelBars"></div>',
+      '      <div class="s8-funnel-foot">',
+      '        <span>Program completion</span>',
+      '        <strong id="s8Compl">' + Math.round((dash.programCompletion || 0) * 100) + '%</strong>',
+      '      </div>',
+      '      <div class="s8-funnel-foot" style="border-top:none;padding-top:0;">',
+      '        <span>Member satisfaction</span>',
+      '        <strong>' + (dash.satisfaction || 4.2) + ' / 5</strong>',
+      '      </div>',
+      '    </div>',
+      '  </div>',
+      '</div>'
+    ].join('');
+
+    var countersEl = stage.querySelector('#s8Counters');
+    setTimeout(function(){ countersEl.classList.add('show'); }, 300);
+    setTimeout(function(){ animateCount(stage.querySelector('#s8cRef'),  0, dash.refersTotal     || 38, 1200); }, 500);
+    setTimeout(function(){ animateCount(stage.querySelector('#s8cEng'),  0, dash.engagedTotal    || 27, 1200); }, 700);
+    setTimeout(function(){ animateCount(stage.querySelector('#s8cStep'), 0, dash.concreteStep    || 18, 1200); }, 900);
+    setTimeout(function(){ animateCount(stage.querySelector('#s8cVol'),  0, dash.becameVolunteer ||  4, 1200); }, 1100);
+
+    var funnel = [
+      { label: 'Referred',    n: dash.refersTotal     || 38 },
+      { label: 'Engaged',     n: dash.engagedTotal    || 27 },
+      { label: 'Booked step', n: dash.concreteStep    || 18 },
+      { label: 'Volunteer',   n: dash.becameVolunteer ||  4 }
+    ];
+    var max = funnel[0].n || 1;
+    var fEl = stage.querySelector('#s8FunnelBars');
+    var fCard = stage.querySelector('#s8Funnel');
+    setTimeout(function(){ fCard.classList.add('show'); }, 500);
+    funnel.forEach(function(f, i) {
+      var row = document.createElement('div');
+      row.className = 's8-funnel-step';
+      row.innerHTML = [
+        '<span class="s8-funnel-label"></span>',
+        '<span class="s8-funnel-bar"><span class="s8-funnel-fill"></span></span>',
+        '<span class="s8-funnel-num">0</span>'
+      ].join('');
+      row.querySelector('.s8-funnel-label').textContent = f.label;
+      fEl.appendChild(row);
+      var pct = (f.n / max) * 100;
+      setTimeout(function() {
+        row.querySelector('.s8-funnel-fill').style.width = pct + '%';
+        animateCount(row.querySelector('.s8-funnel-num'), 0, f.n, 1200);
+      }, 900 + i * 220);
+    });
+  };
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
