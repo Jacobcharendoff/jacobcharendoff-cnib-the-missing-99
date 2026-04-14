@@ -495,3 +495,84 @@
   .ch4-quote{font-size:clamp(26px,7vw,40px)}
   .ch4-source{font-size:11.5px}
 }
+
+/* ================================================================
+   CHAPTER 5 — Margaret becomes a mentor (Volunteers)
+   The question, the pause, the "yes", the transformation.
+   Iris mark sits right (ch-volunteers transform).
+   ================================================================ */
+.ch5-layout{
+  position:absolute;top:50%;left:clamp(32px,6vw,96px);
+  transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:22px;
+  max-width:min(56vw,640px);
+}
+.ch5-time{
+  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;
+  color:rgba(232,124,160,.8);
+  opacity:0;transform:translateY(4px);
+  animation:ch5FadeUp .9s cubic-bezier(.22,1,.36,1) .3s forwards;
+}
+.ch5-q{
+  margin:0;padding:0;
+  display:flex;flex-direction:column;gap:8px;
+  opacity:0;transform:translateY(8px);
+  animation:ch5FadeUp 1.1s cubic-bezier(.22,1,.36,1) 2s forwards;
+}
+.ch5-q-author{
+  font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  color:rgba(255,209,0,.7);
+}
+.ch5-q-text{
+  font-size:clamp(26px,3.6vw,48px);font-weight:500;font-style:italic;
+  line-height:1.14;letter-spacing:-.015em;
+  color:rgba(255,255,245,.94);max-width:18ch;
+}
+.ch5-a{
+  display:flex;align-items:baseline;gap:14px;
+  margin-top:6px;
+  opacity:0;transform:translateY(6px);
+  animation:ch5FadeUp 1s cubic-bezier(.22,1,.36,1) 7s forwards;
+}
+.ch5-a-text{
+  font-size:clamp(38px,5.5vw,72px);font-weight:700;line-height:1;letter-spacing:-.03em;
+  color:#fff;font-family:'Courier New',ui-monospace,monospace;
+}
+.ch5-a-author{
+  font-size:13px;letter-spacing:.3px;font-weight:400;
+  color:rgba(255,255,245,.5);
+}
+.ch5-status{
+  display:flex;align-items:baseline;gap:14px;margin-top:14px;
+  padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
+  opacity:0;transform:translateY(6px);
+  animation:ch5FadeUp 1s cubic-bezier(.22,1,.36,1) 12s forwards;
+}
+.ch5-status-count{
+  font-size:clamp(44px,6vw,76px);font-weight:800;line-height:.9;letter-spacing:-.03em;
+  background:linear-gradient(110deg,#FFD100 0%,#E87CA0 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.ch5-status-t{
+  font-size:clamp(13px,1.15vw,16px);font-weight:500;
+  color:rgba(255,255,245,.65);letter-spacing:.1px;
+  max-width:16ch;
+}
+
+@keyframes ch5FadeUp{to{opacity:1;transform:translateY(0)}}
+
+@media(prefers-reduced-motion:reduce){
+  .ch5-time,.ch5-q,.ch5-a,.ch5-status{animation:none !important;opacity:1 !important;transform:none !important}
+}
+
+@media(max-width:780px){
+  .ch5-layout{
+    position:static;transform:none;
+    padding:clamp(200px,30vh,300px) 22px 0;
+    max-width:100%;
+  }
+  .ch5-q-text{font-size:clamp(22px,6vw,34px)}
+  .ch5-a-text{font-size:clamp(32px,10vw,48px)}
+  .ch5-status-count{font-size:clamp(36px,10vw,52px)}
+}

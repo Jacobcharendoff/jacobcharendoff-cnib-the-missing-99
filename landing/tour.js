@@ -122,7 +122,24 @@
       body:'Six months later, I asked Margaret one question. She said yes before I finished asking.',
       voice:"Six months later, I asked Margaret one question. Would you help someone just starting? She said yes before I finished asking. Now she mentors three new members. The person who needed a hand is the hand someone else reaches for.",
       wash:{ primary:'rgba(232,124,160,.12)', secondary:'rgba(181,123,255,.05)' },
-      duration:18000
+      duration:18000,
+      content:[
+        '<div class="ch5-layout">',
+        '  <div class="ch5-time">Six months later.</div>',
+        '  <blockquote class="ch5-q">',
+        '    <span class="ch5-q-author">iris. asked</span>',
+        '    <span class="ch5-q-text">&ldquo;Would you help someone just starting?&rdquo;</span>',
+        '  </blockquote>',
+        '  <div class="ch5-a">',
+        '    <span class="ch5-a-text">yes.</span>',
+        '    <span class="ch5-a-author">&mdash; Margaret</span>',
+        '  </div>',
+        '  <div class="ch5-status">',
+        '    <span class="ch5-status-count">3</span>',
+        '    <span class="ch5-status-t">new members she now mentors</span>',
+        '  </div>',
+        '</div>'
+      ].join('')
     },
     {
       id:'partners',  eye:'Chapter 6 · Partners',
