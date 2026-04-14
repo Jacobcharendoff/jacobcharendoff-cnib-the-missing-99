@@ -45,7 +45,7 @@ The entire app is a single `index.html` file (~400KB, 9,565 lines). It works as 
 - **Frontend:** Vanilla HTML/CSS/JS (needs migration to React/Next.js or similar)
 - **Hosting:** Vercel (auto-deploys from GitHub main branch)
 - **TTS:** ElevenLabs API via `/api/tts` Vercel serverless function
-- **LLM:** Anthropic Claude API via `/api/chat` Vercel serverless function
+- **LLM:** OpenAI API via `/api/chat` Vercel serverless function (reads `OPENAI_API_KEY`)
 - **STT:** Browser Web Speech API (SpeechRecognition)
 
 ## Engineering Priorities (in order)

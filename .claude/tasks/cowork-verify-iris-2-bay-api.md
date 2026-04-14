@@ -35,8 +35,10 @@ Add these **two** env vars for **Production, Preview, and Development** environm
 
 | Variable Name | Value | Where to get it |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | `sk-ant-...` | Copy from the `meet-iris-app` Vercel project's env vars (same key) |
+| `OPENAI_API_KEY` | `sk-proj-...` | Copy from the `meet-iris-app` Vercel project's env vars (same key) |
 | `ELEVENLABS_API_KEY` | `sk_...` | Copy from the `meet-iris-app` Vercel project's env vars (same key) |
+
+> **Note:** `chat.js` reads `process.env.OPENAI_API_KEY` — not Anthropic, despite what CLAUDE.md may suggest. Set the one the code actually expects.
 
 **Important:** Env var changes only take effect on the **next deployment**. Trigger a redeploy: Deployments tab → find latest → `⋯` menu → **Redeploy**.
 
