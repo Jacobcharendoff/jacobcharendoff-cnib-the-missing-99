@@ -172,3 +172,69 @@ p{line-height:1.65}
 .s3-truth{font-size:clamp(20px,2vw,26px);font-weight:400;color:rgba(255,255,245,.85);line-height:1.42;max-width:720px;margin:0 auto 36px;letter-spacing:-.01em}
 .s3-desc{font-size:clamp(16px,1.25vw,19px);line-height:1.7;color:rgba(255,255,245,.55);max-width:660px;margin:0 auto 44px;font-weight:400}
 .s3-ft{font-size:12px;color:#FFD100;letter-spacing:2.5px;text-transform:uppercase;font-weight:700}
+
+/* ================================================================
+   JOURNEY MAP — Client + Volunteer. Acquire · Engage · Retain.
+   Two parallel journeys. One loop. The flywheel.
+   ================================================================ */
+.jm{
+  padding:140px 32px;
+  background:
+    radial-gradient(ellipse 55% 45% at 22% 18%,rgba(255,209,0,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 80% 80%,rgba(255,209,0,.04) 0%,transparent 55%),
+    #0A0A0A;
+  border-top:1px solid rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.jm-intro{text-align:center;max-width:720px;margin:0 auto 72px}
+.jm-intro h2{color:#fff;margin-bottom:24px}
+.jm-intro h2 em{color:#FFD100;font-style:normal}
+
+.jm-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;max-width:1180px;margin:0 auto;position:relative}
+
+.jm-col{position:relative;padding:8px 0}
+.jm-col-h{display:flex;align-items:center;gap:14px;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08)}
+.jm-col-icon{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,209,0,.35);background:rgba(255,209,0,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.jm-col-icon svg{width:20px;height:20px;stroke:#FFD100;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.jm-col-s{font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.42);font-weight:700;margin-bottom:2px}
+.jm-col-t{font-size:clamp(17px,1.4vw,20px);font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.2}
+
+/* Spine connector down each column */
+.jm-col::before{
+  content:'';position:absolute;left:19px;top:112px;bottom:24px;
+  width:1px;
+  background:linear-gradient(180deg,rgba(255,209,0,.28) 0%,rgba(255,209,0,.1) 55%,rgba(255,209,0,.35) 100%);
+  pointer-events:none;
+}
+
+.jm-stage{display:grid;grid-template-columns:40px 1fr;gap:22px;margin-bottom:44px;align-items:start}
+.jm-stage:last-child{margin-bottom:0}
+.jm-dot{width:40px;height:40px;border-radius:50%;background:#0A0A0A;border:1px solid rgba(255,209,0,.35);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#FFD100;letter-spacing:.5px;flex-shrink:0;position:relative;z-index:2}
+.jm-dot.jm-dot--r{border-color:rgba(255,209,0,.7);background:rgba(255,209,0,.14);box-shadow:0 0 20px rgba(255,209,0,.3)}
+.jm-stage-tag{font-size:10.5px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:#FFD100;margin-bottom:8px}
+.jm-stage-t{font-size:clamp(17px,1.5vw,21px);font-weight:600;color:#fff;letter-spacing:-.01em;line-height:1.28;margin-bottom:12px}
+.jm-stage-b{font-size:15px;line-height:1.65;color:rgba(255,255,245,.58)}
+.jm-stage-b strong{color:#FFD100;font-weight:600}
+
+/* The loop callout */
+.jm-loop{
+  margin:72px auto 0;max-width:780px;text-align:center;
+  padding:44px 36px;
+  background:rgba(255,209,0,.04);
+  border:1px solid rgba(255,209,0,.16);
+  border-radius:20px;
+  position:relative;overflow:hidden;
+}
+.jm-loop::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(255,209,0,.07),transparent 65%);
+  pointer-events:none;
+}
+.jm-loop>*{position:relative;z-index:1}
+.jm-loop-tag{font-size:10.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#FFD100;margin-bottom:14px}
+.jm-loop-t{font-size:clamp(20px,2vw,28px);font-weight:600;color:#fff;line-height:1.32;letter-spacing:-.01em;margin-bottom:16px}
+.jm-loop-b{font-size:15.5px;line-height:1.65;color:rgba(255,255,245,.62);max-width:620px;margin:0 auto}
+
+@media(max-width:900px){
+  .jm-grid{grid-template-columns:1fr;gap:64px}
+}
