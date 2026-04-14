@@ -249,6 +249,12 @@
   tourAudio.playsInline = true;
   tourAudio.setAttribute('playsinline', '');
   tourAudio.preload = 'auto';
+  tourAudio.addEventListener('ended', function(){
+    if (root) root.classList.remove('speaking');
+  });
+  tourAudio.addEventListener('pause', function(){
+    if (root) root.classList.remove('speaking');
+  });
 
   var audioUnlocked = false;
   function unlockAudio() {
@@ -304,8 +310,18 @@
       try {
         tourAudio.src = url;
         var p = tourAudio.play();
-        if (p && p.catch) p.catch(function(){});
-      } catch (_) {}
+        if (p && p.then) {
+          p.then(function(){ if (root) root.classList.add('speaking'); })
+           .catch(function(err){
+             console.warn('[tour] audio play failed:', err && err.message);
+             if (root) root.classList.remove('speaking');
+           });
+        } else {
+          if (root) root.classList.add('speaking');
+        }
+      } catch (e) {
+        console.warn('[tour] audio play threw:', e && e.message);
+      }
     });
     // Pre-fetch next chapter's audio while current plays.
     if (CHAPTERS[i + 1]) fetchChapterAudio(i + 1);
@@ -313,6 +329,7 @@
 
   function stopChapterAudio() {
     try { tourAudio.pause(); tourAudio.currentTime = 0; } catch (_) {}
+    if (root) root.classList.remove('speaking');
     if (currentAudioCtrl) { try { currentAudioCtrl.abort(); } catch (_) {} currentAudioCtrl = null; }
   }
 
@@ -327,6 +344,14 @@
 
     root.innerHTML = [
       '<div class="tour-backdrop" aria-hidden="true"></div>',
+      '<div class="tour-speaking-badge" aria-hidden="true">',
+      '  <span class="tour-speaking-bars"><span></span><span></span><span></span><span></span></span>',
+      '  <span>iris. is speaking</span>',
+      '</div>',
+      '<div class="tour-mute-hint" aria-hidden="true">',
+      '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+      '  <span>Best with sound on</span>',
+      '</div>',
       '<div class="tour-top">',
       '  <button class="tour-btn" id="tourTranscriptBtn" aria-label="Toggle transcript" aria-pressed="false">',
       '    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="7" y1="14" x2="14" y2="14"/></svg>',
@@ -545,6 +570,13 @@
     isOpen = true;
     isPaused = false;
     root.classList.add('open');
+    // Transcript on by default — captions keep up with narration from
+    // the first chapter, visible whether or not audio is playing.
+    root.classList.add('transcript-on');
+    if (btnTranscript) {
+      btnTranscript.setAttribute('aria-pressed', 'true');
+      btnTranscript.classList.add('tour-btn--active');
+    }
     document.body.style.overflow = 'hidden';
     setTimeout(function() { btnPause.focus(); }, 120);
     goTo(0);
