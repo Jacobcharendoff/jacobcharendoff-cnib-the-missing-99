@@ -147,7 +147,27 @@
       body:'Margaret\'s clinic sends a new member to iris. every week. Partners get a live view.',
       voice:"Margaret's clinic now sends a new member to me every week. Their ophthalmologist sees who reached out, who followed through, who found their footing. Partners get a live view. CNIB grows from the outside in. One waiting room at a time.",
       wash:{ primary:'rgba(90,200,255,.10)', secondary:'rgba(45,212,191,.05)' },
-      duration:18000
+      duration:18000,
+      content:[
+        '<div class="ch6-layout">',
+        '  <div class="ch6-eye">Partner &mdash; Sudbury Eye Centre</div>',
+        '  <div class="ch6-clinic">',
+        '    <svg class="ch6-clinic-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21v-7h6v7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="6" x2="12" y2="6.01" stroke="currentColor" stroke-width="2"/></svg>',
+        '    <div class="ch6-clinic-name">Ophthalmology &middot; Sudbury, ON</div>',
+        '  </div>',
+        '  <div class="ch6-counter">',
+        '    <span class="ch6-counter-n" data-count-to="38" data-count-dur="3000" data-count-delay="3500">0</span>',
+        '    <div class="ch6-counter-meta">',
+        '      <span class="ch6-counter-t">members referred to iris.</span>',
+        '      <span class="ch6-counter-sub">last 12 months</span>',
+        '    </div>',
+        '  </div>',
+        '  <div class="ch6-live">',
+        '    <span class="ch6-live-dot"></span>',
+        '    <span>Partners see who reached out, who followed through, who found their footing.</span>',
+        '  </div>',
+        '</div>'
+      ].join('')
     },
     {
       id:'loop',  eye:'Chapter 7 · The Loop',
@@ -390,6 +410,26 @@
     sceneInner.appendChild(block);
     // Allow transition to fire
     requestAnimationFrame(function() { block.dataset.state = 'active'; });
+
+    // Kick off any count-up animations in this chapter's content.
+    // Elements opt in via data-count-to (target int) and optional
+    // data-count-dur (ms) / data-count-delay (ms).
+    block.querySelectorAll('[data-count-to]').forEach(function(el) {
+      var target = parseInt(el.dataset.countTo, 10);
+      var dur    = parseInt(el.dataset.countDur || '2500', 10);
+      var delay  = parseInt(el.dataset.countDelay || '0', 10);
+      setTimeout(function() {
+        var start = performance.now();
+        function step(now) {
+          var p = Math.min(1, (now - start) / dur);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString();
+          if (p < 1) requestAnimationFrame(step);
+          else el.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(step);
+      }, delay);
+    });
 
     // Transcript: exact voice line (what iris. is saying). Only visible
     // when user has toggled the transcript panel on.
