@@ -103,6 +103,19 @@
     // Keys live in Vercel env vars. Frontend calls /api/tts.
     const USE_PROXY_TTS = true;
 
+    // XSS-safe text renderer. Use instead of innerHTML when writing untrusted
+    // content (LLM responses, scenario transcripts, user input) into a bubble.
+    // Preserves newlines by inserting <br> elements between text nodes.
+    function setSafeText(el, text) {
+      if (!el) return;
+      el.textContent = '';
+      var lines = String(text == null ? '' : text).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        if (i > 0) el.appendChild(document.createElement('br'));
+        if (lines[i]) el.appendChild(document.createTextNode(lines[i]));
+      }
+    }
+
     // PERSISTENT AUDIO ELEMENT — reused for ALL TTS playback.
     // Mobile Safari blocks new Audio() objects created outside a user gesture
     // context. By creating ONE element and reusing it (swapping .src), we
@@ -974,7 +987,7 @@ Don't list programs. Don't say "journey" or "I'm here to help." Don't sound scri
           }
           realtimeAssistantText += msg.delta || '';
           if (realtimeAssistantBubble) {
-            realtimeAssistantBubble.innerHTML = realtimeAssistantText.replace(/\n/g, '<br>');
+            setSafeText(realtimeAssistantBubble, realtimeAssistantText);
             chatBody.scrollTop = chatBody.scrollHeight;
           }
           setIrisStatus('speaking', 'Speaking…');
@@ -1272,7 +1285,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       const renderUpTo = (n) => {
         const clamped = Math.max(0, Math.min(fullText.length, n));
-        bubbleEl.innerHTML = fullText.slice(0, clamped).replace(/\n/g, '<br>');
+        setSafeText(bubbleEl, fullText.slice(0, clamped));
         chatBody.scrollTop = chatBody.scrollHeight;
       };
 
@@ -1283,7 +1296,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         for (let i = 0; i < fullText.length; i++) {
           const ch = fullText[i];
           rendered += ch;
-          bubbleEl.innerHTML = rendered.replace(/\n/g, '<br>');
+          setSafeText(bubbleEl, rendered);
           chatBody.scrollTop = chatBody.scrollHeight;
           let delay = 18;
           if (ch === ' ') delay = 10;
@@ -1889,7 +1902,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       const bubble = document.createElement('div');
       bubble.className = 'iris-msg bot';
-      bubble.innerHTML = text.replace(/\n/g, '<br>');
+      setSafeText(bubble, text);
       row.appendChild(bubble);
 
       const meta = document.createElement('div');
@@ -2500,7 +2513,7 @@ Never end a conversation without either (a) a clear recommendation AND a concret
 
       const bubble = document.createElement('div');
       bubble.className = 'iris-msg bot iris-msg-narrator';
-      bubble.innerHTML = text.replace(/\n/g, '<br>');
+      setSafeText(bubble, text);
       row.appendChild(bubble);
 
       chatBody.appendChild(row);
