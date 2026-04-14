@@ -42,20 +42,23 @@
   overflow:hidden;
 }
 .tour-scene-inner{
-  width:100%;max-width:1100px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:28px;
-  position:relative;
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
 }
 
-/* Chapter content wrapper — opacity handled per chapter via data-state */
+/* Chapter content wrapper — absolutely positioned so old + new chapters
+   overlap briefly during cross-fade without causing layout shift.
+   Pointer events re-enabled only for the 'active' chapter. */
 .tour-chapter{
-  width:100%;opacity:0;transform:translateY(16px);
-  transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);
-  display:flex;flex-direction:column;align-items:center;gap:20px;
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
 }
-.tour-chapter[data-state="active"]{opacity:1;transform:translateY(0)}
-.tour-chapter[data-state="exit"]{opacity:0;transform:translateY(-16px);transition-duration:.5s}
+.tour-chapter[data-state="active"]{opacity:1;transform:translateY(0);pointer-events:auto}
+.tour-chapter[data-state="exit"]{opacity:0;transform:translateY(-10px);transition-duration:.55s}
 
 .tour-chapter-eye{
   font-size:10.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;

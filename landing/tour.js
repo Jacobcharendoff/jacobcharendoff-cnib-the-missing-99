@@ -431,9 +431,15 @@
     prior.forEach(function(c){ root.classList.remove(c); });
     root.classList.add('ch-' + ch.id);
 
-    // Scene content. If a chapter declares its own HTML (ch.content),
-    // use it; otherwise fall back to the generic eye/title/body layout.
-    sceneInner.innerHTML = '';
+    // Scene content. Cross-fade: existing blocks transition to 'exit'
+    // state, the new block enters at the same time. Old blocks get
+    // removed after the exit transition (~550ms) so the DOM stays tidy.
+    Array.prototype.forEach.call(sceneInner.querySelectorAll('.tour-chapter'), function(old) {
+      if (old.dataset.state === 'exit') return;
+      old.dataset.state = 'exit';
+      setTimeout(function() { if (old.parentNode) old.parentNode.removeChild(old); }, 600);
+    });
+
     var block = document.createElement('div');
     block.className = 'tour-chapter';
     block.dataset.state = 'enter';
