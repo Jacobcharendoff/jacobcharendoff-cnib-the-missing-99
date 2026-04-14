@@ -345,3 +345,28 @@ body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#000;colo
 .s2-stat-n{color:#b88300}
 .s2-stat-l{color:rgba(0,0,0,.46)}
 .s2-kicker{color:rgba(0,0,0,.65)}
+
+/* S4 EXPERIENCE → LIGHT */
+.s4{
+  background:
+    radial-gradient(ellipse 55% 70% at 100% 50%,rgba(255,159,64,.07) 0%,transparent 58%),
+    radial-gradient(ellipse 40% 35% at 0% 10%,rgba(181,123,255,.04) 0%,transparent 55%),
+    #f7f5f0;
+}
+.s4 .ey{color:rgba(0,0,0,.42)}
+.s4 h2{color:#0a0a0a}
+.s4 .body{color:rgba(0,0,0,.58)}
+.s4-tab{border:1px solid rgba(0,0,0,.1);color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);backdrop-filter:none;-webkit-backdrop-filter:none}
+.s4-tab:hover{color:#0a0a0a;border-color:rgba(0,0,0,.24)}
+.s4-tab.active{color:#b88300;border-color:rgba(200,150,10,.45);background:rgba(255,255,255,.95);box-shadow:0 4px 16px rgba(200,150,10,.10)}
+.s4-window{background:#fff;border:1px solid rgba(0,0,0,.07);box-shadow:0 8px 48px rgba(0,0,0,.08);backdrop-filter:none;-webkit-backdrop-filter:none}
+.s4-window::before{background:linear-gradient(90deg,transparent,rgba(200,150,10,.6),rgba(255,107,157,.3),transparent)}
+.s4-avatar{background:rgba(200,150,10,.12);border:1px solid rgba(200,150,10,.28);box-shadow:0 0 18px rgba(200,150,10,.1)}
+.s4-avatar svg{stroke:#a07800}
+.s4-name{color:#a07800}
+.s4-status{color:rgba(0,0,0,.4)}
+.s4-msg--bot{background:rgba(200,150,10,.09);border:1px solid rgba(200,150,10,.16);color:rgba(0,0,0,.76)}
+.s4-msg--user{background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.07);color:rgba(0,0,0,.6)}
+.s4-sound{color:rgba(160,120,0,.65)}
+.s4-sound svg{stroke:rgba(160,120,0,.65)}
+.s4-fn{color:rgba(0,0,0,.42)}
