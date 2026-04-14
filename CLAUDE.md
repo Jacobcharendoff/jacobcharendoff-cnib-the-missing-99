@@ -1,5 +1,19 @@
 # iris. — AI Member Engagement Tool for CNIB
 
+## Claude Code Working Rules
+
+### Always work in small batches
+- **One logical unit per commit** — one file, or one section of a file. Never attempt to write or rewrite an entire large file in a single tool call.
+- **CSS first, then HTML** — when rebuilding a page, commit the stylesheet before touching markup.
+- **HTML in sections** — add 1–2 sections per batch, commit and push after each, then continue.
+- **JS last** — add JavaScript only after all HTML and CSS are committed and stable.
+- **Max ~150 lines per Write or Edit call** — if a block of content exceeds this, split it.
+- **Commit after every batch** — never accumulate more than one logical unit of uncommitted work.
+- **Push after every commit** — keep the remote up to date so Vercel deploys incrementally.
+- This prevents context window stalls, timeouts, and lost work.
+
+
+
 ## What This Is
 iris. is an agentic AI navigator for Canadians living with sight loss. Built for CNIB (Canadian National Institute for the Blind). She matches members to programs, services, and community based on their diagnosis, geography, life stage, and emotional state. Think Siri for sight loss — but with empathy, clinical accuracy, and deep knowledge of the CNIB ecosystem.
 
