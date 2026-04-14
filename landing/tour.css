@@ -1,0 +1,165 @@
+/* ================================================================
+   iris. — Guided Tour Shell
+   Fullscreen takeover. 8 chapters. Voice + visual + transcript + controls.
+   Loaded on demand from landing/index.html. Do not import into detail.html.
+   ================================================================ */
+
+/* Root — hidden until .tour.open is applied */
+.tour{
+  position:fixed;inset:0;z-index:10000;
+  display:flex;flex-direction:column;
+  background:#000;
+  opacity:0;visibility:hidden;
+  transition:opacity .6s cubic-bezier(.22,1,.36,1),visibility 0s linear .6s;
+}
+.tour.open{opacity:1;visibility:visible;transition:opacity .6s cubic-bezier(.22,1,.36,1)}
+
+/* Backdrop — gradient wash that shifts wavelength per chapter (set via --tour-wash-*) */
+.tour-backdrop{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 85% 65% at 50% 50%,var(--tour-wash-primary,rgba(255,180,60,.14)) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 15% 20%,var(--tour-wash-secondary,rgba(181,123,255,.06)) 0%,transparent 55%),
+    #030303;
+  transition:background 1.6s cubic-bezier(.22,1,.36,1);
+}
+
+/* Ambient backdrop pulse so a still chapter still breathes */
+.tour-backdrop::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(255,209,0,.04),transparent 65%);
+  animation:tourBreath 14s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes tourBreath{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* Scene — where chapter visuals render */
+.tour-scene{
+  position:relative;z-index:2;flex:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:10vh 48px 22vh;
+  min-height:0; /* allow flex children to shrink */
+  overflow:hidden;
+}
+.tour-scene-inner{
+  width:100%;max-width:1100px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:28px;
+  position:relative;
+}
+
+/* Chapter content wrapper — opacity handled per chapter via data-state */
+.tour-chapter{
+  width:100%;opacity:0;transform:translateY(16px);
+  transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+}
+.tour-chapter[data-state="active"]{opacity:1;transform:translateY(0)}
+.tour-chapter[data-state="exit"]{opacity:0;transform:translateY(-16px);transition-duration:.5s}
+
+.tour-chapter-eye{
+  font-size:10.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,209,0,.65);margin:0;
+}
+.tour-chapter-title{
+  font-size:clamp(28px,4.4vw,56px);font-weight:700;letter-spacing:-.025em;line-height:1.08;
+  color:#fff;margin:0;max-width:20ch;
+}
+.tour-chapter-body{
+  font-size:clamp(16px,1.35vw,20px);font-weight:400;line-height:1.55;
+  color:rgba(255,255,245,.72);margin:0;max-width:36ch;
+}
+
+/* Transcript panel — docked bottom, above controls */
+.tour-transcript{
+  position:absolute;left:50%;bottom:112px;transform:translateX(-50%);
+  z-index:4;max-width:780px;width:calc(100% - 96px);
+  padding:14px 22px;border-radius:14px;
+  background:rgba(10,10,10,.72);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  color:rgba(255,255,245,.82);font-size:15px;line-height:1.5;
+  text-align:center;letter-spacing:.1px;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s cubic-bezier(.22,1,.36,1),transform .4s cubic-bezier(.22,1,.36,1);
+}
+.tour.transcript-on .tour-transcript{opacity:1;pointer-events:auto}
+
+/* Top-right actions: close + transcript toggle */
+.tour-top{
+  position:absolute;top:26px;right:28px;z-index:6;
+  display:flex;gap:8px;align-items:center;
+}
+.tour-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.78);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background .25s,border-color .25s,color .25s,transform .25s;
+  font-family:inherit;padding:0;
+}
+.tour-btn:hover,.tour-btn:focus-visible{
+  background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#fff;
+}
+.tour-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.tour-btn--active{background:rgba(255,209,0,.14);border-color:rgba(255,209,0,.4);color:#FFD100}
+
+/* Bottom controls: pause/next/prev cluster + progress rail */
+.tour-controls{
+  position:absolute;left:0;right:0;bottom:44px;z-index:5;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+}
+.tour-nav{
+  display:flex;gap:10px;align-items:center;
+}
+.tour-nav .tour-btn{width:44px;height:44px}
+.tour-nav .tour-btn--play{
+  background:#FFD100;border-color:#FFD100;color:#0A0A0A;
+  width:52px;height:52px;
+}
+.tour-nav .tour-btn--play:hover{background:#FFDD33;transform:scale(1.04)}
+.tour-nav .tour-btn--play svg{stroke:#0A0A0A;stroke-width:2.2}
+
+/* Progress rail — 8 pupils, current filled chromatic, past filled amber, future outlined */
+.tour-rail{
+  display:flex;gap:10px;align-items:center;list-style:none;margin:0;padding:0;
+}
+.tour-rail-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:transparent;border:1.5px solid rgba(255,255,255,.22);
+  cursor:pointer;padding:0;
+  transition:background .4s,border-color .4s,transform .25s,box-shadow .4s;
+}
+.tour-rail-dot:hover{transform:scale(1.25);border-color:rgba(255,255,255,.5)}
+.tour-rail-dot[data-state="past"]{
+  background:rgba(255,209,0,.42);border-color:rgba(255,209,0,.6);
+}
+.tour-rail-dot[data-state="current"]{
+  background:#FFD100;border-color:#FFD100;transform:scale(1.35);
+  box-shadow:0 0 14px rgba(255,209,0,.55);
+}
+.tour-rail-dot:focus-visible{outline:2px solid #FFD100;outline-offset:4px}
+
+/* Reduced motion — kill all transforms & long transitions */
+@media(prefers-reduced-motion:reduce){
+  .tour,
+  .tour-backdrop,
+  .tour-chapter,
+  .tour-transcript,
+  .tour-rail-dot{transition:opacity .3s linear !important;transform:none !important}
+  .tour-backdrop::after,
+  .stage-go{animation:none !important}
+}
+
+/* Mobile */
+@media(max-width:700px){
+  .tour-scene{padding:12vh 22px 26vh}
+  .tour-chapter-title{font-size:clamp(26px,7vw,38px)}
+  .tour-chapter-body{font-size:15px;max-width:30ch}
+  .tour-transcript{bottom:128px;width:calc(100% - 40px);padding:12px 16px;font-size:14px}
+  .tour-top{top:18px;right:18px}
+  .tour-controls{bottom:30px;gap:14px}
+  .tour-nav .tour-btn{width:40px;height:40px}
+  .tour-nav .tour-btn--play{width:48px;height:48px}
+  .tour-rail{gap:8px}
+}
