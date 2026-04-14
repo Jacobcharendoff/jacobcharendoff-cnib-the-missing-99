@@ -463,6 +463,16 @@
   color:#FFD100;font-weight:700;font-size:clamp(22px,2vw,30px);letter-spacing:-.01em;
 }
 .ch4-sep{opacity:.4}
+.ch4-composite{
+  display:inline-block;
+  font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;font-style:italic;
+  color:rgba(245,155,60,.7);
+  padding:4px 10px;border:1px solid rgba(245,155,60,.32);border-radius:100px;
+  background:rgba(245,155,60,.06);
+  width:fit-content;
+  opacity:0;transform:translateY(4px);
+  animation:ch4FadeUp .9s cubic-bezier(.22,1,.36,1) .9s forwards;
+}
 .ch4-diagnosis{
   font-size:clamp(13px,1.05vw,15.5px);
   color:rgba(255,255,245,.5);letter-spacing:.3px;

@@ -105,6 +105,7 @@
         '    <span class="ch4-sep">&middot;</span>',
         '    <span>Sudbury, ON</span>',
         '  </div>',
+        '  <div class="ch4-composite">Composite &mdash; drawn from real member journeys</div>',
         '  <div class="ch4-diagnosis">Recently diagnosed &mdash; macular degeneration</div>',
         '  <blockquote class="ch4-quote">',
         '    <span class="ch4-mark" aria-hidden="true">&ldquo;</span>',
