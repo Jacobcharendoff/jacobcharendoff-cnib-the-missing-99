@@ -921,6 +921,103 @@
   };
 
   // ================================================================
+  // Scene 10 — Scoreboard
+  // Three pillars (Clients / Volunteers / Partners), each with a
+  // 5-step SLA timeline + north-star LTV card. Bottom strip surfaces
+  // the loop headlines (conv rate, velocity, compounding).
+  // ================================================================
+  window.demoSceneRenderers.scoreboard = function(stage) {
+    var board = (window.demoData && window.demoData.clinic &&
+                 window.demoData.clinic.scoreboard) || {};
+    var pillars = board.pillars || [];
+    var loopStats = board.loop || {};
+
+    // Fallback pillar set (keeps scene renderable if demoData missing)
+    if (!pillars.length) {
+      pillars = [
+        { audience:'Clients',    slaRow:[], northStar:'' },
+        { audience:'Volunteers', slaRow:[], northStar:'' },
+        { audience:'Partners',   slaRow:[], northStar:'' }
+      ];
+    }
+
+    var cols = pillars.map(function(p, idx) {
+      var steps = (p.slaRow || []).map(function(s) {
+        return [
+          '<div class="s10-sla-step">',
+          '  <span class="s10-sla-tick"></span>',
+          '  <span class="s10-sla-text"></span>',
+          '</div>'
+        ].join('');
+      }).join('');
+      return [
+        '<div class="s10-col c' + (idx + 1) + '">',
+        '  <div class="s10-col-head">',
+        '    <span class="s10-col-name"></span>',
+        '    <span class="s10-col-badge">SLA</span>',
+        '  </div>',
+        '  <div class="s10-sla">' + steps + '</div>',
+        '  <div class="s10-star">',
+        '    <span class="s10-star-eye">North star</span>',
+        '    <span class="s10-star-text"></span>',
+        '  </div>',
+        '</div>'
+      ].join('');
+    }).join('');
+
+    stage.innerHTML = [
+      '<div class="s10-layout">',
+      '  <div class="s10-head">',
+      '    <h3>The scoreboard \u2014 <em>three audiences, one loop</em></h3>',
+      '    <span class="s10-head-sub">SLA \u00b7 North star \u00b7 Compounding</span>',
+      '  </div>',
+      '  <div class="s10-grid">' + cols + '</div>',
+      '  <div class="s10-loop" id="s10Loop">',
+      '    <div class="s10-loop-cell">',
+      '      <span class="s10-loop-k">Conversion</span>',
+      '      <span class="s10-loop-v" id="s10lConv"></span>',
+      '    </div>',
+      '    <div class="s10-loop-cell">',
+      '      <span class="s10-loop-k">Velocity</span>',
+      '      <span class="s10-loop-v" id="s10lVel"></span>',
+      '    </div>',
+      '    <div class="s10-loop-cell">',
+      '      <span class="s10-loop-k">Compounding</span>',
+      '      <span class="s10-loop-v" id="s10lComp"></span>',
+      '    </div>',
+      '  </div>',
+      '</div>'
+    ].join('');
+
+    // Populate per-column content safely (textContent, no innerHTML)
+    var colEls = stage.querySelectorAll('.s10-col');
+    pillars.forEach(function(p, idx) {
+      var col = colEls[idx];
+      col.querySelector('.s10-col-name').textContent = p.audience || '';
+      var stepEls = col.querySelectorAll('.s10-sla-step');
+      (p.slaRow || []).forEach(function(s, i) {
+        if (stepEls[i]) stepEls[i].querySelector('.s10-sla-text').textContent = s;
+      });
+      col.querySelector('.s10-star-text').textContent = p.northStar || '';
+      // Reveal column, then light SLA ticks one-by-one
+      setTimeout(function(){ col.classList.add('show'); }, 120 + idx * 180);
+      (p.slaRow || []).forEach(function(_, i) {
+        var stepEl = stepEls[i];
+        if (!stepEl) return;
+        setTimeout(function(){ stepEl.classList.add('on'); },
+                   500 + idx * 180 + i * 180);
+      });
+    });
+
+    stage.querySelector('#s10lConv').textContent = loopStats.convRate   || '';
+    stage.querySelector('#s10lVel').textContent  = loopStats.velocity   || '';
+    stage.querySelector('#s10lComp').textContent = loopStats.compounding || '';
+
+    var loopEl = stage.querySelector('#s10Loop');
+    setTimeout(function(){ loopEl.classList.add('show'); }, 1700);
+  };
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
