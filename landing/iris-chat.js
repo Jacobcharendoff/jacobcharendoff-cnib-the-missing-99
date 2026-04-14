@@ -2101,12 +2101,10 @@ Never end a conversation without either (a) a clear recommendation AND a concret
     let scenarioCancelled = false;
 
     function openChat(scenario) {
-      // Live chat temporarily disabled — demos only
-      if (scenario === 'general') {
-        const demos = document.getElementById('demos');
-        if (demos) demos.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
+      // Previously: 'general' short-circuited to scrollIntoView(#demos) which
+      // broke the FAB on the new landing (no #demos section). Live mode is
+      // now re-enabled — scenarios.general is flagged isLive:true and runs
+      // through the live LLM path at line ~2140.
       currentScenario = scenario;
       conversationStep = 0;
       conversationHistory = []; // Reset LLM context
@@ -2948,6 +2946,69 @@ Never end a conversation without either (a) a clear recommendation AND a concret
     })();
 
     a11yLoad();
+
+  // ================================================================
+  // Modal focus trap + focus restoration (WCAG 2.4.3)
+  // ================================================================
+  // Tracks the element that had focus when the modal opened, so we can
+  // restore focus to it on close. Trap is set up once; it activates only
+  // when the modal is in the 'active' state.
+  (function setupModalFocusTrap() {
+    var lastFocusBeforeModal = null;
+    var modalEl = document.getElementById('irisModal');
+    if (!modalEl) return;
+
+    function getFocusableInside(el) {
+      var q = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+      return Array.prototype.slice.call(el.querySelectorAll(q))
+        .filter(function(n){ return n.offsetParent !== null; });
+    }
+
+    // Observe .active class to detect open/close transitions.
+    var wasActive = modalEl.classList.contains('active');
+    var mo = new MutationObserver(function(){
+      var isActive = modalEl.classList.contains('active');
+      if (isActive && !wasActive) {
+        // Opening
+        lastFocusBeforeModal = document.activeElement;
+        setTimeout(function(){
+          var focusables = getFocusableInside(modalEl);
+          var input = document.getElementById('irisChatInput');
+          var target = input || focusables[0];
+          if (target && target.focus) { try { target.focus(); } catch(e){} }
+        }, 60);
+      } else if (!isActive && wasActive) {
+        // Closing — restore focus
+        if (lastFocusBeforeModal && lastFocusBeforeModal.focus) {
+          try { lastFocusBeforeModal.focus(); } catch(e){}
+        }
+        lastFocusBeforeModal = null;
+      }
+      wasActive = isActive;
+    });
+    mo.observe(modalEl, { attributes: true, attributeFilter: ['class'] });
+
+    // Tab key trap — cycle within modal when it's active.
+    document.addEventListener('keydown', function(e) {
+      if (!modalEl.classList.contains('active')) return;
+      if (e.key !== 'Tab') return;
+      var focusables = getFocusableInside(modalEl);
+      if (focusables.length === 0) return;
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first || !modalEl.contains(document.activeElement)) {
+          e.preventDefault();
+          try { last.focus(); } catch(_){}
+        }
+      } else {
+        if (document.activeElement === last || !modalEl.contains(document.activeElement)) {
+          e.preventDefault();
+          try { first.focus(); } catch(_){}
+        }
+      }
+    });
+  })();
 
   // ================================================================
   // Public API — expose only the hooks the landing page needs
