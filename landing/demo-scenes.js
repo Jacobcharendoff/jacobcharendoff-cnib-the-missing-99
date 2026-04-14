@@ -321,6 +321,135 @@
   }
 
   // ================================================================
+  // Scene 5 — Readiness score + volunteer ask
+  // Score bar animates 0 → 78, crosses threshold (75), iris. invitation
+  // fires, Margaret says "yes", conversion counter ticks 11 → 12%.
+  // The single most emotionally loaded scene in the demo.
+  // ================================================================
+  window.demoSceneRenderers.readiness = function(stage) {
+    var m = (data.margaret || {});
+    var r = (m.readiness || { score: 78, threshold: 75, factors: [] });
+    var loop = (data.loop || {});
+    var convPct = Math.round((loop.clientToVolunteerPct || 0.10) * 100);
+
+    stage.innerHTML = [
+      '<div class="s5-layout">',
+      '  <header class="s5-head">',
+      '    <span class="s5-eye">6 months in \u2014 iris. reads the room</span>',
+      '    <h2 class="s5-title">Readiness, not recruitment.</h2>',
+      '  </header>',
+      '  <div class="s5-split">',
+      '    <aside class="s5-score">',
+      '      <div class="s5-score-label">Volunteer readiness score</div>',
+      '      <div class="s5-score-bar" aria-hidden="true">',
+      '        <div class="s5-score-fill" id="s5Fill"></div>',
+      '        <div class="s5-score-threshold" id="s5Threshold" style="left:' + (r.threshold || 75) + '%">',
+      '          <span>Threshold</span>',
+      '          <span class="s5-th-num">' + (r.threshold || 75) + '</span>',
+      '        </div>',
+      '      </div>',
+      '      <div class="s5-score-row">',
+      '        <span class="s5-score-now" id="s5Now">0</span>',
+      '        <span class="s5-score-verdict" id="s5Verdict">calculating\u2026</span>',
+      '      </div>',
+      '      <ul class="s5-factors" id="s5Factors"></ul>',
+      '    </aside>',
+      '    <section class="s5-exchange" aria-label="The invitation">',
+      '      <div class="s5-exchange-chat" id="s5Chat"></div>',
+      '      <div class="s5-success" id="s5Success" aria-hidden="true">',
+      '        <div class="s5-success-head">',
+      '          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      '          <span>Client &rarr; Volunteer conversion</span>',
+      '        </div>',
+      '        <div class="s5-success-body">',
+      '          <span class="s5-success-n"><span id="s5ConvBefore">' + (convPct - 1) + '</span>% &rarr; <span id="s5ConvAfter">' + convPct + '</span>%</span>',
+      '          <span class="s5-success-sub">Running conversion rate just ticked up by one.</span>',
+      '        </div>',
+      '      </div>',
+      '    </section>',
+      '  </div>',
+      '</div>'
+    ].join('');
+
+    var fill = stage.querySelector('#s5Fill');
+    var nowEl = stage.querySelector('#s5Now');
+    var verdictEl = stage.querySelector('#s5Verdict');
+    var factorsEl = stage.querySelector('#s5Factors');
+    var chatEl = stage.querySelector('#s5Chat');
+    var successEl = stage.querySelector('#s5Success');
+
+    // Populate factors (hidden at first)
+    (r.factors || []).forEach(function(f, i) {
+      var li = document.createElement('li');
+      li.className = 's5-factor';
+      li.innerHTML = [
+        '<span class="s5-factor-label"></span>',
+        '<span class="s5-factor-val"></span>',
+        '<span class="s5-factor-pts" data-to="' + f.contribution + '">0</span>'
+      ].join('');
+      li.querySelector('.s5-factor-label').textContent = f.label;
+      li.querySelector('.s5-factor-val').textContent = f.value;
+      factorsEl.appendChild(li);
+    });
+
+    // Animate score 0 → target
+    setTimeout(function() {
+      if (!fill.parentNode) return;
+      var target = r.score || 78;
+      var dur = 2000;
+      var start = performance.now();
+      function step(now) {
+        if (!fill.parentNode) return;
+        var p = Math.min(1, (now - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var v = target * eased;
+        fill.style.width = v.toFixed(2) + '%';
+        nowEl.textContent = Math.round(v);
+        // Factors light up in sequence as score passes their cumulative value
+        var li = factorsEl.children;
+        for (var i = 0; i < li.length; i++) {
+          var ptEl = li[i].querySelector('.s5-factor-pts');
+          var ptTo = parseInt(ptEl.dataset.to, 10) || 0;
+          var thresh = ((i + 1) / li.length) * target;
+          if (v >= thresh && !li[i].classList.contains('is-lit')) {
+            li[i].classList.add('is-lit');
+            animateCount(ptEl, 0, ptTo, 600);
+          }
+        }
+        if (v >= (r.threshold || 75)) {
+          verdictEl.textContent = 'Ready';
+          verdictEl.className = 's5-score-verdict is-ready';
+          fill.classList.add('over-threshold');
+        }
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }, 900);
+
+    // After score crosses, fire the chat exchange
+    var chatTurns = [
+      { speaker: 'iris',     text: 'Margaret \u2014 would you help someone just starting?', delay: 4500 },
+      { speaker: 'margaret', text: 'yes.',                                                    delay: 9500 }
+    ];
+    chatTurns.forEach(function(t) {
+      setTimeout(function() {
+        if (!chatEl.parentNode) return;
+        var b = document.createElement('div');
+        b.className = 's5-bubble s5-bubble--' + (t.speaker === 'iris' ? 'iris' : 'user');
+        b.innerHTML = '<span class="s5-bubble-who">' + (t.speaker === 'iris' ? 'iris.' : 'Margaret') + '</span><span class="s5-bubble-text"></span>';
+        b.querySelector('.s5-bubble-text').textContent = t.text;
+        chatEl.appendChild(b);
+        requestAnimationFrame(function() { b.classList.add('show'); });
+      }, t.delay);
+    });
+
+    // Success callout at the end
+    setTimeout(function() {
+      if (successEl.parentNode) successEl.classList.add('show');
+    }, 14500);
+  };
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
