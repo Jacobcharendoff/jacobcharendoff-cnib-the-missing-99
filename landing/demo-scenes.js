@@ -811,8 +811,8 @@
   // the compounding math (C3b, next batch).
   // ================================================================
   window.demoSceneRenderers.loop = function(stage) {
-    var data = (window.demoData && window.demoData.clinic && window.demoData.clinic.loop) || {};
-    var loop = data || {};
+    // `data` at module scope = window.demoData. loop lives at top level.
+    var loop = (data && data.loop) || {};
     var comp = loop.compounding || {
       year1Clients:     1000,
       year2Volunteers:   120,
@@ -927,8 +927,8 @@
   // the loop headlines (conv rate, velocity, compounding).
   // ================================================================
   window.demoSceneRenderers.scoreboard = function(stage) {
-    var board = (window.demoData && window.demoData.clinic &&
-                 window.demoData.clinic.scoreboard) || {};
+    // `data` at module scope = window.demoData. scoreboard is top-level.
+    var board = (data && data.scoreboard) || {};
     var pillars = board.pillars || [];
     var loopStats = board.loop || {};
 
