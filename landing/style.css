@@ -238,3 +238,31 @@ p{line-height:1.65}
 @media(max-width:900px){
   .jm-grid{grid-template-columns:1fr;gap:64px}
 }
+
+/* ================================================================
+   Nav accessibility link — replaces floating a11y-fab (UX rec)
+   ================================================================ */
+.nv-a11y{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:100px;
+  background:transparent;border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.72);font-family:inherit;font-size:12.5px;font-weight:600;
+  letter-spacing:.2px;cursor:pointer;
+  transition:background .25s,border-color .25s,color .25s;
+}
+.nv-a11y:hover,.nv-a11y:focus-visible{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(255,255,255,.25);
+  color:#fff;
+}
+.nv-a11y svg{flex-shrink:0}
+
+/* Hide the original floating accessibility FAB — replaced by nav link above.
+   We keep the element in the DOM so the existing a11y-panel open/close
+   handlers that reference #a11yFab for aria-expanded sync don't break. */
+.a11y-fab{display:none !important}
+
+@media(max-width:640px){
+  .nv-a11y span{display:none}
+  .nv-a11y{padding:8px}
+}
