@@ -1346,6 +1346,12 @@
 }
 .s9-wheel svg { width:100%;height:100%;display:block;overflow:visible; }
 
+/* Right column — title + math panel + headline callout */
+.s9-right {
+  display:flex;flex-direction:column;justify-content:center;
+  padding:12px 4px;min-width:0;
+}
+
 .s9-ring {
   fill:none;stroke:rgba(255,255,255,.06);stroke-width:1;
 }
