@@ -473,3 +473,70 @@ body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#000;colo
 .ft-a11y{color:rgba(0,0,0,.5)}
 .ft-a11y a{color:#a07800}
 .ft-br{color:rgba(0,0,0,.3)}
+
+/* ================================================================
+   APPLE-STYLE POLISH — spacing, columns, vertical rhythm
+   Overrides earlier defaults. Tighter, more intentional.
+   ================================================================ */
+
+/* Tighter, more consistent section padding */
+.sec{padding:140px 0}
+.s3{padding:180px 0}
+.s9{padding:180px 48px}
+
+/* Tighter container — Apple feel */
+.ctn{max-width:1020px}
+.ctn--narrow{max-width:760px}
+
+/* Unified intro spacing — every section intro sits the same */
+.s2-stats{margin-top:56px}
+.s2-kicker{margin-top:40px}
+.s4-intro,.s5-intro,.s6-intro,.s8-intro{max-width:640px;margin:0 auto 56px}
+.s7-intro{max-width:640px;margin-bottom:56px}
+
+/* Tighter, consistent grid gaps */
+.s2-stats,.s5-grid,.s7-journey{gap:20px}
+.s8-grid{gap:14px}
+
+/* Unified closing text spacing */
+.s5-cl,.s6-cl,.s7-cl{margin-top:56px}
+.s8-cl{margin-top:48px}
+
+/* Tighter card padding — more breathable text inside */
+.s2-stat{padding:40px 32px}
+.s5-card{padding:38px 28px}
+.s6-step{padding:36px 26px}
+.s7-stage{padding:30px 20px}
+.s7-vol{padding:42px 36px}
+.s8-node{padding:26px 20px}
+
+/* Hero tighten */
+.hero{padding:120px 48px 100px;gap:56px}
+.hero h1{margin-bottom:20px}
+.hero-tl{margin-bottom:12px}
+.hero-sh{margin-bottom:40px}
+
+/* S3 centered brand moment — tighter vertical rhythm */
+.s3-truth{margin-bottom:36px}
+.s3-desc{margin-bottom:44px}
+
+/* S9 — breathing room around the close */
+.s9-bd{margin:0 auto 48px}
+.s9-fl{margin-top:72px}
+.im--close{margin-bottom:32px}
+
+/* Mobile tightening */
+@media(max-width:960px){
+  .sec{padding:100px 0}
+  .s3{padding:120px 0}
+  .s9{padding:120px 32px}
+  .ctn{padding:0 32px}
+  .hero{padding:100px 32px 80px;gap:40px}
+  .s4-intro,.s5-intro,.s6-intro,.s7-intro,.s8-intro{margin-bottom:48px}
+}
+@media(max-width:640px){
+  .sec{padding:80px 0}
+  .s3{padding:100px 0}
+  .s9{padding:100px 24px}
+  .ctn{padding:0 24px}
+}
