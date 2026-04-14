@@ -56,8 +56,9 @@
         '  <div class="ch2-stat"><span class="ch2-stat-digits">1,500,000</span></div>',
         '  <div class="ch2-rule"></div>',
         '  <div class="ch2-reveal">',
-        '    <span class="ch2-reveal-n">&lt;1%</span>',
-        '    <span class="ch2-reveal-t">ever find CNIB</span>',
+        '    <span class="ch2-reveal-n">fewer than</span>',
+        '    <span class="ch2-reveal-nbig">1 in 100</span>',
+        '    <span class="ch2-reveal-t">ever find their way in</span>',
         '  </div>',
         '</div>'
       ].join('')
@@ -159,7 +160,7 @@
         '    <span class="ch6-counter-n" data-count-to="38" data-count-dur="3000" data-count-delay="3500">0</span>',
         '    <div class="ch6-counter-meta">',
         '      <span class="ch6-counter-t">members referred to iris.</span>',
-        '      <span class="ch6-counter-sub">last 12 months</span>',
+        '      <span class="ch6-counter-sub">projected &middot; illustrative</span>',
         '    </div>',
         '  </div>',
         '  <div class="ch6-live">',
