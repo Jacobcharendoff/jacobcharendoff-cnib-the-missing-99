@@ -324,3 +324,24 @@ body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#000;colo
   .s8-grid{grid-template-columns:1fr}
   .ft{padding:40px 24px 100px}
 }
+
+/* ================================================================
+   LIGHT SECTIONS — 80/20 rhythm break (S2 + S6)
+   Warm off-white · Subtle prismatic ambient wash
+   ================================================================ */
+
+/* S2 THE PROBLEM — Light · warm off-white */
+.s2{
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 0%,rgba(181,123,255,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 30% at 92% 88%,rgba(255,159,64,.05) 0%,transparent 55%),
+    #f7f5f0;
+}
+.s2 .ey{color:rgba(0,0,0,.42)}
+.s2 h2{color:#0a0a0a}
+.s2 .body{color:rgba(0,0,0,.6)}
+.s2-stat{background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.07);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 2px 28px rgba(0,0,0,.05)}
+.s2-stat::before{background:linear-gradient(90deg,transparent,rgba(200,150,10,.5),rgba(255,107,157,.3),transparent)}
+.s2-stat-n{color:#b88300}
+.s2-stat-l{color:rgba(0,0,0,.46)}
+.s2-kicker{color:rgba(0,0,0,.65)}
