@@ -531,3 +531,109 @@
   .s2-chat { min-height: 260px; }
   .s2-matches { min-height: 0; }
 }
+
+/* ================================================================
+   SCENE 3 — Engage + handoff timeline
+   5 stages across Day 0-7. SLA target vs actual. Green success signal.
+   ================================================================ */
+.s3-layout {
+  width: 100%; max-width: 1280px;
+  display: flex; flex-direction: column; gap: 28px;
+}
+
+.s3-head {
+  display: flex; flex-direction: column; gap: 6px; text-align: center;
+  max-width: 780px; margin: 0 auto;
+}
+.s3-eye {
+  font-size: var(--t-eye); letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700;
+  color: var(--c-accent); opacity: .82;
+}
+.s3-title {
+  margin: 0; font-size: var(--t-h2); font-weight: 600;
+  letter-spacing: -.02em; line-height: 1.08; color: var(--c-fg-1);
+}
+
+/* --- Timeline grid (5 stages horizontally) --- */
+.s3-timeline {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 1px; list-style: none; margin: 0; padding: 0;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 18px; overflow: hidden;
+  position: relative;
+}
+/* Connecting line behind the dots */
+.s3-timeline::before {
+  content: ''; position: absolute;
+  left: 10%; right: 10%; top: calc(18px + 18px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,209,0,.1) 0%, rgba(255,209,0,.32) 50%, rgba(255,209,0,.1) 100%);
+  pointer-events: none; z-index: 1;
+}
+
+.s3-step {
+  position: relative; z-index: 2;
+  background: rgba(8,8,10,.78);
+  padding: 18px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);
+}
+.s3-step.show { opacity: 1; transform: translateY(0); }
+
+.s3-step-dot {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #0A0A0A;
+  border: 1.5px solid rgba(255,209,0,.35);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 4px;
+}
+.s3-step-dot span {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--c-accent);
+  box-shadow: 0 0 10px rgba(255,209,0,.55);
+}
+.s3-step.is-met .s3-step-dot { border-color: rgba(255,209,0,.7); }
+.s3-step.is-miss .s3-step-dot { border-color: rgba(232,124,160,.6); }
+.s3-step.is-miss .s3-step-dot span { background: var(--c-rose); box-shadow: 0 0 10px rgba(232,124,160,.5); }
+
+.s3-step-day {
+  font-size: var(--t-eye); letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
+  color: var(--c-accent); opacity: .7;
+}
+.s3-step.is-miss .s3-step-day { color: var(--c-rose); }
+.s3-step-label {
+  font-size: var(--t-body); font-weight: 700; color: var(--c-fg-1); letter-spacing: -.01em;
+  line-height: 1.2;
+}
+.s3-step-detail {
+  font-size: var(--t-meta); line-height: 1.5; color: var(--c-fg-2);
+}
+.s3-step-sla {
+  margin-top: auto; padding-top: 10px;
+  font-size: 10.5px; letter-spacing: .3px; font-weight: 600;
+  color: rgba(255,209,0,.7); font-variant-numeric: tabular-nums;
+}
+.s3-step.is-miss .s3-step-sla { color: var(--c-rose); }
+
+/* --- Success footer callout --- */
+.s3-success {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px; border-radius: 100px; align-self: center;
+  background: rgba(255,209,0,.08);
+  border: 1px solid rgba(255,209,0,.36);
+  color: var(--c-accent);
+  font-size: var(--t-body); font-weight: 700; letter-spacing: .2px;
+  box-shadow: 0 0 24px rgba(255,209,0,.15);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+}
+.s3-success.show { opacity: 1; transform: translateY(0); }
+.s3-success svg { stroke: var(--c-accent); flex-shrink: 0; }
+
+@media (max-width: 900px) {
+  .s3-timeline { grid-template-columns: 1fr; }
+  .s3-timeline::before { display: none; }
+  .s3-step { border-bottom: 1px solid rgba(255,255,255,.05); padding: 14px 16px; }
+}

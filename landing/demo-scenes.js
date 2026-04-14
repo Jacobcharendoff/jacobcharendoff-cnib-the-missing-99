@@ -139,6 +139,66 @@
   };
 
   // ================================================================
+  // Scene 3 — Engage + handoff (7 days in motion)
+  // Horizontal timeline of Margaret's first 7 days: iris. conversation →
+  // coordinator brief → warm callback → peer connection → program session.
+  // Each stage carries target-vs-actual SLA. Bottom callout = success signal.
+  // ================================================================
+  window.demoSceneRenderers.engage = function(stage) {
+    var m = (data.margaret || {});
+    var tl = m.handoffTimeline || [];
+
+    stage.innerHTML = [
+      '<div class="s3-layout">',
+      '  <header class="s3-head">',
+      '    <span class="s3-eye">First 7 days \u2014 handoff in motion</span>',
+      '    <h2 class="s3-title">A conversation that becomes a plan.</h2>',
+      '  </header>',
+      '  <ol class="s3-timeline" id="s3Timeline" aria-label="Handoff timeline"></ol>',
+      '  <footer class="s3-success" id="s3Success" aria-hidden="true">',
+      '    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      '    <span>Concrete next step booked within 7 days. 5 of 5 SLAs met.</span>',
+      '  </footer>',
+      '</div>'
+    ].join('');
+
+    var timelineEl = stage.querySelector('#s3Timeline');
+    var successEl  = stage.querySelector('#s3Success');
+
+    tl.forEach(function(step, i) {
+      var met = (step.actualHrs || 0) <= (step.slaTargetHrs || Infinity);
+      var slaText = step.slaTargetHrs
+        ? ('target ' + fmtHrs(step.slaTargetHrs) + ' · actual ' + fmtHrs(step.actualHrs))
+        : 'immediate';
+      var li = document.createElement('li');
+      li.className = 's3-step' + (met ? ' is-met' : ' is-miss');
+      li.dataset.index = String(i);
+      li.innerHTML = [
+        '<div class="s3-step-dot" aria-hidden="true"><span></span></div>',
+        '<div class="s3-step-day">Day ' + step.day + '</div>',
+        '<div class="s3-step-label"></div>',
+        '<div class="s3-step-detail"></div>',
+        '<div class="s3-step-sla">' + slaText + '</div>'
+      ].join('');
+      li.querySelector('.s3-step-label').textContent = step.label;
+      li.querySelector('.s3-step-detail').textContent = step.detail;
+      timelineEl.appendChild(li);
+      setTimeout(function() { li.classList.add('show'); }, 300 + i * 900);
+    });
+
+    setTimeout(function() {
+      if (successEl.parentNode) successEl.classList.add('show');
+    }, 300 + tl.length * 900 + 600);
+  };
+
+  function fmtHrs(h) {
+    if (h == null || h === 0) return 'now';
+    if (h < 24) return h + 'h';
+    var d = Math.round(h / 24);
+    return d + 'd';
+  }
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
