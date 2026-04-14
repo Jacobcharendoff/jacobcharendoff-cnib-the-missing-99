@@ -782,9 +782,17 @@ p{line-height:1.65}
    post-chapter state or the iris-chat FAB. */
 
 /* Un-hide the accessibility FAB since nav link was removed.
-   Kept subtle bottom-left — won't compete with iris chat FAB bottom-right. */
+   Kept subtle bottom-left — won't compete with iris chat FAB bottom-right.
+   BUT: hidden on the minimal landing (body.is-landing) — benched for now.
+   Still appears on detail.html. */
 .a11y-fab{display:inline-flex !important;opacity:.55;transition:opacity .3s}
 .a11y-fab:hover,.a11y-fab:focus-visible{opacity:1}
+
+/* Landing-only: hide both floating corners. Tour will handle its own
+   accessibility surface. Chat still reachable via CTA ('See how' → tour
+   or, post-tour, via the 'Ask iris.' button). */
+body.is-landing .a11y-fab,
+body.is-landing .iris-fab{display:none !important}
 
 /* Tablet — tighter grid */
 @media(max-width:1100px){
