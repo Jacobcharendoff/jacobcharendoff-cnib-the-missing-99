@@ -29,7 +29,7 @@
   <!-- ============ HERO: THE THESIS ============ -->
   <section class="hero" id="hero" aria-label="iris. — a growth system for CNIB">
     <div class="hero-text">
-      <h1 class="hero-w rv">iris.</h1>
+      <h1 class="hero-w prism rv">iris.</h1>
       <div class="hero-tl rv rv-d1">CNIB's engagement infrastructure.</div>
       <div class="hero-triad rv rv-d2" aria-label="Simple. Systematic. Scalable.">
         <span>Simple.</span>
@@ -59,14 +59,16 @@
       </div>
     </div>
     <div class="hero-mark">
-      <div class="im im--hero rv rv-d2">
+      <div class="im im--hero rv rv-d2" id="heroIris">
         <svg viewBox="0 0 400 400" aria-hidden="true">
-          <circle class="im-r im-r1" cx="200" cy="200" r="190"/>
-          <circle class="im-r im-r1" cx="200" cy="200" r="160"/>
-          <circle class="im-r im-r2" cx="200" cy="200" r="130"/>
-          <circle class="im-r im-r3" cx="200" cy="200" r="95"/>
-          <circle class="im-r im-r4" cx="200" cy="200" r="60"/>
-          <circle class="im-p" cx="200" cy="200" r="20"/>
+          <circle class="im-r im-r1" cx="200" cy="200" r="195"/>
+          <circle class="im-r im-r1" cx="200" cy="200" r="170"/>
+          <circle class="im-r im-r2" cx="200" cy="200" r="140"/>
+          <circle class="im-r im-r2" cx="200" cy="200" r="112"/>
+          <circle class="im-r im-r3" cx="200" cy="200" r="86"/>
+          <circle class="im-r im-r4" cx="200" cy="200" r="62"/>
+          <circle class="im-r im-r5" cx="200" cy="200" r="42"/>
+          <circle class="im-p" id="heroIrisPupil" cx="200" cy="200" r="18"/>
         </svg>
       </div>
     </div>
@@ -98,12 +100,15 @@
       <div class="ey rv">Meet iris.</div>
       <div class="im im--brand rv rv-d1">
         <svg viewBox="0 0 400 400" aria-hidden="true">
-          <circle class="im-r im-r1" cx="200" cy="200" r="190"/>
-          <circle class="im-r im-r1" cx="200" cy="200" r="160"/>
-          <circle class="im-r im-r2" cx="200" cy="200" r="130"/>
-          <circle class="im-r im-r3" cx="200" cy="200" r="95"/>
-          <circle class="im-r im-r4" cx="200" cy="200" r="60"/>
-          <circle class="im-p" cx="200" cy="200" r="20"/>
+          <!-- 7 concentric rings, outer→inner, each with its own ring-color class -->
+          <circle class="im-r im-r1" cx="200" cy="200" r="195"/>
+          <circle class="im-r im-r1" cx="200" cy="200" r="170"/>
+          <circle class="im-r im-r2" cx="200" cy="200" r="140"/>
+          <circle class="im-r im-r2" cx="200" cy="200" r="112"/>
+          <circle class="im-r im-r3" cx="200" cy="200" r="86"/>
+          <circle class="im-r im-r4" cx="200" cy="200" r="62"/>
+          <circle class="im-r im-r5" cx="200" cy="200" r="42"/>
+          <circle class="im-p" cx="200" cy="200" r="18"/>
         </svg>
       </div>
       <p class="s3-spectrum rv rv-d1">The iris is the part of the eye that decides how much light to let in. When sight changes, the spectrum narrows. iris. holds every color.</p>
@@ -291,6 +296,41 @@
   </footer>
 
 <script>
+/* === Hero iris pupil — subtle cursor tracking (desktop only, reduced-motion aware) ===
+   The pupil drifts toward the cursor, never more than 8px from center.
+   Gives the sense that iris. is looking at the reader. */
+(function(){
+  var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (prefersReduce || isTouch) return;
+  var heroIris = document.getElementById('heroIris');
+  var pupil = document.getElementById('heroIrisPupil');
+  if (!heroIris || !pupil) return;
+  var maxDrift = 8;
+  var targetX = 200, targetY = 200;
+  var curX = 200, curY = 200;
+  function onMove(e) {
+    var r = heroIris.getBoundingClientRect();
+    var cx = r.left + r.width / 2;
+    var cy = r.top + r.height / 2;
+    var dx = (e.clientX - cx) / (r.width / 2);
+    var dy = (e.clientY - cy) / (r.height / 2);
+    var mag = Math.sqrt(dx*dx + dy*dy);
+    if (mag > 1) { dx /= mag; dy /= mag; }
+    targetX = 200 + dx * maxDrift;
+    targetY = 200 + dy * maxDrift;
+  }
+  function tick() {
+    curX += (targetX - curX) * 0.08;
+    curY += (targetY - curY) * 0.08;
+    pupil.setAttribute('cx', curX.toFixed(2));
+    pupil.setAttribute('cy', curY.toFixed(2));
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('mousemove', onMove, { passive: true });
+  tick();
+})();
+
 /* === Chapter 1 Waveform — generate breathing bars === */
 (function(){
   var wave=document.getElementById('waveBars');
