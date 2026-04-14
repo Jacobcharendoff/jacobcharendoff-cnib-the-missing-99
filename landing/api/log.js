@@ -1,22 +1,56 @@
-// Vercel serverless function: IRIS session logger.
+// Vercel serverless function: iris. session logger.
 //
-// Receives fire-and-forget POST from the browser (client/index.html's
-// logIrisEvent pipeline) and forwards the session payload to the
-// Google Apps Script webhook that writes the Sheet + emails Jacob.
-//
-// The webhook URL lives in LOG_WEBHOOK_URL. If the env var is missing,
-// we silently 204 — the front-end MUST NOT break if logging is down.
+// Receives fire-and-forget POST from the browser and forwards the
+// session payload to the webhook set via LOG_WEBHOOK_URL env var.
+// If the env var is missing, we silently 204 — the front-end MUST NOT
+// break if logging is down. This file never crashes the caller.
 
 export const config = { runtime: 'edge' };
 
+// Allow-list of origins that may POST to this endpoint
+const ALLOWED_ORIGINS = new Set([
+  'https://meet-iris-app.vercel.app',
+  'https://iris-2-bay.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001',
+]);
+
+function checkOrigin(request) {
+  const origin = request.headers.get('origin') || '';
+  const referer = request.headers.get('referer') || '';
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  for (const ok of ALLOWED_ORIGINS) {
+    if (referer.startsWith(ok + '/') || referer === ok) return true;
+  }
+  return false;
+}
+
+// Simple non-cryptographic hash so we don't forward raw IPs.
+// Good enough to dedupe sessions; not reversible to an IP.
+async function hashIP(ip) {
+  if (!ip) return null;
+  try {
+    const data = new TextEncoder().encode(String(ip) + '|iris-salt-v1');
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    const hex = Array.from(new Uint8Array(buf))
+      .slice(0, 8)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+    return hex; // 16-char hex prefix
+  } catch (_) {
+    return null;
+  }
+}
+
 export default async function handler(request) {
-  // Accept both GET (health check) and POST (event push)
+  // Health check
   if (request.method === 'GET') {
+    const hasWebhook = !!process.env.LOG_WEBHOOK_URL;
     return new Response(
       JSON.stringify({
         ok: true,
         service: 'iris-log',
-        webhookConfigured: true,
+        webhookConfigured: hasWebhook,
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
@@ -26,13 +60,18 @@ export default async function handler(request) {
     return new Response('method not allowed', { status: 405 });
   }
 
-  // Never throw back to the client. Every branch returns 204/200.
+  // Origin check — reject cross-origin abuse
+  if (!checkOrigin(request)) {
+    return new Response(null, { status: 403 });
+  }
+
+  // Never throw back to the client. Every branch returns 204.
   try {
-    // Hardcoded = Apps Script "Iris logger v6 memberFirstName" deployment
-    // (Version 6, Apr 9 2026). Overrides the Vercel env var, which still
-    // points at an older deployment without memberFirstName support.
-    const webhook =
-      'https://script.google.com/macros/s/AKfycbyKMjD_WvYtzZrtNH7FfpYkS1lmEh0PGTcrhiUg24PrPB6wEsnN6FxLtEP5TeILHUhI/exec';
+    const webhook = process.env.LOG_WEBHOOK_URL;
+    // If no webhook configured, just 204 — logging is optional.
+    if (!webhook) {
+      return new Response(null, { status: 204 });
+    }
 
     // Parse body safely
     let body = {};
@@ -42,37 +81,41 @@ export default async function handler(request) {
       return new Response(null, { status: 204 });
     }
 
-    // Enrich with server-side signal the browser can't see
-    const ip =
+    // Enrich — hash IP, keep geo coarse, strip nothing else for now
+    const rawIP =
       request.headers.get('x-forwarded-for') ||
       request.headers.get('x-real-ip') ||
       null;
-    const geo = request.geo || null; // Vercel Edge attaches this on most plans
+    const ipHash = await hashIP(rawIP);
+    const geo = request.geo || null; // Vercel Edge attaches this
     const ua = request.headers.get('user-agent') || '';
     const referrer = request.headers.get('referer') || null;
 
     const enriched = {
       ...body,
-      ip,
+      ipHash, // hashed, not raw
       geo,
       ua: body.ua || ua,
       referrer: body.referrer || referrer,
     };
 
-    // Fire-and-forget forward. We don't await the webhook response body —
-    // just kick it off. If it errors, swallow it.
+    // Fire-and-forget forward with a timeout so the edge function
+    // doesn't hang indefinitely.
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 8000);
     const forwardPromise = fetch(webhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(enriched),
-    }).catch((err) => {
-      // Silent — logging should never break Iris
-      console.warn('[iris-log] forward failed:', err && err.message);
-    });
+      signal: ctrl.signal,
+    })
+      .catch((err) => {
+        console.warn('[iris-log] forward failed:', err && err.message);
+      })
+      .finally(() => clearTimeout(timeout));
 
-    // For 'end' events, actually wait a moment so Vercel doesn't tear down
-    // the edge function before the webhook completes. For 'start'/'turn',
-    // respond immediately.
+    // For 'end' events, wait up to 2.5s so Vercel doesn't tear down
+    // the edge function before the webhook completes.
     if (body && body.phase === 'end') {
       try {
         await Promise.race([
@@ -84,8 +127,6 @@ export default async function handler(request) {
 
     return new Response(null, { status: 204 });
   } catch (err) {
-    // Absolute last-resort catch — still return 204 so the client's
-    // fetch/keepalive/sendBeacon never logs an error.
     console.warn('[iris-log] handler error:', err && err.message);
     return new Response(null, { status: 204 });
   }
