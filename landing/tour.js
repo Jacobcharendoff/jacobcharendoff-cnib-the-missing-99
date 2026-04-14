@@ -304,8 +304,35 @@
   function playChapterAudio(i) {
     var ch = CHAPTERS[i];
     if (!ch || !ch.voice) return;
+
+    // Fast path: Ch1 audio is pre-fetched on tour.js load (see bottom of
+    // this file). If already cached, play SYNCHRONOUSLY — don't await
+    // the fetchChapterAudio promise, because microtask-delayed play()
+    // calls sometimes get denied by strict autoplay policies.
+    var cached = chapterAudioCache[ch.id];
+    if (cached && current === i && !isPaused) {
+      try {
+        tourAudio.src = cached;
+        var pSync = tourAudio.play();
+        if (pSync && pSync.then) {
+          pSync.then(function(){ if (root) root.classList.add('speaking'); })
+               .catch(function(err){
+                 console.warn('[tour] sync play failed:', err && err.message);
+                 showAudioFallback();
+               });
+        } else {
+          if (root) root.classList.add('speaking');
+        }
+      } catch (e) {
+        console.warn('[tour] sync play threw:', e && e.message);
+      }
+      // Pre-fetch next chapter's audio while current plays.
+      if (CHAPTERS[i + 1]) fetchChapterAudio(i + 1);
+      return;
+    }
+
+    // Slow path: fetch then play (only when cache miss).
     fetchChapterAudio(i).then(function(url){
-      // Only play if this chapter is still the current one.
       if (current !== i || isPaused || !url) return;
       try {
         tourAudio.src = url;
@@ -313,18 +340,29 @@
         if (p && p.then) {
           p.then(function(){ if (root) root.classList.add('speaking'); })
            .catch(function(err){
-             console.warn('[tour] audio play failed:', err && err.message);
-             if (root) root.classList.remove('speaking');
+             console.warn('[tour] async play failed:', err && err.message);
+             showAudioFallback();
            });
         } else {
           if (root) root.classList.add('speaking');
         }
       } catch (e) {
-        console.warn('[tour] audio play threw:', e && e.message);
+        console.warn('[tour] async play threw:', e && e.message);
+        showAudioFallback();
       }
     });
-    // Pre-fetch next chapter's audio while current plays.
     if (CHAPTERS[i + 1]) fetchChapterAudio(i + 1);
+  }
+
+  // Show a visible "Click to play voice" button when autoplay is denied.
+  // The user click is a fresh gesture that reliably unlocks playback.
+  function showAudioFallback() {
+    if (!root) return;
+    root.classList.add('audio-blocked');
+  }
+  function hideAudioFallback() {
+    if (!root) return;
+    root.classList.remove('audio-blocked');
   }
 
   function stopChapterAudio() {
@@ -352,6 +390,10 @@
       '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
       '  <span>Best with sound on</span>',
       '</div>',
+      '<button type="button" class="tour-audio-fallback" onclick="tourUnmute()" aria-label="Play iris. voice narration">',
+      '  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
+      '  <span>Tap to hear iris.</span>',
+      '</button>',
       '<div class="tour-top">',
       '  <button class="tour-btn" id="tourTranscriptBtn" aria-label="Toggle transcript" aria-pressed="false">',
       '    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="7" y1="14" x2="14" y2="14"/></svg>',
@@ -627,4 +669,34 @@
   window.startTour = open;
   window.closeTour = close;
   window.tourReplay = function() { isPaused = false; goTo(0); };
+  // Called by the "Click to play voice" fallback button when autoplay is denied.
+  window.tourUnmute = function() {
+    hideAudioFallback();
+    if (current >= 0) {
+      // Fresh user gesture — retry the current chapter's audio.
+      var ch = CHAPTERS[current];
+      if (ch && ch.voice) {
+        var url = chapterAudioCache[ch.id];
+        if (url) {
+          try {
+            tourAudio.src = url;
+            var p = tourAudio.play();
+            if (p && p.then) {
+              p.then(function(){ if (root) root.classList.add('speaking'); })
+               .catch(function(err){ console.warn('[tour] manual unmute failed:', err); });
+            }
+          } catch (e) { console.warn('[tour] manual unmute threw:', e); }
+        } else {
+          playChapterAudio(current);
+        }
+      }
+    }
+  };
+
+  // Eager pre-fetch: get Chapter 1's audio ready the moment tour.js loads,
+  // so when the user clicks "See how" we can play synchronously inside
+  // the click gesture. This is what saves us from strict autoplay denial.
+  if (typeof fetchChapterAudio === 'function') {
+    try { fetchChapterAudio(0); } catch (_) {}
+  }
 })();

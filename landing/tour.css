@@ -938,3 +938,35 @@
 @media(max-width:640px){
   .tour-speaking-badge,.tour-mute-hint{top:18px;font-size:10px;padding:6px 12px}
 }
+
+/* ================================================================
+   AUDIO-BLOCKED FALLBACK — visible "Tap to hear iris." button that
+   appears only when autoplay was denied (tour.audio-blocked class set
+   in tour.js after a play() promise rejects). Click = fresh gesture,
+   reliably unlocks audio for the rest of the session.
+   ================================================================ */
+.tour-audio-fallback{
+  position:absolute;top:68px;left:50%;transform:translateX(-50%);
+  z-index:7;
+  display:none;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:100px;
+  background:#FFD100;color:#0A0A0A;border:none;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.15px;
+  box-shadow:0 10px 36px rgba(255,209,0,.4),0 0 0 6px rgba(255,209,0,.08);
+  animation:tourFallbackPulse 1.8s ease-in-out infinite;
+}
+.tour.audio-blocked .tour-audio-fallback{display:inline-flex}
+.tour-audio-fallback:hover,.tour-audio-fallback:focus-visible{
+  transform:translateX(-50%) translateY(-1px);
+  box-shadow:0 14px 44px rgba(255,209,0,.55),0 0 0 8px rgba(255,209,0,.1);
+}
+@keyframes tourFallbackPulse{
+  0%,100%{box-shadow:0 10px 36px rgba(255,209,0,.4),0 0 0 6px rgba(255,209,0,.08)}
+  50%{box-shadow:0 10px 40px rgba(255,209,0,.55),0 0 0 12px rgba(255,209,0,.02)}
+}
+
+/* When fallback is showing, hide the mute-hint (they're redundant) */
+.tour.audio-blocked .tour-mute-hint{display:none}
+
+/* And hide the speaking badge if it's in a broken state */
+.tour.audio-blocked .tour-speaking-badge{opacity:0}
