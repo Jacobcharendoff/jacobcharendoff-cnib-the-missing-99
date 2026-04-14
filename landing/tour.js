@@ -18,32 +18,82 @@
   // Batch 4 replaces each body with its real SVG/animation render call
   // and adds `voice` (TTS text) + `duration` (ms) per chapter.
   // ----------------------------------------------------------------
+  // ----------------------------------------------------------------
+  // DEMO BIBLE — voice script (exactly what TTS will speak), duration
+  // (ms, allowing for breath pauses via prosody), backdrop wash (per
+  // motion director), and shell title/body fallback text (visible
+  // until Batch 5 replaces with chapter-specific SVG/motion scenes).
+  //
+  // Source: Demo Bible synthesis (Apr 2026). Cross-referenced by the
+  // voice scriptwriter, motion director, narrative designer, and
+  // persona specialist. Total target runtime: ~103s + transitions.
+  // ----------------------------------------------------------------
   var CHAPTERS = [
-    { id:'meet',      eye:'Chapter 1', title:"Hello. I'm iris.",
-      body:"Let me show you how CNIB reaches everyone it's built to serve.",
-      wash:{ primary:'rgba(255,209,0,.12)', secondary:'rgba(255,159,64,.06)' }, duration:10000 },
-    { id:'gap',       eye:'Chapter 2 · The Gap', title:'The help is there. The connection isn\'t.',
-      body:'1.5 million Canadians live with sight loss. Fewer than one in a hundred is reached today.',
-      wash:{ primary:'rgba(90,140,255,.10)', secondary:'rgba(123,104,255,.05)' }, duration:15000 },
-    { id:'framework', eye:'Chapter 3 · The Framework', title:'Three stages. Three audiences. One loop.',
-      body:'Acquire, engage, and retain — applied to clients, volunteers, and partners. The same system. Different conversations.',
-      wash:{ primary:'rgba(255,180,60,.12)', secondary:'rgba(255,209,0,.06)' }, duration:12000 },
-    { id:'clients',   eye:'Chapter 4 · Clients', title:'Meet Margaret.',
-      body:'68. Newly diagnosed with macular degeneration. She found me through a QR in her doctor\'s waiting room. Three weeks later, she had a plan.',
-      wash:{ primary:'rgba(245,155,60,.14)', secondary:'rgba(255,209,0,.06)' }, duration:18000 },
-    { id:'volunteers',eye:'Chapter 5 · Volunteers', title:'"Would you help someone just starting?"',
-      body:'Six months later, I asked Margaret that one question. Today she\'s a peer mentor for three new members.',
-      wash:{ primary:'rgba(232,124,160,.12)', secondary:'rgba(181,123,255,.06)' }, duration:18000 },
-    { id:'partners',  eye:'Chapter 6 · Partners', title:'The clinic is now part of the network.',
-      body:'A QR in her doctor\'s waiting room sends a new member to me every week. CNIB grows from the outside in.',
-      wash:{ primary:'rgba(90,207,255,.10)', secondary:'rgba(45,212,191,.06)' }, duration:18000 },
-    { id:'loop',      eye:'Chapter 7 · The Loop', title:'The community regenerates itself.',
-      body:'Client becomes volunteer. Volunteer becomes advocate. Advocate brings a partner. Partner brings more clients. That\'s the engine.',
-      wash:{ primary:'rgba(181,123,255,.10)', secondary:'rgba(255,209,0,.06)' }, duration:12000 },
-    { id:'ask',       eye:'Chapter 8 · Your turn', title:'Ask iris. anything about the infrastructure.',
+    {
+      id:'meet',  eye:'Chapter 1',
+      title:"Hi. I'm iris.",
+      body:"Named for the part of the eye that decides how much light to let in.",
+      voice:"Hi. I'm iris. Named for the part of the eye that decides how much light to let in. That's my job here, too.",
+      wash:{ primary:'rgba(245,155,60,.14)', secondary:'rgba(255,209,0,.06)' },
+      duration:10000
+    },
+    {
+      id:'gap',  eye:'Chapter 2 · The Gap',
+      title:'The help is there. The connection isn\'t.',
+      body:'1.5 million Canadians live with sight loss. Fewer than one in a hundred ever finds CNIB.',
+      voice:"One and a half million Canadians live with sight loss. Fewer than one percent ever find CNIB. The help has always been here. The connection hasn't. That's the gap I was built to close.",
+      wash:{ primary:'rgba(90,200,255,.10)', secondary:'rgba(123,104,255,.04)' },
+      duration:15000
+    },
+    {
+      id:'framework',  eye:'Chapter 3 · The Framework',
+      title:'Three stages. Three audiences. One loop.',
+      body:'Acquire, engage, retain — applied to clients, volunteers, and partners.',
+      voice:"Three stages. Acquire. Engage. Retain. Three audiences. Clients. Volunteers. Partners. One relationship layer, holding all of it together. Let me show you how it moves.",
+      wash:{ primary:'rgba(255,180,60,.09)', secondary:'rgba(255,209,0,.04)' },
+      duration:12000
+    },
+    {
+      id:'clients',  eye:'Chapter 4 · Clients',
+      title:'Meet Margaret.',
+      body:'68. Newly diagnosed. Found iris. through a QR in her doctor\'s waiting room.',
+      voice:"Margaret is sixty-eight. Two months ago her ophthalmologist said the words: macular degeneration. She scanned a QR code in the waiting room. That's where she found me. We talked. Three weeks later, she had a plan. And she wasn't alone anymore.",
+      wash:{ primary:'rgba(245,155,60,.14)', secondary:'rgba(255,209,0,.05)' },
+      duration:18000
+    },
+    {
+      id:'volunteers',  eye:'Chapter 5 · Volunteers',
+      title:'"Would you help someone just starting?"',
+      body:'Six months later, I asked Margaret one question. She said yes before I finished asking.',
+      voice:"Six months later, I asked Margaret one question. Would you help someone just starting? She said yes before I finished asking. Now she mentors three new members. The person who needed a hand is the hand someone else reaches for.",
+      wash:{ primary:'rgba(232,124,160,.12)', secondary:'rgba(181,123,255,.05)' },
+      duration:18000
+    },
+    {
+      id:'partners',  eye:'Chapter 6 · Partners',
+      title:'The clinic is now part of the network.',
+      body:'Margaret\'s clinic sends a new member to iris. every week. Partners get a live view.',
+      voice:"Margaret's clinic now sends a new member to me every week. Their ophthalmologist sees who reached out, who followed through, who found their footing. Partners get a live view. CNIB grows from the outside in. One waiting room at a time.",
+      wash:{ primary:'rgba(90,200,255,.10)', secondary:'rgba(45,212,191,.05)' },
+      duration:18000
+    },
+    {
+      id:'loop',  eye:'Chapter 7 · The Loop',
+      title:'The community regenerates itself.',
+      body:'Client becomes volunteer. Volunteer becomes advocate. Advocate becomes partner.',
+      voice:"Client becomes volunteer. Volunteer becomes advocate. Advocate becomes partner. Partner brings more clients. The community doesn't just grow. It regenerates itself.",
+      wash:{ primary:'rgba(181,123,255,.12)', secondary:'rgba(255,209,0,.06)' },
+      duration:12000
+    },
+    {
+      id:'ask',  eye:'Chapter 8 · Your turn',
+      title:'Ask iris. anything about the infrastructure.',
       body:"That's how I work. Now — what would you like to know?",
-      wash:{ primary:'rgba(255,180,60,.10)', secondary:'rgba(181,123,255,.06)' }, duration:0,
-      endChapter:true },
+      voice:"That's how I work. Now — ask me anything about the infrastructure.",
+      wash:{ primary:'rgba(255,180,60,.09)', secondary:'rgba(181,123,255,.05)' },
+      duration:0,
+      endChapter:true
+    },
   ];
 
   // ----------------------------------------------------------------
