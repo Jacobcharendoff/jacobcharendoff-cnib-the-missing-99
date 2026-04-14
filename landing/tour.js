@@ -68,7 +68,25 @@
       body:'Acquire, engage, retain — applied to clients, volunteers, and partners.',
       voice:"Three stages. Acquire. Engage. Retain. Three audiences. Clients. Volunteers. Partners. One relationship layer, holding all of it together. Let me show you how it moves.",
       wash:{ primary:'rgba(255,180,60,.09)', secondary:'rgba(255,209,0,.04)' },
-      duration:12000
+      duration:12000,
+      content:[
+        '<div class="ch3-layout" aria-hidden="true">',
+        '  <svg class="ch3-loop" viewBox="0 0 400 400">',
+        '    <defs>',
+        '      <linearGradient id="ch3grad" x1="0" y1="0" x2="1" y2="1">',
+        '        <stop offset="0" stop-color="#F59B3C"/>',
+        '        <stop offset="0.5" stop-color="#E87CA0"/>',
+        '        <stop offset="1" stop-color="#B57BFF"/>',
+        '      </linearGradient>',
+        '    </defs>',
+        '    <circle class="ch3-loop-ring" cx="200" cy="200" r="180" fill="none" stroke="url(#ch3grad)" stroke-width="1.2" stroke-linecap="round"/>',
+        '  </svg>',
+        '  <span class="ch3-label ch3-label--acquire"><span class="ch3-n">01</span> Acquire</span>',
+        '  <span class="ch3-label ch3-label--engage"><span class="ch3-n">02</span> Engage</span>',
+        '  <span class="ch3-label ch3-label--retain"><span class="ch3-n">03</span> Retain</span>',
+        '  <span class="ch3-audiences">Clients &middot; Volunteers &middot; Partners</span>',
+        '</div>'
+      ].join('')
     },
     {
       id:'clients',  eye:'Chapter 4 · Clients',

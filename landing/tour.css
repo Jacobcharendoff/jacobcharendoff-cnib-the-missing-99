@@ -347,3 +347,80 @@
   .ch2-stat{font-size:clamp(56px,14vw,88px)}
   .ch2-reveal-n{font-size:clamp(32px,10vw,48px)}
 }
+
+/* ================================================================
+   CHAPTER 3 — Framework
+   Three stage labels around the iris at 10/2/6 o'clock + a spectrum
+   loop ring that traces Acquire → Engage → Retain → Acquire.
+   ================================================================ */
+.ch3-layout{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:min(78vw,640px);aspect-ratio:1;
+  pointer-events:none;
+}
+.ch3-loop{
+  position:absolute;inset:0;width:100%;height:100%;
+}
+.ch3-loop-ring{
+  /* circle r=180 → circumference ≈ 1131 */
+  stroke-dasharray:1131;stroke-dashoffset:1131;
+  opacity:0;
+  animation:ch3LoopIn 3.5s cubic-bezier(.22,1,.36,1) 6s forwards;
+  filter:drop-shadow(0 0 10px rgba(255,209,0,.18));
+}
+.ch3-label{
+  position:absolute;
+  display:inline-flex;align-items:baseline;gap:8px;
+  font-size:clamp(14px,1.2vw,17px);font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  opacity:0;transform:translateY(4px);
+}
+.ch3-label .ch3-n{
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  opacity:.55;padding:3px 7px;border:1px solid currentColor;border-radius:4px;
+}
+.ch3-label--acquire{
+  top:8%;left:12%;color:#F59B3C;
+  animation:ch3Label 1s cubic-bezier(.22,1,.36,1) 1.2s forwards;
+}
+.ch3-label--engage{
+  top:8%;right:12%;color:#E87CA0;
+  animation:ch3Label 1s cubic-bezier(.22,1,.36,1) 2.4s forwards;
+}
+.ch3-label--retain{
+  bottom:6%;left:50%;transform:translateX(-50%) translateY(4px);
+  color:#B57BFF;
+  animation:ch3LabelC 1s cubic-bezier(.22,1,.36,1) 3.6s forwards;
+}
+.ch3-audiences{
+  position:absolute;left:50%;bottom:-12%;transform:translateX(-50%);
+  font-size:11.5px;letter-spacing:2px;text-transform:uppercase;font-weight:600;
+  color:rgba(255,255,255,.38);white-space:nowrap;
+  opacity:0;
+  animation:ch3Fade .9s cubic-bezier(.22,1,.36,1) 5s forwards;
+}
+
+@keyframes ch3Label{to{opacity:1;transform:translateY(0)}}
+@keyframes ch3LabelC{to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes ch3Fade{to{opacity:1}}
+@keyframes ch3LoopIn{
+  0%{stroke-dashoffset:1131;opacity:0}
+  20%{opacity:.7}
+  100%{stroke-dashoffset:0;opacity:.55}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ch3-loop-ring{stroke-dashoffset:0 !important;opacity:.55 !important;animation:none !important}
+  .ch3-label,.ch3-audiences{animation:none !important;opacity:1 !important;transform:translateY(0) !important}
+  .ch3-label--retain{transform:translateX(-50%) !important}
+}
+
+@media(max-width:780px){
+  .ch3-layout{width:min(92vw,420px)}
+  .ch3-label{font-size:12px;letter-spacing:1.4px}
+  .ch3-label--acquire{top:4%;left:4%}
+  .ch3-label--engage{top:4%;right:4%}
+  .ch3-label--retain{bottom:4%}
+  .ch3-audiences{bottom:-22%;font-size:10px;letter-spacing:1.4px}
+}
