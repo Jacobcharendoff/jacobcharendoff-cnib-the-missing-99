@@ -690,55 +690,55 @@ p{line-height:1.65}
 
 /* ================================================================
    STAGE — the new minimal landing viewport
-   Single screen. Iris mark above, prismatic wordmark, hero copy,
-   CTA, meta line, talk-now link. "Read the detail" pinned bottom.
+   Two-column: text LEFT, iris mark RIGHT. No scroll below the fold.
+   Bigger, bolder typography per brand direction.
    ================================================================ */
 .stage-wrap{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .stage{
   flex:1;
   min-height:100vh;min-height:100dvh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:14vh 32px 12vh;gap:4vh;
+  display:grid;grid-template-columns:1.05fr .95fr;align-items:center;
+  gap:clamp(32px,5vw,80px);
+  padding:clamp(80px,11vh,160px) clamp(32px,5vw,80px) clamp(80px,10vh,140px);
   position:relative;overflow:hidden;
   background:
-    radial-gradient(ellipse 80% 55% at 50% 42%,rgba(255,180,60,.07) 0%,transparent 58%),
-    radial-gradient(ellipse 50% 40% at 85% 85%,rgba(181,123,255,.04) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 55% at 72% 48%,rgba(255,180,60,.09) 0%,transparent 58%),
+    radial-gradient(ellipse 55% 45% at 12% 82%,rgba(181,123,255,.05) 0%,transparent 60%),
     #060606;
 }
 
-/* Iris mark on the stage — slightly larger than default hero size for presence */
-.stage .im--hero{width:min(48vw,440px);height:min(48vw,440px)}
-
+/* Iris mark — right column, bigger for presence */
+.stage .im--hero{width:min(42vw,540px);height:min(42vw,540px)}
 .stage-mark{display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
 
+/* Text — left column, left-aligned */
 .stage-text{
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-  max-width:720px;position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:flex-start;
+  text-align:left;gap:14px;max-width:600px;position:relative;z-index:2;
 }
 
 .stage-w{
-  font-size:clamp(72px,11vw,160px);
-  line-height:.88;letter-spacing:-.05em;font-weight:800;
+  font-size:clamp(88px,13vw,200px);
+  line-height:.86;letter-spacing:-.05em;font-weight:800;
   margin:0;
 }
 
 .stage-lede{
-  font-size:clamp(34px,5.5vw,72px);
-  font-weight:600;letter-spacing:-.025em;line-height:1;
-  color:#fff;margin:16px 0 4px;
+  font-size:clamp(40px,6.5vw,88px);
+  font-weight:700;letter-spacing:-.028em;line-height:.98;
+  color:#fff;margin:18px 0 4px;
 }
 
 .stage-sub{
-  font-size:clamp(15px,1.35vw,20px);
-  font-weight:400;line-height:1.45;
-  color:rgba(255,255,245,.62);
-  max-width:36ch;margin:0 auto 6px;
+  font-size:clamp(16px,1.55vw,23px);
+  font-weight:400;line-height:1.42;
+  color:rgba(255,255,245,.68);
+  max-width:28ch;margin:0 0 10px;
 }
-.stage-sub br{display:block;content:'';margin:0}
 
-.stage-cta{margin-top:22px}
+.stage-cta{margin-top:18px}
 .stage-go{
-  gap:10px;padding:17px 36px;font-size:15px;
+  gap:10px;padding:19px 40px;font-size:15.5px;
   animation:stageGoPulse 3.6s ease-in-out infinite;
 }
 .stage-go svg{transition:transform .3s cubic-bezier(.22,1,.36,1)}
@@ -749,16 +749,16 @@ p{line-height:1.65}
 }
 
 .stage-meta{
-  font-size:11px;color:rgba(255,255,255,.36);
+  font-size:11px;color:rgba(255,255,255,.38);
   letter-spacing:1.5px;text-transform:uppercase;font-weight:600;
-  margin:16px 0 0;
+  margin:14px 0 0;
 }
 
 .stage-talk{
-  background:transparent;border:none;padding:4px 8px;margin-top:10px;
-  color:rgba(255,255,255,.48);
-  font-family:inherit;font-size:13.5px;font-weight:400;cursor:pointer;
-  letter-spacing:.1px;
+  background:transparent;border:none;padding:4px 0;margin-top:6px;
+  color:rgba(255,255,255,.5);
+  font-family:inherit;font-size:14px;font-weight:400;cursor:pointer;
+  letter-spacing:.1px;text-align:left;
   text-decoration:underline;text-underline-offset:4px;
   text-decoration-color:rgba(255,255,255,.2);
   transition:color .3s,text-decoration-color .3s;
@@ -768,7 +768,7 @@ p{line-height:1.65}
 }
 
 .stage-detail{
-  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
   display:inline-flex;align-items:center;gap:6px;
   color:rgba(255,255,255,.36);font-size:11px;letter-spacing:1.2px;
   text-transform:uppercase;font-weight:600;text-decoration:none;
@@ -776,18 +776,38 @@ p{line-height:1.65}
   border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   transition:color .3s,border-color .3s,background .3s,transform .3s;
-  z-index:3;
+  z-index:3;white-space:nowrap;
 }
 .stage-detail:hover,.stage-detail:focus-visible{
   color:#fff;border-color:rgba(255,255,255,.22);
   background:rgba(255,255,255,.05);transform:translateX(-50%) translateY(-2px);
 }
 
-@media(max-width:700px){
-  .stage{gap:3vh;padding:12vh 20px 14vh}
+/* Tablet — tighter grid */
+@media(max-width:1100px){
+  .stage{gap:clamp(28px,3vw,48px);padding:clamp(70px,9vh,120px) clamp(28px,4vw,56px)}
+  .stage-w{font-size:clamp(80px,13vw,160px)}
+  .stage-lede{font-size:clamp(36px,6vw,70px)}
+  .stage .im--hero{width:min(44vw,460px);height:min(44vw,460px)}
+}
+
+/* Mobile — stack vertically, iris above text, everything centered */
+@media(max-width:780px){
+  .stage{
+    grid-template-columns:1fr;
+    padding:clamp(90px,12vh,140px) 22px clamp(80px,10vh,120px);
+    gap:28px;
+    text-align:center;
+  }
+  .stage-mark{order:1}
+  .stage-text{
+    order:2;align-items:center;text-align:center;
+    max-width:100%;margin:0 auto;
+  }
+  .stage-sub{max-width:28ch;margin-left:auto;margin-right:auto}
+  .stage-talk{text-align:center}
   .stage .im--hero{width:min(68vw,300px);height:min(68vw,300px)}
-  .stage-lede{font-size:clamp(28px,9vw,42px);margin-top:8px}
-  .stage-sub{max-width:28ch}
-  .stage-go{padding:15px 30px;font-size:14.5px}
+  .stage-w{font-size:clamp(64px,16vw,92px)}
+  .stage-lede{font-size:clamp(30px,9vw,48px)}
   .stage-detail{bottom:18px}
 }
