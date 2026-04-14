@@ -6,6 +6,63 @@
 
 export const config = { runtime: 'edge' };
 
+// ===== Origin allow-list =====
+const ALLOWED_ORIGINS = new Set([
+  'https://meet-iris-app.vercel.app',
+  'https://iris-2-bay.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001',
+]);
+
+function checkOrigin(request) {
+  const origin = request.headers.get('origin') || '';
+  const referer = request.headers.get('referer') || '';
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  for (const ok of ALLOWED_ORIGINS) {
+    if (referer.startsWith(ok + '/') || referer === ok) return true;
+  }
+  return false;
+}
+
+// ===== Rate limiting =====
+// TTS is the expensive one — ElevenLabs charges per character. Cap at
+// 30 requests / 60 seconds per IP. Override with IRIS_TTS_RATE_LIMIT.
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_MAX = parseInt(process.env.IRIS_TTS_RATE_LIMIT || '30', 10);
+const rateBuckets = new Map();
+
+function getClientIp(req) {
+  const xff = req.headers.get('x-forwarded-for') || '';
+  if (xff) return xff.split(',')[0].trim();
+  return req.headers.get('x-real-ip') || 'anonymous';
+}
+
+function rateLimitExceeded(ip) {
+  const now = Date.now();
+  const arr = rateBuckets.get(ip) || [];
+  const fresh = arr.filter((ts) => now - ts < RATE_WINDOW_MS);
+  if (fresh.length >= RATE_MAX) {
+    rateBuckets.set(ip, fresh);
+    return true;
+  }
+  fresh.push(now);
+  rateBuckets.set(ip, fresh);
+  if (rateBuckets.size > 5000) {
+    for (const [key, stamps] of rateBuckets) {
+      const live = stamps.filter((ts) => now - ts < RATE_WINDOW_MS);
+      if (live.length === 0) rateBuckets.delete(key);
+      else rateBuckets.set(key, live);
+    }
+  }
+  return false;
+}
+
+// Upstream timeout — ElevenLabs/OpenAI must respond within 20s or abort.
+const UPSTREAM_TIMEOUT_MS = 20000;
+// Text cap — hard ceiling. Was 2000; tightened to 1500 because an attacker
+// with no rate limit could multiply ElevenLabs spend linearly with length.
+const TEXT_MAX = 1500;
+
 // Voice routing — each persona gets its own ElevenLabs voice for the auto-playing scenarios.
 const VOICE_MAP = {
   iris:     process.env.ELEVENLABS_VOICE_IRIS     || 'NtS6nEHDYMQC9QczMQuq',
@@ -56,6 +113,20 @@ export default async function handler(req) {
     return new Response('Method not allowed', { status: 405 });
   }
 
+  // ===== Origin allow-list =====
+  if (!checkOrigin(req)) {
+    return new Response('Forbidden', { status: 403 });
+  }
+
+  // ===== Rate limit =====
+  const clientIp = getClientIp(req);
+  if (rateLimitExceeded(clientIp)) {
+    return new Response('Too many requests', {
+      status: 429,
+      headers: { 'Retry-After': '30' },
+    });
+  }
+
   let body;
   try {
     body = await req.json();
@@ -63,7 +134,7 @@ export default async function handler(req) {
     return new Response('Invalid JSON', { status: 400 });
   }
 
-  const text = (body.text || '').toString().slice(0, 2000);
+  const text = (body.text || '').toString().slice(0, TEXT_MAX);
   if (!text) {
     return new Response('Missing text', { status: 400 });
   }
@@ -76,6 +147,8 @@ export default async function handler(req) {
     try {
       const VOICE_ID = VOICE_MAP[requestedVoice] || VOICE_MAP.iris;
       const voice_settings = VOICE_SETTINGS[requestedVoice] || VOICE_SETTINGS.iris;
+      const elCtrl = new AbortController();
+      const elTimeout = setTimeout(() => elCtrl.abort(), UPSTREAM_TIMEOUT_MS);
       const upstream = await fetch(
         `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream`,
         {
@@ -90,8 +163,9 @@ export default async function handler(req) {
             voice_settings,
             optimize_streaming_latency: 2,
           }),
+          signal: elCtrl.signal,
         }
-      );
+      ).finally(() => clearTimeout(elTimeout));
       if (upstream.ok) {
         return new Response(upstream.body, {
           status: 200,
@@ -122,6 +196,8 @@ export default async function handler(req) {
   // tts-1-hd — OpenAI's higher-quality TTS model. Not as steerable as
   // gpt-4o-mini-tts but produces a more natural, less compressed read
   // per Jacob's preference. Still a meaningful step down from ElevenLabs.
+  const oaCtrl = new AbortController();
+  const oaTimeout = setTimeout(() => oaCtrl.abort(), UPSTREAM_TIMEOUT_MS);
   const oa = await fetch('https://api.openai.com/v1/audio/speech', {
     method: 'POST',
     headers: {
@@ -135,7 +211,8 @@ export default async function handler(req) {
       response_format: 'mp3',
       speed: openaiSpeed,
     }),
-  });
+    signal: oaCtrl.signal,
+  }).finally(() => clearTimeout(oaTimeout));
   if (!oa.ok) {
     const errText = await oa.text();
     return new Response(`OpenAI TTS error: ${errText}`, { status: oa.status });
