@@ -294,8 +294,9 @@
     // Allow transition to fire
     requestAnimationFrame(function() { block.dataset.state = 'active'; });
 
-    // Transcript (same text; Batch 4 will sync to voice)
-    transcript.textContent = ch.body;
+    // Transcript: exact voice line (what iris. is saying). Only visible
+    // when user has toggled the transcript panel on.
+    transcript.textContent = ch.voice || ch.body;
 
     // Update rail states
     rail.querySelectorAll('.tour-rail-dot').forEach(function(d, idx) {
