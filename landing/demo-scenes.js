@@ -307,14 +307,14 @@
     });
   };
 
-  function animateCount(el, from, to, dur) {
+  function animateCount(el, from, to, dur, fmt) {
     if (!el) return;
     var start = performance.now();
     function step(now) {
       var p = Math.min(1, (now - start) / dur);
       var eased = 1 - Math.pow(1 - p, 3);
       var v = Math.round(from + (to - from) * eased);
-      el.textContent = v;
+      el.textContent = fmt ? fmt(v) : v;
       if (p < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -801,6 +801,78 @@
         animateCount(row.querySelector('.s8-pipe-num'), 0, p.n, 900);
       }, 1500 + i * 140);
     });
+  };
+
+  // ================================================================
+  // Scene 9 — "The loop" (compounding flywheel)
+  // Three nodes in a circle — Client -> Volunteer -> Partner-catalyst
+  // -> Client — connected by animated cyan arcs. A moving pulse
+  // rides each arc to show direction of flow. The right side carries
+  // the compounding math (C3b, next batch).
+  // ================================================================
+  window.demoSceneRenderers.loop = function(stage) {
+    var data = (window.demoData && window.demoData.clinic && window.demoData.clinic.loop) || {};
+    var loop = data || {};
+    // Node geometry (viewBox 400x400)
+    // Wheel centre (200,200), radius ~140. Nodes sit ON the ring at
+    // 12 / 4 / 8 o'clock (angles -90, 30, 150 deg).
+    stage.innerHTML = [
+      '<div class="s9-layout">',
+      '  <div class="s9-wheel" id="s9Wheel" aria-hidden="true">',
+      '    <svg viewBox="0 0 400 400">',
+      '      <circle class="s9-ring" cx="200" cy="200" r="140"/>',
+      // Three arcs forming the ring in segments between node anchors.
+      // Node centres sit at angles -90, 30, 150. Arcs shrink slightly
+      // on both ends so they don't overlap the node circles.
+      '      <path class="s9-arc" id="s9Arc1" d="M 255,115 A 140,140 0 0 1 305,310"/>',
+      '      <path class="s9-arc" id="s9Arc2" d="M 270,320 A 140,140 0 0 1 130,320"/>',
+      '      <path class="s9-arc" id="s9Arc3" d="M 95,310 A 140,140 0 0 1 145,115"/>',
+      // Pulses that ride each arc along offset-path
+      '      <circle class="s9-pulse" r="4" style="offset-path: path(\'M 255,115 A 140,140 0 0 1 305,310\');animation-delay:0s;"/>',
+      '      <circle class="s9-pulse" r="4" style="offset-path: path(\'M 270,320 A 140,140 0 0 1 130,320\');animation-delay:2s;"/>',
+      '      <circle class="s9-pulse" r="4" style="offset-path: path(\'M 95,310 A 140,140 0 0 1 145,115\');animation-delay:4s;"/>',
+      '    </svg>',
+      '    <div class="s9-node n1">',
+      '      <span class="s9-node-label">Client</span>',
+      '      <span class="s9-node-value" id="s9n1">0</span>',
+      '      <span class="s9-node-note">met well, once</span>',
+      '    </div>',
+      '    <div class="s9-node n2">',
+      '      <span class="s9-node-label">Volunteer</span>',
+      '      <span class="s9-node-value" id="s9n2">0%</span>',
+      '      <span class="s9-node-note">convert within 24 mo</span>',
+      '    </div>',
+      '    <div class="s9-node n3">',
+      '      <span class="s9-node-label">Catalyst</span>',
+      '      <span class="s9-node-value" id="s9n3">0\u00d7</span>',
+      '      <span class="s9-node-note">new clients / volunteer / yr</span>',
+      '    </div>',
+      '  </div>',
+      '  <div class="s9-right">',
+      '    <span class="s9-eye">The loop</span>',
+      '    <h3 class="s9-title">One client, <em>met well once</em>, becomes the supply chain.</h3>',
+      '    <div class="s9-math" id="s9Math"></div>',
+      '  </div>',
+      '</div>'
+    ].join('');
+
+    var wheel = stage.querySelector('#s9Wheel');
+    setTimeout(function(){ wheel.classList.add('drawn'); }, 200);
+
+    // Node counters pull from loop data w/ sensible fallbacks
+    var pct  = Math.round((loop.clientToVolunteerPct   || 0.10) * 100);  // 10%
+    var mult = loop.volunteerToClientMult || 3;                          // 3x
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s9n1'), 0, 1000, 1400, function(v){
+        return v.toLocaleString();
+      });
+    }, 600);
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s9n2'), 0, pct, 1200, function(v){ return v + '%'; });
+    }, 900);
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s9n3'), 0, mult, 1000, function(v){ return v + '\u00d7'; });
+    }, 1200);
   };
 
   // ================================================================
