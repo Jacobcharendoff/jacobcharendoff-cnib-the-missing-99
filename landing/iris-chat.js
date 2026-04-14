@@ -1470,6 +1470,20 @@ Never end a conversation without either (a) a clear recommendation AND a concret
         greeting: "Hi, I'm iris. Quick heads up, I'm still a beta, so I can't actually register you for things or make calls for you yet. What I can do is listen, I know CNIB's programs inside out, and I'll point you at the real person who can help. What's your name, and what brought you here today?",
         suggestions: ["I was just diagnosed", "I'm worried about someone", "I just want to talk"]
       },
+      /* Infrastructure Q&A mode — opens from the tour's 'Ask iris. anything' CTA.
+         iris. answers questions about how she works as engagement infrastructure,
+         not as a care guide. System prompt swap happens in callLLM (Batch 7b). */
+      infrastructure: {
+        banner: "Ask iris. about the infrastructure",
+        isLive: true,
+        greeting: "You just saw the tour. Now the floor is yours. Ask me anything about how I work — how I scale, how I match volunteers, how partners plug in, how the loop closes. I'll answer as the infrastructure, not as a care guide. What's on your mind?",
+        suggestions: [
+          "How do you scale?",
+          "How do you match volunteers to roles?",
+          "How do partners integrate?",
+          "Why is this different from a chatbot?"
+        ]
+      },
       margaret: {
         title: "Margaret, 68",
         subtitle: "Newly diagnosed, living alone in Sudbury",
