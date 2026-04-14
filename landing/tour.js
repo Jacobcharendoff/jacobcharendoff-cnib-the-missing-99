@@ -206,7 +206,24 @@
       voice:"That's how I work. Now — ask me anything about the infrastructure.",
       wash:{ primary:'rgba(255,180,60,.09)', secondary:'rgba(181,123,255,.05)' },
       duration:0,
-      endChapter:true
+      endChapter:true,
+      content:[
+        '<div class="ch8-layout">',
+        '  <div class="ch8-intro">That\'s how I work.</div>',
+        '  <div class="ch8-prompt">Now, ask me anything.</div>',
+        '  <div class="ch8-cta">',
+        '    <button type="button" class="btn btn-p ch8-primary" onclick="closeTour();setTimeout(function(){openChat(\'infrastructure\')||openChat(\'general\')},400)">',
+        '      <span>Ask iris. anything</span>',
+        '      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+        '    </button>',
+        '    <button type="button" class="ch8-secondary" onclick="tourReplay()">',
+        '      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
+        '      <span>Replay the tour</span>',
+        '    </button>',
+        '  </div>',
+        '  <div class="ch8-foot">Powered by CNIB</div>',
+        '</div>'
+      ].join('')
     },
   ];
 
@@ -536,4 +553,5 @@
   // Public API — override the stub defined in index.html
   window.startTour = open;
   window.closeTour = close;
+  window.tourReplay = function() { isPaused = false; goTo(0); };
 })();
