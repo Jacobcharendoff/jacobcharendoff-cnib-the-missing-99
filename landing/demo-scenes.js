@@ -620,6 +620,14 @@
       '        <strong>' + (dash.satisfaction || 4.2) + ' / 5</strong>',
       '      </div>',
       '    </div>',
+      '    <div class="s8-card s8-outcomes" id="s8Outcomes">',
+      '      <span class="s8-card-eye">Recent outcomes \u00b7 last 14 days</span>',
+      '      <div class="s8-outcomes-list" id="s8OutList"></div>',
+      '    </div>',
+      '    <div class="s8-card s8-sla" id="s8Sla">',
+      '      <span class="s8-card-eye">Service level \u2014 clinic SLA</span>',
+      '      <div class="s8-sla-rows" id="s8SlaRows"></div>',
+      '    </div>',
       '  </div>',
       '</div>'
     ].join('');
@@ -656,6 +664,55 @@
         row.querySelector('.s8-funnel-fill').style.width = pct + '%';
         animateCount(row.querySelector('.s8-funnel-num'), 0, f.n, 1200);
       }, 900 + i * 220);
+    });
+
+    // --- Recent outcomes feed (anonymized case IDs + status + relative time) ---
+    var outcomes = dash.outcomes || [
+      { id: 'C-2041', status: 'Booked peer meetup in Sudbury', when: '2h ago' },
+      { id: 'C-2039', status: 'Completed orientation + mobility intake', when: '5h ago' },
+      { id: 'C-2037', status: 'Referred to low-vision OT',  when: 'yesterday' },
+      { id: 'C-2034', status: 'Signed up: Braille basics cohort',  when: '2d ago' },
+      { id: 'C-2030', status: 'Became volunteer (phone friend)',  when: '4d ago' }
+    ];
+    var outEl = stage.querySelector('#s8OutList');
+    var outCard = stage.querySelector('#s8Outcomes');
+    setTimeout(function(){ outCard.classList.add('show'); }, 700);
+    outcomes.forEach(function(o, i) {
+      var row = document.createElement('div');
+      row.className = 's8-out';
+      row.innerHTML = [
+        '<span class="s8-out-id"></span>',
+        '<span class="s8-out-status"></span>',
+        '<span class="s8-out-time"></span>'
+      ].join('');
+      row.querySelector('.s8-out-id').textContent = o.id;
+      row.querySelector('.s8-out-status').textContent = o.status;
+      row.querySelector('.s8-out-time').textContent = o.when;
+      outEl.appendChild(row);
+      setTimeout(function(){ row.classList.add('show'); }, 1100 + i * 140);
+    });
+
+    // --- SLA panel (response time, privacy, escalation, reporting cadence) ---
+    var sla = dash.sla || [
+      { k: 'Median first response',    v: '34 seconds',           pill: false },
+      { k: 'Crisis escalation path',   v: 'Live to CNIB on-call', pill: true  },
+      { k: 'Data retention',           v: '90 days, then summary',pill: false },
+      { k: 'Clinic report cadence',    v: 'Monthly + quarterly review', pill: false },
+      { k: 'Uptime (rolling 90 days)', v: '99.94%',               pill: true  }
+    ];
+    var slaEl = stage.querySelector('#s8SlaRows');
+    var slaCard = stage.querySelector('#s8Sla');
+    setTimeout(function(){ slaCard.classList.add('show'); }, 900);
+    sla.forEach(function(s) {
+      var row = document.createElement('div');
+      row.className = 's8-sla-row';
+      row.innerHTML = [
+        '<span class="s8-sla-label"></span>',
+        '<span class="s8-sla-val' + (s.pill ? ' is-pill' : '') + '"></span>'
+      ].join('');
+      row.querySelector('.s8-sla-label').textContent = s.k;
+      row.querySelector('.s8-sla-val').textContent = s.v;
+      slaEl.appendChild(row);
     });
   };
 
