@@ -970,3 +970,28 @@
 
 /* And hide the speaking badge if it's in a broken state */
 .tour.audio-blocked .tour-speaking-badge{opacity:0}
+
+/* ================================================================
+   AUDIO DEBUG PANEL — temporary. Visible real-time log of TTS fetch
+   and play() state. Remove once audio is verified working in prod.
+   ================================================================ */
+.tour-audio-debug{
+  position:absolute;bottom:180px;right:20px;z-index:8;
+  width:min(44vw,380px);max-height:180px;
+  padding:10px 12px;border-radius:10px;
+  background:rgba(10,10,10,.88);border:1px solid rgba(255,209,0,.22);
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:10.5px;line-height:1.5;color:rgba(255,209,0,.82);
+  overflow-y:auto;overflow-x:hidden;
+  white-space:pre-wrap;word-break:break-word;
+  pointer-events:auto;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.tour-audio-debug div{padding:1px 0}
+.tour-audio-debug:empty::before{
+  content:'Audio debug — waiting for events…';
+  color:rgba(255,209,0,.4);font-style:italic;
+}
+@media(max-width:780px){
+  .tour-audio-debug{bottom:196px;right:10px;width:calc(100vw - 20px);max-height:120px;font-size:10px}
+}

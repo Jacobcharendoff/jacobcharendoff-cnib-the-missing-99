@@ -240,6 +240,24 @@
   var advanceTimer = null;
   var lastFocusBeforeTour = null;
 
+  // --------------------------------------------------------------
+  // Visible audio debug panel — shows fetch/play status in real time
+  // so we can diagnose without DevTools. Activated by ?audiodebug=1
+  // --------------------------------------------------------------
+  var audioDebug = null;
+  var audioDebugEnabled = /[?&]audiodebug=/.test(window.location.search) || true;
+  function dbg(msg) {
+    if (!audioDebugEnabled) return;
+    console.log('[tour-audio]', msg);
+    if (!audioDebug) return;
+    var line = document.createElement('div');
+    line.textContent = '[' + new Date().toISOString().slice(11,19) + '] ' + msg;
+    audioDebug.appendChild(line);
+    audioDebug.scrollTop = audioDebug.scrollHeight;
+    // keep last 30 lines
+    while (audioDebug.childElementCount > 30) audioDebug.removeChild(audioDebug.firstChild);
+  }
+
   // ----------------------------------------------------------------
   // TTS — persistent <audio> element pattern (mobile-Safari safe).
   // Same approach as iris-chat.js:110-112 but isolated to the tour
@@ -279,7 +297,11 @@
   function fetchChapterAudio(i) {
     var ch = CHAPTERS[i];
     if (!ch || !ch.voice) return Promise.resolve(null);
-    if (chapterAudioCache[ch.id]) return Promise.resolve(chapterAudioCache[ch.id]);
+    if (chapterAudioCache[ch.id]) {
+      dbg('cache hit ' + ch.id);
+      return Promise.resolve(chapterAudioCache[ch.id]);
+    }
+    dbg('fetch start ' + ch.id + ' (' + ch.voice.length + ' chars)');
     var ctrl = new AbortController();
     currentAudioCtrl = ctrl;
     return fetch('/api/tts', {
@@ -288,15 +310,19 @@
       body: JSON.stringify({ text: ch.voice, voice: 'iris' }),
       signal: ctrl.signal,
     })
-      .then(function(res){ if (!res.ok) throw new Error('TTS ' + res.status); return res.blob(); })
+      .then(function(res){
+        dbg('fetch resp ' + ch.id + ' status=' + res.status + ' ct=' + res.headers.get('content-type'));
+        if (!res.ok) throw new Error('TTS ' + res.status);
+        return res.blob();
+      })
       .then(function(blob){
+        dbg('blob ' + ch.id + ' size=' + blob.size + ' type=' + blob.type);
         var url = URL.createObjectURL(blob);
         chapterAudioCache[ch.id] = url;
         return url;
       })
       .catch(function(err){
-        // Silent failure — transcript still shown, tour still advances.
-        console.warn('[tour] tts fetch failed:', err && err.message);
+        dbg('fetch ERR ' + ch.id + ': ' + (err && err.message));
         return null;
       });
   }
@@ -315,12 +341,13 @@
         tourAudio.src = cached;
         var pSync = tourAudio.play();
         if (pSync && pSync.then) {
-          pSync.then(function(){ if (root) root.classList.add('speaking'); })
+          pSync.then(function(){ dbg('SYNC PLAY OK'); if (root) root.classList.add('speaking'); })
                .catch(function(err){
-                 console.warn('[tour] sync play failed:', err && err.message);
+                 dbg('SYNC PLAY DENIED: ' + (err && err.message));
                  showAudioFallback();
                });
         } else {
+          dbg('SYNC PLAY started (no promise)');
           if (root) root.classList.add('speaking');
         }
       } catch (e) {
@@ -390,6 +417,7 @@
       '  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
       '  <span>Best with sound on</span>',
       '</div>',
+      '<div class="tour-audio-debug" id="tourAudioDebug" aria-hidden="true"></div>',
       '<button type="button" class="tour-audio-fallback" onclick="tourUnmute()" aria-label="Play iris. voice narration">',
       '  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
       '  <span>Tap to hear iris.</span>',
@@ -446,6 +474,8 @@
     btnClose      = root.querySelector('#tourCloseBtn');
     btnTranscript = root.querySelector('#tourTranscriptBtn');
     backdrop      = root.querySelector('.tour-backdrop');
+    audioDebug    = root.querySelector('#tourAudioDebug');
+    dbg('tour DOM built');
 
     // Build rail
     CHAPTERS.forEach(function(ch, i) {
