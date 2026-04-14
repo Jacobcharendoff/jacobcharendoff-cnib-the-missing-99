@@ -86,7 +86,7 @@ const MODEL = 'eleven_multilingual_v2';
 const OPENAI_VOICE_MAP = {
   iris:     'shimmer', // warm, grounded, more conversational than nova
   narrator: 'shimmer',
-  margaret: 'shimmer', // older warm woman
+  margaret: 'coral',   // mature warm feminine — DISTINCT from iris's shimmer
   david:    'onyx',    // mature calm male
   priya:    'nova',    // younger forward energy
 };
