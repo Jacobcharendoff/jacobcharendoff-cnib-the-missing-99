@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>iris. — Your guide for life with sight loss | Powered by CNIB</title>
-  <meta name="description" content="iris. connects Canadians with sight loss to programs, community, and support — personally, specifically, at no cost. Powered by CNIB.">
+  <title>iris. — Let more in | Powered by CNIB</title>
+  <meta name="description" content="iris. is CNIB's engagement infrastructure — the AI relationship layer that acquires, engages, and retains clients, volunteers, and partners.">
   <meta name="theme-color" content="#080808">
   <link rel="icon" type="image/svg+xml" href="/iris-app-icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,428 +24,43 @@
       <span>Accessibility</span>
     </button>
   </nav>
-  <main id="main">
 
-  <!-- ============ HERO: THE THESIS ============ -->
-  <section class="hero" id="hero" aria-label="iris. — a growth system for CNIB">
-    <div class="hero-text">
-      <h1 class="hero-w prism rv">iris.</h1>
-      <div class="hero-tl rv rv-d1">CNIB's engagement infrastructure.</div>
-      <div class="hero-triad rv rv-d2" aria-label="Simple. Systematic. Scalable.">
-        <span>Simple.</span>
-        <span>Systematic.</span>
-        <span>Scalable.</span>
-      </div>
-      <div class="hero-sh rv rv-d3">One AI relationship layer that acquires, engages, and retains the three audiences CNIB's mission depends on &mdash; clients, volunteers, and partners.</div>
-      <div class="hero-cta rv rv-d3">
-        <button type="button" class="btn btn-p" onclick="openChat('general')" aria-label="Talk to iris. live">
-          Talk to iris.
-        </button>
-        <a href="#journey" class="btn btn-g">See the system</a>
-      </div>
-      <div class="hero-stats rv rv-d4">
-        <div class="hero-stat">
-          <div class="hero-stat-n">1.5M+</div>
-          <div class="hero-stat-l">Canadians need it</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-n">&lt;1%</div>
-          <div class="hero-stat-l">currently reached</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-n">100%</div>
-          <div class="hero-stat-l">possible with iris.</div>
+  <main id="main" class="stage-wrap">
+    <!-- ============ STAGE: single-viewport landing ============ -->
+    <section class="stage" id="stage" aria-label="iris. — Let more in.">
+      <div class="stage-mark">
+        <div class="im im--hero rv" id="heroIris">
+          <svg viewBox="0 0 400 400" aria-hidden="true">
+            <circle class="im-r im-r1" cx="200" cy="200" r="195"/>
+            <circle class="im-r im-r1" cx="200" cy="200" r="170"/>
+            <circle class="im-r im-r2" cx="200" cy="200" r="140"/>
+            <circle class="im-r im-r2" cx="200" cy="200" r="112"/>
+            <circle class="im-r im-r3" cx="200" cy="200" r="86"/>
+            <circle class="im-r im-r4" cx="200" cy="200" r="62"/>
+            <circle class="im-r im-r5" cx="200" cy="200" r="42"/>
+            <circle class="im-p" id="heroIrisPupil" cx="200" cy="200" r="18"/>
+          </svg>
         </div>
       </div>
-    </div>
-    <div class="hero-mark">
-      <div class="im im--hero rv rv-d2" id="heroIris">
-        <svg viewBox="0 0 400 400" aria-hidden="true">
-          <circle class="im-r im-r1" cx="200" cy="200" r="195"/>
-          <circle class="im-r im-r1" cx="200" cy="200" r="170"/>
-          <circle class="im-r im-r2" cx="200" cy="200" r="140"/>
-          <circle class="im-r im-r2" cx="200" cy="200" r="112"/>
-          <circle class="im-r im-r3" cx="200" cy="200" r="86"/>
-          <circle class="im-r im-r4" cx="200" cy="200" r="62"/>
-          <circle class="im-r im-r5" cx="200" cy="200" r="42"/>
-          <circle class="im-p" id="heroIrisPupil" cx="200" cy="200" r="18"/>
-        </svg>
-      </div>
-    </div>
-  </section>
 
-  <!-- ============ CH1: THE MOMENT ============ -->
-  <section class="ch1" id="moment" aria-label="The moment">
-    <div class="ch1-inner">
-      <div class="ch1-eye rv">One in every twenty-five Canadians</div>
-      <blockquote class="ch1-quote rv rv-d1">
-        <em>&ldquo;Nobody told me<br><span class="soft">what came</span> next.&rdquo;</em>
-      </blockquote>
-      <p class="ch1-attr rv rv-d2" style="margin-top:0">
-        A composite voice of Canadians newly diagnosed with sight loss.<br>One of more than 1.5 million.
-      </p>
-      <div class="wave rv rv-d3" id="waveBars" aria-hidden="true"></div>
-      <div class="wave-label rv rv-d3">iris. is listening</div>
-    </div>
-    <div class="ch1-sc" aria-hidden="true">
-      <span>Keep scrolling</span>
-      <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-    </div>
-  </section>
-
-
-  <!-- ============ S3: MEET IRIS. ============ -->
-  <section class="s3" id="meet" aria-label="Meet iris.">
-    <div class="ctn">
-      <div class="ey rv">Meet iris.</div>
-      <div class="im im--brand rv rv-d1">
-        <svg viewBox="0 0 400 400" aria-hidden="true">
-          <!-- 7 concentric rings, outer→inner, each with its own ring-color class -->
-          <circle class="im-r im-r1" cx="200" cy="200" r="195"/>
-          <circle class="im-r im-r1" cx="200" cy="200" r="170"/>
-          <circle class="im-r im-r2" cx="200" cy="200" r="140"/>
-          <circle class="im-r im-r2" cx="200" cy="200" r="112"/>
-          <circle class="im-r im-r3" cx="200" cy="200" r="86"/>
-          <circle class="im-r im-r4" cx="200" cy="200" r="62"/>
-          <circle class="im-r im-r5" cx="200" cy="200" r="42"/>
-          <circle class="im-p" cx="200" cy="200" r="18"/>
-        </svg>
-      </div>
-      <p class="s3-spectrum rv rv-d1">The iris is the part of the eye that decides how much light to let in. When sight changes, the spectrum narrows. iris. holds every color.</p>
-      <h2 class="prism rv rv-d1">iris.</h2>
-      <div class="s3-tl rv rv-d2">Your guide for life with sight loss.</div>
-      <div class="s3-sh rv rv-d2">So you can get back to living.</div>
-      <p class="s3-truth rv rv-d3">When sight loss changes everything, knowing what's available to you shouldn't be another thing to figure out alone.</p>
-      <p class="s3-desc rv rv-d3">iris. is CNIB's member engagement guide. iris. gets to know each member — their diagnosis, their location, their stage of life, what matters to them — and connects them to the programs, community, and support built for exactly where they are. Personally. Specifically. At no cost.</p>
-      <div class="s3-ft rv rv-d4">Powered by CNIB. Built for the 1.5 million.</div>
-    </div>
-  </section>
-
-  <!-- ============ JOURNEY MAP: TWO JOURNEYS, ONE LOOP ============ -->
-  <section class="jm" id="journey" aria-label="Two journeys, one loop">
-    <div class="jm-intro">
-      <span class="ey rv">The System</span>
-      <h2 class="rv rv-d1">One framework. <em>Three audiences.</em> Infinite scale.</h2>
-      <p class="bd rv rv-d2">The same three stages for everyone CNIB's mission depends on &mdash; clients, volunteers, and partners. That's what makes it systematic. That's what makes it scalable.</p>
-    </div>
-    <!-- System-at-a-glance: the 3 stages that anchor both journeys below -->
-    <div class="jm-framework rv rv-d2" aria-hidden="true">
-      <div class="jm-fw-stage"><span class="jm-fw-n">01</span><span class="jm-fw-l">Acquire</span></div>
-      <div class="jm-fw-arrow"></div>
-      <div class="jm-fw-stage"><span class="jm-fw-n">02</span><span class="jm-fw-l">Engage</span></div>
-      <div class="jm-fw-arrow"></div>
-      <div class="jm-fw-stage"><span class="jm-fw-n">03</span><span class="jm-fw-l">Retain</span></div>
-      <div class="jm-fw-loop" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><polyline points="3 21 3 16 8 16"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><polyline points="21 3 21 8 16 8"/></svg>
-        <span>the loop</span>
-      </div>
-    </div>
-    <div class="pillars">
-      <!-- PILLAR 1: CLIENTS -->
-      <article class="pillar pillar--clients rv rv-d1">
-        <div class="pillar-head">
-          <span class="pillar-num">01</span>
-          <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></div>
-          <h3 class="pillar-name">Clients</h3>
+      <div class="stage-text">
+        <h1 class="stage-w prism rv">iris.</h1>
+        <p class="stage-lede rv rv-d1">Let more in.</p>
+        <p class="stage-sub rv rv-d2">A hundred years of mission.<br>One layer of intelligence.</p>
+        <div class="stage-cta rv rv-d3">
+          <button type="button" class="btn btn-p stage-go" onclick="startTour()" aria-label="See how iris. works — starts the guided tour">
+            <span>See how</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
         </div>
-        <p class="pillar-desc">iris. meets Canadians living with sight loss wherever they enter &mdash; a diagnosis room, a 2am search, a worried family call &mdash; and walks with them for life.</p>
-        <dl class="pillar-flow">
-          <dt>Acquire</dt>
-          <dd>Any entry point &mdash; clinic, search, or family &mdash; meets one warm conversation: <em>"I'm so glad you found me."</em></dd>
-          <dt>Engage</dt>
-          <dd>Listens first. Connects to the two or three programs that are actually right, not a directory dump. Books the next step.</dd>
-          <dt>Retain</dt>
-          <dd>Checks in as life changes. Years later, asks the quiet question: <strong>"Would you help someone just starting?"</strong></dd>
-        </dl>
-      </article>
-
-      <!-- PILLAR 2: VOLUNTEERS -->
-      <article class="pillar pillar--volunteers rv rv-d2">
-        <div class="pillar-head">
-          <span class="pillar-num">02</span>
-          <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-          <h3 class="pillar-name">Volunteers</h3>
-        </div>
-        <p class="pillar-desc">iris. identifies who's ready to give back, invites them at the right moment in the right role, and grows the relationship so they stay.</p>
-        <dl class="pillar-flow">
-          <dt>Acquire</dt>
-          <dd>Invites people ready to give back &mdash; starting with retained clients &mdash; at the right moment, in the right role.</dd>
-          <dt>Engage</dt>
-          <dd>Matches peer mentor, sighted guide, fundraising, advocacy &mdash; to life, skills, energy. Onboarded by conversation, not a PDF.</dd>
-          <dt>Retain</dt>
-          <dd>Impact is felt, not reported: <strong>"You helped Margaret find her peer."</strong> Mentors become leaders. Churn drops.</dd>
-        </dl>
-      </article>
-
-      <!-- PILLAR 3: PARTNERS -->
-      <article class="pillar pillar--partners rv rv-d3">
-        <div class="pillar-head">
-          <span class="pillar-num">03</span>
-          <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-          <h3 class="pillar-name">Partners</h3>
-        </div>
-        <p class="pillar-desc">iris. gives ophthalmologists, clinics, caregivers, and counsellors a warm referral surface &mdash; one scan, one conversation &mdash; so iris. is present the moment sight loss is first named.</p>
-        <dl class="pillar-flow">
-          <dt>Acquire</dt>
-          <dd>A QR in a waiting room, a link in a social worker's toolkit. One scan puts a new member into iris.</dd>
-          <dt>Engage</dt>
-          <dd>iris. gives each partner a live view of their referrals &mdash; outcomes, handoffs, and when the loop closed.</dd>
-          <dt>Retain</dt>
-          <dd>Repeated successful referrals turn partners into advocates. The professional network grows from within.</dd>
-        </dl>
-      </article>
-    </div>
-    <div class="jm-loop rv rv-d3">
-      <div class="jm-loop-tag">The Loop</div>
-      <div class="jm-loop-t">A member iris. helped at their most disoriented moment becomes a volunteer iris. matches to the next person stepping into that same moment.</div>
-      <div class="jm-loop-b">The ecosystem regenerates. CNIB grows from within. Engagement becomes retention becomes the most powerful acquisition engine CNIB has ever had.</div>
-    </div>
-  </section>
-
-  <!-- ============ S4: THE EXPERIENCE ============ -->
-  <section class="sec s4" id="demos" aria-label="See iris. in action">
-    <div class="ctn">
-      <div class="s4-intro">
-        <div class="ey rv">See iris. in Action</div>
-        <h2 class="rv" style="font-size:clamp(36px,5.5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px">Three people. Three conversations.<br>Play one.</h2>
-        <p class="body rv rv-d1">Each card launches a real, voice-enabled conversation with iris. — the same experience a member would have. Best with sound on.</p>
+        <p class="stage-meta rv rv-d3">100 seconds · Best with sound on</p>
+        <button type="button" class="stage-talk rv rv-d4" onclick="openChat('general')">or, talk to iris. now</button>
       </div>
-      <div class="persona-grid rv rv-d2" role="list">
-        <button type="button" class="persona-card persona-card--margaret" role="listitem" onclick="openChat('margaret')" aria-label="Play Margaret's conversation with iris.">
-          <div class="persona-card-badge">Play this conversation</div>
-          <div class="persona-card-name">Margaret, 68</div>
-          <div class="persona-card-ctx">Newly diagnosed &middot; Sudbury, ON</div>
-          <p class="persona-card-story">Two months ago her ophthalmologist said the words macular degeneration. Her daughter is in Vancouver. She hasn't told her friends. She almost didn't reach out.</p>
-          <div class="persona-card-cta"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Play</span></div>
-        </button>
-        <button type="button" class="persona-card persona-card--david" role="listitem" onclick="openChat('david')" aria-label="Play David's conversation with iris.">
-          <div class="persona-card-badge">Play this conversation</div>
-          <div class="persona-card-name">David, 42</div>
-          <div class="persona-card-ctx">Retinitis Pigmentosa &middot; Toronto, ON</div>
-          <p class="persona-card-story">Ten years of low vision and getting worse. He spends extra hours compensating in spreadsheets. He's pretending in meetings. He's exhausted. His wife pushed him to reach out.</p>
-          <div class="persona-card-cta"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Play</span></div>
-        </button>
-        <button type="button" class="persona-card persona-card--priya" role="listitem" onclick="openChat('priya')" aria-label="Play Priya's conversation with iris.">
-          <div class="persona-card-badge">Play this conversation</div>
-          <div class="persona-card-name">Priya, 34</div>
-          <div class="persona-card-ctx">Her son Aiden &middot; Vancouver, BC</div>
-          <p class="persona-card-story">Six months ago Aiden was diagnosed with a degenerative eye condition. She's been the only person in her son's corner ever since &mdash; explaining the school system, fighting alone, putting Aiden first every hour.</p>
-          <div class="persona-card-cta"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Play</span></div>
-        </button>
-      </div>
-      <div class="s4-sound rv rv-d3"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/></svg><span>Best experienced with sound on</span></div>
-      <p class="s4-fn rv rv-d3">Or just <button type="button" class="linkish" onclick="openChat('general')">talk to iris. yourself</button> — she'll take it from there.</p>
-    </div>
-  </section>
 
-
-
-
-
-  <!-- ============ S8: THE ECOSYSTEM ============ -->
-  <section class="sec s8" id="ecosystem" aria-label="The CNIB ecosystem">
-    <div class="ctn">
-      <div class="s8-intro">
-        <div class="ey rv">The Ecosystem</div>
-        <h2 class="rv" style="font-size:clamp(36px,5.5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px">Everything CNIB offers.<br>iris. knows all of it.</h2>
-        <p class="body rv rv-d1">A hundred years of programs, community, and expertise — made findable for the first time. Tap any category to explore.</p>
-      </div>
-      <div class="s8-grid rv rv-d2">
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Live</div><div class="s8-node-title">Independence &amp; Daily Life</div><div class="s8-node-programs">Orientation &amp; mobility training · Assistive technology · Transportation support · Home safety · Adaptive skills coaching</div></div>
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Learn</div><div class="s8-node-title">Education &amp; Literacy</div><div class="s8-node-programs">CNIB Library · Braille literacy · Accessible learning resources · Youth programs · Student transition support</div></div>
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Work</div><div class="s8-node-title">Career &amp; Vocation</div><div class="s8-node-programs">Vocational rehabilitation · Workplace accommodation · Job placement · Employer partnerships · Career transitions</div></div>
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Play</div><div class="s8-node-title">Community &amp; Recreation</div><div class="s8-node-programs">Peer support groups · Social events · Sports &amp; recreation · Family programs · Youth camps · Seniors circles</div></div>
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Tech</div><div class="s8-node-title">Assistive Technology</div><div class="s8-node-programs">Screen readers · Magnification software · Smart home setup · Device training · Tech lending library</div></div>
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Guide Dogs</div><div class="s8-node-title">CNIB Guide Dogs</div><div class="s8-node-programs">Guide dog matching · Training programs · Graduate support · Successor dog services</div></div>
-        <div class="s8-node" data-node><div class="s8-node-dot"></div><div class="s8-node-cat">Give</div><div class="s8-node-title">Volunteer &amp; Give Back</div><div class="s8-node-programs">Peer mentorship · Sighted guide · Fundraising &amp; events · Leadership · Become a voice for CNIB</div></div>
-      </div>
-      <div class="s8-cl rv rv-d3">
-        <p class="s8-cl-t">All of it free. All of it waiting.</p>
-        <p class="s8-cl-sub">iris. is the way in.</p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============ S9: CLOSING CTA ============ -->
-  <section class="s9" id="join" aria-label="Get started">
-    <div class="im im--close rv rv-d1">
-      <svg viewBox="0 0 400 400" aria-hidden="true">
-        <circle class="im-r im-r1" cx="200" cy="200" r="190"/>
-        <circle class="im-r im-r1" cx="200" cy="200" r="160"/>
-        <circle class="im-r im-r2" cx="200" cy="200" r="130"/>
-        <circle class="im-r im-r3" cx="200" cy="200" r="95"/>
-        <circle class="im-r im-r4" cx="200" cy="200" r="60"/>
-        <circle class="im-p" cx="200" cy="200" r="20"/>
-      </svg>
-    </div>
-    <h2 class="rv rv-d1">The support exists.<br>Let's make sure<br>people find it.</h2>
-    <p class="s9-bd rv rv-d2">More than 1.5 million Canadians live with sight loss. Most of them are navigating alone — not because the help isn't there, but because no one connected them to it. iris. changes that.</p>
-    <div class="cta-r rv rv-d3">
-      <a href="https://meet-iris-app.vercel.app/" target="_blank" rel="noopener" class="btn-p">See iris. in action</a>
-      <a href="mailto:info@cnib.ca" class="btn-s">Get in touch</a>
-    </div>
-    <div class="s9-fl rv rv-d4">iris. &nbsp;&middot;&nbsp; Powered by CNIB &nbsp;&middot;&nbsp; Your guide for life with sight loss.</div>
-  </section>
-
+      <a href="detail.html" class="stage-detail rv rv-d4" aria-label="Read the detail — a longer-form overview">Read the detail &rarr;</a>
+    </section>
   </main>
 
-  <footer class="ft" role="contentinfo">
-    <p class="ft-a11y">iris. is designed to meet WCAG 2.1 Level AA accessibility standards. If you experience any barriers or have feedback, please contact CNIB at <a href="mailto:info@cnib.ca">info@cnib.ca</a>.</p>
-    <p class="ft-br">iris. &nbsp;&middot;&nbsp; Powered by CNIB &nbsp;&middot;&nbsp; Prototype demo — does not represent full product functionality</p>
-  </footer>
-
-<script>
-/* === Hero iris pupil — subtle cursor tracking (desktop only, reduced-motion aware) ===
-   The pupil drifts toward the cursor, never more than 8px from center.
-   Gives the sense that iris. is looking at the reader. */
-(function(){
-  var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-  if (prefersReduce || isTouch) return;
-  var heroIris = document.getElementById('heroIris');
-  var pupil = document.getElementById('heroIrisPupil');
-  if (!heroIris || !pupil) return;
-  var maxDrift = 8;
-  var targetX = 200, targetY = 200;
-  var curX = 200, curY = 200;
-  function onMove(e) {
-    var r = heroIris.getBoundingClientRect();
-    var cx = r.left + r.width / 2;
-    var cy = r.top + r.height / 2;
-    var dx = (e.clientX - cx) / (r.width / 2);
-    var dy = (e.clientY - cy) / (r.height / 2);
-    var mag = Math.sqrt(dx*dx + dy*dy);
-    if (mag > 1) { dx /= mag; dy /= mag; }
-    targetX = 200 + dx * maxDrift;
-    targetY = 200 + dy * maxDrift;
-  }
-  function tick() {
-    curX += (targetX - curX) * 0.08;
-    curY += (targetY - curY) * 0.08;
-    pupil.setAttribute('cx', curX.toFixed(2));
-    pupil.setAttribute('cy', curY.toFixed(2));
-    requestAnimationFrame(tick);
-  }
-  window.addEventListener('mousemove', onMove, { passive: true });
-  tick();
-})();
-
-/* === Chapter 1 Waveform — generate breathing bars === */
-(function(){
-  var wave=document.getElementById('waveBars');
-  if(!wave)return;
-  var count=54;
-  var frag=document.createDocumentFragment();
-  for(var i=0;i<count;i++){
-    var bar=document.createElement('div');
-    bar.className='wave-bar';
-    /* staggered pulse delay + slight duration variance for organic feel */
-    var delay=(Math.sin(i*0.42)*0.5+0.5)*1.6 - (i*0.02);
-    var dur=2.4+Math.sin(i*0.31)*0.6;
-    bar.style.animationDelay=delay.toFixed(2)+'s';
-    bar.style.animationDuration=dur.toFixed(2)+'s';
-    frag.appendChild(bar);
-  }
-  wave.appendChild(frag);
-})();
-
-/* === Scroll Reveal === */
-(function(){
-  var ro=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('v');ro.unobserve(e.target);}});
-  },{threshold:0.12});
-  document.querySelectorAll('.rv').forEach(function(el){ro.observe(el);});
-})();
-
-/* === Stat Count-Up === */
-(function(){
-  var co=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(!e.isIntersecting)return;
-      co.unobserve(e.target);
-      var el=e.target,end=parseFloat(el.dataset.count),dec=parseInt(el.dataset.decimals||'0'),suf=el.dataset.suffix||'',dur=1800,start=null;
-      function step(ts){if(!start)start=ts;var p=Math.min((ts-start)/dur,1),ease=1-Math.pow(1-p,3);el.textContent=(end*ease).toFixed(dec)+suf;if(p<1)requestAnimationFrame(step);else el.textContent=end.toFixed(dec)+suf;}
-      requestAnimationFrame(step);
-    });
-  },{threshold:0.5});
-  document.querySelectorAll('[data-count]').forEach(function(el){co.observe(el);});
-})();
-
-/* === Ecosystem Node Expand === */
-document.querySelectorAll('[data-node]').forEach(function(node){
-  node.setAttribute('role','button');node.setAttribute('tabindex','0');
-  node.addEventListener('click',function(){
-    var open=node.classList.contains('open');
-    document.querySelectorAll('[data-node]').forEach(function(n){n.classList.remove('open');});
-    if(!open)node.classList.add('open');
-  });
-  node.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();node.click();}});
-});
-
-/* === Demo Transcript === */
-(function(){
-  var scenarios={
-    margaret:{status:'Newly diagnosed \u00b7 Sudbury, ON',messages:[
-      {t:'bot',d:700,text:'Hi, I\'m iris. I\'m so glad you found me. What\'s been going on?'},
-      {t:'user',d:2400,text:'I was just diagnosed with macular degeneration. I don\'t know what to do.'},
-      {t:'bot',d:1900,text:'I hear you. That\'s a lot to take in all at once. Are you still processing the news, or are you starting to look for next steps?'},
-      {t:'user',d:2600,text:'Both, I think. My doctor told me last week and I\'ve just been sitting with it.'},
-      {t:'bot',d:2100,text:'A week is nothing. You don\'t have to have it figured out yet. The first thing I want you to know is that you\'re not alone — and there\'s real support available right in Sudbury. Would it help to start with someone who can just talk through what AMD means for your daily life?'}
-    ]},
-    david:{status:'Retinitis Pigmentosa \u00b7 Toronto, ON',messages:[
-      {t:'bot',d:700,text:'Hi David. I know you\'ve been navigating this for a while. What\'s on your mind today?'},
-      {t:'user',d:2200,text:'I\'m worried about my job. My peripheral vision is getting worse and I haven\'t told my employer.'},
-      {t:'bot',d:2000,text:'That\'s one of the hardest parts — the professional side of vision loss. Have you had any workplace accommodation support yet?'},
-      {t:'user',d:2100,text:'No. I don\'t even know where to start.'},
-      {t:'bot',d:2200,text:'There\'s a CNIB program called CNIB WORK — they pair you with a vocational specialist who\'s helped people in exactly your situation. Keeping a career going with the right tools and the right conversation with your employer. Want me to connect you?'}
-    ]},
-    priya:{status:'Diabetic Retinopathy \u00b7 Vancouver, BC',messages:[
-      {t:'bot',d:700,text:'Hi Priya. Tell me — what does a typical week look like for you right now?'},
-      {t:'user',d:2400,text:'Honestly? Chaotic. Managing my diabetes, the retinopathy, a toddler. I feel like I\'m failing at all of it.'},
-      {t:'bot',d:2100,text:'You\'re not failing. You\'re carrying a lot. Of everything on your plate, what\'s the one thing that would make the biggest difference if it got a little easier?'},
-      {t:'user',d:2600,text:'Probably the driving. I had to give up my licence and I can\'t get my daughter to her appointments.'},
-      {t:'bot',d:2300,text:'CNIB LIVE has a transportation and mobility program specifically for parents with sight loss in Vancouver. They also connect you with peer support — other moms navigating the exact same thing. Want me to set that up for you?'}
-    ]}
-  };
-  var timer=null;
-  function playScenario(key){
-    if(timer)clearTimeout(timer);
-    var box=document.getElementById('demoMsgs');
-    if(box)box.innerHTML='';
-    var s=scenarios[key];if(!s)return;
-    var statusEl=document.getElementById('demoStatus');
-    if(statusEl)statusEl.textContent=s.status;
-    var t=0;
-    s.messages.forEach(function(m){
-      t+=m.d;
-      (function(msg,delay){
-        timer=setTimeout(function(){
-          var el=document.createElement('div');
-          el.className='s4-msg s4-msg--'+(msg.t==='bot'?'bot':'user');
-          el.textContent=msg.text;
-          box.appendChild(el);
-          requestAnimationFrame(function(){el.classList.add('show');});
-          box.scrollTop=box.scrollHeight;
-        },delay);
-      })(m,t);
-    });
-  }
-  document.querySelectorAll('.s4-tab').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      document.querySelectorAll('.s4-tab').forEach(function(b){b.classList.remove('active');b.setAttribute('aria-selected','false');});
-      btn.classList.add('active');btn.setAttribute('aria-selected','true');
-      playScenario(btn.dataset.scenario);
-    });
-  });
-  var started=false;
-  var demoObs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting&&!started){started=true;playScenario('margaret');}});
-  },{threshold:0.3});
-  var demoEl=document.getElementById('demoWindow');
-  if(demoEl)demoObs.observe(demoEl);
-})();
-</script>
 
   <!-- ================================================================
        iris. chat modal + accessibility panel — extracted from v1
@@ -641,5 +256,49 @@ document.querySelectorAll('[data-node]').forEach(function(node){
 
   <!-- Chat widget engine (extracted from v1) -->
   <script src="iris-chat.js" defer></script>
+
+  <!-- Landing hero: cursor-tracking pupil + tour stub -->
+  <script>
+  (function(){
+    // Hero iris pupil — subtle cursor tracking (desktop only, reduced-motion aware)
+    var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    var heroIris = document.getElementById('heroIris');
+    var pupil = document.getElementById('heroIrisPupil');
+    if (!prefersReduce && !isTouch && heroIris && pupil) {
+      var maxDrift = 8, tx = 200, ty = 200, cx = 200, cy = 200;
+      window.addEventListener('mousemove', function(e){
+        var r = heroIris.getBoundingClientRect();
+        var mx = r.left + r.width/2, my = r.top + r.height/2;
+        var dx = (e.clientX - mx) / (r.width/2);
+        var dy = (e.clientY - my) / (r.height/2);
+        var m = Math.sqrt(dx*dx + dy*dy);
+        if (m > 1) { dx /= m; dy /= m; }
+        tx = 200 + dx * maxDrift;
+        ty = 200 + dy * maxDrift;
+      }, { passive: true });
+      (function tick(){
+        cx += (tx - cx) * 0.08;
+        cy += (ty - cy) * 0.08;
+        pupil.setAttribute('cx', cx.toFixed(2));
+        pupil.setAttribute('cy', cy.toFixed(2));
+        requestAnimationFrame(tick);
+      })();
+    }
+
+    // Reveal-on-load (no scroll needed — everything's in the first viewport)
+    requestAnimationFrame(function(){
+      document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('v'); });
+    });
+  })();
+
+  // Tour entry point. Full tour engine arrives in subsequent batches.
+  // Temporary fallback: opens the live chat so the CTA is functional today.
+  window.startTour = function() {
+    if (typeof openChat === 'function') {
+      openChat('general');
+    }
+  };
+  </script>
 </body>
 </html>
