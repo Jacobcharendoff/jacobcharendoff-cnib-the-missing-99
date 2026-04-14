@@ -628,6 +628,30 @@
       '      <span class="s8-card-eye">Service level \u2014 clinic SLA</span>',
       '      <div class="s8-sla-rows" id="s8SlaRows"></div>',
       '    </div>',
+      '    <div class="s8-card s8-retention" id="s8Ret">',
+      '      <div class="s8-ret-block">',
+      '        <span class="s8-ret-head">Repeat engagement</span>',
+      '        <span class="s8-ret-big is-pct" id="s8RetRepeat">0</span>',
+      '        <span class="s8-ret-note">of engaged members come back within 30 days.</span>',
+      '      </div>',
+      '      <div class="s8-ret-block">',
+      '        <span class="s8-ret-head">NPS \u00b7 trailing 90 days</span>',
+      '        <svg class="s8-spark" id="s8Spark" viewBox="0 0 300 58" preserveAspectRatio="none" aria-hidden="true">',
+      '          <defs><linearGradient id="s8SparkGrad" x1="0" y1="0" x2="0" y2="1">',
+      '            <stop offset="0%" stop-color="rgba(90,200,255,.28)"/>',
+      '            <stop offset="100%" stop-color="rgba(90,200,255,0)"/>',
+      '          </linearGradient></defs>',
+      '          <path class="s8-spark-area" id="s8SparkArea" d=""/>',
+      '          <path class="s8-spark-path" id="s8SparkPath" d=""/>',
+      '          <circle class="s8-spark-dot" id="s8SparkDot" r="3"/>',
+      '        </svg>',
+      '        <span class="s8-ret-note">Latest: <strong style="color:#fff;font-weight:500;" id="s8NpsNow">' + (dash.npsNow || 62) + '</strong> \u00b7 up from ' + (dash.npsStart || 41) + ' at launch.</span>',
+      '      </div>',
+      '      <div class="s8-ret-block">',
+      '        <span class="s8-ret-head">Volunteer pipeline</span>',
+      '        <div class="s8-pipe" id="s8Pipe"></div>',
+      '      </div>',
+      '    </div>',
       '  </div>',
       '</div>'
     ].join('');
@@ -713,6 +737,69 @@
       row.querySelector('.s8-sla-label').textContent = s.k;
       row.querySelector('.s8-sla-val').textContent = s.v;
       slaEl.appendChild(row);
+    });
+
+    // --- Retention card: repeat %, NPS sparkline, volunteer pipeline ---
+    var retCard = stage.querySelector('#s8Ret');
+    setTimeout(function(){ retCard.classList.add('show'); }, 1100);
+    setTimeout(function(){
+      animateCount(stage.querySelector('#s8RetRepeat'), 0, dash.repeatEngagement || 71, 1300);
+    }, 1300);
+
+    // NPS sparkline — build 12-point path from dash.npsSeries or synthesize one
+    var series = dash.npsSeries || [41, 44, 46, 49, 52, 54, 55, 57, 58, 60, 61, (dash.npsNow || 62)];
+    var W = 300, H = 58, pad = 4;
+    var minV = Math.min.apply(null, series) - 4;
+    var maxV = Math.max.apply(null, series) + 4;
+    var range = Math.max(1, maxV - minV);
+    var step = (W - pad * 2) / (series.length - 1);
+    var pts = series.map(function(v, i) {
+      var x = pad + i * step;
+      var y = H - pad - ((v - minV) / range) * (H - pad * 2);
+      return [x, y];
+    });
+    var line = 'M' + pts.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' L');
+    var area = line + ' L' + pts[pts.length-1][0].toFixed(1) + ',' + (H - pad) +
+               ' L' + pts[0][0].toFixed(1) + ',' + (H - pad) + ' Z';
+    var sparkPath = stage.querySelector('#s8SparkPath');
+    var sparkArea = stage.querySelector('#s8SparkArea');
+    var sparkDot  = stage.querySelector('#s8SparkDot');
+    var sparkSvg  = stage.querySelector('#s8Spark');
+    sparkPath.setAttribute('d', line);
+    sparkArea.setAttribute('d', area);
+    sparkDot.setAttribute('cx', pts[pts.length-1][0].toFixed(1));
+    sparkDot.setAttribute('cy', pts[pts.length-1][1].toFixed(1));
+    // Recompute dash length to fit the actual path
+    try {
+      var len = sparkPath.getTotalLength();
+      sparkPath.style.strokeDasharray = len;
+      sparkPath.style.strokeDashoffset = len;
+    } catch (e) { /* jsdom / no-op */ }
+    setTimeout(function(){ sparkSvg.classList.add('drawn'); }, 1500);
+
+    // Volunteer pipeline (recruitment → training → active → lead)
+    var pipe = dash.pipeline || [
+      { label: 'Interest',  n: 11 },
+      { label: 'Training',  n:  7 },
+      { label: 'Active',    n:  4 },
+      { label: 'Peer lead', n:  2 }
+    ];
+    var pipeMax = Math.max.apply(null, pipe.map(function(p){ return p.n; })) || 1;
+    var pipeEl = stage.querySelector('#s8Pipe');
+    pipe.forEach(function(p, i) {
+      var row = document.createElement('div');
+      row.className = 's8-pipe-row';
+      row.innerHTML = [
+        '<span></span>',
+        '<span class="s8-pipe-bar"><span class="s8-pipe-fill"></span></span>',
+        '<span class="s8-pipe-num">0</span>'
+      ].join('');
+      row.children[0].textContent = p.label;
+      pipeEl.appendChild(row);
+      setTimeout(function(){
+        row.querySelector('.s8-pipe-fill').style.width = (p.n / pipeMax * 100) + '%';
+        animateCount(row.querySelector('.s8-pipe-num'), 0, p.n, 900);
+      }, 1500 + i * 140);
     });
   };
 

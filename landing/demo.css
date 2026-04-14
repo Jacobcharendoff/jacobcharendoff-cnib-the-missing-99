@@ -1248,3 +1248,74 @@
   background:rgba(90,200,255,.10);color:var(--c-cyan);
   font-size:11px;font-weight:600;letter-spacing:.3px;
 }
+
+/* --- Scene 8: retention-signals card (row 3, spans grid) --- */
+.s8-retention {
+  grid-column: 1 / -1;
+  display:grid;grid-template-columns: 1fr 1.1fr 1fr;gap:18px;
+  align-items:stretch;
+}
+.s8-ret-block {
+  display:flex;flex-direction:column;gap:8px;
+  padding-right:18px;border-right:1px solid rgba(255,255,255,.05);
+}
+.s8-ret-block:last-child { border-right:none;padding-right:0; }
+.s8-ret-head {
+  font-size:10px;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--c-fg-3);font-weight:700;
+}
+.s8-ret-big {
+  font-size:30px;font-weight:200;color:#fff;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+}
+.s8-ret-big::after { content:"";}
+.s8-ret-big.is-pct::after { content:"%";font-size:15px;color:var(--c-fg-2);margin-left:2px; }
+.s8-ret-note { font-size:12px;color:var(--c-fg-2);line-height:1.45; }
+
+/* NPS sparkline */
+.s8-spark {
+  height:58px;width:100%;display:block;
+  margin-top:4px;
+}
+.s8-spark-path {
+  fill:none;stroke:var(--c-cyan);stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray: 600;stroke-dashoffset: 600;
+  transition: stroke-dashoffset 1.8s cubic-bezier(.22,1,.36,1);
+}
+.s8-spark.drawn .s8-spark-path { stroke-dashoffset: 0; }
+.s8-spark-area {
+  fill:url(#s8SparkGrad);opacity:0;
+  transition:opacity .8s ease .8s;
+}
+.s8-spark.drawn .s8-spark-area { opacity:1; }
+.s8-spark-dot {
+  fill:#fff;stroke:var(--c-cyan);stroke-width:1.5;
+  opacity:0;transition:opacity .4s ease 1.6s;
+}
+.s8-spark.drawn .s8-spark-dot { opacity:1; }
+
+/* Volunteer pipeline mini-bars */
+.s8-pipe { display:flex;flex-direction:column;gap:6px;margin-top:2px; }
+.s8-pipe-row {
+  display:grid;grid-template-columns:82px 1fr 28px;align-items:center;gap:10px;
+  font-size:12px;color:var(--c-fg-2);
+}
+.s8-pipe-bar {
+  height:6px;border-radius:3px;
+  background:rgba(255,255,255,.05);overflow:hidden;
+}
+.s8-pipe-fill {
+  height:100%;width:0;
+  background:linear-gradient(90deg, rgba(90,200,255,.8), rgba(90,200,255,.3));
+  border-radius:3px;
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);
+}
+.s8-pipe-num { text-align:right;color:#fff;font-variant-numeric:tabular-nums; }
+
+@media (max-width: 820px) {
+  .s8-retention { grid-template-columns: 1fr;gap:14px; }
+  .s8-ret-block { border-right:none;border-bottom:1px solid rgba(255,255,255,.05);
+    padding-right:0;padding-bottom:12px; }
+  .s8-ret-block:last-child { border-bottom:none;padding-bottom:0; }
+}
