@@ -743,7 +743,13 @@ p{line-height:1.65}
   font-size:clamp(16px,1.55vw,23px);
   font-weight:400;line-height:1.42;
   color:rgba(255,255,245,.68);
-  max-width:28ch;margin:0 0 10px;
+  margin:0 0 10px;
+  max-width:640px;
+}
+.stage-sub-sep{
+  display:inline-block;margin:0 10px;
+  color:rgba(255,209,0,.45);font-weight:300;
+  transform:translateY(-1px);
 }
 
 .stage-cta{margin-top:18px}
