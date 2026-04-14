@@ -42,6 +42,103 @@
   };
 
   // ================================================================
+  // Scene 2 — Acquire a client (Margaret arrives)
+  // Live chat log (left) + iris.'s matching panel (right) + SLA timer.
+  // Chat turns appear timed over ~25s; matches populate at ~30s.
+  // Voice narration wired in Phase E; for now, bubble appearance alone.
+  // ================================================================
+  window.demoSceneRenderers.acquire = function(stage) {
+    var m = (data.margaret || {});
+    var chatTurns = m.firstChat || [];
+    var matches   = m.programMatches || [];
+    var src       = m.source || 'QR scan';
+
+    stage.innerHTML = [
+      '<div class="s2-layout">',
+      '  <div class="s2-sla" aria-live="polite">',
+      '    <span class="s2-sla-label">First reply</span>',
+      '    <span class="s2-sla-target">Target &lt; 30s</span>',
+      '    <span class="s2-sla-actual" id="s2SlaActual">&mdash;</span>',
+      '  </div>',
+      '  <div class="s2-split">',
+      '    <section class="s2-chat" aria-label="iris. and Margaret live conversation">',
+      '      <header class="s2-chat-head">',
+      '        <span class="s2-chat-dot" aria-hidden="true"></span>',
+      '        <span class="s2-chat-source">' + src + '</span>',
+      '      </header>',
+      '      <div class="s2-chat-log" id="s2ChatLog" aria-live="polite"></div>',
+      '    </section>',
+      '    <aside class="s2-matches" aria-label="iris. matching logic">',
+      '      <div class="s2-matches-head">',
+      '        <span class="s2-matches-eye">iris. is matching</span>',
+      '        <span class="s2-matches-status" id="s2MatchStatus">Listening\u2026</span>',
+      '      </div>',
+      '      <div class="s2-matches-list" id="s2MatchList"></div>',
+      '    </aside>',
+      '  </div>',
+      '</div>'
+    ].join('');
+
+    var log        = stage.querySelector('#s2ChatLog');
+    var matchList  = stage.querySelector('#s2MatchList');
+    var matchStat  = stage.querySelector('#s2MatchStatus');
+    var slaActual  = stage.querySelector('#s2SlaActual');
+
+    // Chat bubbles — appear one at a time, ~5s apart. Sync to voice
+    // narration in Phase E.
+    chatTurns.forEach(function(turn, i) {
+      setTimeout(function() {
+        if (!log.parentNode) return; // scene swapped
+        var bubble = document.createElement('div');
+        bubble.className = 's2-bubble s2-bubble--' + (turn.speaker === 'iris' ? 'iris' : 'user');
+        bubble.innerHTML = [
+          '<span class="s2-bubble-who">' + (turn.speaker === 'iris' ? 'iris.' : 'Margaret') + '</span>',
+          '<span class="s2-bubble-text"></span>'
+        ].join('');
+        bubble.querySelector('.s2-bubble-text').textContent = turn.text;
+        log.appendChild(bubble);
+        requestAnimationFrame(function(){ bubble.classList.add('show'); });
+        log.scrollTop = log.scrollHeight;
+        if (i === 0) slaActual.textContent = '23 seconds';
+      }, 400 + i * 5000);
+    });
+
+    // Matching status updates
+    setTimeout(function() {
+      if (matchStat.parentNode) matchStat.textContent = 'Narrowing\u2026';
+    }, 16000);
+
+    // Matches populate after chat
+    setTimeout(function() {
+      if (!matchList.parentNode) return;
+      matchStat.textContent = matches.length + ' programs matched';
+      matches.forEach(function(p, i) {
+        setTimeout(function() {
+          if (!matchList.parentNode) return;
+          var card = document.createElement('div');
+          card.className = 's2-match';
+          card.innerHTML = [
+            '<div class="s2-match-head">',
+            '  <span class="s2-match-name"></span>',
+            '  <span class="s2-match-score">' + p.fitScore + '<span class="s2-match-score-pct">% fit</span></span>',
+            '</div>',
+            '<ul class="s2-match-why"></ul>'
+          ].join('');
+          card.querySelector('.s2-match-name').textContent = p.name;
+          var ul = card.querySelector('.s2-match-why');
+          (p.reasoning || []).forEach(function(r) {
+            var li = document.createElement('li');
+            li.textContent = r;
+            ul.appendChild(li);
+          });
+          matchList.appendChild(card);
+          requestAnimationFrame(function(){ card.classList.add('show'); });
+        }, i * 900);
+      });
+    }, 28000);
+  };
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
