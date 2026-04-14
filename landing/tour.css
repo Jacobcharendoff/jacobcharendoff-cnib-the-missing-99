@@ -424,3 +424,74 @@
   .ch3-label--retain{bottom:4%}
   .ch3-audiences{bottom:-22%;font-size:10px;letter-spacing:1.4px}
 }
+
+/* ================================================================
+   CHAPTER 4 — Margaret enters (Clients)
+   Typographic portrait. No photography. Her name, her age, her
+   specific quote, the QR code source. Iris mark lives to the right.
+   ================================================================ */
+.ch4-layout{
+  position:absolute;top:50%;left:clamp(32px,6vw,96px);
+  transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:18px;
+  max-width:min(54vw,620px);
+}
+.ch4-meta{
+  display:flex;align-items:baseline;gap:10px;
+  font-size:clamp(15px,1.4vw,20px);font-weight:500;
+  color:rgba(255,255,245,.78);letter-spacing:.1px;
+  opacity:0;transform:translateY(6px);
+  animation:ch4FadeUp 1s cubic-bezier(.22,1,.36,1) .3s forwards;
+}
+.ch4-name{
+  color:#FFD100;font-weight:700;font-size:clamp(22px,2vw,30px);letter-spacing:-.01em;
+}
+.ch4-sep{opacity:.4}
+.ch4-diagnosis{
+  font-size:clamp(13px,1.05vw,15.5px);
+  color:rgba(255,255,245,.5);letter-spacing:.3px;
+  opacity:0;transform:translateY(6px);
+  animation:ch4FadeUp 1s cubic-bezier(.22,1,.36,1) 1.8s forwards;
+}
+.ch4-quote{
+  margin:6px 0 0;padding:0;
+  position:relative;
+  font-size:clamp(30px,4.4vw,60px);font-weight:400;font-style:italic;
+  line-height:1.08;letter-spacing:-.02em;
+  color:rgba(255,255,245,.94);
+  opacity:0;transform:translateY(10px);
+  animation:ch4FadeUp 1.2s cubic-bezier(.22,1,.36,1) 5s forwards;
+  max-width:16ch;
+}
+.ch4-mark{
+  position:absolute;left:-0.4em;top:-0.15em;
+  font-size:1.4em;line-height:1;
+  color:rgba(245,155,60,.42);font-style:normal;
+}
+.ch4-source{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:22px;padding:10px 14px;
+  width:fit-content;border-radius:10px;
+  background:rgba(255,209,0,.04);border:1px solid rgba(255,209,0,.14);
+  font-size:12.5px;letter-spacing:.2px;
+  color:rgba(255,255,245,.6);
+  opacity:0;transform:translateY(6px);
+  animation:ch4FadeUp 1s cubic-bezier(.22,1,.36,1) 9s forwards;
+}
+.ch4-source svg{width:26px;height:26px;color:#FFD100;flex-shrink:0}
+
+@keyframes ch4FadeUp{to{opacity:1;transform:translateY(0)}}
+
+@media(prefers-reduced-motion:reduce){
+  .ch4-meta,.ch4-diagnosis,.ch4-quote,.ch4-source{animation:none !important;opacity:1 !important;transform:none !important}
+}
+
+@media(max-width:780px){
+  .ch4-layout{
+    position:static;transform:none;
+    padding:clamp(200px,30vh,300px) 22px 0;
+    max-width:100%;
+  }
+  .ch4-quote{font-size:clamp(26px,7vw,40px)}
+  .ch4-source{font-size:11.5px}
+}

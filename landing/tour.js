@@ -94,7 +94,27 @@
       body:'68. Newly diagnosed. Found iris. through a QR in her doctor\'s waiting room.',
       voice:"Margaret is sixty-eight. Two months ago her ophthalmologist said the words: macular degeneration. She scanned a QR code in the waiting room. That's where she found me. We talked. Three weeks later, she had a plan. And she wasn't alone anymore.",
       wash:{ primary:'rgba(245,155,60,.14)', secondary:'rgba(255,209,0,.05)' },
-      duration:18000
+      duration:18000,
+      content:[
+        '<div class="ch4-layout">',
+        '  <div class="ch4-meta">',
+        '    <span class="ch4-name">Margaret</span>',
+        '    <span class="ch4-sep">&middot;</span>',
+        '    <span>68</span>',
+        '    <span class="ch4-sep">&middot;</span>',
+        '    <span>Sudbury, ON</span>',
+        '  </div>',
+        '  <div class="ch4-diagnosis">Recently diagnosed &mdash; macular degeneration</div>',
+        '  <blockquote class="ch4-quote">',
+        '    <span class="ch4-mark" aria-hidden="true">&ldquo;</span>',
+        '    I don\'t know who to tell.',
+        '  </blockquote>',
+        '  <div class="ch4-source">',
+        '    <svg class="ch4-qr" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/><rect x="22" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/><rect x="2" y="22" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/><rect x="5" y="5" width="2" height="2" fill="currentColor"/><rect x="25" y="5" width="2" height="2" fill="currentColor"/><rect x="5" y="25" width="2" height="2" fill="currentColor"/><rect x="14" y="4" width="2" height="2" fill="currentColor"/><rect x="18" y="6" width="2" height="2" fill="currentColor"/><rect x="14" y="14" width="2" height="2" fill="currentColor"/><rect x="18" y="18" width="2" height="2" fill="currentColor"/><rect x="22" y="14" width="2" height="2" fill="currentColor"/><rect x="14" y="22" width="2" height="2" fill="currentColor"/></svg>',
+        '    <span>Scanned in her ophthalmologist\'s waiting room</span>',
+        '  </div>',
+        '</div>'
+      ].join('')
     },
     {
       id:'volunteers',  eye:'Chapter 5 · Volunteers',
