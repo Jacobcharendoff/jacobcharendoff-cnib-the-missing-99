@@ -454,3 +454,22 @@ body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#000;colo
 .s8-node-programs{color:rgba(0,0,0,.55)}
 .s8-cl-t{color:#0a0a0a}
 .s8-cl-sub{color:rgba(0,0,0,.45)}
+
+/* S9 CTA → LIGHT */
+.s9{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(200,150,10,.06) 0%,rgba(214,77,133,.035) 22%,rgba(126,90,232,.025) 42%,transparent 62%),
+    radial-gradient(ellipse 45% 35% at 18% 20%,rgba(90,207,255,.035) 0%,transparent 55%),
+    #f7f5f0;
+}
+.s9 h2{color:#0a0a0a}
+.s9-bd{color:rgba(0,0,0,.58)}
+.btn-s{background:rgba(0,0,0,.03);color:rgba(0,0,0,.7);border:1px solid rgba(0,0,0,.12);backdrop-filter:none;-webkit-backdrop-filter:none}
+@media(hover:hover){.btn-s:hover{color:#0a0a0a;border-color:rgba(0,0,0,.25);background:rgba(0,0,0,.05)}}
+.s9-fl{color:rgba(0,0,0,.3)}
+
+/* Footer on light */
+.ft{background:#f7f5f0;border-top:1px solid rgba(0,0,0,.06);color:rgba(0,0,0,.42)}
+.ft-a11y{color:rgba(0,0,0,.5)}
+.ft-a11y a{color:#a07800}
+.ft-br{color:rgba(0,0,0,.3)}
