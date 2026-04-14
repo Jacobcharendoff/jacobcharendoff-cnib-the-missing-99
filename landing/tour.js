@@ -333,6 +333,7 @@
       '    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
       '  </button>',
       '</div>',
+      '<div class="tour-sr" id="tourSrAnnounce" aria-live="assertive" aria-atomic="true" role="status"></div>',
       '<div class="tour-scene">',
       '  <div class="tour-iris" id="tourIris" aria-hidden="true">',
       '    <svg viewBox="0 0 400 400">',
@@ -487,6 +488,11 @@
       else d.removeAttribute('data-state');
       d.setAttribute('aria-selected', idx === i ? 'true' : 'false');
     });
+
+    // Announce chapter change to screen readers (separate live region
+    // so content re-layout doesn't swallow the announcement).
+    var sr = document.getElementById('tourSrAnnounce');
+    if (sr) sr.textContent = ch.eye + '. ' + ch.title + '. ' + (ch.voice || ch.body || '');
   }
 
   function goTo(i) {

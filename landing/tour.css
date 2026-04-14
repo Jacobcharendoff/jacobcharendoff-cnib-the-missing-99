@@ -4,6 +4,14 @@
    Loaded on demand from landing/index.html. Do not import into detail.html.
    ================================================================ */
 
+/* Screen-reader-only announcement region — visually hidden but read
+   aloud by SR on chapter change (separate from the visual DOM swap
+   so the live region isn't disturbed by the cross-fade). */
+.tour-sr{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
 /* Root — hidden until .tour.open is applied */
 .tour{
   position:fixed;inset:0;z-index:10000;
