@@ -691,12 +691,14 @@
     });
 
     // --- Recent outcomes feed (anonymized case IDs + status + relative time) ---
-    var outcomes = dash.outcomes || [
-      { id: 'C-2041', status: 'Booked peer meetup in Sudbury', when: '2h ago' },
-      { id: 'C-2039', status: 'Completed orientation + mobility intake', when: '5h ago' },
-      { id: 'C-2037', status: 'Referred to low-vision OT',  when: 'yesterday' },
-      { id: 'C-2034', status: 'Signed up: Braille basics cohort',  when: '2d ago' },
-      { id: 'C-2030', status: 'Became volunteer (phone friend)',  when: '4d ago' }
+    // demo-data.js shape: { anonId, status, time }. Keep {id, when} as
+    // tolerated aliases so older/future data shapes still render.
+    var outcomes = dash.recentOutcomes || dash.outcomes || [
+      { anonId: 'C-2041', status: 'Booked peer meetup in Sudbury',        time: '2h ago'    },
+      { anonId: 'C-2039', status: 'Completed orientation + mobility intake', time: '5h ago' },
+      { anonId: 'C-2037', status: 'Referred to low-vision OT',             time: 'yesterday' },
+      { anonId: 'C-2034', status: 'Signed up: Braille basics cohort',      time: '2d ago'    },
+      { anonId: 'C-2030', status: 'Became volunteer (phone friend)',       time: '4d ago'    }
     ];
     var outEl = stage.querySelector('#s8OutList');
     var outCard = stage.querySelector('#s8Outcomes');
@@ -709,9 +711,9 @@
         '<span class="s8-out-status"></span>',
         '<span class="s8-out-time"></span>'
       ].join('');
-      row.querySelector('.s8-out-id').textContent = o.id;
-      row.querySelector('.s8-out-status').textContent = o.status;
-      row.querySelector('.s8-out-time').textContent = o.when;
+      row.querySelector('.s8-out-id').textContent = o.anonId || o.id || '';
+      row.querySelector('.s8-out-status').textContent = o.status || '';
+      row.querySelector('.s8-out-time').textContent = o.time || o.when || '';
       outEl.appendChild(row);
       setTimeout(function(){ row.classList.add('show'); }, 1100 + i * 140);
     });
