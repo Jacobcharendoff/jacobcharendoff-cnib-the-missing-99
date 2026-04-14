@@ -697,18 +697,28 @@ p{line-height:1.65}
 .stage{
   flex:1;
   min-height:100vh;min-height:100dvh;
-  display:grid;grid-template-columns:1.08fr .92fr;align-items:center;
-  gap:clamp(24px,3.5vw,64px);
-  padding:clamp(40px,5vh,80px) clamp(32px,5vw,72px) clamp(88px,9vh,120px);
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(40px,5vh,72px) clamp(24px,4vw,48px);
   position:relative;overflow:hidden;
   background:
-    radial-gradient(ellipse 70% 55% at 75% 50%,rgba(255,180,60,.10) 0%,transparent 58%),
-    radial-gradient(ellipse 55% 45% at 10% 82%,rgba(181,123,255,.05) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 55% at 70% 50%,rgba(255,180,60,.10) 0%,transparent 58%),
+    radial-gradient(ellipse 55% 45% at 12% 80%,rgba(181,123,255,.05) 0%,transparent 60%),
     #060606;
 }
 
-/* Iris mark — right column, bigger for presence */
-.stage .im--hero{width:min(42vw,540px);height:min(42vw,540px)}
+/* Inner container — constrains total grid width so content doesn't stretch
+   across ultra-wide viewports with dead air in the middle. */
+.stage-inner{
+  width:100%;max-width:1240px;
+  display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  gap:clamp(16px,2vw,36px);
+}
+
+/* Iris mark — right column, large + dominant */
+.stage .im--hero{
+  width:min(38vw,620px);height:min(38vw,620px);
+  margin-left:auto; /* pull toward text column, removes outer air */
+}
 .stage-mark{display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
 
 /* Text — left column, left-aligned */
@@ -767,36 +777,9 @@ p{line-height:1.65}
   color:#fff;text-decoration-color:#FFD100;
 }
 
-/* Detail card — clean, unified, one element at bottom. No pill treatment. */
-.stage-detail{
-  position:absolute;bottom:0;left:0;right:0;
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  padding:22px 32px 24px;
-  text-decoration:none;white-space:nowrap;
-  border-top:1px solid rgba(255,255,255,.05);
-  background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.015) 100%);
-  transition:background .3s,border-color .3s;
-  z-index:3;
-}
-.stage-detail:hover,.stage-detail:focus-visible{
-  background:linear-gradient(180deg,rgba(255,255,255,.015) 0%,rgba(255,209,0,.04) 100%);
-  border-color:rgba(255,209,0,.18);
-}
-.stage-detail-eye{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
-  color:rgba(255,209,0,.55);
-  padding-right:14px;border-right:1px solid rgba(255,255,255,.1);
-  transition:color .3s;
-}
-.stage-detail:hover .stage-detail-eye,.stage-detail:focus-visible .stage-detail-eye{color:#FFD100}
-.stage-detail-t{
-  font-size:13.5px;letter-spacing:.1px;font-weight:500;
-  color:rgba(255,255,255,.58);
-  transition:color .3s,transform .3s;
-}
-.stage-detail:hover .stage-detail-t,.stage-detail:focus-visible .stage-detail-t{
-  color:#fff;
-}
+/* Detail card — BENCHED per user direction.
+   Landing is now CTA + tour only; depth access moved to the tour's
+   post-chapter state or the iris-chat FAB. */
 
 /* Un-hide the accessibility FAB since nav link was removed.
    Kept subtle bottom-left — won't compete with iris chat FAB bottom-right. */
@@ -805,31 +788,34 @@ p{line-height:1.65}
 
 /* Tablet — tighter grid */
 @media(max-width:1100px){
-  .stage{gap:clamp(28px,3vw,48px);padding:clamp(70px,9vh,120px) clamp(28px,4vw,56px)}
+  .stage{padding:clamp(60px,8vh,100px) clamp(24px,3.5vw,40px)}
+  .stage-inner{gap:clamp(14px,2vw,28px)}
   .stage-w{font-size:clamp(80px,13vw,160px)}
   .stage-lede{font-size:clamp(36px,6vw,70px)}
-  .stage .im--hero{width:min(44vw,460px);height:min(44vw,460px)}
+  .stage .im--hero{width:min(42vw,500px);height:min(42vw,500px)}
 }
 
 /* Mobile — stack vertically, iris mark ABOVE text (mark is the star).
    Text is source-first in the HTML for reading flow, but visually the
    mark leads on phones per brand hierarchy. */
 @media(max-width:780px){
-  .stage{
+  .stage{padding:clamp(60px,8vh,100px) 22px clamp(72px,9vh,108px)}
+  .stage-inner{
     grid-template-columns:1fr;
-    padding:clamp(90px,12vh,140px) 22px clamp(80px,10vh,120px);
-    gap:28px;
+    gap:22px;
     text-align:center;
+    max-width:100%;
   }
   .stage-text{
     order:2;align-items:center;text-align:center;
     max-width:100%;margin:0 auto;
   }
   .stage-mark{order:1}
+  .stage .im--hero{
+    width:min(60vw,280px);height:min(60vw,280px);
+    margin-left:auto;margin-right:auto;
+  }
   .stage-sub{max-width:28ch;margin-left:auto;margin-right:auto}
-  .stage-talk{text-align:center}
-  .stage .im--hero{width:min(68vw,300px);height:min(68vw,300px)}
   .stage-w{font-size:clamp(64px,16vw,92px)}
   .stage-lede{font-size:clamp(30px,9vw,48px)}
-  .stage-detail{bottom:18px}
 }
