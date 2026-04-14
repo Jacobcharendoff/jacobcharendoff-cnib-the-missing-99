@@ -228,3 +228,147 @@
   .demo-rail { gap: 8px; }
   .demo-placeholder-title { font-size: clamp(26px, 8vw, 38px); }
 }
+
+/* ================================================================
+   SCENE 1 — What is iris.
+   Chromatic iris mark · prismatic wordmark · one-line thesis.
+   Simple, confident opening. Voice narration lands over this.
+   ================================================================ */
+.s1-layout {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 22px; text-align: center; max-width: 780px;
+}
+.s1-mark {
+  width: min(40vw, 360px); aspect-ratio: 1; margin-bottom: 10px;
+  position: relative;
+}
+.s1-mark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.s1-mark .im-r { fill: none; transform-origin: center; }
+.s1-mark .im-r1 { stroke: #9B7BE8; stroke-width: .9;  opacity: .22; }
+.s1-mark .im-r2 { stroke: #B074C4; stroke-width: 1.1; opacity: .35; }
+.s1-mark .im-r3 { stroke: #D66E9B; stroke-width: 1.3; opacity: .5;  }
+.s1-mark .im-r4 { stroke: #F59B3C; stroke-width: 1.5; opacity: .72; }
+.s1-mark .im-r5 { stroke: #FFD100; stroke-width: 2;   opacity: .95; }
+.s1-mark .im-p  {
+  fill: #FFD100;
+  filter:
+    drop-shadow(0 0 12px rgba(255,209,0,.85))
+    drop-shadow(0 0 32px rgba(255,209,0,.4))
+    drop-shadow(0 0 64px rgba(245,155,60,.22));
+}
+.s1-mark::before {
+  content: ''; position: absolute; inset: -4%;
+  background: radial-gradient(circle at 50% 50%, rgba(255,209,0,.10) 0%, rgba(245,155,60,.05) 22%, rgba(214,110,155,.03) 42%, transparent 65%);
+  filter: blur(10px); pointer-events: none; z-index: 0;
+  animation: s1Halo 11s ease-in-out infinite;
+}
+@keyframes s1Halo { 0%,100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.04); } }
+.s1-layout svg { position: relative; z-index: 1; }
+
+.s1-wordmark {
+  margin: 0;
+  font-size: var(--t-hero);
+  font-weight: 800; letter-spacing: -.05em; line-height: .88;
+}
+.s1-lede {
+  margin: 0;
+  font-size: var(--t-h2);
+  font-weight: 600; letter-spacing: -.02em; line-height: 1.08;
+  color: var(--c-fg-1);
+}
+.s1-sub {
+  margin: 0;
+  font-size: var(--t-lead);
+  font-weight: 400; line-height: 1.45;
+  color: var(--c-fg-2); max-width: 32ch;
+}
+
+/* ================================================================
+   SCENE 11 — Ask iris. anything
+   Landing state after the tour. Small iris mark · intro · prompt ·
+   two CTAs. Primary opens the infrastructure chat; secondary replays.
+   ================================================================ */
+.s11-layout {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; text-align: center; max-width: 720px;
+}
+.s11-mark {
+  width: min(28vw, 220px); aspect-ratio: 1; margin-bottom: 6px;
+  position: relative;
+}
+.s11-mark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.s11-mark .im-r { fill: none; transform-origin: center; }
+.s11-mark .im-r1 { stroke: #9B7BE8; stroke-width: .9;  opacity: .22; }
+.s11-mark .im-r2 { stroke: #B074C4; stroke-width: 1.1; opacity: .35; }
+.s11-mark .im-r3 { stroke: #D66E9B; stroke-width: 1.3; opacity: .5;  }
+.s11-mark .im-r4 { stroke: #F59B3C; stroke-width: 1.5; opacity: .72; }
+.s11-mark .im-r5 { stroke: #FFD100; stroke-width: 2;   opacity: .95; }
+.s11-mark .im-p  {
+  fill: #FFD100;
+  filter: drop-shadow(0 0 10px rgba(255,209,0,.85)) drop-shadow(0 0 26px rgba(255,209,0,.35));
+}
+
+.s11-intro {
+  margin: 0; font-size: var(--t-lead); font-weight: 500;
+  color: var(--c-fg-2); letter-spacing: -.005em;
+}
+.s11-prompt {
+  margin: 0; font-size: var(--t-h2); font-weight: 600;
+  color: var(--c-fg-1); letter-spacing: -.025em; line-height: 1.08;
+}
+
+.s11-cta {
+  display: flex; align-items: center; gap: 14px; margin-top: 12px;
+  flex-wrap: wrap; justify-content: center;
+}
+.s11-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 32px; border-radius: 100px; border: none;
+  background: var(--c-accent); color: #0A0A0A; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: .1px;
+  box-shadow: 0 8px 32px rgba(255,209,0,.28);
+  transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s;
+  animation: s11CtaPulse 3.4s ease-in-out infinite 3s;
+}
+.s11-primary:hover, .s11-primary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 44px rgba(255,209,0,.44);
+}
+.s11-primary svg { transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.s11-primary:hover svg { transform: translateX(4px); }
+@keyframes s11CtaPulse {
+  0%,100% { box-shadow: 0 8px 32px rgba(255,209,0,.28); }
+  50%     { box-shadow: 0 12px 48px rgba(255,209,0,.44); }
+}
+
+.s11-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 22px; border-radius: 100px;
+  background: transparent; border: 1px solid rgba(255,255,255,.18);
+  color: var(--c-fg-2); font-family: inherit;
+  font-size: 13.5px; font-weight: 500; letter-spacing: .1px; cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s;
+}
+.s11-secondary:hover, .s11-secondary:focus-visible {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.32);
+  color: var(--c-fg-1);
+}
+
+.s11-foot {
+  margin-top: 18px; font-size: var(--t-eye);
+  letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+  color: var(--c-fg-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s1-mark::before, .s11-primary { animation: none !important; }
+}
+
+@media (max-width: 700px) {
+  .s1-mark { width: min(60vw, 240px); }
+  .s1-sub { max-width: 28ch; }
+  .s11-mark { width: min(48vw, 180px); }
+  .s11-cta { flex-direction: column; gap: 12px; width: 100%; }
+  .s11-primary, .s11-secondary { width: 100%; justify-content: center; }
+}
