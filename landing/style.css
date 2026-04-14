@@ -501,3 +501,54 @@ p{line-height:1.65}
   .hero-triad{gap:14px;margin-bottom:20px}
   .hero-triad span{font-size:14px}
 }
+
+/* ================================================================
+   JOURNEY MAP — System-at-a-glance strip (Acquire · Engage · Retain · Loop)
+   Makes the framework visible in one look BEFORE the detail columns.
+   ================================================================ */
+.jm-framework{
+  display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;
+  max-width:1000px;margin:0 auto 72px;padding:24px 28px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,209,0,.18);
+  border-radius:100px;
+  box-shadow:0 0 40px rgba(255,209,0,.04) inset;
+}
+.jm-fw-stage{
+  display:inline-flex;align-items:center;gap:10px;
+}
+.jm-fw-n{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,209,0,.12);border:1px solid rgba(255,209,0,.4);
+  font-size:11px;font-weight:700;color:#FFD100;letter-spacing:.5px;
+}
+.jm-fw-l{
+  font-size:clamp(14px,1.3vw,18px);font-weight:700;color:#fff;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.jm-fw-arrow{
+  flex:0 0 32px;height:1px;
+  background:linear-gradient(90deg,rgba(255,209,0,.2),rgba(255,209,0,.6),rgba(255,209,0,.2));
+  position:relative;
+}
+.jm-fw-arrow::after{
+  content:'';position:absolute;right:-4px;top:-4px;
+  width:0;height:0;border-left:6px solid rgba(255,209,0,.6);
+  border-top:4px solid transparent;border-bottom:4px solid transparent;
+}
+.jm-fw-loop{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;margin-left:6px;
+  background:rgba(255,209,0,.08);border:1px solid rgba(255,209,0,.3);
+  border-radius:100px;
+  color:#FFD100;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+}
+.jm-fw-loop svg{stroke:#FFD100}
+
+@media(max-width:700px){
+  .jm-framework{flex-direction:column;gap:16px;border-radius:20px;padding:20px}
+  .jm-fw-arrow{width:1px;height:24px;background:linear-gradient(180deg,rgba(255,209,0,.2),rgba(255,209,0,.6),rgba(255,209,0,.2))}
+  .jm-fw-arrow::after{right:-4px;top:auto;bottom:-4px;border:none;border-top:6px solid rgba(255,209,0,.6);border-left:4px solid transparent;border-right:4px solid transparent}
+  .jm-fw-loop{margin-left:0}
+}
