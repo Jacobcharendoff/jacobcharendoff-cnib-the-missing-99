@@ -562,6 +562,33 @@
     document.body.classList.add('tour-completed');
   }
 
+  // --------------------------------------------------------------
+  // Mouse parallax — subtle cursor-tracking for chapter content + iris.
+  // Desktop only. Reduced-motion + touch devices skip. Lerp for smoothness.
+  // Writes --px (-0.5 to 0.5) and --py (-0.5 to 0.5) onto .tour root.
+  // CSS reads those vars on .tour-chapter and .tour-iris for depth layers.
+  // --------------------------------------------------------------
+  var parallaxReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var parallaxTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (!parallaxReduced && !parallaxTouch) {
+    var tpx = 0, tpy = 0, cpx = 0, cpy = 0;
+    window.addEventListener('mousemove', function(e) {
+      if (!isOpen || !root) return;
+      var r = root.getBoundingClientRect();
+      tpx = ((e.clientX - r.left) / r.width - 0.5);   // -0.5 .. 0.5
+      tpy = ((e.clientY - r.top)  / r.height - 0.5);
+    }, { passive: true });
+    (function parallaxTick() {
+      if (root) {
+        cpx += (tpx - cpx) * 0.06;
+        cpy += (tpy - cpy) * 0.06;
+        root.style.setProperty('--px', cpx.toFixed(4));
+        root.style.setProperty('--py', cpy.toFixed(4));
+      }
+      requestAnimationFrame(parallaxTick);
+    })();
+  }
+
   // Public API — override the stub defined in index.html
   window.startTour = open;
   window.closeTour = close;
