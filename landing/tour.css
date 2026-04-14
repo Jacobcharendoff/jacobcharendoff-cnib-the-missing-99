@@ -254,3 +254,96 @@
   .tour.ch-volunteers .tour-iris,
   .tour.ch-partners .tour-iris{transform:translate(-50%,-150%) scale(.65)}
 }
+
+/* ================================================================
+   CHAPTER 1 — Meet iris.
+   The wordmark fades up beneath the centered iris mark.
+   ================================================================ */
+.ch1-layout{
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+  margin-top:clamp(260px,40vh,420px); /* push below the centered iris */
+  text-align:center;
+}
+.ch1-wordmark{
+  font-size:clamp(72px,11vw,152px);font-weight:800;
+  letter-spacing:-.05em;line-height:.88;
+  opacity:0;transform:translateY(12px);
+  animation:ch1Word 1.4s cubic-bezier(.22,1,.36,1) 3.2s forwards;
+}
+.ch1-eye{
+  font-size:clamp(13px,1.1vw,15.5px);
+  color:rgba(255,255,245,.48);letter-spacing:.2px;
+  max-width:34ch;
+  opacity:0;transform:translateY(6px);
+  animation:ch1Word 1.2s cubic-bezier(.22,1,.36,1) 5.5s forwards;
+}
+@keyframes ch1Word{to{opacity:1;transform:translateY(0)}}
+
+/* ================================================================
+   CHAPTER 2 — The Gap
+   Iris small upper-left; stat reveal dominates the right 2/3.
+   ================================================================ */
+.ch2-layout{
+  position:absolute;top:50%;right:clamp(32px,6vw,96px);
+  transform:translateY(-50%);
+  text-align:right;
+  display:flex;flex-direction:column;align-items:flex-end;gap:14px;
+  max-width:640px;
+}
+.ch2-eye{
+  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.42);font-weight:700;
+  opacity:0;animation:ch2Fade .9s cubic-bezier(.22,1,.36,1) .4s forwards;
+}
+.ch2-stat{
+  font-size:clamp(72px,10vw,148px);font-weight:800;
+  letter-spacing:-.04em;line-height:.88;
+  color:#fff;
+  opacity:0;transform:translateY(8px);
+  animation:ch2Stat 1.2s cubic-bezier(.22,1,.36,1) .6s forwards;
+}
+.ch2-stat-digits{
+  background:linear-gradient(100deg,#FFD100 0%,#F59B3C 50%,#E87CA0 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.ch2-rule{
+  width:180px;height:1px;margin:6px 0 6px auto;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  opacity:0;animation:ch2Fade .8s cubic-bezier(.22,1,.36,1) 5.5s forwards;
+}
+.ch2-reveal{
+  display:inline-flex;align-items:baseline;gap:14px;
+  opacity:0;transform:translateY(6px);
+  animation:ch2Reveal 1.2s cubic-bezier(.22,1,.36,1) 6.2s forwards;
+}
+.ch2-reveal-n{
+  font-size:clamp(40px,5.5vw,72px);font-weight:800;
+  letter-spacing:-.03em;color:#5AC8FF;line-height:1;
+}
+.ch2-reveal-t{
+  font-size:clamp(17px,1.5vw,22px);font-weight:500;
+  color:rgba(255,255,245,.72);letter-spacing:.1px;
+}
+@keyframes ch2Fade{to{opacity:1}}
+@keyframes ch2Stat{to{opacity:1;transform:translateY(0)}}
+@keyframes ch2Reveal{to{opacity:1;transform:translateY(0)}}
+
+@media(prefers-reduced-motion:reduce){
+  .ch1-wordmark,.ch1-eye,.ch2-eye,.ch2-stat,.ch2-rule,.ch2-reveal{
+    animation:none !important;opacity:1 !important;transform:none !important;
+  }
+}
+
+@media(max-width:780px){
+  .ch1-layout{margin-top:clamp(180px,30vh,280px);gap:18px}
+  .ch1-wordmark{font-size:clamp(56px,16vw,88px)}
+  .ch1-eye{font-size:13px;max-width:28ch}
+  .ch2-layout{
+    position:static;transform:none;text-align:center;align-items:center;
+    margin-top:clamp(200px,32vh,300px);
+  }
+  .ch2-rule{margin:6px auto}
+  .ch2-stat{font-size:clamp(56px,14vw,88px)}
+  .ch2-reveal-n{font-size:clamp(32px,10vw,48px)}
+}

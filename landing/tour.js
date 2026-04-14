@@ -35,7 +35,13 @@
       body:"Named for the part of the eye that decides how much light to let in.",
       voice:"Hi. I'm iris. Named for the part of the eye that decides how much light to let in. That's my job here, too.",
       wash:{ primary:'rgba(245,155,60,.14)', secondary:'rgba(255,209,0,.06)' },
-      duration:10000
+      duration:10000,
+      content:[
+        '<div class="ch1-layout">',
+        '  <div class="ch1-wordmark prism">iris.</div>',
+        '  <div class="ch1-eye">Named for the part of the eye that decides how much light to let in.</div>',
+        '</div>'
+      ].join('')
     },
     {
       id:'gap',  eye:'Chapter 2 · The Gap',
@@ -43,7 +49,18 @@
       body:'1.5 million Canadians live with sight loss. Fewer than one in a hundred ever finds CNIB.',
       voice:"One and a half million Canadians live with sight loss. Fewer than one percent ever find CNIB. The help has always been here. The connection hasn't. That's the gap I was built to close.",
       wash:{ primary:'rgba(90,200,255,.10)', secondary:'rgba(123,104,255,.04)' },
-      duration:15000
+      duration:15000,
+      content:[
+        '<div class="ch2-layout">',
+        '  <div class="ch2-eye">Canadians living with sight loss</div>',
+        '  <div class="ch2-stat"><span class="ch2-stat-digits">1,500,000</span></div>',
+        '  <div class="ch2-rule"></div>',
+        '  <div class="ch2-reveal">',
+        '    <span class="ch2-reveal-n">&lt;1%</span>',
+        '    <span class="ch2-reveal-t">ever find CNIB</span>',
+        '  </div>',
+        '</div>'
+      ].join('')
     },
     {
       id:'framework',  eye:'Chapter 3 · The Framework',
@@ -300,16 +317,21 @@
     prior.forEach(function(c){ root.classList.remove(c); });
     root.classList.add('ch-' + ch.id);
 
-    // Scene content (replace with chapter-specific visuals in Batch 5)
+    // Scene content. If a chapter declares its own HTML (ch.content),
+    // use it; otherwise fall back to the generic eye/title/body layout.
     sceneInner.innerHTML = '';
     var block = document.createElement('div');
     block.className = 'tour-chapter';
     block.dataset.state = 'enter';
-    block.innerHTML = [
-      '<p class="tour-chapter-eye">' + ch.eye + '</p>',
-      '<h2 class="tour-chapter-title">' + ch.title + '</h2>',
-      '<p class="tour-chapter-body">' + ch.body + '</p>'
-    ].join('');
+    if (ch.content) {
+      block.innerHTML = ch.content;
+    } else {
+      block.innerHTML = [
+        '<p class="tour-chapter-eye">' + ch.eye + '</p>',
+        '<h2 class="tour-chapter-title">' + ch.title + '</h2>',
+        '<p class="tour-chapter-body">' + ch.body + '</p>'
+      ].join('');
+    }
     sceneInner.appendChild(block);
     // Allow transition to fire
     requestAnimationFrame(function() { block.dataset.state = 'active'; });
