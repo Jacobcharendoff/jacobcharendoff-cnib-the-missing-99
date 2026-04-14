@@ -175,7 +175,29 @@
       body:'Client becomes volunteer. Volunteer becomes advocate. Advocate becomes partner.',
       voice:"Client becomes volunteer. Volunteer becomes advocate. Advocate becomes partner. Partner brings more clients. The community doesn't just grow. It regenerates itself.",
       wash:{ primary:'rgba(181,123,255,.12)', secondary:'rgba(255,209,0,.06)' },
-      duration:12000
+      duration:12000,
+      content:[
+        '<div class="ch7-layout" aria-hidden="true">',
+        '  <div class="ch7-flywheel">',
+        '    <svg class="ch7-arcs" viewBox="0 0 520 520">',
+        '      <defs>',
+        '        <linearGradient id="ch7grad" x1="0" y1="0" x2="1" y2="1">',
+        '          <stop offset="0" stop-color="#FFD100"/>',
+        '          <stop offset="0.33" stop-color="#E87CA0"/>',
+        '          <stop offset="0.66" stop-color="#B57BFF"/>',
+        '          <stop offset="1" stop-color="#5AC8FF"/>',
+        '        </linearGradient>',
+        '      </defs>',
+        '      <circle class="ch7-ring" cx="260" cy="260" r="220" fill="none" stroke="url(#ch7grad)" stroke-width="1.3" stroke-linecap="round"/>',
+        '    </svg>',
+        '    <div class="ch7-node ch7-node--n"><span class="ch7-node-n">01</span><span>Client</span></div>',
+        '    <div class="ch7-node ch7-node--e"><span class="ch7-node-n">02</span><span>Volunteer</span></div>',
+        '    <div class="ch7-node ch7-node--s"><span class="ch7-node-n">03</span><span>Advocate</span></div>',
+        '    <div class="ch7-node ch7-node--w"><span class="ch7-node-n">04</span><span>Partner</span></div>',
+        '  </div>',
+        '  <div class="ch7-climax">It regenerates itself.</div>',
+        '</div>'
+      ].join('')
     },
     {
       id:'ask',  eye:'Chapter 8 · Your turn',

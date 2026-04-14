@@ -659,3 +659,92 @@
   .ch6-counter-n{font-size:clamp(48px,14vw,72px)}
   .ch6-live{text-align:left}
 }
+
+/* ================================================================
+   CHAPTER 7 — The Loop
+   Four stage nodes fade in around the iris at cardinal points, each
+   matched to iris.'s voice ("Client becomes volunteer..."). A full-
+   spectrum arc encircles the iris. Closing tagline lands at the end.
+   ================================================================ */
+.ch7-layout{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.ch7-flywheel{
+  position:relative;width:min(78vw,560px);aspect-ratio:1;
+  display:grid;place-items:center;
+}
+.ch7-arcs{
+  position:absolute;inset:0;width:100%;height:100%;
+}
+.ch7-ring{
+  stroke-dasharray:1382;stroke-dashoffset:1382;
+  opacity:0;
+  animation:ch7RingDraw 4s cubic-bezier(.22,1,.36,1) 5.5s forwards;
+  filter:drop-shadow(0 0 12px rgba(255,209,0,.2));
+}
+.ch7-node{
+  position:absolute;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:100px;
+  background:rgba(10,10,10,.78);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  font-size:clamp(13px,1.1vw,16px);font-weight:700;
+  letter-spacing:.5px;white-space:nowrap;
+  opacity:0;transform:scale(.8);
+}
+.ch7-node-n{
+  font-size:10px;letter-spacing:.5px;font-weight:600;
+  opacity:.7;padding:2px 6px;border-radius:3px;
+  border:1px solid currentColor;
+}
+.ch7-node--n{top:-2%;left:50%;transform:translateX(-50%) scale(.8);color:#FFD100}
+.ch7-node--e{top:50%;right:-2%;transform:translateY(-50%) scale(.8);color:#E87CA0}
+.ch7-node--s{bottom:-2%;left:50%;transform:translateX(-50%) scale(.8);color:#B57BFF}
+.ch7-node--w{top:50%;left:-2%;transform:translateY(-50%) scale(.8);color:#5AC8FF}
+.ch7-node--n{animation:ch7NodeH 1s cubic-bezier(.22,1,.36,1) .4s forwards}
+.ch7-node--e{animation:ch7NodeH 1s cubic-bezier(.22,1,.36,1) 1.5s forwards}
+.ch7-node--s{animation:ch7NodeH 1s cubic-bezier(.22,1,.36,1) 2.6s forwards}
+.ch7-node--w{animation:ch7NodeH 1s cubic-bezier(.22,1,.36,1) 3.7s forwards}
+.ch7-node--n.ch7-done,.ch7-node--s.ch7-done{animation:ch7NodeH 1s cubic-bezier(.22,1,.36,1) forwards}
+.ch7-node--e.ch7-done,.ch7-node--w.ch7-done{animation:ch7NodeV 1s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes ch7NodeH{to{opacity:1;transform:translateX(-50%) scale(1)}}
+@keyframes ch7NodeV{to{opacity:1;transform:translateY(-50%) scale(1)}}
+
+/* Correct per-position end states (overriding generic H keyframe) */
+.ch7-node--e{animation-name:ch7NodeV}
+.ch7-node--w{animation-name:ch7NodeV}
+
+@keyframes ch7RingDraw{
+  0%{stroke-dashoffset:1382;opacity:0}
+  15%{opacity:.8}
+  100%{stroke-dashoffset:0;opacity:.62}
+}
+
+.ch7-climax{
+  position:absolute;left:50%;bottom:clamp(60px,9vh,120px);
+  transform:translateX(-50%) translateY(6px);
+  font-size:clamp(22px,2.6vw,36px);font-weight:500;font-style:italic;
+  letter-spacing:-.015em;color:rgba(255,255,245,.92);
+  opacity:0;
+  animation:ch7Climax 1.4s cubic-bezier(.22,1,.36,1) 9s forwards;
+  white-space:nowrap;
+}
+@keyframes ch7Climax{to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+@media(prefers-reduced-motion:reduce){
+  .ch7-ring{stroke-dashoffset:0 !important;opacity:.62 !important;animation:none !important}
+  .ch7-node,.ch7-climax{animation:none !important;opacity:1 !important}
+  .ch7-node--n{transform:translateX(-50%) !important}
+  .ch7-node--s{transform:translateX(-50%) !important}
+  .ch7-node--e{transform:translateY(-50%) !important}
+  .ch7-node--w{transform:translateY(-50%) !important}
+  .ch7-climax{transform:translateX(-50%) !important}
+}
+
+@media(max-width:780px){
+  .ch7-flywheel{width:min(90vw,380px)}
+  .ch7-node{font-size:12px;padding:8px 12px}
+  .ch7-climax{font-size:clamp(18px,5vw,24px)}
+}
