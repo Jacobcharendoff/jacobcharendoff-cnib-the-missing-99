@@ -450,6 +450,120 @@
   };
 
   // ================================================================
+  // Scene 6 — Volunteer onboarding + activation (20s)
+  // 4-stage horizontal flow from "yes" through first mentoring session.
+  // SLAs per stage. Terminates in an activation card.
+  // ================================================================
+  window.demoSceneRenderers.volonboard = function(stage) {
+    var vsla = (data.volunteer && data.volunteer.sla) || {};
+    var steps = [
+      { label: 'Yes',                detail: 'Readiness invitation accepted', slaLabel: 'Day 0',   target: 0                                       },
+      { label: 'Role match',         detail: 'Peer Mentor \u00b7 Sudbury cohort', slaLabel: 'within ' + (vsla.roleMatchDays || 14) + 'd', target: vsla.roleMatchDays || 14, actual: 9 },
+      { label: 'Onboarding',         detail: 'Conversation + orientation',    slaLabel: 'within ' + (vsla.onboardingConvDays || 21) + 'd', target: vsla.onboardingConvDays || 21, actual: 16 },
+      { label: 'First engagement',   detail: 'Matched with first mentee',     slaLabel: 'within ' + (vsla.firstEngagementDays || 60) + 'd', target: vsla.firstEngagementDays || 60, actual: 41 }
+    ];
+
+    stage.innerHTML = [
+      '<div class="s6-layout">',
+      '  <header class="s6-head">',
+      '    <span class="s6-eye">Volunteer arc \u2014 yes to active</span>',
+      '    <h2 class="s6-title">No 20-page onboarding PDF.</h2>',
+      '  </header>',
+      '  <ol class="s6-flow" id="s6Flow"></ol>',
+      '  <footer class="s6-activation" id="s6Activation" aria-hidden="true">',
+      '    <div class="s6-activation-head">',
+      '      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      '      <span>Margaret activated as peer mentor</span>',
+      '    </div>',
+      '    <div class="s6-activation-body">',
+      '      <span class="s6-activation-n">3</span>',
+      '      <span class="s6-activation-sub">new members matched to her this quarter</span>',
+      '    </div>',
+      '  </footer>',
+      '</div>'
+    ].join('');
+
+    var flow = stage.querySelector('#s6Flow');
+    var act  = stage.querySelector('#s6Activation');
+
+    steps.forEach(function(s, i) {
+      var li = document.createElement('li');
+      var slaActualTxt = s.actual != null ? ('actual ' + s.actual + 'd') : 'now';
+      li.className = 's6-step';
+      li.innerHTML = [
+        '<div class="s6-step-card">',
+        '  <div class="s6-step-dot"><span></span></div>',
+        '  <div class="s6-step-label"></div>',
+        '  <div class="s6-step-detail"></div>',
+        '  <div class="s6-step-sla"><span>' + s.slaLabel + '</span><span>' + slaActualTxt + '</span></div>',
+        '</div>'
+      ].join('');
+      li.querySelector('.s6-step-label').textContent = s.label;
+      li.querySelector('.s6-step-detail').textContent = s.detail;
+      flow.appendChild(li);
+      setTimeout(function() { li.classList.add('show'); }, 400 + i * 3000);
+    });
+
+    setTimeout(function() {
+      if (act.parentNode) act.classList.add('show');
+    }, 400 + steps.length * 3000 + 800);
+  };
+
+  // ================================================================
+  // Scene 7 — Partner acquisition + onboarding (30s)
+  // 5-stage card-stack flow from "expressed interest" through
+  // "first referral live". Per-stage SLA actual vs target.
+  // ================================================================
+  window.demoSceneRenderers.partneracq = function(stage) {
+    var c = (data.clinic || {});
+    var stages = c.onboardingStages || [];
+
+    stage.innerHTML = [
+      '<div class="s7-layout">',
+      '  <header class="s7-head">',
+      '    <span class="s7-eye">Partner acquisition \u2014 ' + (c.name || 'Sudbury Eye Centre') + '</span>',
+      '    <h2 class="s7-title">From interest to first referral in under 10 days.</h2>',
+      '  </header>',
+      '  <ol class="s7-stack" id="s7Stack"></ol>',
+      '  <footer class="s7-foot" id="s7Foot" aria-hidden="true">',
+      '    <span class="s7-foot-pill">Onboarded</span>',
+      '    <span class="s7-foot-text">Clinic live. First referral complete. Dashboard on.</span>',
+      '  </footer>',
+      '</div>'
+    ].join('');
+
+    var stackEl = stage.querySelector('#s7Stack');
+    var footEl  = stage.querySelector('#s7Foot');
+
+    stages.forEach(function(s, i) {
+      var target = s.slaHrs || 0;
+      var actual = s.actualHrs || 0;
+      var met = actual <= target;
+      var slaTxt = (target === 0) ? 'immediate' : ('target ' + fmtHrs(target) + ' \u00b7 actual ' + fmtHrs(actual));
+      var li = document.createElement('li');
+      li.className = 's7-card' + (met ? ' is-met' : ' is-miss');
+      li.style.setProperty('--i', i);
+      li.innerHTML = [
+        '<div class="s7-card-num">0' + (i + 1) + '</div>',
+        '<div class="s7-card-body">',
+        '  <div class="s7-card-label"></div>',
+        '  <div class="s7-card-sla">' + slaTxt + '</div>',
+        '</div>',
+        '<div class="s7-card-tick" aria-hidden="true">',
+        '  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+        '</div>'
+      ].join('');
+      li.querySelector('.s7-card-label').textContent = s.label;
+      stackEl.appendChild(li);
+      setTimeout(function() { li.classList.add('show'); }, 400 + i * 2400);
+    });
+
+    setTimeout(function() {
+      if (footEl.parentNode) footEl.classList.add('show');
+    }, 400 + stages.length * 2400 + 800);
+  };
+
+  // ================================================================
   // Scene 11 — "Ask iris. anything"
   // Lands after the tour. Offers the infrastructure chat + replay.
   // Clicking the primary CTA closes the demo and opens iris-chat.js
