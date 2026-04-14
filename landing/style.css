@@ -91,3 +91,68 @@ body{font-family:'Barlow','Helvetica Neue',Arial,sans-serif;background:#000;colo
 .im--hero{width:min(44vw,420px);height:min(44vw,420px)}
 .im--brand{width:min(52vw,500px);height:min(52vw,500px);margin-bottom:52px}
 .im--close{width:100px;height:100px;margin-bottom:40px}
+
+/* ================================================================
+   SECTION BACKGROUNDS — Atmospheric lighting on pure dark
+   Each section: ONE dominant color wash from one direction
+   ================================================================ */
+
+/* S1 HERO — Dark · golden rising glow + faint violet top */
+.hero{
+  min-height:100vh;min-height:100dvh;
+  display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  padding:140px 48px 100px;position:relative;overflow:hidden;gap:48px;
+  background:
+    radial-gradient(ellipse 95% 70% at 88% 92%,rgba(255,209,0,.13) 0%,transparent 58%),
+    radial-gradient(ellipse 70% 55% at 10% 15%,rgba(181,123,255,.09) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 50%,rgba(255,107,157,.04) 0%,transparent 70%),
+    #000;
+}
+.hero-text{position:relative;z-index:2}
+.hero-mark{display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
+.hero h1{font-size:clamp(72px,11vw,148px);font-weight:700;line-height:.86;letter-spacing:-.045em;margin-bottom:24px;display:inline-block}
+.hero-tl{font-size:clamp(20px,2.1vw,30px);font-weight:300;color:rgba(255,255,245,.72);letter-spacing:-.015em;margin-bottom:12px;max-width:520px}
+.hero-sh{font-size:clamp(16px,1.55vw,21px);font-weight:400;color:rgba(255,255,245,.4);margin-bottom:44px;max-width:520px}
+.hero-bd{max-width:520px;font-weight:300}
+.hero-sc{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.18);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;animation:sc 3s ease-in-out infinite;z-index:3}
+.hero-sc svg{width:16px;height:16px;stroke:rgba(255,209,0,.32);fill:none;stroke-width:1.6}
+@keyframes sc{0%,100%{transform:translateX(-50%) translateY(0);opacity:.3}50%{transform:translateX(-50%) translateY(10px);opacity:.75}}
+
+/* Orbital halo behind hero iris mark */
+.hero-mark::before{
+  content:'';position:absolute;width:140%;height:140%;left:-20%;top:-20%;
+  background:radial-gradient(circle at 50% 50%,rgba(255,209,0,.1) 0%,rgba(255,159,64,.06) 25%,rgba(255,107,157,.04) 45%,transparent 65%);
+  filter:blur(40px);
+  animation:halo 14s ease-in-out infinite;
+  pointer-events:none;z-index:1;
+}
+@keyframes halo{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.08);opacity:1}}
+
+/* S2 THE PROBLEM — Dark · cool violet wash from top */
+.s2{
+  background:
+    radial-gradient(ellipse 85% 55% at 50% 0%,rgba(123,104,255,.11) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 90%,rgba(90,207,255,.06) 0%,transparent 55%),
+    #000;
+}
+.s2 h2{color:#fff}
+.s2-stats{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:72px}
+.s2-stat{padding:48px 36px;text-align:center;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:22px;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);position:relative;overflow:hidden}
+.s2-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,209,0,.4),transparent)}
+.s2-stat-n{font-size:clamp(48px,6.5vw,84px);font-weight:700;line-height:1;letter-spacing:-.035em;margin-bottom:10px}
+.s2-stat-l{font-size:13.5px;color:rgba(255,255,255,.5);line-height:1.45;font-weight:400}
+.s2-kicker{margin-top:56px;font-size:clamp(19px,1.7vw,23px);font-weight:300;color:rgba(255,255,245,.72);line-height:1.55;max-width:700px}
+
+/* S3 MEET IRIS. — Dark · centered full prismatic halo */
+.s3{
+  text-align:center;padding:220px 0;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(255,209,0,.09) 0%,rgba(255,107,157,.06) 22%,rgba(181,123,255,.045) 42%,rgba(90,207,255,.025) 60%,transparent 75%),
+    #000;
+}
+.s3 h2{font-size:clamp(72px,12vw,160px);font-weight:700;line-height:.86;letter-spacing:-.045em;margin-bottom:28px;display:inline-block}
+.s3-tl{font-size:clamp(20px,2.1vw,30px);font-weight:300;color:rgba(255,255,245,.72);letter-spacing:-.015em;margin-bottom:10px}
+.s3-sh{font-size:clamp(16px,1.55vw,21px);font-weight:400;color:rgba(255,255,245,.4);margin-bottom:56px}
+.s3-truth{font-size:clamp(20px,2vw,28px);font-weight:300;line-height:1.52;color:rgba(255,255,245,.78);max-width:720px;margin:0 auto 44px;letter-spacing:-.01em}
+.s3-desc{font-size:clamp(15.5px,1.15vw,18px);line-height:1.75;color:rgba(255,255,245,.48);max-width:640px;margin:0 auto 56px;font-weight:300}
+.s3-ft{font-size:12px;color:rgba(255,255,255,.22);letter-spacing:1px;text-transform:uppercase;font-weight:500}
