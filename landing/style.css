@@ -368,3 +368,107 @@ p{line-height:1.65}
   .hero-bd,.hero-tl,.hero-sh,.hero-stats,.hero-cta{max-width:100%;margin-left:auto;margin-right:auto;justify-content:center}
   .hero-stats{justify-content:center}
 }
+
+/* ================================================================
+   DEPTH + MOTION POLISH LAYER
+   Addresses "flat / inconsistent / hard to read" feedback.
+   Applied without rewriting section styles — purely additive.
+   ================================================================ */
+
+/* --- Smoother section edge transitions (kills the hard dark↔light cuts) --- */
+.hero,.ch1,.s3,.jm{position:relative}
+.ch1::after,.s3::after,.jm::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:120px;
+  background:linear-gradient(180deg,transparent 0%,rgba(10,10,10,.9) 65%,#0A0A0A 100%);
+  pointer-events:none;z-index:0;
+}
+.s4::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:140px;
+  background:linear-gradient(180deg,#0A0A0A 0%,rgba(10,10,10,.6) 40%,transparent 100%);
+  pointer-events:none;z-index:1;
+}
+.s4{position:relative;overflow:hidden}
+.s4>.ctn{position:relative;z-index:2}
+.s8::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:120px;
+  background:linear-gradient(180deg,transparent 0%,rgba(247,245,240,.9) 60%,#f7f5f0 100%);
+  pointer-events:none;z-index:0;
+}
+.s8{position:relative;overflow:hidden}
+.s9{position:relative;overflow:hidden}
+.s9::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:140px;
+  background:linear-gradient(180deg,#f7f5f0 0%,rgba(247,245,240,.6) 40%,transparent 100%);
+  pointer-events:none;z-index:0;
+}
+
+/* --- Typography contrast bump (dark backgrounds) --- */
+.jm-stage-b,.jm-vol-b{color:rgba(255,255,245,.72)}
+.s3-truth{color:rgba(255,255,245,.92)}
+.s3-desc{color:rgba(255,255,245,.68)}
+
+/* --- Typography contrast bump (light sections) --- */
+.s4-fn,.persona-card-story{color:rgba(0,0,0,.72)}
+.s9-bd{color:rgba(0,0,0,.68)}
+.s8-node-title{color:#0a0a0a;font-size:16px}
+
+/* --- Persona card depth + colored hover glow --- */
+.persona-card{
+  transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s,border-color .4s,background .4s;
+}
+@media(hover:hover){
+  .persona-card--margaret:hover{box-shadow:0 24px 56px rgba(255,159,64,.22),0 4px 12px rgba(0,0,0,.08);border-color:rgba(255,159,64,.28);transform:translateY(-5px)}
+  .persona-card--david:hover{box-shadow:0 24px 56px rgba(90,140,255,.22),0 4px 12px rgba(0,0,0,.08);border-color:rgba(90,140,255,.28);transform:translateY(-5px)}
+  .persona-card--priya:hover{box-shadow:0 24px 56px rgba(255,107,157,.22),0 4px 12px rgba(0,0,0,.08);border-color:rgba(255,107,157,.28);transform:translateY(-5px)}
+}
+
+/* --- Journey Map — warm Client column vs cool Volunteer column --- */
+.jm-col:first-child::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 90% at 20% 50%,rgba(255,159,64,.05),transparent 65%);
+  pointer-events:none;z-index:-1;border-radius:20px;
+}
+.jm-col:last-child::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 90% at 80% 50%,rgba(181,123,255,.05),transparent 65%);
+  pointer-events:none;z-index:-1;border-radius:20px;
+}
+.jm-col:last-child .jm-col-icon{border-color:rgba(181,123,255,.4);background:rgba(181,123,255,.08)}
+.jm-col:last-child .jm-col-icon svg{stroke:#c9a8ff}
+.jm-col:last-child .jm-stage-tag{color:#c9a8ff}
+.jm-col:last-child .jm-dot{border-color:rgba(181,123,255,.4);color:#c9a8ff}
+.jm-col:last-child .jm-dot.jm-dot--r{background:rgba(181,123,255,.16);border-color:rgba(181,123,255,.7);box-shadow:0 0 20px rgba(181,123,255,.3)}
+
+/* --- Ecosystem: per-category color dots --- */
+.s8-grid .s8-node:nth-child(1) .s8-node-dot{background:rgba(255,159,64,.45)}
+.s8-grid .s8-node:nth-child(2) .s8-node-dot{background:rgba(90,207,255,.45)}
+.s8-grid .s8-node:nth-child(3) .s8-node-dot{background:rgba(45,212,191,.45)}
+.s8-grid .s8-node:nth-child(4) .s8-node-dot{background:rgba(255,107,157,.45)}
+.s8-grid .s8-node:nth-child(5) .s8-node-dot{background:rgba(181,123,255,.45)}
+.s8-grid .s8-node:nth-child(6) .s8-node-dot{background:rgba(134,204,102,.45)}
+.s8-grid .s8-node:nth-child(7) .s8-node-dot{background:rgba(255,209,0,.6)}
+.s8-node{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s,background .35s}
+@media(hover:hover){.s8-node:hover{transform:translateY(-3px)}}
+
+/* --- Hero: add subtle color drift behind iris mark --- */
+.hero-mark::after{
+  content:'';position:absolute;width:120%;height:120%;left:-10%;top:-10%;
+  background:radial-gradient(circle,rgba(255,209,0,.08) 0%,rgba(255,159,64,.04) 30%,transparent 60%);
+  filter:blur(40px);pointer-events:none;z-index:0;
+  animation:heroPulse 8s ease-in-out infinite;
+}
+@keyframes heroPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+.hero-mark{position:relative}
+.hero-mark>.im{position:relative;z-index:1}
+
+/* --- Unified card lift easing for all clickable cards --- */
+.jm-vol,.s8-node{transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s,border-color .4s}
+
+/* --- Section backdrop subtle noise for texture (dark only) --- */
+.hero,.ch1,.s3,.jm{
+  background-attachment:scroll;
+}
+
+/* --- Better paragraph rhythm --- */
+.bd p+p{margin-top:1.1em}
+.s3-truth+.s3-desc{margin-top:28px}
