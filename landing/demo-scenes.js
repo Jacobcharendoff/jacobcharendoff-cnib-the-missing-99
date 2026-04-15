@@ -66,6 +66,7 @@
       await new Promise(function(r){ setTimeout(r, 800); }); // let mark animate in
       if (cancelled) return;
       await tour.play(handle, beat.text);
+      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
     })();
   };
 
@@ -222,7 +223,11 @@
         if (cancelled || !log.parentNode) return;
         if (i >= chatTurns.length) {
           matchStat.textContent = 'Narrowing\u2026';
-          setTimeout(function(){ if (!cancelled) populateMatches(); }, 1200);
+          setTimeout(function(){
+            if (!cancelled) populateMatches().then(function() {
+              if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
+            });
+          }, 1200);
           return;
         }
         renderBubble(chatTurns[i]);
@@ -261,7 +266,7 @@
       });
       await Promise.race([
         Promise.all(pre),
-        new Promise(function(resolve){ setTimeout(resolve, 4000); })
+        new Promise(function(resolve){ setTimeout(resolve, 2000); })
       ]);
       if (cancelled) return;
 
@@ -313,6 +318,7 @@
 
       // 5. Exit narrator — bridges to Scene 3
       await playHandle(narratorHandles['exit'], beatByAt['exit'] && beatByAt['exit'].text);
+      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
     }
 
     orchestrate();
@@ -507,7 +513,12 @@
       if (typeof tour.stop === 'function') tour.stop();
       stage.removeEventListener('DOMNodeRemoved', once);
     });
-    setTimeout(function() { if (!cancelled) tour.speak(line, 'iris'); }, delay);
+    setTimeout(function() {
+      if (cancelled) return;
+      tour.speak(line, 'iris').then(function() {
+        if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
+      });
+    }, delay);
   }
 
   function animateCount(el, from, to, dur, fmt) {
