@@ -84,58 +84,90 @@
     var matchStat  = stage.querySelector('#s2MatchStatus');
     var slaActual  = stage.querySelector('#s2SlaActual');
 
-    // Chat bubbles — appear one at a time, ~5s apart. Sync to voice
-    // narration in Phase E.
-    chatTurns.forEach(function(turn, i) {
-      setTimeout(function() {
-        if (!log.parentNode) return; // scene swapped
-        var bubble = document.createElement('div');
-        bubble.className = 's2-bubble s2-bubble--' + (turn.speaker === 'iris' ? 'iris' : 'user');
-        bubble.innerHTML = [
-          '<span class="s2-bubble-who">' + (turn.speaker === 'iris' ? 'iris.' : 'Margaret') + '</span>',
-          '<span class="s2-bubble-text"></span>'
-        ].join('');
-        bubble.querySelector('.s2-bubble-text').textContent = turn.text;
-        log.appendChild(bubble);
-        requestAnimationFrame(function(){ bubble.classList.add('show'); });
-        log.scrollTop = log.scrollHeight;
-        if (i === 0) slaActual.textContent = '23 seconds';
-      }, 400 + i * 5000);
+    // ---- Chat bubbles, voice-paced when possible ----
+    // Each turn: append bubble, kick off TTS, await audio end, then next.
+    // Falls back to a fixed 5s/bubble timer if window.irisTour isn't wired
+    // (e.g., iris-chat.js hasn't loaded yet) or voice is disabled.
+    var tour = window.irisTour;
+    var voiceOn = tour && typeof tour.speak === 'function' &&
+                  (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+
+    function renderBubble(turn) {
+      if (!log.parentNode) return null;
+      var bubble = document.createElement('div');
+      bubble.className = 's2-bubble s2-bubble--' + (turn.speaker === 'iris' ? 'iris' : 'user');
+      bubble.innerHTML = [
+        '<span class="s2-bubble-who">' + (turn.speaker === 'iris' ? 'iris.' : 'Margaret') + '</span>',
+        '<span class="s2-bubble-text"></span>'
+      ].join('');
+      bubble.querySelector('.s2-bubble-text').textContent = turn.text;
+      log.appendChild(bubble);
+      requestAnimationFrame(function(){ bubble.classList.add('show'); });
+      log.scrollTop = log.scrollHeight;
+      return bubble;
+    }
+
+    var cancelled = false;
+    // If the scene is swapped mid-playback, stop any audio so it doesn't
+    // bleed into the next scene.
+    stage.addEventListener('DOMNodeRemoved', function once() {
+      cancelled = true;
+      if (tour && typeof tour.stop === 'function') tour.stop();
+      stage.removeEventListener('DOMNodeRemoved', once);
     });
 
-    // Matching status updates
-    setTimeout(function() {
-      if (matchStat.parentNode) matchStat.textContent = 'Narrowing\u2026';
-    }, 16000);
-
-    // Matches populate after chat
-    setTimeout(function() {
-      if (!matchList.parentNode) return;
-      matchStat.textContent = matches.length + ' programs matched';
-      matches.forEach(function(p, i) {
-        setTimeout(function() {
-          if (!matchList.parentNode) return;
-          var card = document.createElement('div');
-          card.className = 's2-match';
-          card.innerHTML = [
-            '<div class="s2-match-head">',
-            '  <span class="s2-match-name"></span>',
-            '  <span class="s2-match-score">' + p.fitScore + '<span class="s2-match-score-pct">% fit</span></span>',
-            '</div>',
-            '<ul class="s2-match-why"></ul>'
-          ].join('');
-          card.querySelector('.s2-match-name').textContent = p.name;
-          var ul = card.querySelector('.s2-match-why');
-          (p.reasoning || []).forEach(function(r) {
-            var li = document.createElement('li');
-            li.textContent = r;
-            ul.appendChild(li);
+    function playChat() {
+      var i = 0;
+      function next() {
+        if (cancelled || !log.parentNode) return;
+        if (i >= chatTurns.length) { onChatDone(); return; }
+        var turn = chatTurns[i++];
+        renderBubble(turn);
+        if (i === 1) slaActual.textContent = '23 seconds';
+        if (voiceOn) {
+          tour.speak(turn.text, turn.voice || turn.speaker || 'iris').then(function() {
+            setTimeout(next, 400);
           });
-          matchList.appendChild(card);
-          requestAnimationFrame(function(){ card.classList.add('show'); });
-        }, i * 900);
-      });
-    }, 28000);
+        } else {
+          setTimeout(next, 4800);
+        }
+      }
+      setTimeout(next, 400);
+    }
+
+    function onChatDone() {
+      if (cancelled || !matchList.parentNode) return;
+      matchStat.textContent = 'Narrowing\u2026';
+      setTimeout(function() {
+        if (cancelled || !matchList.parentNode) return;
+        matchStat.textContent = matches.length + ' programs matched';
+        matches.forEach(function(p, i) {
+          setTimeout(function() {
+            if (cancelled || !matchList.parentNode) return;
+            var card = document.createElement('div');
+            card.className = 's2-match';
+            card.innerHTML = [
+              '<div class="s2-match-head">',
+              '  <span class="s2-match-name"></span>',
+              '  <span class="s2-match-score">' + p.fitScore + '<span class="s2-match-score-pct">% fit</span></span>',
+              '</div>',
+              '<ul class="s2-match-why"></ul>'
+            ].join('');
+            card.querySelector('.s2-match-name').textContent = p.name;
+            var ul = card.querySelector('.s2-match-why');
+            (p.reasoning || []).forEach(function(r) {
+              var li = document.createElement('li');
+              li.textContent = r;
+              ul.appendChild(li);
+            });
+            matchList.appendChild(card);
+            requestAnimationFrame(function(){ card.classList.add('show'); });
+          }, i * 900);
+        });
+      }, 1200);
+    }
+
+    playChat();
   };
 
   // ================================================================
