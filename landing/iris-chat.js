@@ -129,6 +129,39 @@
     let ttsRunning = false;
     let irisIsSpeaking = false;
 
+    // ---- Per-voice volume normalization via Web Audio GainNode ----
+    // `sage` (margaret) and `nova` (priya) render quieter than `ash`
+    // (narrator) and `shimmer` (iris). Boost them at the gain stage so
+    // all voices land at comparable loudness. Setup is lazy (called on
+    // first TTS play inside a user-gesture handler) to satisfy Safari's
+    // AudioContext autoplay policy. createMediaElementSource can only
+    // be called once per element — after that ALL audio goes through
+    // the graph, so the graph must be complete (src → gain → dest).
+    let _audioCtx = null;
+    let _gainNode = null;
+    let _audioGraphReady = false;
+    const VOICE_GAIN = { margaret: 1.8, priya: 1.4 }; // boost quieter voices
+
+    function ensureAudioGraph() {
+      if (_audioGraphReady) return;
+      try {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = _audioCtx.createMediaElementSource(persistentAudio);
+        _gainNode = _audioCtx.createGain();
+        _gainNode.gain.value = 1.0;
+        src.connect(_gainNode);
+        _gainNode.connect(_audioCtx.destination);
+        _audioGraphReady = true;
+      } catch(e) {
+        console.warn('[tts] Web Audio GainNode failed — volume parity unavailable:', e && e.message);
+      }
+    }
+
+    function setVoiceGain(voice) {
+      if (!_gainNode) return;
+      _gainNode.gain.value = VOICE_GAIN[voice] || 1.0;
+    }
+
     async function speakText(text, voice = 'iris') {
       if (!voiceEnabled) return;
       stopSpeaking();
@@ -306,6 +339,11 @@
       audio.src = audioUrl;
       audio.playbackRate = 1.0;
       currentAudio = audio;
+      // Lazy Web Audio graph setup (must be inside gesture handler).
+      // setVoiceGain normalizes loudness — margaret/priya arrive ~6dB
+      // quieter than ash/shimmer from OpenAI; GainNode corrects that.
+      ensureAudioGraph();
+      setVoiceGain(voice);
       await new Promise((resolve) => {
         let settled = false;
         const done = () => {
