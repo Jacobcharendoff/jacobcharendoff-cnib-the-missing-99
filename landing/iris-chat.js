@@ -321,7 +321,11 @@
         // fire 'ended' or 'error', so without this handler the awaiting promise
         // would wedge forever — leaving ttsRunning=true and silently breaking
         // every subsequent enqueueTTS() call (since runTTSQueue won't re-fire).
-        audio.onpause = () => { if (audio.currentTime === 0 || audio.ended || settled) return; done(); };
+        // Fix: removed `currentTime === 0` guard — stop() may fire before the
+        // first decoded frame, leaving currentTime=0. Without this fix the
+        // promise wedges forever (ttsRunning stuck true, queue dead).
+        // `settled` already prevents double-calling done().
+        audio.onpause = () => { if (audio.ended || settled) return; done(); };
         audio.play().catch(done);
       });
       if (currentAudio === audio) currentAudio = null;
