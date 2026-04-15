@@ -497,18 +497,24 @@
     });
   };
 
-  // Play iris's voice-over for a scene. Looks up data.irisVO[sceneId],
-  // speaks through window.irisTour, and auto-cancels if the scene is
-  // torn down mid-playback (prevents audio bleed between scenes).
-  // No-op if voice isn't available — scenes stay visually complete.
+  // Play a scene's narrator beats (enter → exit) through window.irisTour.
+  // Replaces the old iris-first-person playSceneVO: the tour is now
+  // narrator-led, so every scene that used to speak a single iris VO
+  // line now plays a narrator enter beat on mount and a narrator exit
+  // beat at the end — bridging into the next scene. Auto-cancels on
+  // demo:scene-teardown. No-op if voice isn't available.
+  //
+  // Name kept as `playSceneVO` so all existing scene renderers keep
+  // working — only the implementation changes.
   function playSceneVO(stage, sceneId, opts) {
     opts = opts || {};
     var delay = opts.delay != null ? opts.delay : 400;
-    var line = (data.irisVO && data.irisVO[sceneId]) || '';
-    if (!line) return;
+    var beats = (data.narratorBeats && data.narratorBeats[sceneId]) || [];
+    if (!beats.length) return;
     var tour = window.irisTour;
     if (!tour || typeof tour.speak !== 'function') return;
     if (typeof tour.isVoiceEnabled === 'function' && !tour.isVoiceEnabled()) return;
+
     var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
     var cancelled = false;
     var onTeardown = function() {
@@ -516,9 +522,37 @@
       document.removeEventListener('demo:scene-teardown', onTeardown);
     };
     document.addEventListener('demo:scene-teardown', onTeardown);
-    setTimeout(function() {
+
+    // Sequence the beats: enter → (optional: afterVisual:*) → exit.
+    // Between beats we insert a short breath so the viewer's eye can
+    // catch up to the visual that was revealed during/after the beat.
+    var enterBeat = null, exitBeat = null;
+    beats.forEach(function(b) {
+      if (b.at === 'enter') enterBeat = b;
+      else if (b.at === 'exit') exitBeat = b;
+    });
+
+    setTimeout(function runSequence() {
       if (cancelled) return;
-      tour.speak(line, 'iris').then(function() {
+      var chain = Promise.resolve();
+      if (enterBeat) {
+        chain = chain.then(function() {
+          if (cancelled) return;
+          return tour.speak(enterBeat.text, 'narrator');
+        });
+      }
+      if (exitBeat) {
+        chain = chain.then(function() {
+          if (cancelled) return;
+          // 1.2s breath between enter narration and exit narration so
+          // the visual moment in between lands before the next beat.
+          return new Promise(function(r) { setTimeout(r, 1200); });
+        }).then(function() {
+          if (cancelled) return;
+          return tour.speak(exitBeat.text, 'narrator');
+        });
+      }
+      chain.then(function() {
         if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
       });
     }, delay);
