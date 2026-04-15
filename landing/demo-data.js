@@ -304,138 +304,123 @@
     // Scene 2 ("Margaret's first conversation") is the exemplar.
     // v0 DRAFT — awaiting Angela review. Edits happen here; no engineering.
     narratorBeats: {
-      // v2 script — EXECUTIVE product-demo voice. Third-person analytical
-      // narrator (ash). Audience: CNIB exec, board, partner clinic leader,
-      // institutional funder. Every scene answers one of three questions:
-      //   WHAT is iris · HOW does it work · HOW is success measured
-      //
-      // Margaret is the demonstration case, not the protagonist. The
-      // narrator uses her to show mechanism, then pulls out to numbers.
-      // Read-aloud tested. Concrete SLA + funnel language throughout.
+      // v3 script — authored in Cowork, ratified by Jacob, saved to
+      // .claude/docs/DEMO-SCRIPT.md. Ported verbatim. No rewriting.
+      // Third-person analytical narrator (ash). ~4 minutes total.
 
-      // Scene 1 — WHAT IS IRIS. Outcomes-first overview.
-      // Sets the stage so the executive is anticipating every scene.
-      // Names iris's value prop for each audience (client/vol/partner)
-      // BEFORE diving into mechanics. When the scenes run, the viewer
-      // is looking forward to seeing the things they were just promised.
+      // Scene 1 — intro
       intro: [
         {
           at: 'enter',
-          text: "iris. CNIB's engagement infrastructure. Today, more than one and a half million Canadians live with sight loss. Less than one percent are actively engaged with CNIB. iris was built to close that gap \u2014 across three audiences, end to end. For clients: a real conversation within thirty seconds of first contact. A matched CNIB program within five turns. A relationship that lasts years, not weeks. For volunteers: iris turns engaged clients into peer mentors, each one reaching three more Canadians. For partners \u2014 clinics, hospitals, ophthalmologists: onboarded in fourteen days, with a live dashboard showing every referral, every outcome, every SLA. Three audiences. One compounding loop. Retention becomes the acquisition engine. In the next four minutes, you'll see all three. We start with one person."
+          text: "One point five million Canadians live with sight loss. Fewer than one percent are engaged with CNIB. The programs exist. Finding them has always taken work. This is iris. CNIB's operating system for engagement. Three audiences move through her. Clients find their next step. Volunteers find their role. Partner clinics find a referral path that works. Every one of them comes in through the same door. Every one of them is accounted for. iris turns a directory into a system. She turns the missing ninety-nine percent into a measurable operation. iris. let more in."
         }
       ],
 
-      // Scene 2 — HOW ACQUISITION WORKS. Narrator frames the scene
-      // ('first, acquisition') BEFORE introducing Margaret so the
-      // viewer knows why they're meeting her.
+      // Scene 2 — acquire
       acquire: [
         {
           at: 'enter',
-          text: "First, acquisition. How iris opens a conversation with someone who has never engaged CNIB before. Meet Margaret. Sixty-eight, retired teacher in Sudbury, recently diagnosed with macular degeneration. Her daughter in Vancouver sent her a QR code from a Sudbury Eye Centre waiting room. Margaret scanned it thirty seconds ago. Watch what iris does."
+          text: "Meet Margaret. Sixty-eight. Retired teacher in Sudbury. Diagnosed with macular degeneration last Tuesday. Her daughter in Vancouver sent her a QR code. Margaret scanned it in the waiting room at Sudbury Eye Centre. First reply from iris: twenty-three seconds."
         },
         {
           at: 'afterVisual:matches',
-          text: "Two program matches returned. Ninety-four percent fit on the Sudbury peer group. Eighty-seven on adjustment-to-sight-loss coaching. The matching engine weights geography, diagnosis stage, and emotional signal. SLAs: thirty-second first reply, program match within five turns. Margaret: both achieved."
+          text: "Five turns. Two matches. Sudbury Peer Group. Ninety-four percent fit. Adjustment-to-Sight-Loss Coaching. Eighty-seven percent. Matched on geography, diagnosis stage, and emotional signal. No search. No form. No wait."
         },
         {
           at: 'exit',
-          text: "Program selected. Human handoff initiated. That is acquisition."
+          text: "Finding her program took under two minutes. The next seven days do the harder work."
         }
       ],
 
-      // Scene 3 — HOW ENGAGEMENT + HANDOFF WORKS.
+      // Scene 3 — engage
       engage: [
         {
           at: 'enter',
-          text: "From first conversation to first program session: seven days. Day one, iris briefs a human coordinator \u2014 diagnosis, emotional tone, program selection, the one detail that matters most. Day two, coordinator calls within the forty-eight-hour warm-handoff SLA. Day five, peer mentor matched on diagnosis and time-in-journey. Day seven, first program session on the calendar."
+          text: "The seven-day handoff runs on a clock. Day one: coordinator briefed. Day two: warm callback. Day five: peer mentor matched. Someone eighteen months further along. Day seven: first program session booked. Every step carries an SLA. Every miss is logged."
         },
         {
           at: 'exit',
-          text: "Success criterion: concrete next step booked within seven days. Margaret: achieved."
+          text: "By day seven, Margaret isn't a referral. She's a client."
         }
       ],
 
-      // Scene 4 — HOW RETENTION WORKS.
+      // Scene 4 — retain
       retain: [
         {
           at: 'enter',
-          text: "Retention runs on a thirty, ninety, one-eighty, three-sixty-five day cadence \u2014 plus signal-triggered check-ins. iris watches engagement velocity, response latency, and sentiment shifts. At month three, Margaret reconnected with her daughter. At month six, iris flagged a signal change: two programs completed, rising responsiveness, self-signaled interest in helping others."
+          text: "Retention isn't a feeling. It's a scrubbable timeline. Day seven. Day thirty. Day ninety. Day one-eighty. Day three-sixty-five. Engagement score moves from one to ninety-one. Month three, Margaret calls her daughter. Month six, her responses start carrying new signals. Month twelve, she's still here. Still engaged. Still measured."
         },
         {
           at: 'exit',
-          text: "Retention target: active touchpoint in last ninety days at the twelve-month mark. Margaret: eighty-four percent probability."
+          text: "Those signals mean something specific."
         }
       ],
 
-      // Scene 5 — HOW THE LOOP STARTS (readiness score + ask).
+      // Scene 5 — readiness
       readiness: [
         {
           at: 'enter',
-          text: "This is where iris differs from every referral tool on the market. It does not just match clients to programs. It scores each member on readiness to contribute \u2014 across six weighted signals: months engaged, check-in responsiveness, program completion, self-signaled intent, life stability, relevant skills. At a composite score of seventy-five, iris asks one question."
+          text: "iris watches for readiness. Six weighted factors feed one score. Months engaged. Check-in responsiveness. Program completion. Self-signaled intent. Life stability. Relevant skills. Margaret crosses seventy-five. iris asks the question."
         },
         {
           at: 'exit',
-          text: "Client-to-volunteer conversion target: ten to fifteen percent over twenty-four months. Margaret: converted at month seven. That is how retention becomes acquisition."
+          text: "Margaret was a client twelve months ago. Now she's a volunteer. That's the loop."
         }
       ],
 
-      // Scene 6 — HOW VOLUNTEER ACTIVATION WORKS.
+      // Scene 6 — volonboard
       volonboard: [
         {
           at: 'enter',
-          text: "Volunteer activation SLAs: fourteen days to role match, twenty-one to onboarding conversation, sixty to first mentorship. iris matches volunteers to mentees on diagnosis, region, and time-in-journey. Margaret: matched to three newly-diagnosed members in Sudbury \u2014 each at an earlier stage of her same condition."
+          text: "Volunteers run on the same rails. Fourteen days to role match. Twenty-one days to orientation. Sixty days to first mentorship. One volunteer reaches three new clients a year. The infrastructure doesn't change. The audience does."
         },
         {
           at: 'exit',
-          text: "Three new clients reached through one activated volunteer. That multiplier is how the flywheel begins to turn. Now: the partner side."
+          text: "Partners come in through the same front door."
         }
       ],
 
-      // Scene 7 — HOW PARTNER ACQUISITION WORKS.
+      // Scene 7 — partneracq
       partneracq: [
         {
           at: 'enter',
-          text: "Partner onboarding \u2014 ophthalmology clinic, hospital, counsellor, caregiver org \u2014 moves from first contact to first live referral in fourteen days. Day one: portal access within forty-eight hours. Day five: printable QR kit shipped. Day seven: staff orientation. Day fourteen: first patient scan. No integration project, no sales cycle, no per-seat license."
+          text: "Sudbury Eye Centre came in as a partner. Portal access, forty-eight hours. QR kit shipped, day five. Staff orientation, day seven. First live referral, day fourteen. Two weeks from signed to sending patients."
         },
         {
           at: 'exit',
-          text: "Sudbury Eye Centre: onboarded in fourteen days. First live referral: Margaret."
+          text: "Two weeks in, every referral is visible."
         }
       ],
 
-      // Scene 8 — HOW PARTNER MEASUREMENT WORKS.
+      // Scene 8 — partnerdash
       partnerdash: [
         {
           at: 'enter',
-          text: "Twelve months in, the partner dashboard shows the full referral funnel per clinic. Aggregated, anonymized, PIPEDA-aligned, audited. Sudbury Eye Centre: thirty-eight patients referred. Twenty-seven had a real iris conversation. Eighteen booked a concrete next step. Four became volunteers. Sixty-seven percent program completion. Four-point-two member satisfaction."
+          text: "This is what Sudbury sees at month twelve. Thirty-eight patients referred. Twenty-seven engaged in conversation. Eighteen booked a next step. Four became volunteers. Program completion: sixty-seven percent. Satisfaction: four point two out of five. No spreadsheet. No follow-up call. No guessing."
         },
         {
           at: 'exit',
-          text: "Every number is live, visible to the partner, auditable by CNIB. The renewal conversation writes itself."
+          text: "One partner. Twelve months. Now watch what happens."
         }
       ],
 
-      // Scene 9 — HOW IT COMPOUNDS (the business case).
+      // Scene 9 — loop
       loop: [
         {
           at: 'enter',
-          text: "Here is the compounding math. Client-to-volunteer conversion: ten to fifteen percent over twenty-four months. Volunteer-to-new-client multiplier: three per year. Partner-to-new-client multiplier: twenty to fifty per year. At scale: one thousand clients acquired in year one projects to fifteen hundred engaged by year three \u2014 without additional acquisition spend."
-        },
-        {
-          at: 'exit',
-          text: "Retention is the acquisition engine."
+          text: "One thousand clients in year one. Ten to fifteen percent become volunteers within twenty-four months. Each volunteer reaches three new clients a year. Each partner brings twenty to fifty. Year three: fifteen hundred engaged. Same infrastructure. The output isn't linear. It's compounding. Retention is the acquisition engine."
         }
       ],
 
-      // Scene 10 — HOW SUCCESS IS MEASURED.
+      // Scene 10 — scoreboard
       scoreboard: [
         {
           at: 'enter',
-          text: "iris commits to fourteen SLAs across three audiences. Every one is measurable. Every one is live on every partner dashboard in real time. A missed SLA shows up red \u2014 to CNIB, to the partner, to the member. Transparency is the feature, not a report."
+          text: "Fourteen SLAs. Three audiences. One operating system. Every number on this grid is measured. Every miss is logged. Every recovery is tracked. The ninety-nine percent was never a funding problem. It was an operations problem. iris is the operations. And she's live."
         },
         {
           at: 'exit',
-          text: "That is iris. What would you like to ask it?"
+          text: "Ask her anything."
         }
       ]
     }
