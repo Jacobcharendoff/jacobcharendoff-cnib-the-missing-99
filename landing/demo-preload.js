@@ -33,23 +33,23 @@
   function buildManifest(data) {
     var m = [];
     if (!data) return m;
+    var beats = data.narratorBeats || {};
 
-    // Scene 1 — narrator intro
-    var intro = (data.narratorBeats && data.narratorBeats.intro) || [];
-    intro.forEach(function(b) { m.push({ voice:'narrator', text:b.text }); });
+    // Every scene's narrator beats — enter, afterVisual:*, exit.
+    // Walks the whole narratorBeats map so adding a scene's beats in
+    // demo-data.js automatically preloads them with no manifest edit.
+    Object.keys(beats).forEach(function(sceneId) {
+      (beats[sceneId] || []).forEach(function(b) {
+        if (b && b.text) m.push({ voice:'narrator', text:b.text });
+      });
+    });
 
-    // Scene 2 — narrator + dialogue (iris + margaret)
-    var acquire = (data.narratorBeats && data.narratorBeats.acquire) || [];
-    acquire.forEach(function(b) { m.push({ voice:'narrator', text:b.text }); });
+    // Scene 2 — live dialogue (iris + margaret). Voice inherited from
+    // each turn's voice/speaker.
     var firstChat = (data.margaret && data.margaret.firstChat) || [];
     firstChat.forEach(function(t) { m.push({ voice:t.voice || t.speaker || 'iris', text:t.text }); });
 
-    // Scenes 3, 4, 6-10 — iris VO (one line each)
-    var vo = data.irisVO || {};
-    ['engage','retain','volonboard','partneracq','partnerdash','loop','scoreboard']
-      .forEach(function(id) { if (vo[id]) m.push({ voice:'iris', text:vo[id] }); });
-
-    // Scene 5 — readiness dialogue (kept inline; preload them too)
+    // Scene 5 — readiness dialogue (kept inline in the renderer).
     m.push({ voice:'iris',     text:'Margaret \u2014 would you help someone just starting?' });
     m.push({ voice:'margaret', text:'yes.' });
 
