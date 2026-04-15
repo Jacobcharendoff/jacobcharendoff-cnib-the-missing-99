@@ -902,6 +902,7 @@
   // the compounding math (C3b, next batch).
   // ================================================================
   window.demoSceneRenderers.loop = function(stage) {
+    playSceneVO(stage, 'loop', { delay: 600 });
     // `data` at module scope = window.demoData. loop lives at top level.
     var loop = (data && data.loop) || {};
     var comp = loop.compounding || {
@@ -1018,6 +1019,7 @@
   // the loop headlines (conv rate, velocity, compounding).
   // ================================================================
   window.demoSceneRenderers.scoreboard = function(stage) {
+    playSceneVO(stage, 'scoreboard', { delay: 600 });
     // `data` at module scope = window.demoData. scoreboard is top-level.
     var board = (data && data.scoreboard) || {};
     var pillars = board.pillars || [];
