@@ -26,17 +26,22 @@
   // (added in Phase B onward). For Phase A skeleton, scenes show their
   // label + a placeholder card so the engine walks end-to-end.
   // -------------------------------------------------------------------
+  // Durations are SAFETY fallbacks. Scenes dispatch 'demo:scene-done'
+  // when narration ends and advance immediately. Fallbacks only fire if
+  // orchestration stalls — so they must comfortably exceed the longest
+  // expected narration + visual beat in each scene. Values below are
+  // sized to Cowork's v3 script (word-count / 3 wps + 30% buffer).
   var SCENES = [
-    { id:'intro',       label:'What is iris.',          duration:15000 },
-    { id:'acquire',     label:'Acquire a client',       duration:45000 },
-    { id:'engage',      label:'Engage + handoff',       duration:30000 },
-    { id:'retain',      label:'Retain a client',        duration:25000 },
-    { id:'readiness',   label:'Volunteer ask',          duration:30000 },
-    { id:'volonboard',  label:'Volunteer onboarding',   duration:20000 },
+    { id:'intro',       label:'What is iris.',          duration:55000 },
+    { id:'acquire',     label:'Acquire a client',       duration:60000 },
+    { id:'engage',      label:'Engage + handoff',       duration:35000 },
+    { id:'retain',      label:'Retain a client',        duration:35000 },
+    { id:'readiness',   label:'Volunteer ask',          duration:40000 },
+    { id:'volonboard',  label:'Volunteer onboarding',   duration:25000 },
     { id:'partneracq',  label:'Partner acquisition',    duration:30000 },
     { id:'partnerdash', label:'Partner dashboard',      duration:40000 },
-    { id:'loop',        label:'The loop',               duration:30000 },
-    { id:'scoreboard',  label:'Scoreboard',             duration:20000 },
+    { id:'loop',        label:'The loop',               duration:35000 },
+    { id:'scoreboard',  label:'Scoreboard',             duration:30000 },
     { id:'ask',         label:'Ask iris. anything',     duration:0, endScene:true }
   ];
 

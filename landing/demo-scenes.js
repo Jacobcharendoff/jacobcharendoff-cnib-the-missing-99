@@ -96,16 +96,22 @@
       if (cancelled) return;
       showCaption(beat.text);
 
-      // Reveals keyed to the 60s executive overview. Each element
-      // appears approximately when the narrator names it, so viewer
-      // sees the promise on-screen as it's being spoken.
+      // Reveals keyed to Cowork v3 narration. Each element appears as
+      // the narrator names it, so the viewer sees the promise on-screen
+      // in sync with the spoken line.
+      //   0.5s  "One point five million Canadians live with sight loss"
+      //   4.0s  "Fewer than one percent are engaged with CNIB"
+      //  19.0s  "Clients find their next step"
+      //  21.5s  "Volunteers find their role"
+      //  24.0s  "Partner clinics find a referral path that works"
+      //  33.0s  "iris turns a directory into a system"
       var reveals = [
-        { sel: '[data-reveal="stat1"]', t:  7500 },  // "1.5 million Canadians"
-        { sel: '[data-reveal="stat2"]', t: 11500 },  // "less than one percent"
-        { sel: '[data-reveal="aud1"]',  t: 19000 },  // "For clients..."
-        { sel: '[data-reveal="aud2"]',  t: 29500 },  // "For volunteers..."
-        { sel: '[data-reveal="aud3"]',  t: 38500 },  // "For partners..."
-        { sel: '[data-reveal="loop"]',  t: 49000 }   // "Three audiences. One loop."
+        { sel: '[data-reveal="stat1"]', t:  1500 },
+        { sel: '[data-reveal="stat2"]', t:  5000 },
+        { sel: '[data-reveal="aud1"]',  t: 19500 },
+        { sel: '[data-reveal="aud2"]',  t: 22000 },
+        { sel: '[data-reveal="aud3"]',  t: 24500 },
+        { sel: '[data-reveal="loop"]',  t: 33500 }
       ];
       reveals.forEach(function(r) {
         setTimeout(function() {
