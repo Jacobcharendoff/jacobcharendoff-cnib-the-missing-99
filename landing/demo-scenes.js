@@ -458,27 +458,57 @@
       requestAnimationFrame(step);
     }, 900);
 
-    // After score crosses, fire the chat exchange
+    // ---- Dual-voice exchange after the readiness score crosses ----
+    // Same window.irisTour pipeline as Scene 2, two-turn version. The
+    // success callout fires after Margaret's 'yes' so it always lands at
+    // the emotional beat regardless of voice latency.
     var chatTurns = [
-      { speaker: 'iris',     text: 'Margaret \u2014 would you help someone just starting?', delay: 4500 },
-      { speaker: 'margaret', text: 'yes.',                                                    delay: 9500 }
+      { speaker: 'iris',     voice: 'iris',     text: 'Margaret \u2014 would you help someone just starting?' },
+      { speaker: 'margaret', voice: 'margaret', text: 'yes.' }
     ];
-    chatTurns.forEach(function(t) {
-      setTimeout(function() {
-        if (!chatEl.parentNode) return;
-        var b = document.createElement('div');
-        b.className = 's5-bubble s5-bubble--' + (t.speaker === 'iris' ? 'iris' : 'user');
-        b.innerHTML = '<span class="s5-bubble-who">' + (t.speaker === 'iris' ? 'iris.' : 'Margaret') + '</span><span class="s5-bubble-text"></span>';
-        b.querySelector('.s5-bubble-text').textContent = t.text;
-        chatEl.appendChild(b);
-        requestAnimationFrame(function() { b.classList.add('show'); });
-      }, t.delay);
+    var tour    = window.irisTour;
+    var voiceOn = tour && typeof tour.speak === 'function' &&
+                  (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+    var cancelled = false;
+    stage.addEventListener('DOMNodeRemoved', function once() {
+      cancelled = true;
+      if (tour && typeof tour.stop === 'function') tour.stop();
+      stage.removeEventListener('DOMNodeRemoved', once);
     });
 
-    // Success callout at the end
-    setTimeout(function() {
-      if (successEl.parentNode) successEl.classList.add('show');
-    }, 14500);
+    function showBubble(t) {
+      if (!chatEl.parentNode) return;
+      var b = document.createElement('div');
+      b.className = 's5-bubble s5-bubble--' + (t.speaker === 'iris' ? 'iris' : 'user');
+      b.innerHTML = '<span class="s5-bubble-who">' + (t.speaker === 'iris' ? 'iris.' : 'Margaret') + '</span><span class="s5-bubble-text"></span>';
+      b.querySelector('.s5-bubble-text').textContent = t.text;
+      chatEl.appendChild(b);
+      requestAnimationFrame(function() { b.classList.add('show'); });
+    }
+
+    // Start the exchange just after the score fill completes (~2.1s
+    // animation + 0.9s start delay = ~3s), matching the original
+    // 4.5s feel but giving the score a clear moment to land first.
+    setTimeout(function runExchange() {
+      if (cancelled) return;
+      var i = 0;
+      function next() {
+        if (cancelled || !chatEl.parentNode) return;
+        if (i >= chatTurns.length) {
+          if (successEl.parentNode) successEl.classList.add('show');
+          return;
+        }
+        var t = chatTurns[i++];
+        showBubble(t);
+        if (voiceOn) {
+          tour.speak(t.text, t.voice).then(function() { setTimeout(next, 600); });
+        } else {
+          // No voice — space turns so Margaret's 'yes' still feels earned
+          setTimeout(next, i === 1 ? 3800 : 1500);
+        }
+      }
+      next();
+    }, 4500);
   };
 
   // ================================================================
