@@ -1,8 +1,8 @@
 // Vercel serverless function: Iris TTS proxy
 // Primary: ElevenLabs (expressive, per-persona custom voices).
-// Fallback: OpenAI tts-1 (auto-fires when ElevenLabs is down, quota-exceeded,
-// misconfigured, etc). This keeps the site from ever going voice-silent.
-// Frontend POSTs { text, voice } and gets back audio/mpeg.
+// Fallback: OpenAI gpt-4o-mini-tts (auto-fires when ElevenLabs is down,
+// quota-exceeded, misconfigured, etc). This keeps the site from ever going
+// voice-silent. Frontend POSTs { text, voice } and gets back audio/mpeg.
 
 export const config = { runtime: 'edge' };
 
@@ -21,29 +21,22 @@ const VOICE_SETTINGS = {
 };
 const MODEL = 'eleven_multilingual_v2';
 
-// OpenAI TTS fallback voices. OpenAI's newer gpt-4o-mini-tts model lets us
-// steer tone via an "instructions" string, which gets a lot closer to
-// "warm friend on the phone" than tts-1/tts-1-hd can manage.
+// OpenAI TTS fallback voices. gpt-4o-mini-tts uses an "instructions" string
+// to steer tone — much closer to "warm friend on the phone" than tts-1/tts-1-hd.
 const OPENAI_VOICE_MAP = {
   iris:     'shimmer', // warm, grounded, more conversational than nova
   margaret: 'coral',   // mature warm feminine — DISTINCT from iris's shimmer
   david:    'onyx',    // mature calm male
   priya:    'nova',    // younger forward energy
 };
-// Per-persona speed so each voice lands naturally.
-const OPENAI_SPEED_MAP = {
-  iris:     1.00,
-  margaret: 0.94,
-  david:    1.00,
-  priya:    1.03,
-};
-// Per-persona tone instructions (gpt-4o-mini-tts only). These steer
-// delivery toward warmth and realness instead of the flat tts-1 robot read.
+// Per-persona tone instructions (gpt-4o-mini-tts). These steer delivery
+// toward warmth and realness, including pacing (since gpt-4o-mini-tts
+// doesn't take a numeric speed param — you steer pace via the text).
 const OPENAI_INSTRUCTIONS = {
-  iris:     "Speak like a warm, caring friend on the phone — calm, present, unhurried but never sluggish. Conversational. Lightly smiling. Real pauses at commas and periods. You are not reading; you are talking to one person you already like.",
-  margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle, slightly shaky, thoughtful. Take your time. Little sighs are okay.",
-  david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Not dramatic.",
-  priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy but trails off when the thought runs out. Real.",
+  iris:     "Speak like a warm, caring friend on the phone — calm, present, unhurried but never sluggish. Conversational pace, lightly smiling. Real pauses at commas and periods. You are not reading; you are talking to one person you already like.",
+  margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle, slightly shaky, thoughtful. Speak slower than a normal conversational pace — take your time, let the thoughts land. Little sighs are okay.",
+  david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Steady conversational pace. Not dramatic.",
+  priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy, slightly faster than conversational pace, but trails off when the thought runs out. Real, unpolished.",
 };
 
 export default async function handler(req) {
@@ -105,18 +98,16 @@ export default async function handler(req) {
     }
   }
 
-  // ---- Fallback: OpenAI tts-1 ----
+  // ---- Fallback: OpenAI gpt-4o-mini-tts ----
+  // Steerable via instructions string. No numeric speed param — pacing is
+  // baked into the instructions text per persona.
   const oaKey = process.env.OPENAI_API_KEY;
   if (!oaKey) {
     return new Response('Neither ELEVENLABS_API_KEY nor OPENAI_API_KEY configured', { status: 500 });
   }
   const openaiVoice = OPENAI_VOICE_MAP[requestedVoice] || 'shimmer';
-  const openaiSpeed = OPENAI_SPEED_MAP[requestedVoice] || 1.00;
   const instructions = OPENAI_INSTRUCTIONS[requestedVoice] || OPENAI_INSTRUCTIONS.iris;
 
-  // tts-1-hd — OpenAI's higher-quality TTS model. Not as steerable as
-  // gpt-4o-mini-tts but produces a more natural, less compressed read
-  // per Jacob's preference. Still a meaningful step down from ElevenLabs.
   const oa = await fetch('https://api.openai.com/v1/audio/speech', {
     method: 'POST',
     headers: {
@@ -124,11 +115,11 @@ export default async function handler(req) {
       'Authorization': `Bearer ${oaKey}`,
     },
     body: JSON.stringify({
-      model: 'tts-1-hd',
+      model: 'gpt-4o-mini-tts',
       voice: openaiVoice,
       input: text,
+      instructions,
       response_format: 'mp3',
-      speed: openaiSpeed,
     }),
   });
   if (!oa.ok) {
