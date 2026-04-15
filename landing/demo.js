@@ -70,6 +70,9 @@
       '    <span class="demo-meta-eye" id="demoSceneEye">Scene</span>',
       '    <span class="demo-meta-pos" id="demoScenePos">1 / ' + SCENES.length + '</span>',
       '  </div>',
+      '  <button type="button" class="demo-btn demo-pause-btn" id="demoPauseBtn" aria-label="Pause">',
+      '    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" id="demoPauseIcon"><rect x="7" y="5" width="3.5" height="14"/><rect x="13.5" y="5" width="3.5" height="14"/></svg>',
+      '  </button>',
       '  <button type="button" class="demo-btn demo-close" id="demoClose" aria-label="Close demo">',
       '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
       '  </button>',
@@ -93,6 +96,7 @@
       '      <span class="demo-loading-fill" id="demoLoadingFill"></span>',
       '    </div>',
       '    <p class="demo-loading-meta" id="demoLoadingMeta">Preparing\u2026</p>',
+      '    <p class="demo-loading-build">build W14 \u00b7 ' + (new Date().toISOString().slice(0,10)) + '</p>',
       '  </div>',
       '</div>',
       '<div class="demo-caption" id="demoCaption" aria-live="polite"><span class="demo-caption-text"></span></div>',
@@ -110,6 +114,9 @@
     // Keyboard arrows still scrub for internal QA.
 
     btnClose.addEventListener('click', close);
+
+    var btnPause = root.querySelector('#demoPauseBtn');
+    if (btnPause) btnPause.addEventListener('click', togglePause);
     document.addEventListener('keydown', function(e) {
       if (!isOpen) return;
       if (e.key === 'Escape') { e.preventDefault(); close(); }
@@ -227,12 +234,26 @@
   }
 
   function togglePause() {
-    // Pause button removed from UI; Space key still toggles internal state
-    // for QA. No visible icon to swap.
     isPaused = !isPaused;
+    var btn = document.getElementById('demoPauseBtn');
+    var icon = document.getElementById('demoPauseIcon');
     if (isPaused) {
+      // Stop audio + cancel any in-flight orchestration.
+      sceneGen++;
+      document.dispatchEvent(new CustomEvent('demo:scene-teardown', { detail: { gen: sceneGen } }));
+      if (window.irisTour && typeof window.irisTour.stop === 'function') {
+        try { window.irisTour.stop(); } catch(e) {}
+      }
       if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+      var capEl = document.getElementById('demoCaption');
+      if (capEl) capEl.classList.remove('is-visible');
+      if (btn) btn.setAttribute('aria-label', 'Resume');
+      if (icon) icon.innerHTML = '<polygon points="6 4 20 12 6 20 6 4"/>';
     } else {
+      if (btn) btn.setAttribute('aria-label', 'Pause');
+      if (icon) icon.innerHTML = '<rect x="7" y="5" width="3.5" height="14"/><rect x="13.5" y="5" width="3.5" height="14"/>';
+      // Resume by restarting the current scene from the top.
+      renderScene(current);
       scheduleAdvance();
     }
   }
