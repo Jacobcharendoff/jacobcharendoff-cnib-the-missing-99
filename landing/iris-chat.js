@@ -197,9 +197,19 @@
     window.irisTour.stop  = function() {
       // Drain the queue and halt any currently-playing clip, so leaving
       // a scene mid-sentence doesn't bleed audio into the next one.
+      //
+      // Only pause if audio is actually playing. After a natural end
+      // (irisIsSpeaking=false), the call is a no-op — avoids the
+      // ~100ms src-reload cost on every natural scene advance, which
+      // Jacob heard as 'empty space between sessions'.
+      //
+      // Never clear src — the blob URL was already revoked by cleanup()
+      // on the previous play; next play just sets a new src.
       ttsQueue.length = 0;
-      try { if (persistentAudio) { persistentAudio.pause(); persistentAudio.src = ''; } } catch(e){}
-      irisIsSpeaking = false;
+      if (irisIsSpeaking) {
+        try { if (persistentAudio) { persistentAudio.pause(); } } catch(e){}
+        irisIsSpeaking = false;
+      }
     };
     window.irisTour.isVoiceEnabled = function() { return !!voiceEnabled; };
 

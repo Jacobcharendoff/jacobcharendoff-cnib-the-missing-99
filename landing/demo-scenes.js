@@ -640,13 +640,12 @@
         });
       }
       if (enterBeat && exitBeat) {
-        // Short intra-scene breath — NOT a silence. Visual beats that
-        // animate during this window (timelines, counters, score fills)
-        // earn the pause. 600ms is enough for the eye to register a
-        // change, not so long the viewer notices silence.
+        // Intra-scene breath — 400ms. Just enough for a visual beat
+        // to register between narration lines; not so long it reads
+        // as silence. Jacob flagged empty space as fragmentation.
         chain = chain.then(function() {
           if (cancelled) return;
-          return new Promise(function(r) { setTimeout(r, 600); });
+          return new Promise(function(r) { setTimeout(r, 400); });
         });
       }
       if (exitBeat) {
