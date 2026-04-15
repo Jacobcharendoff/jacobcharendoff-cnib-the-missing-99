@@ -677,10 +677,16 @@
       requestAnimationFrame(step);
     }, 900);
 
-    // ---- Dual-voice exchange after the readiness score crosses ----
-    // Same window.irisTour pipeline as Scene 2, two-turn version. The
-    // success callout fires after Margaret's 'yes' so it always lands at
-    // the emotional beat regardless of voice latency.
+    // ---- Narrated orchestration (V3): enter beat → dialogue → exit beat ----
+    // Scene 5 is the money scene. Order:
+    //   1. Score animation starts visually (already scheduled above)
+    //   2. Narrator enter plays over the score filling up — context
+    //   3. Brief breath for the score/threshold moment to land
+    //   4. iris asks her one question (audio + bubble synced)
+    //   5. Margaret says "yes." (audio + bubble)
+    //   6. Success callout appears
+    //   7. Narrator exit bridges to Scene 6
+    //   8. demo:scene-done dispatched → engine auto-advances
     var chatTurns = [
       { speaker: 'iris',     voice: 'iris',     text: 'Margaret \u2014 would you help someone just starting?' },
       { speaker: 'margaret', voice: 'margaret', text: 'yes.' }
@@ -688,6 +694,13 @@
     var tour    = window.irisTour;
     var voiceOn = tour && typeof tour.speak === 'function' &&
                   (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+    var beats   = (data.narratorBeats && data.narratorBeats.readiness) || [];
+    var enterBeat = null, exitBeat = null;
+    beats.forEach(function(b) {
+      if (b.at === 'enter') enterBeat = b;
+      else if (b.at === 'exit') exitBeat = b;
+    });
+
     var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
     var cancelled = false;
     var onTeardown = function() {
@@ -706,29 +719,48 @@
       requestAnimationFrame(function() { b.classList.add('show'); });
     }
 
-    // Start the exchange just after the score fill completes (~2.1s
-    // animation + 0.9s start delay = ~3s), matching the original
-    // 4.5s feel but giving the score a clear moment to land first.
-    setTimeout(function runExchange() {
+    function say(text, voice) {
+      if (!voiceOn || !text) return new Promise(function(r){ setTimeout(r, 1500); });
+      return tour.speak(text, voice);
+    }
+
+    (async function orchestrate() {
+      // Delay lets the score animation start so the enter beat plays over it
+      await new Promise(function(r){ setTimeout(r, 1100); });
       if (cancelled) return;
-      var i = 0;
-      function next() {
-        if (cancelled || !chatEl.parentNode) return;
-        if (i >= chatTurns.length) {
-          if (successEl.parentNode) successEl.classList.add('show');
-          return;
-        }
-        var t = chatTurns[i++];
-        showBubble(t);
-        if (voiceOn) {
-          tour.speak(t.text, t.voice).then(function() { setTimeout(next, 600); });
-        } else {
-          // No voice — space turns so Margaret's 'yes' still feels earned
-          setTimeout(next, i === 1 ? 3800 : 1500);
-        }
+
+      // Enter narrator — context on why we're at the readiness threshold
+      if (enterBeat) {
+        await say(enterBeat.text, 'narrator');
+        if (cancelled) return;
       }
-      next();
-    }, 4500);
+
+      // Breath — score + threshold moment lands
+      await new Promise(function(r){ setTimeout(r, 700); });
+      if (cancelled) return;
+
+      // Dialogue — iris asks, Margaret answers
+      for (var i = 0; i < chatTurns.length; i++) {
+        var t = chatTurns[i];
+        showBubble(t);
+        await say(t.text, t.voice);
+        if (cancelled) return;
+        await new Promise(function(r){ setTimeout(r, 500); });
+      }
+
+      // Success callout
+      if (successEl.parentNode) successEl.classList.add('show');
+      await new Promise(function(r){ setTimeout(r, 900); });
+      if (cancelled) return;
+
+      // Exit narrator — bridges into Scene 6
+      if (exitBeat) {
+        await say(exitBeat.text, 'narrator');
+        if (cancelled) return;
+      }
+
+      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
+    })();
   };
 
   // ================================================================
