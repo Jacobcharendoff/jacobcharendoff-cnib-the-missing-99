@@ -147,11 +147,14 @@
       .forEach(function(c){ root.classList.remove(c); });
     root.classList.add('s-' + s.id);
 
-    // Cross-fade old scene out, new in
+    // Cross-fade old scene out, new in. Shortened from 600ms → 400ms
+    // so the visual cut feels film-crisp. The audio from the new scene
+    // starts at T=0 (cache-backed), overlaps the fade-out, and the
+    // narrator's voice is the continuous thread that hides the boundary.
     Array.prototype.forEach.call(sceneStage.querySelectorAll('.demo-scene'), function(old) {
       if (old.dataset.state === 'exit') return;
       old.dataset.state = 'exit';
-      setTimeout(function() { if (old.parentNode) old.parentNode.removeChild(old); }, 600);
+      setTimeout(function() { if (old.parentNode) old.parentNode.removeChild(old); }, 400);
     });
 
     var block = document.createElement('div');

@@ -62,11 +62,20 @@
 
     (async function() {
       var beat = beats[0];
-      var handle = await tour.prefetch(beat.text, 'narrator');
+      // Cache-first: preloader should have this already. Only a cold
+      // miss falls through to a live prefetch.
+      var handle = await getOrFetchAudio('narrator', beat.text);
       if (cancelled) return;
-      await new Promise(function(r){ setTimeout(r, 800); }); // let mark animate in
+      // Scene 1 only: 600ms breath so the mark animation lands before
+      // the narrator starts. This is the ONE delay in the tour — every
+      // subsequent scene begins audio at 0ms (audio overlaps cross-fade).
+      await new Promise(function(r){ setTimeout(r, 600); });
       if (cancelled) return;
-      await tour.play(handle, beat.text);
+      if (handle && typeof tour.play === 'function') {
+        await tour.play(handle, beat.text);
+      } else if (typeof tour.speak === 'function') {
+        await tour.speak(beat.text, 'narrator');
+      }
       if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
     })();
   };
@@ -497,22 +506,50 @@
     });
   };
 
-  // Play a scene's narrator beats (enter → exit) through window.irisTour.
-  // Replaces the old iris-first-person playSceneVO: the tour is now
-  // narrator-led, so every scene that used to speak a single iris VO
-  // line now plays a narrator enter beat on mount and a narrator exit
-  // beat at the end — bridging into the next scene. Auto-cancels on
-  // demo:scene-teardown. No-op if voice isn't available.
-  //
-  // Name kept as `playSceneVO` so all existing scene renderers keep
-  // working — only the implementation changes.
+  // Shared audio lookup: cache first, live prefetch fallback.
+  // The preloader (demo-preload.js) fills window.demoAudioCache during
+  // the loading screen. Scene renderers consume via this helper — the
+  // cached handle plays INSTANTLY (no fetch, no latency), which is how
+  // we eliminate the silent gap between scenes. The narrator's voice
+  // becomes the continuous thread that hides the visual cross-fade.
+  function getOrFetchAudio(voice, text) {
+    var cached = window.demoPreloadGet && window.demoPreloadGet(voice, text);
+    if (cached) return Promise.resolve(cached);
+    if (window.irisTour && typeof window.irisTour.prefetch === 'function') {
+      return Promise.resolve(window.irisTour.prefetch(text, voice));
+    }
+    return Promise.resolve(null);
+  }
+
+  function playCachedBeat(voice, text) {
+    var tour = window.irisTour;
+    if (!tour) return Promise.resolve();
+    return getOrFetchAudio(voice, text).then(function(handle) {
+      if (handle && typeof tour.play === 'function') {
+        return tour.play(handle, text);
+      }
+      if (typeof tour.speak === 'function') {
+        return tour.speak(text, voice);
+      }
+      return null;
+    });
+  }
+
+  // Play a scene's narrator beats (enter → breath → exit) with zero mount
+  // delay so audio begins as the new scene's cross-fade is still running.
+  // Result: narrator carries across the scene boundary — no silent gap.
+  // Intra-scene breath between enter and exit is preserved so visual
+  // beats can land between narration lines.
   function playSceneVO(stage, sceneId, opts) {
     opts = opts || {};
-    var delay = opts.delay != null ? opts.delay : 400;
+    // Default is now 0ms — no delay between scene mount and first audio.
+    // Callers can still pass a delay if a specific scene needs the mark
+    // to settle before the narrator starts (Scene 1 uses opts.delay=800).
+    var delay = opts.delay != null ? opts.delay : 0;
     var beats = (data.narratorBeats && data.narratorBeats[sceneId]) || [];
     if (!beats.length) return;
     var tour = window.irisTour;
-    if (!tour || typeof tour.speak !== 'function') return;
+    if (!tour) return;
     if (typeof tour.isVoiceEnabled === 'function' && !tour.isVoiceEnabled()) return;
 
     var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
@@ -523,9 +560,6 @@
     };
     document.addEventListener('demo:scene-teardown', onTeardown);
 
-    // Sequence the beats: enter → (optional: afterVisual:*) → exit.
-    // Between beats we insert a short breath so the viewer's eye can
-    // catch up to the visual that was revealed during/after the beat.
     var enterBeat = null, exitBeat = null;
     beats.forEach(function(b) {
       if (b.at === 'enter') enterBeat = b;
@@ -538,18 +572,23 @@
       if (enterBeat) {
         chain = chain.then(function() {
           if (cancelled) return;
-          return tour.speak(enterBeat.text, 'narrator');
+          return playCachedBeat('narrator', enterBeat.text);
+        });
+      }
+      if (enterBeat && exitBeat) {
+        // Short intra-scene breath — NOT a silence. Visual beats that
+        // animate during this window (timelines, counters, score fills)
+        // earn the pause. 600ms is enough for the eye to register a
+        // change, not so long the viewer notices silence.
+        chain = chain.then(function() {
+          if (cancelled) return;
+          return new Promise(function(r) { setTimeout(r, 600); });
         });
       }
       if (exitBeat) {
         chain = chain.then(function() {
           if (cancelled) return;
-          // 1.2s breath between enter narration and exit narration so
-          // the visual moment in between lands before the next beat.
-          return new Promise(function(r) { setTimeout(r, 1200); });
-        }).then(function() {
-          if (cancelled) return;
-          return tour.speak(exitBeat.text, 'narrator');
+          return playCachedBeat('narrator', exitBeat.text);
         });
       }
       chain.then(function() {
@@ -721,15 +760,12 @@
 
     function say(text, voice) {
       if (!voiceOn || !text) return new Promise(function(r){ setTimeout(r, 1500); });
-      return tour.speak(text, voice);
+      return playCachedBeat(voice, text);
     }
 
     (async function orchestrate() {
-      // Delay lets the score animation start so the enter beat plays over it
-      await new Promise(function(r){ setTimeout(r, 1100); });
-      if (cancelled) return;
-
-      // Enter narrator — context on why we're at the readiness threshold
+      // Narrator enters immediately — voice carries across the scene
+      // boundary from Scene 4's exit. Score animation runs in parallel.
       if (enterBeat) {
         await say(enterBeat.text, 'narrator');
         if (cancelled) return;
