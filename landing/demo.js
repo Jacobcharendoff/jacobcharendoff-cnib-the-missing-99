@@ -259,7 +259,49 @@
     root.classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(function() { btnPause.focus(); }, 120);
-    goTo(0);
+
+    // Show loading screen; run preload; then fade out + mount Scene 1.
+    // If preloader is missing (script-load race), fall through to Scene 1
+    // so we never block behind a missing dep.
+    var loading = root.querySelector('#demoLoading');
+    var fill    = root.querySelector('#demoLoadingFill');
+    var meta    = root.querySelector('#demoLoadingMeta');
+
+    function hideLoadingAndStart() {
+      if (loading) {
+        loading.classList.add('is-hidden');
+        setTimeout(function() { if (loading.parentNode) loading.style.display = 'none'; }, 650);
+      }
+      goTo(0);
+    }
+
+    if (typeof window.demoPreload !== 'function') {
+      if (loading) loading.style.display = 'none';
+      goTo(0);
+      return;
+    }
+
+    // Preload with progress reporting. Minimum 900ms show-time so the
+    // loading state reads as deliberate, not a flicker, even on a warm
+    // cache or instant resolve.
+    var start = Date.now();
+    var MIN_SHOW_MS = 900;
+    window.demoPreload(function(p) {
+      if (fill && p.total) {
+        var pct = Math.round(100 * p.loaded / p.total);
+        fill.style.width = pct + '%';
+        loading.querySelector('.demo-loading-bar').setAttribute('aria-valuenow', String(pct));
+      }
+      if (meta) meta.textContent = 'Preloading voice \u2014 ' + p.loaded + ' of ' + p.total;
+    }).then(function() {
+      if (meta) meta.textContent = 'Ready.';
+      var elapsed = Date.now() - start;
+      var wait = Math.max(0, MIN_SHOW_MS - elapsed);
+      setTimeout(hideLoadingAndStart, wait);
+    }).catch(function() {
+      // Never block on preload errors — show the tour anyway.
+      hideLoadingAndStart();
+    });
   }
 
   function close() {
