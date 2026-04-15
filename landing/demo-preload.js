@@ -30,28 +30,36 @@
   // Walk demoData to build the full { voice, text } manifest.
   // Order matches scene-by-scene playback order so the progress bar
   // feels like the tour itself loading in.
+  // Priority = content the first two scenes need. Preload resolves as
+  // soon as these land, so the viewer never waits for later-scene audio
+  // to play the first one. Everything else continues streaming into the
+  // cache during playback — by the time the viewer reaches Scene 3, its
+  // audio has been ready for a while.
+  var PRIORITY_SCENES = { intro: true, acquire: true };
+
   function buildManifest(data) {
     var m = [];
     if (!data) return m;
     var beats = data.narratorBeats || {};
 
     // Every scene's narrator beats — enter, afterVisual:*, exit.
-    // Walks the whole narratorBeats map so adding a scene's beats in
-    // demo-data.js automatically preloads them with no manifest edit.
     Object.keys(beats).forEach(function(sceneId) {
+      var isPriority = !!PRIORITY_SCENES[sceneId];
       (beats[sceneId] || []).forEach(function(b) {
-        if (b && b.text) m.push({ voice:'narrator', text:b.text });
+        if (b && b.text) m.push({ voice:'narrator', text:b.text, priority:isPriority });
       });
     });
 
-    // Scene 2 — live dialogue (iris + margaret). Voice inherited from
-    // each turn's voice/speaker.
+    // Scene 2 — live dialogue (iris + margaret). ALL priority — these
+    // play in Scene 2, the second scene the viewer reaches.
     var firstChat = (data.margaret && data.margaret.firstChat) || [];
-    firstChat.forEach(function(t) { m.push({ voice:t.voice || t.speaker || 'iris', text:t.text }); });
+    firstChat.forEach(function(t) {
+      m.push({ voice:t.voice || t.speaker || 'iris', text:t.text, priority:true });
+    });
 
-    // Scene 5 — readiness dialogue (kept inline in the renderer).
-    m.push({ voice:'iris',     text:'Margaret \u2014 would you help someone just starting?' });
-    m.push({ voice:'margaret', text:'yes.' });
+    // Scene 5 — readiness dialogue (not priority, plays later).
+    m.push({ voice:'iris',     text:'Margaret \u2014 would you help someone just starting?', priority:false });
+    m.push({ voice:'margaret', text:'yes.', priority:false });
 
     return m;
   }
@@ -81,46 +89,58 @@
     }
 
     var manifest = dedupe(buildManifest(window.demoData));
+    var priorityCount = manifest.filter(function(e) { return e.priority; }).length;
     var total = manifest.length;
     if (!total) return Promise.resolve({ cache:cache, failed:[] });
 
-    var loaded = 0;
+    var loaded = 0;           // priority-scoped counter for UX
+    var loadedPriority = 0;
     var failed = [];
 
     function report(entry) {
       if (typeof onProgress !== 'function') return;
       try {
         onProgress({
-          loaded: loaded,
-          total:  total,
+          loaded: loadedPriority,  // progress bar tracks priority only
+          total:  priorityCount || total,
           currentText: entry && entry.text,
           voice: entry && entry.voice
         });
       } catch(e) {}
     }
 
-    // Fire every prefetch in parallel. Each settles independently; we
-    // report progress as each lands. Failed entries are recorded but do
-    // not block resolution — scenes degrade gracefully to read-time pacing.
-    var jobs = manifest.map(function(entry) {
+    // Fire EVERY prefetch in parallel — including non-priority. But only
+    // AWAIT the priority subset. Non-priority jobs keep running in the
+    // background; by the time their scenes play, the audio is cached.
+    var priorityJobs = [];
+    manifest.forEach(function(entry) {
       var k = keyFor(entry.voice, entry.text);
-      if (cache[k]) { loaded++; report(entry); return Promise.resolve(); }
-      return Promise.resolve(tour.prefetch(entry.text, entry.voice))
-        .then(function(handle) {
-          if (handle) cache[k] = handle;
-          else failed.push(entry);
-          loaded++;
-          report(entry);
-        })
-        .catch(function(err) {
-          failed.push({ voice:entry.voice, text:entry.text, error:err && err.message });
-          loaded++;
-          report(entry);
-        });
+      var job;
+      if (cache[k]) {
+        loaded++;
+        if (entry.priority) { loadedPriority++; report(entry); }
+        job = Promise.resolve();
+      } else {
+        job = Promise.resolve(tour.prefetch(entry.text, entry.voice))
+          .then(function(handle) {
+            if (handle) cache[k] = handle;
+            else failed.push(entry);
+            loaded++;
+            if (entry.priority) { loadedPriority++; report(entry); }
+          })
+          .catch(function(err) {
+            failed.push({ voice:entry.voice, text:entry.text, error:err && err.message });
+            loaded++;
+            if (entry.priority) { loadedPriority++; report(entry); }
+          });
+      }
+      if (entry.priority) priorityJobs.push(job);
     });
 
-    return Promise.all(jobs).then(function() {
-      return { cache:cache, failed:failed };
+    // Resolve as soon as priority subset is done. Non-priority jobs keep
+    // running; their results populate window.demoAudioCache silently.
+    return Promise.all(priorityJobs).then(function() {
+      return { cache:cache, failed:failed, priorityOnly:true };
     });
   }
 
