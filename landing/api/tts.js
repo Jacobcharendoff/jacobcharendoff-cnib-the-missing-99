@@ -82,6 +82,7 @@ const MODEL = 'eleven_multilingual_v2';
 // to steer tone — much closer to "warm friend on the phone" than tts-1/tts-1-hd.
 const OPENAI_VOICE_MAP = {
   iris:     'shimmer', // warm, grounded, more conversational than nova
+  narrator: 'ash',     // male, warm, measured — docent voice for the product demo
   margaret: 'coral',   // mature warm feminine — DISTINCT from iris's shimmer
   david:    'onyx',    // mature calm male
   priya:    'nova',    // younger forward energy
@@ -91,6 +92,7 @@ const OPENAI_VOICE_MAP = {
 // doesn't take a numeric speed param — you steer pace via the text).
 const OPENAI_INSTRUCTIONS = {
   iris:     "Speak like a warm, caring friend on the phone — calm, present, unhurried but never sluggish. Conversational pace, lightly smiling. Real pauses at commas and periods. You are not reading; you are talking to one person you already like.",
+  narrator: "Speak like a thoughtful docent walking one person through a product demo. Warm but objective. Measured, grounded, never theatrical. Slight smile in the voice. You're explaining what the viewer is seeing and why it matters, one beat at a time. Real pauses between sentences. You believe what you're saying.",
   margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle, slightly shaky, thoughtful. Speak slower than a normal conversational pace — take your time, let the thoughts land. Little sighs are okay.",
   david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Steady conversational pace. Not dramatic.",
   priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy, slightly faster than conversational pace, but trails off when the thought runs out. Real, unpolished.",
