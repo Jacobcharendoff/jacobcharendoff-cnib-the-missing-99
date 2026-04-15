@@ -106,18 +106,31 @@
 
 /* ================================================================
    Stage — full-bleed scene area
+   Note: scenes use position:absolute inset:0 so they span the stage
+   completely (for cross-fade transitions). That means padding on the
+   stage does nothing — all breathing room must live on .demo-scene.
    ================================================================ */
 .demo-stage {
   position: relative; z-index: 2;
   flex: 1; min-height: 0;
   display: flex; align-items: center; justify-content: center;
-  padding: 0 32px 120px;
   overflow: hidden;
 }
 
 .demo-scene {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
+  /* Top clears the .demo-top header (~64px tall).
+     Bottom clears the stacked controls + rail + progress bar
+       (~100px total at bottom:36px) with breathing room.
+     Sides widened from 32 to clamp(32px,4vw,56px) so wide scenes
+       (scoreboard, partnerdash) don't press the viewport edges. */
+  padding: clamp(20px,3vh,36px) clamp(32px,4vw,56px) clamp(130px,14vh,160px);
+  /* Allow tall scenes to scroll internally rather than clip. On short
+     viewports this keeps every card reachable. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   opacity: 0; transform: translateY(12px);
   transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
   pointer-events: none;
@@ -221,7 +234,8 @@
 
 @media (max-width: 700px) {
   .demo-top { padding: 16px 18px; }
-  .demo-stage { padding: 0 20px 132px; }
+  /* Padding moved from stage to scene (see .demo-scene above) */
+  .demo-scene { padding: 18px 20px 132px; }
   .demo-controls { bottom: 26px; gap: 14px; }
   .demo-btn { width: 38px; height: 38px; }
   .demo-btn--play { width: 46px; height: 46px; }
