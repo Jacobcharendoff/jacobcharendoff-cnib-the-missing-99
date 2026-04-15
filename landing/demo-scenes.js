@@ -85,13 +85,32 @@
     var matchStat  = stage.querySelector('#s2MatchStatus');
     var slaActual  = stage.querySelector('#s2SlaActual');
 
-    // ---- Chat bubbles, voice-paced when possible ----
-    // Each turn: append bubble, kick off TTS, await audio end, then next.
-    // Falls back to a fixed 5s/bubble timer if window.irisTour isn't wired
-    // (e.g., iris-chat.js hasn't loaded yet) or voice is disabled.
+    // ---- Docent orchestration: narrator beats interleaved with dialogue ----
+    // Sequence:
+    //   enter narrator   -> turn 0 (iris)   -> turn 1 (margaret)
+    //   afterTurn:1      -> turn 2 (iris)   -> turn 3 (margaret)
+    //   afterTurn:3      -> turn 4 (iris)   -> visual: match cards populate
+    //   afterVisual:matches -> exit narrator -> bridge to Scene 3
+    //
+    // All audio is prefetched in parallel on scene mount (capped at 4s so
+    // playback never blocks indefinitely). Every beat waits for the prior
+    // one to finish — no overlapping voices. Cancellation fires on scene
+    // teardown so audio can't bleed into the next scene.
+    var beats = (data.narratorBeats && data.narratorBeats.acquire) || [];
+    var beatByAt = {};
+    beats.forEach(function(b) { beatByAt[b.at] = b; });
+
     var tour = window.irisTour;
-    var voiceOn = tour && typeof tour.speak === 'function' &&
-                  (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+    var voiceReady = tour && typeof tour.prefetch === 'function' &&
+                     typeof tour.play === 'function' &&
+                     (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+
+    var cancelled = false;
+    stage.addEventListener('DOMNodeRemoved', function once() {
+      cancelled = true;
+      if (tour && typeof tour.stop === 'function') tour.stop();
+      stage.removeEventListener('DOMNodeRemoved', once);
+    });
 
     function renderBubble(turn) {
       if (!log.parentNode) return null;
@@ -108,67 +127,159 @@
       return bubble;
     }
 
-    var cancelled = false;
-    // If the scene is swapped mid-playback, stop any audio so it doesn't
-    // bleed into the next scene.
-    stage.addEventListener('DOMNodeRemoved', function once() {
-      cancelled = true;
-      if (tour && typeof tour.stop === 'function') tour.stop();
-      stage.removeEventListener('DOMNodeRemoved', once);
-    });
+    function buildMatchCard(p) {
+      var card = document.createElement('div');
+      card.className = 's2-match';
+      card.innerHTML = [
+        '<div class="s2-match-head">',
+        '  <span class="s2-match-name"></span>',
+        '  <span class="s2-match-score">' + p.fitScore + '<span class="s2-match-score-pct">% fit</span></span>',
+        '</div>',
+        '<ul class="s2-match-why"></ul>'
+      ].join('');
+      card.querySelector('.s2-match-name').textContent = p.name;
+      var ul = card.querySelector('.s2-match-why');
+      (p.reasoning || []).forEach(function(r) {
+        var li = document.createElement('li');
+        li.textContent = r;
+        ul.appendChild(li);
+      });
+      return card;
+    }
 
-    function playChat() {
+    function populateMatches() {
+      // Returns a promise that resolves once every card has animated in.
+      return new Promise(function(resolve) {
+        var total = matches.length;
+        if (!total || !matchList.parentNode) { resolve(); return; }
+        matchStat.textContent = matches.length + ' programs matched';
+        var landed = 0;
+        matches.forEach(function(p, i) {
+          setTimeout(function() {
+            if (cancelled || !matchList.parentNode) { landed++; if (landed === total) resolve(); return; }
+            var card = buildMatchCard(p);
+            matchList.appendChild(card);
+            requestAnimationFrame(function(){ card.classList.add('show'); });
+            landed++;
+            if (landed === total) setTimeout(resolve, 700);
+          }, i * 800);
+        });
+      });
+    }
+
+    function playBeatFallback() {
+      // No voice available (or iris-chat.js hasn't loaded). Run the old
+      // 4.8s/bubble pacing so the scene still plays visually.
       var i = 0;
       function next() {
         if (cancelled || !log.parentNode) return;
-        if (i >= chatTurns.length) { onChatDone(); return; }
-        var turn = chatTurns[i++];
-        renderBubble(turn);
-        if (i === 1) slaActual.textContent = '23 seconds';
-        if (voiceOn) {
-          tour.speak(turn.text, turn.voice || turn.speaker || 'iris').then(function() {
-            setTimeout(next, 400);
-          });
-        } else {
-          setTimeout(next, 4800);
+        if (i >= chatTurns.length) {
+          matchStat.textContent = 'Narrowing\u2026';
+          setTimeout(function(){ if (!cancelled) populateMatches(); }, 1200);
+          return;
         }
+        renderBubble(chatTurns[i]);
+        if (i === 0) slaActual.textContent = '23 seconds';
+        i++;
+        setTimeout(next, 4800);
       }
       setTimeout(next, 400);
     }
 
-    function onChatDone() {
-      if (cancelled || !matchList.parentNode) return;
-      matchStat.textContent = 'Narrowing\u2026';
-      setTimeout(function() {
-        if (cancelled || !matchList.parentNode) return;
-        matchStat.textContent = matches.length + ' programs matched';
-        matches.forEach(function(p, i) {
-          setTimeout(function() {
-            if (cancelled || !matchList.parentNode) return;
-            var card = document.createElement('div');
-            card.className = 's2-match';
-            card.innerHTML = [
-              '<div class="s2-match-head">',
-              '  <span class="s2-match-name"></span>',
-              '  <span class="s2-match-score">' + p.fitScore + '<span class="s2-match-score-pct">% fit</span></span>',
-              '</div>',
-              '<ul class="s2-match-why"></ul>'
-            ].join('');
-            card.querySelector('.s2-match-name').textContent = p.name;
-            var ul = card.querySelector('.s2-match-why');
-            (p.reasoning || []).forEach(function(r) {
-              var li = document.createElement('li');
-              li.textContent = r;
-              ul.appendChild(li);
-            });
-            matchList.appendChild(card);
-            requestAnimationFrame(function(){ card.classList.add('show'); });
-          }, i * 900);
-        });
-      }, 1200);
+    // Helper that plays a beat (narrator OR dialogue) if the audio handle
+    // is ready. Returns a promise. Safe on null handles — falls through to
+    // reading-time pacing so nothing gets skipped silently.
+    function playHandle(handle, fallbackText) {
+      if (!voiceReady) return Promise.resolve();
+      return tour.play(handle, fallbackText);
     }
 
-    playChat();
+    async function orchestrate() {
+      if (!voiceReady) { playBeatFallback(); return; }
+
+      // ---- Parallel prefetch of EVERY audio blob for this scene ----
+      // Narrator beats + dialogue turns fire concurrently. Most arrive
+      // within ~1-2s; we cap the hard wait at 4s so the scene doesn't
+      // stall if one request is slow. Individual handles that arrive
+      // later are still awaited in sequence below — they just won't
+      // be instant the first time.
+      var narratorHandles = {};
+      var turnHandles = [];
+      var pre = [];
+      beats.forEach(function(b) {
+        pre.push(tour.prefetch(b.text, 'narrator').then(function(h){ narratorHandles[b.at] = h; }));
+      });
+      chatTurns.forEach(function(t, i) {
+        pre.push(tour.prefetch(t.text, t.voice || t.speaker || 'iris').then(function(h){ turnHandles[i] = h; }));
+      });
+      await Promise.race([
+        Promise.all(pre),
+        new Promise(function(resolve){ setTimeout(resolve, 4000); })
+      ]);
+      if (cancelled) return;
+
+      // ---- Interleaved playback ----
+
+      // 1. Entry narrator — 'This is Margaret...'
+      await playHandle(narratorHandles['enter'], beatByAt['enter'] && beatByAt['enter'].text);
+      if (cancelled) return;
+
+      // 2. Turn 0 — iris's greeting (and SLA timer flips)
+      if (chatTurns[0]) {
+        renderBubble(chatTurns[0]);
+        slaActual.textContent = '23 seconds';
+        await playHandle(turnHandles[0], chatTurns[0].text);
+        if (cancelled) return;
+      }
+
+      // 3. Turn 1 — Margaret's disclosure
+      if (chatTurns[1]) {
+        renderBubble(chatTurns[1]);
+        await playHandle(turnHandles[1], chatTurns[1].text);
+        if (cancelled) return;
+      }
+
+      // 4. afterTurn:1 narrator — commentary on iris's move
+      await playHandle(narratorHandles['afterTurn:1'], beatByAt['afterTurn:1'] && beatByAt['afterTurn:1'].text);
+      if (cancelled) return;
+
+      // 5-6. Turns 2 + 3 — iris asks about daughter, Margaret answers
+      if (chatTurns[2]) {
+        renderBubble(chatTurns[2]);
+        await playHandle(turnHandles[2], chatTurns[2].text);
+        if (cancelled) return;
+      }
+      if (chatTurns[3]) {
+        renderBubble(chatTurns[3]);
+        await playHandle(turnHandles[3], chatTurns[3].text);
+        if (cancelled) return;
+      }
+
+      // 7. afterTurn:3 narrator — covers the match-panel priming
+      matchStat.textContent = 'Narrowing\u2026';
+      await playHandle(narratorHandles['afterTurn:3'], beatByAt['afterTurn:3'] && beatByAt['afterTurn:3'].text);
+      if (cancelled) return;
+
+      // 8. Turn 4 — iris's final bubble (warm handoff invitation)
+      if (chatTurns[4]) {
+        renderBubble(chatTurns[4]);
+        await playHandle(turnHandles[4], chatTurns[4].text);
+        if (cancelled) return;
+      }
+
+      // 9. Visual beat: match cards populate
+      await populateMatches();
+      if (cancelled) return;
+
+      // 10. afterVisual:matches narrator — 'The top match isn't a program...'
+      await playHandle(narratorHandles['afterVisual:matches'], beatByAt['afterVisual:matches'] && beatByAt['afterVisual:matches'].text);
+      if (cancelled) return;
+
+      // 11. Exit narrator — bridges to Scene 3
+      await playHandle(narratorHandles['exit'], beatByAt['exit'] && beatByAt['exit'].text);
+    }
+
+    orchestrate();
   };
 
   // ================================================================
