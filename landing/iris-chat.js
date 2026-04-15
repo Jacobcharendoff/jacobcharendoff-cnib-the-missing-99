@@ -153,6 +153,23 @@
       });
     }
 
+    // ---- Public TTS API for the System Demonstration tour ----
+    // The tour (demo.js / demo-scenes.js) lives on the same page and needs
+    // to speak scripted bubbles WITHOUT creating a second Audio element
+    // (which would break the mobile-Safari gesture-unlock pattern). Route
+    // everything through the same ttsQueue + persistentAudio that this
+    // widget already owns.
+    window.irisTour = window.irisTour || {};
+    window.irisTour.speak = speakAndWait;
+    window.irisTour.stop  = function() {
+      // Drain the queue and halt any currently-playing clip, so leaving
+      // a scene mid-sentence doesn't bleed audio into the next one.
+      ttsQueue.length = 0;
+      try { if (persistentAudio) { persistentAudio.pause(); persistentAudio.src = ''; } } catch(e){}
+      irisIsSpeaking = false;
+    };
+    window.irisTour.isVoiceEnabled = function() { return !!voiceEnabled; };
+
     // ===== TTS PREFETCH (used by the scenario engine to eliminate inter-turn lag) =====
     // The default flow renders a bubble, then waits for /api/tts to round-trip
     // before any audio plays. That round-trip is the "weird delay" between
