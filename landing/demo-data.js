@@ -313,19 +313,25 @@
       // narrator uses her to show mechanism, then pulls out to numbers.
       // Read-aloud tested. Concrete SLA + funnel language throughout.
 
-      // Scene 1 — WHAT IS IRIS.
+      // Scene 1 — WHAT IS IRIS. Outcomes-first overview.
+      // Sets the stage so the executive is anticipating every scene.
+      // Names iris's value prop for each audience (client/vol/partner)
+      // BEFORE diving into mechanics. When the scenes run, the viewer
+      // is looking forward to seeing the things they were just promised.
       intro: [
         {
           at: 'enter',
-          text: "This is iris. CNIB's engagement infrastructure for the 1.5 million Canadians living with sight loss. Today, less than one percent of that population is actively engaged with CNIB. iris is the system built to close that gap \u2014 across three audiences: clients, volunteers, and partner clinics. Over the next four minutes: what iris does, how it works, and how success is measured."
+          text: "iris. CNIB's engagement infrastructure. Today, more than one and a half million Canadians live with sight loss. Less than one percent are actively engaged with CNIB. iris was built to close that gap \u2014 across three audiences, end to end. For clients: a real conversation within thirty seconds of first contact. A matched CNIB program within five turns. A relationship that lasts years, not weeks. For volunteers: iris turns engaged clients into peer mentors, each one reaching three more Canadians. For partners \u2014 clinics, hospitals, ophthalmologists: onboarded in fourteen days, with a live dashboard showing every referral, every outcome, every SLA. Three audiences. One compounding loop. Retention becomes the acquisition engine. In the next four minutes, you'll see all three. We start with one person."
         }
       ],
 
-      // Scene 2 — HOW ACQUISITION WORKS.
+      // Scene 2 — HOW ACQUISITION WORKS. Narrator frames the scene
+      // ('first, acquisition') BEFORE introducing Margaret so the
+      // viewer knows why they're meeting her.
       acquire: [
         {
           at: 'enter',
-          text: "Acquisition begins with a QR code in a partner clinic. A patient scans. iris opens a conversation within thirty seconds. Across five conversational turns, iris identifies diagnosis, geography, emotional state, and social support \u2014 then matches against seventy CNIB programs by lived-experience fit, not keywords. Sudbury Eye Centre. Margaret, sixty-eight, newly diagnosed with macular degeneration. Watch."
+          text: "First, acquisition. How iris opens a conversation with someone who has never engaged CNIB before. Meet Margaret. Sixty-eight, retired teacher in Sudbury, recently diagnosed with macular degeneration. Her daughter in Vancouver sent her a QR code from a Sudbury Eye Centre waiting room. Margaret scanned it thirty seconds ago. Watch what iris does."
         },
         {
           at: 'afterVisual:matches',
