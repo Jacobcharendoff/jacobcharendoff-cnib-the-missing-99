@@ -295,6 +295,45 @@
       partnerdash: "Twelve months in, here's what Sudbury sees. Real members, real outcomes, real dollars. Everything a clinic director needs to keep saying yes.",
       loop:        "Watch what happens when I meet one person well. One becomes three. Three become a clinic. A clinic becomes a network. Retention is the acquisition engine.",
       scoreboard:  "Three audiences. One loop. Here's what I promise each of them, and how you'll know I delivered."
+    },
+
+    // =============================================================
+    // PART 4 — Narrator beats (docent layer)
+    // =============================================================
+    // Beats interleave with each scene's visual choreography and
+    // in-scene dialogue. A scene's beats fire in order; each beat has
+    // an `at` field telling the renderer WHEN to play it relative to
+    // the scene timeline:
+    //   'enter'            — before any visuals settle (the hook)
+    //   'afterTurn:N'      — after dialogue turn N finishes (commentary)
+    //   'afterVisual:name' — after a named visual beat completes
+    //   'exit'             — last, leading into the next scene
+    //
+    // Scene 2 ("Margaret's first conversation") is the exemplar.
+    // v0 DRAFT — awaiting Angela review. Edits happen here; no engineering.
+    narratorBeats: {
+      acquire: [
+        {
+          at: 'enter',
+          text: "This is Margaret. Sixty-eight, retired schoolteacher in Sudbury. Two months ago her eye doctor told her she has macular degeneration. She hasn't told her daughter yet. Her daughter found CNIB and sent her a QR code. Margaret scanned it thirty seconds ago. This is the first message."
+        },
+        {
+          at: 'afterTurn:1',
+          text: "Watch what iris does here. She doesn't ask about symptoms. She doesn't hand Margaret a menu of programs. She asks about Margaret's people."
+        },
+        {
+          at: 'afterTurn:3',
+          text: "While iris holds Margaret in this moment, she's also doing something else. On the right, she's matching Margaret's situation against seventy CNIB programs. Not by keyword. By lived-experience fit. Geography. Diagnosis stage. Emotional readiness."
+        },
+        {
+          at: 'afterVisual:matches',
+          text: "The top match isn't a program. It's a person \u2014 a Vision Mate in Sudbury who's walked this path. That's the move. Not 'here's a resource.' Here's someone who's already where you are."
+        },
+        {
+          at: 'exit',
+          text: "Margaret said yes. Twenty-three seconds from QR scan to first reply. Six minutes from 'I don't know who to tell' to a warm handoff to a real person in her city. Here's what happens in the seven days that follow."
+        }
+      ]
     }
   };
 
