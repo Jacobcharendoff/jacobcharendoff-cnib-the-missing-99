@@ -127,7 +127,7 @@
      to 200-240px so the viewer never loses content under the caption.
      Sides widened from 32 to clamp(32px,4vw,56px) so wide scenes
        (scoreboard, partnerdash) don't press the viewport edges. */
-  padding: clamp(20px,3vh,36px) clamp(32px,4vw,56px) clamp(200px,22vh,240px);
+  padding: clamp(20px,3vh,36px) clamp(32px,4vw,56px) clamp(280px,32vh,340px);
   /* Allow tall scenes to scroll internally rather than clip. On short
      viewports this keeps every card reachable. */
   overflow-y: auto;
@@ -212,9 +212,9 @@
 }
 .demo-caption.is-visible { opacity: 1; }
 .demo-caption-text {
-  max-width: 900px; text-align: center;
-  font-size: clamp(16px, 1.4vw, 20px);
-  line-height: 1.5; letter-spacing: -0.005em;
+  max-width: 1100px; text-align: center;
+  font-size: clamp(14px, 1.15vw, 17px);
+  line-height: 1.45; letter-spacing: -0.005em;
   color: var(--c-fg-1);
   background: rgba(10,10,10,.72);
   backdrop-filter: blur(6px);
