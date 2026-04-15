@@ -312,22 +312,18 @@
     // Scene 2 ("Margaret's first conversation") is the exemplar.
     // v0 DRAFT — awaiting Angela review. Edits happen here; no engineering.
     narratorBeats: {
+      // Scene 2 ('acquire') — narrator sets up, gets OUT of the way for
+      // the full Margaret/iris conversation, then reflects once at the
+      // end over the match-panel visual. Three beats, not five — letting
+      // the dialogue breathe was the note.
       acquire: [
         {
           at: 'enter',
-          text: "This is Margaret. Sixty-eight, retired schoolteacher in Sudbury. Two months ago her eye doctor told her she has macular degeneration. She hasn't told her daughter yet. Her daughter found CNIB and sent her a QR code. Margaret scanned it thirty seconds ago. This is the first message."
-        },
-        {
-          at: 'afterTurn:1',
-          text: "Watch what iris does here. She doesn't ask about symptoms. She doesn't hand Margaret a menu of programs. She asks about Margaret's people."
-        },
-        {
-          at: 'afterTurn:3',
-          text: "While iris holds Margaret in this moment, she's also doing something else. On the right, she's matching Margaret's situation against seventy CNIB programs. Not by keyword. By lived-experience fit. Geography. Diagnosis stage. Emotional readiness."
+          text: "This is Margaret. Sixty-eight, retired schoolteacher in Sudbury. Two months ago her eye doctor told her she has macular degeneration. She hasn't told her daughter yet. Her daughter found CNIB and sent her a QR code. Margaret scanned it thirty seconds ago. Watch what happens."
         },
         {
           at: 'afterVisual:matches',
-          text: "The top match isn't a program. It's a person \u2014 a Vision Mate in Sudbury who's walked this path. That's the move. Not 'here's a resource.' Here's someone who's already where you are."
+          text: "Notice what iris just did. She didn't ask about symptoms. She asked about Margaret's people. And while she held Margaret in that moment, she was quietly matching her situation against seventy CNIB programs \u2014 not by keyword, by lived-experience fit. The top match isn't a program. It's a person in Sudbury who's walked this path."
         },
         {
           at: 'exit',

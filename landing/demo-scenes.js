@@ -224,58 +224,35 @@
       await playHandle(narratorHandles['enter'], beatByAt['enter'] && beatByAt['enter'].text);
       if (cancelled) return;
 
-      // 2. Turn 0 — iris's greeting (and SLA timer flips)
-      if (chatTurns[0]) {
-        renderBubble(chatTurns[0]);
-        slaActual.textContent = '23 seconds';
-        await playHandle(turnHandles[0], chatTurns[0].text);
+      // 2. Full dialogue plays UNINTERRUPTED — 5 turns in sequence.
+      //    Narrator stays out of the way while iris + Margaret talk.
+      //    The SLA timer flips on turn 0; the match panel starts
+      //    'Narrowing' quietly on turn 3 so the visual primes for
+      //    the post-dialogue narrator beat without breaking the
+      //    conversational flow.
+      for (var ti = 0; ti < chatTurns.length; ti++) {
+        var turn = chatTurns[ti];
+        if (!turn) continue;
+        renderBubble(turn);
+        if (ti === 0) slaActual.textContent = '23 seconds';
+        if (ti === 3) matchStat.textContent = 'Narrowing\u2026';
+        await playHandle(turnHandles[ti], turn.text);
         if (cancelled) return;
       }
 
-      // 3. Turn 1 — Margaret's disclosure
-      if (chatTurns[1]) {
-        renderBubble(chatTurns[1]);
-        await playHandle(turnHandles[1], chatTurns[1].text);
-        if (cancelled) return;
-      }
-
-      // 4. afterTurn:1 narrator — commentary on iris's move
-      await playHandle(narratorHandles['afterTurn:1'], beatByAt['afterTurn:1'] && beatByAt['afterTurn:1'].text);
-      if (cancelled) return;
-
-      // 5-6. Turns 2 + 3 — iris asks about daughter, Margaret answers
-      if (chatTurns[2]) {
-        renderBubble(chatTurns[2]);
-        await playHandle(turnHandles[2], chatTurns[2].text);
-        if (cancelled) return;
-      }
-      if (chatTurns[3]) {
-        renderBubble(chatTurns[3]);
-        await playHandle(turnHandles[3], chatTurns[3].text);
-        if (cancelled) return;
-      }
-
-      // 7. afterTurn:3 narrator — covers the match-panel priming
-      matchStat.textContent = 'Narrowing\u2026';
-      await playHandle(narratorHandles['afterTurn:3'], beatByAt['afterTurn:3'] && beatByAt['afterTurn:3'].text);
-      if (cancelled) return;
-
-      // 8. Turn 4 — iris's final bubble (warm handoff invitation)
-      if (chatTurns[4]) {
-        renderBubble(chatTurns[4]);
-        await playHandle(turnHandles[4], chatTurns[4].text);
-        if (cancelled) return;
-      }
-
-      // 9. Visual beat: match cards populate
+      // 3. Match cards populate — silent visual beat, narrator
+      //    steps back in once they've settled.
       await populateMatches();
       if (cancelled) return;
 
-      // 10. afterVisual:matches narrator — 'The top match isn't a program...'
+      // 4. afterVisual:matches narrator — reflects on what just happened
+      //    in the conversation AND names the top match. Combined the
+      //    old afterTurn:1 + afterTurn:3 + afterVisual:matches into one
+      //    longer post-scene reflection so dialogue can breathe.
       await playHandle(narratorHandles['afterVisual:matches'], beatByAt['afterVisual:matches'] && beatByAt['afterVisual:matches'].text);
       if (cancelled) return;
 
-      // 11. Exit narrator — bridges to Scene 3
+      // 5. Exit narrator — bridges to Scene 3
       await playHandle(narratorHandles['exit'], beatByAt['exit'] && beatByAt['exit'].text);
     }
 
