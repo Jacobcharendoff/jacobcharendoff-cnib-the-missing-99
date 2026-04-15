@@ -20,7 +20,8 @@
   // Caption follows what iris. is about to say (voice wiring in Phase E).
   // ================================================================
   window.demoSceneRenderers.intro = function(stage) {
-    playSceneVO(stage, 'intro', { delay: 800 });
+    // Scene 1 uses a narrator beat — NOT iris's first-person VO.
+    // iris speaks as herself only inside live demo scenes (2, 5).
     stage.innerHTML = [
       '<div class="s1-layout">',
       '  <div class="s1-mark" aria-hidden="true">',
@@ -40,6 +41,32 @@
       '  <p class="s1-sub">Acquire, engage, and retain \u2014 clients, volunteers, and partners \u2014 through one relationship layer.</p>',
       '</div>'
     ].join('');
+
+    // Narrator 'enter' beat — plays after the iris mark settles (800ms)
+    var beats = (data.narratorBeats && data.narratorBeats.intro) || [];
+    if (!beats.length) return;
+
+    var tour = window.irisTour;
+    var voiceReady = tour && typeof tour.prefetch === 'function' &&
+                     typeof tour.play === 'function' &&
+                     (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+    if (!voiceReady) return;
+
+    var cancelled = false;
+    stage.addEventListener('DOMNodeRemoved', function once() {
+      cancelled = true;
+      if (tour && typeof tour.stop === 'function') tour.stop();
+      stage.removeEventListener('DOMNodeRemoved', once);
+    });
+
+    (async function() {
+      var beat = beats[0];
+      var handle = await tour.prefetch(beat.text, 'narrator');
+      if (cancelled) return;
+      await new Promise(function(r){ setTimeout(r, 800); }); // let mark animate in
+      if (cancelled) return;
+      await tour.play(handle, beat.text);
+    })();
   };
 
   // ================================================================

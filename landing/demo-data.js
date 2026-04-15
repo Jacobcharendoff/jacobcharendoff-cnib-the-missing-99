@@ -287,7 +287,8 @@
     // catch up. Scenes 2 and 5 have their own scripted dialogue so
     // they are NOT included here — iris speaks inside those directly.
     irisVO: {
-      intro:       "Hi. I'm iris. I work with CNIB. I help Canadians living with sight loss find their people, their programs, and their next step. Let me show you how.",
+      // NOTE: 'intro' removed — Scene 1 now uses a narrator beat (see narratorBeats.intro).
+      // iris speaks in first-person only during live demos (Scenes 2, 5).
       engage:      "Day zero, Margaret said yes. By day seven she's on a call with a Vision Mate in Sudbury. Here's what I did in between \u2014 no dropped handoffs, no retelling her story.",
       retain:      "A year later, I'm still here. Not spammy, not performative. Just showing up when something changes, getting out of the way when it doesn't.",
       volonboard:  "When someone's ready to give back, I don't make them fill out a form and wait. I find the right mentee, get training done, and stay with them.",
@@ -312,6 +313,16 @@
     // Scene 2 ("Margaret's first conversation") is the exemplar.
     // v0 DRAFT — awaiting Angela review. Edits happen here; no engineering.
     narratorBeats: {
+      // Scene 1 ('intro') — single beat; narrator opens the demo.
+      // No iris VO here: iris speaks as herself only in live demo scenes (2, 5).
+      // Short (10-12s) so the iris mark and wordmark have room to land.
+      intro: [
+        {
+          at: 'enter',
+          text: "1.5 million Canadians live with significant sight loss. Most never find CNIB. Not because CNIB isn't there — because no one ever asked the right question at the right moment. CNIB built something else. This is iris."
+        }
+      ],
+
       // Scene 2 ('acquire') — narrator sets up, gets OUT of the way for
       // the full Margaret/iris conversation, then reflects once at the
       // end over the match-panel visual. Three beats, not five — letting
