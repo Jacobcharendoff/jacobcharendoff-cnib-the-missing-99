@@ -50,6 +50,9 @@
   var isPaused = false;
   var advanceTimer = null;
   var lastFocus = null;
+  var sceneGen = 0;  // Monotonic generation counter — bumped on every goTo().
+                     // Scene renderers capture their gen at mount. Dispatches
+                     // carry their gen. The engine ignores stale dispatches.
 
   // -------------------------------------------------------------------
   // Build the demo DOM once, lazily on first open.
@@ -112,12 +115,13 @@
       else if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); togglePause(); }
     });
 
-    // Scene-completion signal. Scene renderers dispatch 'demo:scene-done'
-    // when their orchestration/VO finishes. The engine cancels the fallback
-    // timer and advances immediately — no gap between narration end and
-    // next scene start. Viewer can still press Next at any time to skip.
-    document.addEventListener('demo:scene-done', function() {
+    // Scene-completion signal. Renderers dispatch 'demo:scene-done' with
+    // { detail: { gen } } — engine only advances if gen matches current.
+    // Stale dispatches from torn-down scenes are silently dropped.
+    document.addEventListener('demo:scene-done', function(e) {
       if (!isOpen || isPaused) return;
+      var dispatchGen = e && e.detail && e.detail.gen;
+      if (dispatchGen !== sceneGen) return; // stale — ignore
       var s = SCENES[current];
       if (!s || s.endScene) return;
       if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
@@ -178,11 +182,18 @@
 
   function goTo(i) {
     if (i < 0 || i >= SCENES.length) return;
-    // Hard-stop any in-flight audio BEFORE swapping scenes. Relying on
-    // DOMNodeRemoved listeners inside scene renderers is unreliable
-    // (the event is deprecated + fires asynchronously in some browsers),
-    // which caused Scene 1's iris VO to bleed into Scene 2's narrator.
-    // The engine knows when scenes change — it should drive the stop.
+    // Bump generation SYNCHRONOUSLY so any in-flight .then() callbacks
+    // in the outgoing scene see a stale gen and bail before dispatching
+    // demo:scene-done. This is the primary guard against double-advance.
+    sceneGen++;
+    // Teardown signal — scene renderers flip their local `cancelled` flag
+    // synchronously, BEFORE we call tour.stop(). Without this, stop()'s
+    // audio.pause() triggers onpause → cleanup() → promise resolves →
+    // .then() sees cancelled=false (DOMNodeRemoved hasn't fired) → stale
+    // dispatchEvent → engine advances AGAIN. Scenes skip, audio bleeds.
+    document.dispatchEvent(new CustomEvent('demo:scene-teardown', {
+      detail: { gen: sceneGen }
+    }));
     if (window.irisTour && typeof window.irisTour.stop === 'function') {
       try { window.irisTour.stop(); } catch(e) {}
     }
@@ -249,4 +260,8 @@
   window.startTour = open; // alias so existing 'See how' button still works
   window.closeDemo = close;
   window.demoGoTo  = goTo;
+  // Scene renderers call this at mount to capture their generation.
+  // They include the gen in their demo:scene-done dispatches so the
+  // engine can ignore stale signals from torn-down scenes.
+  window.demoCurrentGen = function() { return sceneGen; };
 })();
