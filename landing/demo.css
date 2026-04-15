@@ -157,13 +157,9 @@
 }
 
 /* ================================================================
-   Bottom controls — prev / pause / next + scene rail
+   Close button (top-right) — styled in demo-top. Prev/Pause/Next
+   footer controls removed: it's a film, not a slide deck.
    ================================================================ */
-.demo-controls {
-  position: absolute; left: 0; right: 0; bottom: 36px; z-index: 5;
-  display: flex; flex-direction: column; align-items: center; gap: 18px;
-}
-
 .demo-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; border-radius: 50%;
@@ -178,30 +174,6 @@
   border-color: rgba(255,255,255,.22);
   color: var(--c-fg-1);
 }
-.demo-btn--play {
-  width: 52px; height: 52px;
-  background: var(--c-accent); border-color: var(--c-accent); color: #0A0A0A;
-}
-.demo-btn--play:hover { background: #FFDD33; transform: scale(1.04); color: #0A0A0A; }
-.demo-btn--play svg { stroke: #0A0A0A; stroke-width: 2.2; fill: none; }
-.demo-btn--play svg polygon { fill: #0A0A0A; }
-.demo-btn--play svg rect { fill: #0A0A0A; }
-
-.demo-controls > .demo-btn,
-.demo-controls .demo-btn:not(.demo-btn--play) { background: transparent; }
-
-/* group of nav buttons in a single row */
-.demo-controls::before { content: ''; }
-.demo-controls .demo-btn,
-.demo-controls .demo-btn--play { position: relative; }
-
-/* layout helper — wrap the three nav buttons in a horizontal row */
-.demo-controls > #demoPrev,
-.demo-controls > #demoPause,
-.demo-controls > #demoNext { /* fallback if not wrapped */ }
-
-/* (Scene-rail rules removed — guided journey, not slide deck. Prev/Next
-   buttons remain for viewer pacing control.) */
 
 /* ================================================================
    Reduced motion + responsive
@@ -215,11 +187,8 @@
 
 @media (max-width: 700px) {
   .demo-top { padding: 16px 18px; }
-  /* Padding moved from stage to scene (see .demo-scene above) */
-  .demo-scene { padding: 18px 20px 132px; }
-  .demo-controls { bottom: 26px; gap: 14px; }
+  .demo-scene { padding: 18px 20px 48px; }
   .demo-btn { width: 38px; height: 38px; }
-  .demo-btn--play { width: 46px; height: 46px; }
   .demo-placeholder-title { font-size: clamp(26px, 8vw, 38px); }
 }
 

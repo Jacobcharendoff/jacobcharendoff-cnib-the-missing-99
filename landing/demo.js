@@ -43,8 +43,7 @@
   // -------------------------------------------------------------------
   // Engine state
   // -------------------------------------------------------------------
-  var root, sceneStage, sceneEye, sceneTitle, sceneBody,
-      btnPrev, btnNext, btnPause, btnClose, rail, progress;
+  var root, sceneStage, sceneEye, sceneTitle, sceneBody, btnClose, progress;
   var current = -1;
   var isOpen = false;
   var isPaused = false;
@@ -94,36 +93,19 @@
       '    <p class="demo-loading-meta" id="demoLoadingMeta">Preloading voice\u2026</p>',
       '  </div>',
       '</div>',
-      '<footer class="demo-controls">',
-      '  <button type="button" class="demo-btn" id="demoPrev" aria-label="Previous scene">',
-      '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>',
-      '  </button>',
-      '  <button type="button" class="demo-btn demo-btn--play" id="demoPause" aria-label="Pause">',
-      '    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="demoPauseIcon" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>',
-      '  </button>',
-      '  <button type="button" class="demo-btn" id="demoNext" aria-label="Next scene">',
-      '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>',
-      '  </button>',
-      '</footer>',
       '<div class="demo-progress" id="demoProgress" aria-hidden="true"><span class="demo-progress-bar"></span></div>'
     ].join('');
     document.body.appendChild(root);
 
     sceneStage = root.querySelector('#demoStage');
     sceneEye   = root.querySelector('#demoSceneEye');
-    btnPrev    = root.querySelector('#demoPrev');
-    btnNext    = root.querySelector('#demoNext');
-    btnPause   = root.querySelector('#demoPause');
     btnClose   = root.querySelector('#demoClose');
     progress   = root.querySelector('#demoProgress');
 
-    // No scene rail — a guided journey shouldn't offer 11 clickable jump-
-    // to-anywhere dots. That's a slide deck. The tour leads; viewer listens.
-    // Prev/Next are kept for pacing control only.
+    // No footer controls — it's a film, not a slide deck. Close button
+    // (top-right) + Esc keyboard shortcut are the only viewer controls.
+    // Keyboard arrows still scrub for internal QA.
 
-    btnPrev.addEventListener('click', function() { goTo(Math.max(0, current - 1)); });
-    btnNext.addEventListener('click', function() { goTo(Math.min(SCENES.length - 1, current + 1)); });
-    btnPause.addEventListener('click', togglePause);
     btnClose.addEventListener('click', close);
     document.addEventListener('keydown', function(e) {
       if (!isOpen) return;
@@ -237,12 +219,9 @@
   }
 
   function togglePause() {
+    // Pause button removed from UI; Space key still toggles internal state
+    // for QA. No visible icon to swap.
     isPaused = !isPaused;
-    btnPause.setAttribute('aria-label', isPaused ? 'Play' : 'Pause');
-    var ic = btnPause.querySelector('svg');
-    if (ic) ic.innerHTML = isPaused
-      ? '<polygon points="6 4 20 12 6 20 6 4"/>'
-      : '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
     if (isPaused) {
       if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
     } else {
@@ -258,7 +237,7 @@
     isPaused = false;
     root.classList.add('open');
     document.body.style.overflow = 'hidden';
-    setTimeout(function() { btnPause.focus(); }, 120);
+    setTimeout(function() { if (btnClose) btnClose.focus(); }, 120);
 
     // Show loading screen; run preload; then fade out + mount Scene 1.
     // If preloader is missing (script-load race), fall through to Scene 1
