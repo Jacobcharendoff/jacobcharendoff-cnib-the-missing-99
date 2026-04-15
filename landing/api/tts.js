@@ -66,14 +66,12 @@ const TEXT_MAX = 1500;
 // Voice routing — each persona gets its own ElevenLabs voice for the auto-playing scenarios.
 const VOICE_MAP = {
   iris:     process.env.ELEVENLABS_VOICE_IRIS     || 'NtS6nEHDYMQC9QczMQuq',
-  narrator: process.env.ELEVENLABS_VOICE_NARRATOR || 'NtS6nEHDYMQC9QczMQuq',
   margaret: process.env.ELEVENLABS_VOICE_MARGARET || 'XrExE9yKIg1WjnnlVkGX',
   david:    process.env.ELEVENLABS_VOICE_DAVID    || 'nPczCjzI2devNBz1zQrb',
   priya:    process.env.ELEVENLABS_VOICE_PRIYA    || 'EXAVITQu4vr4xnSDxMaL',
 };
 const VOICE_SETTINGS = {
   iris:     { stability: 0.42, similarity_boost: 0.80, style: 0.55, use_speaker_boost: true, speed: 1.0 },
-  narrator: { stability: 0.62, similarity_boost: 0.82, style: 0.30, use_speaker_boost: true, speed: 1.0 },
   margaret: { stability: 0.55, similarity_boost: 0.82, style: 0.45, use_speaker_boost: true, speed: 0.93 },
   david:    { stability: 0.58, similarity_boost: 0.80, style: 0.35, use_speaker_boost: true, speed: 1.0 },
   priya:    { stability: 0.40, similarity_boost: 0.80, style: 0.58, use_speaker_boost: true, speed: 1.0 },
@@ -85,7 +83,6 @@ const MODEL = 'eleven_multilingual_v2';
 // "warm friend on the phone" than tts-1/tts-1-hd can manage.
 const OPENAI_VOICE_MAP = {
   iris:     'shimmer', // warm, grounded, more conversational than nova
-  narrator: 'shimmer',
   margaret: 'coral',   // mature warm feminine — DISTINCT from iris's shimmer
   david:    'onyx',    // mature calm male
   priya:    'nova',    // younger forward energy
@@ -93,7 +90,6 @@ const OPENAI_VOICE_MAP = {
 // Per-persona speed so each voice lands naturally.
 const OPENAI_SPEED_MAP = {
   iris:     1.00,
-  narrator: 1.00,
   margaret: 0.94,
   david:    1.00,
   priya:    1.03,
@@ -102,7 +98,6 @@ const OPENAI_SPEED_MAP = {
 // delivery toward warmth and realness instead of the flat tts-1 robot read.
 const OPENAI_INSTRUCTIONS = {
   iris:     "Speak like a warm, caring friend on the phone — calm, present, unhurried but never sluggish. Conversational. Lightly smiling. Real pauses at commas and periods. You are not reading; you are talking to one person you already like.",
-  narrator: "Speak evenly and warmly, like a documentary narrator who cares about the subject. Clear, grounded, never theatrical.",
   margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle, slightly shaky, thoughtful. Take your time. Little sighs are okay.",
   david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Not dramatic.",
   priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy but trails off when the thought runs out. Real.",
