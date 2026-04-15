@@ -541,6 +541,7 @@
   // SLAs per stage. Terminates in an activation card.
   // ================================================================
   window.demoSceneRenderers.volonboard = function(stage) {
+    playSceneVO(stage, 'volonboard', { delay: 600 });
     var vsla = (data.volunteer && data.volunteer.sla) || {};
     var steps = [
       { label: 'Yes',                detail: 'Readiness invitation accepted', slaLabel: 'Day 0',   target: 0                                       },
@@ -601,6 +602,7 @@
   // "first referral live". Per-stage SLA actual vs target.
   // ================================================================
   window.demoSceneRenderers.partneracq = function(stage) {
+    playSceneVO(stage, 'partneracq', { delay: 600 });
     var c = (data.clinic || {});
     var stages = c.onboardingStages || [];
 
@@ -656,6 +658,7 @@
   // face to a clinic partner, 12 months into the relationship.
   // ================================================================
   window.demoSceneRenderers.partnerdash = function(stage) {
+    playSceneVO(stage, 'partnerdash', { delay: 600 });
     var c = (data.clinic || {});
     var dash = c.dashboard || {};
 
