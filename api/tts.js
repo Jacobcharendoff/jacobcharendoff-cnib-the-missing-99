@@ -26,7 +26,7 @@ const MODEL = 'eleven_multilingual_v2';
 const OPENAI_VOICE_MAP = {
   iris:     'shimmer', // warm, grounded, more conversational than nova
   narrator: 'ash',     // male, warm, measured — docent voice for the product demo
-  margaret: 'coral',   // mature warm feminine — DISTINCT from iris's shimmer
+  margaret: 'sage',    // distinguished older feminine — louder projection than coral
   david:    'onyx',    // mature calm male
   priya:    'nova',    // younger forward energy
 };
@@ -34,9 +34,9 @@ const OPENAI_VOICE_MAP = {
 // toward warmth and realness, including pacing (since gpt-4o-mini-tts
 // doesn't take a numeric speed param — you steer pace via the text).
 const OPENAI_INSTRUCTIONS = {
-  iris:     "Speak like a warm, caring friend on the phone — present, alert, lightly smiling. Natural, energetic conversational pace — never rushed, but never slow or measured. Brief real pauses at commas. Project clearly at a normal speaking volume. You are not reading; you are talking to one person you already like.",
+  iris:     "Speak like a warm, caring friend on the phone — present, alert, animated, lightly smiling. BRISK conversational pace — match the energy of a real person talking, not someone reading aloud. Short, breathy pauses only. Project at a clear, full speaking volume — audible and warm, never breathy or soft. You are not reading; you are talking to one person you already like and you want to reach them quickly.",
   narrator: "Speak like a confident product presenter walking one person through a live demo. Warm but objective. Brisk, conversational pace — never slow, never theatrical, never 'audiobook'. Slight smile in the voice. You're pointing things out as they happen on screen. Pauses are for effect, not tempo. Project at a clear, full speaking volume. You believe what you're saying and you're a little excited about it.",
-  margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle and thoughtful — but speak at a clear, audible volume, projected naturally as if on a phone. Do NOT whisper or trail off. Slightly slower than normal conversational pace, with real but brief pauses. Little sighs are okay. You are heard, not muttered.",
+  margaret: "Speak like a 68-year-old retired schoolteacher who is composed on the phone — she's taught thirty years of classrooms, her default is a CLEAR, PROJECTED voice, not a whisper. Gentle and thoughtful, but audible. At normal conversational pace. Real but brief pauses. One small sigh is okay. DO NOT mumble, fade, or sound breathy. She's measured, not quiet.",
   david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Natural conversational pace, projected at clear speaking volume. Not dramatic.",
   priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy, natural pace, trails off only at the end of a thought. Projected clearly — not whispered. Real, unpolished.",
 };
