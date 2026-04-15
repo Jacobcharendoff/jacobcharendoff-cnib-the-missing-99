@@ -193,6 +193,37 @@
 }
 
 /* ================================================================
+   Caption strip — narrator subtitle
+   Film-style. Fixed to the bottom of the modal. Shows the narrator's
+   current line while audio plays, fades out when audio ends. Makes
+   the tour legible to executives who skim faster than they listen
+   and gives the 'brain of iris' reasoning visible presence on screen.
+   ================================================================ */
+.demo-caption {
+  position: absolute; left: 0; right: 0; bottom: 44px; z-index: 40;
+  display: flex; justify-content: center; pointer-events: none;
+  padding: 0 60px;
+  opacity: 0; transition: opacity .35s ease;
+}
+.demo-caption.is-visible { opacity: 1; }
+.demo-caption-text {
+  max-width: 900px; text-align: center;
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.5; letter-spacing: -0.005em;
+  color: var(--c-fg-1);
+  background: rgba(10,10,10,.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 10px 22px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 4px 18px rgba(0,0,0,.4);
+}
+@media (max-width: 700px) {
+  .demo-caption { bottom: 20px; padding: 0 16px; }
+  .demo-caption-text { font-size: 14px; padding: 8px 14px; }
+}
+
+/* ================================================================
    Loading screen — pre-tour audio preload
    Shown between open() and Scene 1 mount while demoPreload() walks
    ~18 voice lines in parallel. Calm, deliberate, iris-branded.

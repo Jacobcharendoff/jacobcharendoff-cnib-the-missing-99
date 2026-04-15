@@ -95,6 +95,7 @@
       '    <p class="demo-loading-meta" id="demoLoadingMeta">Preparing\u2026</p>',
       '  </div>',
       '</div>',
+      '<div class="demo-caption" id="demoCaption" aria-live="polite"><span class="demo-caption-text"></span></div>',
       '<div class="demo-progress" id="demoProgress" aria-hidden="true"><span class="demo-progress-bar"></span></div>'
     ].join('');
     document.body.appendChild(root);
@@ -199,6 +200,9 @@
     document.dispatchEvent(new CustomEvent('demo:scene-teardown', {
       detail: { gen: sceneGen }
     }));
+    // Clear any lingering caption so it doesn't carry into next scene
+    var captionEl = document.getElementById('demoCaption');
+    if (captionEl) captionEl.classList.remove('is-visible');
     if (window.irisTour && typeof window.irisTour.stop === 'function') {
       try { window.irisTour.stop(); } catch(e) {}
     }

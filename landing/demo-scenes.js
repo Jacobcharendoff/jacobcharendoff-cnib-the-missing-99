@@ -71,11 +71,13 @@
       // subsequent scene begins audio at 0ms (audio overlaps cross-fade).
       await new Promise(function(r){ setTimeout(r, 600); });
       if (cancelled) return;
+      showCaption(beat.text);
       if (handle && typeof tour.play === 'function') {
         await tour.play(handle, beat.text);
       } else if (typeof tour.speak === 'function') {
         await tour.speak(beat.text, 'narrator');
       }
+      clearCaption();
       if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
     })();
   };
@@ -254,7 +256,10 @@
     // reading-time pacing so nothing gets skipped silently.
     function playHandle(handle, fallbackText) {
       if (!voiceReady) return Promise.resolve();
-      return tour.play(handle, fallbackText);
+      showCaption(fallbackText);
+      return tour.play(handle, fallbackText).then(function() {
+        clearCaption();
+      });
     }
 
     async function orchestrate() {
@@ -521,9 +526,23 @@
     return Promise.resolve(null);
   }
 
+  // Show a caption strip at the bottom of the modal. Fades in while the
+  // line is being spoken, fades out when audio ends. Executive can read
+  // what they're hearing — and every iris reasoning line is on-screen.
+  function showCaption(text) {
+    var el = document.getElementById('demoCaption');
+    if (!el) return;
+    var textEl = el.querySelector('.demo-caption-text');
+    if (textEl) textEl.textContent = text || '';
+    if (text) el.classList.add('is-visible');
+    else el.classList.remove('is-visible');
+  }
+  function clearCaption() { showCaption(''); }
+
   function playCachedBeat(voice, text) {
     var tour = window.irisTour;
     if (!tour) return Promise.resolve();
+    showCaption(text);
     return getOrFetchAudio(voice, text).then(function(handle) {
       if (handle && typeof tour.play === 'function') {
         return tour.play(handle, text);
@@ -532,6 +551,8 @@
         return tour.speak(text, voice);
       }
       return null;
+    }).then(function() {
+      clearCaption();
     });
   }
 
