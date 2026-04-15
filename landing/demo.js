@@ -111,6 +111,19 @@
       else if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(Math.max(0, current - 1)); }
       else if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); togglePause(); }
     });
+
+    // Scene-completion signal. Scene renderers dispatch 'demo:scene-done'
+    // when their orchestration/VO finishes. The engine cancels the fallback
+    // timer and advances immediately — no gap between narration end and
+    // next scene start. Viewer can still press Next at any time to skip.
+    document.addEventListener('demo:scene-done', function() {
+      if (!isOpen || isPaused) return;
+      var s = SCENES[current];
+      if (!s || s.endScene) return;
+      if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+      var next = current + 1;
+      if (next < SCENES.length) goTo(next);
+    });
   }
 
   // -------------------------------------------------------------------
@@ -179,17 +192,19 @@
   }
 
   function scheduleAdvance() {
-    // Hard-timer auto-advance removed. The SCENES[i].duration values were
-    // frozen before the docent orchestration existed (narrator beats +
-    // dialogue interleave can run 90+s, well past the original 45s budget).
-    // Any timer-based advance inevitably cuts narration mid-sentence.
-    //
-    // The tour now advances ONLY on viewer action (Next button / arrow key)
-    // or — eventually — when a scene signals its orchestration is complete
-    // via a 'demo:scene-done' event. Pause/play is effectively a no-op
-    // until that wiring lands, which is fine because there's no timer to
-    // pause anymore.
     if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+    if (isPaused) return;
+    var s = SCENES[current];
+    if (!s || s.endScene) return;
+    // Safety fallback: fires if the scene's orchestration never dispatches
+    // 'demo:scene-done' (e.g. voice unavailable, placeholder scene, or a
+    // renderer bug). Orchestrated scenes dispatch the event when narration
+    // completes and will cancel this timer before it fires.
+    // Durations in SCENES[] are the fallback display times for each scene.
+    var fallback = s.duration || 30000;
+    advanceTimer = setTimeout(function() {
+      if (isOpen && !isPaused && current < SCENES.length - 1) goTo(current + 1);
+    }, fallback);
   }
 
   function togglePause() {
