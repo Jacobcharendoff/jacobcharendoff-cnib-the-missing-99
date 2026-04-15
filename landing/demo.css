@@ -351,6 +351,37 @@
   color: var(--c-fg-2); max-width: 32ch;
 }
 
+/* Scene 1 stat strip — reveals sequentially as narrator names them */
+.s1-stats {
+  display: flex; gap: clamp(20px, 4vw, 56px);
+  justify-content: center; align-items: flex-start;
+  margin-top: 32px; flex-wrap: wrap;
+}
+.s1-stat {
+  opacity: 0; transform: translateY(12px);
+  transition: opacity .7s ease, transform .7s ease;
+  text-align: center;
+  max-width: 200px;
+}
+.s1-stat.is-revealed { opacity: 1; transform: translateY(0); }
+.s1-stat-num {
+  display: block;
+  font-size: clamp(36px, 4.5vw, 56px);
+  color: var(--c-accent); font-weight: 500;
+  letter-spacing: -0.03em; line-height: 1;
+  text-shadow: 0 0 28px rgba(255,209,0,.25);
+}
+.s1-stat-cap {
+  display: block;
+  font-size: var(--t-meta); color: var(--c-fg-2);
+  margin-top: 8px; line-height: 1.35;
+  letter-spacing: .01em;
+}
+@media (max-width: 700px) {
+  .s1-stats { gap: 20px; margin-top: 24px; }
+  .s1-stat { max-width: 160px; }
+}
+
 /* ================================================================
    SCENE 11 — Ask iris. anything
    Landing state after the tour. Small iris mark · intro · prompt ·

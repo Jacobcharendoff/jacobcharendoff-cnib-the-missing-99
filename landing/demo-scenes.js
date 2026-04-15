@@ -20,8 +20,9 @@
   // Caption follows what iris. is about to say (voice wiring in Phase E).
   // ================================================================
   window.demoSceneRenderers.intro = function(stage) {
-    // Scene 1 uses a narrator beat — NOT iris's first-person VO.
-    // iris speaks as herself only inside live demo scenes (2, 5).
+    // Scene 1 — cold open. Three stats reveal sequentially as the
+    // narrator names them. Executive sees the numbers on-screen, not
+    // just hears them. This is the first 'brain of iris' visible.
     stage.innerHTML = [
       '<div class="s1-layout">',
       '  <div class="s1-mark" aria-hidden="true">',
@@ -38,7 +39,11 @@
       '  </div>',
       '  <h1 class="s1-wordmark prism">iris.</h1>',
       '  <p class="s1-lede">CNIB\u2019s engagement infrastructure.</p>',
-      '  <p class="s1-sub">Acquire, engage, and retain \u2014 clients, volunteers, and partners \u2014 through one relationship layer.</p>',
+      '  <div class="s1-stats">',
+      '    <div class="s1-stat" data-reveal="1"><span class="s1-stat-num">1.5M</span><span class="s1-stat-cap">Canadians living with sight loss</span></div>',
+      '    <div class="s1-stat" data-reveal="2"><span class="s1-stat-num">&lt;1%</span><span class="s1-stat-cap">actively engaged with CNIB today</span></div>',
+      '    <div class="s1-stat" data-reveal="3"><span class="s1-stat-num">3</span><span class="s1-stat-cap">audiences: clients, volunteers, partners</span></div>',
+      '  </div>',
       '</div>'
     ].join('');
 
@@ -72,6 +77,18 @@
       await new Promise(function(r){ setTimeout(r, 600); });
       if (cancelled) return;
       showCaption(beat.text);
+
+      // Stat reveals keyed to narration. Numbers appear when narrator
+      // names them. Timing is approximate — narrator says "1.5 million"
+      // at ~3s, "less than one percent" at ~8s, "three audiences" at ~14s.
+      var statEls = stage.querySelectorAll('.s1-stat');
+      var revealTimings = [2800, 8200, 14000];
+      statEls.forEach(function(el, i) {
+        setTimeout(function() {
+          if (!cancelled) el.classList.add('is-revealed');
+        }, revealTimings[i] || 0);
+      });
+
       if (handle && typeof tour.play === 'function') {
         await tour.play(handle, beat.text);
       } else if (typeof tour.speak === 'function') {
