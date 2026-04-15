@@ -279,24 +279,15 @@
     },
 
     // =============================================================
-    // PART 3 — iris. voice-over scripts, one per scene
+    // PART 3 — iris. voice-over scripts (DEPRECATED)
     // =============================================================
-    // Short lines iris. speaks on mount. First person, her POV,
-    // her tone. No third-person narrator. Kept tight: 8-15s each so
-    // the viewer isn't waiting for her to finish before the visuals
-    // catch up. Scenes 2 and 5 have their own scripted dialogue so
-    // they are NOT included here — iris speaks inside those directly.
-    irisVO: {
-      // NOTE: 'intro' removed — Scene 1 now uses a narrator beat (see narratorBeats.intro).
-      // iris speaks in first-person only during live demos (Scenes 2, 5).
-      engage:      "Day zero, Margaret said yes. By day seven she's on a call with a Vision Mate in Sudbury. Here's what I did in between \u2014 no dropped handoffs, no retelling her story.",
-      retain:      "A year later, I'm still here. Not spammy, not performative. Just showing up when something changes, getting out of the way when it doesn't.",
-      volonboard:  "When someone's ready to give back, I don't make them fill out a form and wait. I find the right mentee, get training done, and stay with them.",
-      partneracq:  "This is how I meet a new clinic. Sudbury Eye Centre, from first yes to first live referral in fourteen days. No sales cycle, no integration project.",
-      partnerdash: "Twelve months in, here's what Sudbury sees. Real members, real outcomes, real dollars. Everything a clinic director needs to keep saying yes.",
-      loop:        "Watch what happens when I meet one person well. One becomes three. Three become a clinic. A clinic becomes a network. Retention is the acquisition engine.",
-      scoreboard:  "Three audiences. One loop. Here's what I promise each of them, and how you'll know I delivered."
-    },
+    // irisVO kept empty on purpose. The tour is now narrator-led.
+    // iris speaks ONLY inside the live demo scenes (2 and 5) where
+    // she's in conversation with Margaret. Every other scene is
+    // narrated by the docent (ash voice) using narratorBeats below.
+    // This gives the viewer a consistent guide across the whole tour
+    // instead of 10 disconnected first-person monologues.
+    irisVO: {},
 
     // =============================================================
     // PART 4 — Narrator beats (docent layer)
@@ -313,32 +304,128 @@
     // Scene 2 ("Margaret's first conversation") is the exemplar.
     // v0 DRAFT — awaiting Angela review. Edits happen here; no engineering.
     narratorBeats: {
-      // Scene 1 ('intro') — single beat; narrator opens the demo.
-      // No iris VO here: iris speaks as herself only in live demo scenes (2, 5).
-      // Short (10-12s) so the iris mark and wordmark have room to land.
+      // Scene 1 — COLD OPEN. Set the stage. Tell the viewer what they're
+      // about to watch, who the cast is, and what the payoff is. Without
+      // this, scenes 2-10 land on a viewer with no orientation.
       intro: [
         {
           at: 'enter',
-          text: "1.5 million Canadians live with significant sight loss. Most never find CNIB. Not because CNIB isn't there — because no one ever asked the right question at the right moment. CNIB built something else. This is iris."
+          text: "For the next four minutes you're going to watch something CNIB has been trying to build for a decade. One and a half million Canadians live with sight loss. Most of them have never met CNIB. Not because CNIB isn't there — because in the moment someone needs a hand, nobody is asking the right question. So CNIB built someone who does. Her name is iris. You'll meet her, you'll watch her help one person, one clinic, and one community, and you'll see how that single interaction compounds into an engine that reaches the next hundred thousand Canadians. We start with Margaret."
         }
       ],
 
-      // Scene 2 ('acquire') — narrator sets up, gets OUT of the way for
-      // the full Margaret/iris conversation, then reflects once at the
-      // end over the match-panel visual. Three beats, not five — letting
-      // the dialogue breathe was the note.
+      // Scene 2 — Margaret arrives. Live chat + iris matching. Narrator
+      // sets up, gets OUT of the way for the dialogue, reflects once at
+      // the end over the match panel.
       acquire: [
         {
           at: 'enter',
-          text: "This is Margaret. Sixty-eight, retired schoolteacher in Sudbury. Two months ago her eye doctor told her she has macular degeneration. She hasn't told her daughter yet. Her daughter found CNIB and sent her a QR code. Margaret scanned it thirty seconds ago. Watch what happens."
+          text: "Margaret. Sixty-eight. Retired teacher in Sudbury. Eight weeks ago her eye doctor told her she has macular degeneration. She hasn't told her daughter. Her daughter — who lives in Vancouver — found CNIB and sent her a QR code. Margaret scanned it thirty seconds ago. Watch."
         },
         {
           at: 'afterVisual:matches',
-          text: "Notice what iris just did. She didn't ask about symptoms. She asked about Margaret's people. And while she held Margaret in that moment, she was quietly matching her situation against seventy CNIB programs \u2014 not by keyword, by lived-experience fit. The top match isn't a program. It's a person in Sudbury who's walked this path."
+          text: "Notice what iris just did. She didn't ask about symptoms. She asked about Margaret's people. And while she held Margaret in that moment, she was quietly matching her situation against seventy CNIB programs — not by keyword, by lived-experience fit. The top match isn't a program. It's a person in Sudbury who has walked this road."
         },
         {
           at: 'exit',
-          text: "Margaret said yes. Twenty-three seconds from QR scan to first reply. Six minutes from 'I don't know who to tell' to a warm handoff to a real person in her city. Here's what happens in the seven days that follow."
+          text: "Margaret said yes. Twenty-three seconds from scan to first reply. What happens over the next seven days is where every referral system in healthcare catastrophically fails. Watch iris carry her."
+        }
+      ],
+
+      // Scene 3 — Handoff week. Timeline visual. Narrator explains what
+      // the viewer is looking at and why each SLA matters.
+      engage: [
+        {
+          at: 'enter',
+          text: "Seven days. Five handoffs. Zero dropped balls. Margaret never retells her story to a single person. iris briefs the coordinator. The coordinator calls within forty-eight hours. A peer mentor is matched by day five. Her first program session is on the calendar by day seven. Every step you see carries an SLA — a commitment iris makes to Margaret, on the record, measurable. This is what a warm handoff actually looks like."
+        },
+        {
+          at: 'exit',
+          text: "Day seven. Margaret is enrolled. Acquisition was the easy part. Now watch the hard part — what happens across the year that follows."
+        }
+      ],
+
+      // Scene 4 — Retention timeline. Scrubbable 12-month view of Margaret.
+      retain: [
+        {
+          at: 'enter',
+          text: "Twelve months of iris being present in Margaret's life. Not spammy. Not performative. Showing up when something changes, stepping back when it doesn't. Drag the timeline — you'll see Margaret's engagement grow from one conversation into a full relationship with CNIB. By month three she called her daughter. By month six, her engagement score has crossed a threshold iris has been watching for."
+        },
+        {
+          at: 'exit',
+          text: "That threshold matters. It tells iris it's time to ask Margaret a different kind of question."
+        }
+      ],
+
+      // Scene 5 — Readiness → volunteer ask. THE money scene.
+      readiness: [
+        {
+          at: 'enter',
+          text: "This is what separates iris from every other navigator tool. iris doesn't just match members to programs. She watches for the moment a member is ready to become something more. Six months of engagement. High responsiveness. Two programs completed. A self-signaled interest in helping others. Score crosses seventy-five. iris asks one question."
+        },
+        {
+          at: 'exit',
+          text: "Margaret just became the supply chain. One client in, one volunteer out. This is how the loop starts to form. But a loop needs partners too — the clinics that put iris in front of the next Margaret. Let's see that side."
+        }
+      ],
+
+      // Scene 6 — Volunteer onboarding.
+      volonboard: [
+        {
+          at: 'enter',
+          text: "Margaret said yes, and iris didn't hand her a form and a six-week wait. Role match in fourteen days. Onboarding conversation in twenty-one. First mentorship in sixty. Three new members — just starting their own diagnoses — now know Margaret's name."
+        },
+        {
+          at: 'exit',
+          text: "That's one volunteer. Multiply by conversion rate, by partners, by years — and you get the flywheel. But first: how does iris meet a new clinic?"
+        }
+      ],
+
+      // Scene 7 — Partner acquisition.
+      partneracq: [
+        {
+          at: 'enter',
+          text: "Sudbury Eye Centre — the clinic that put the QR code on the wall eight weeks ago. This is how iris brought them on. From first yes to first live referral in fourteen days. No sales cycle, no integration project. A printable, a portal, a staff orientation, a handshake. That's the whole sign-up."
+        },
+        {
+          at: 'exit',
+          text: "Fourteen days. One live referral — Margaret. Now watch what twelve months of iris working with this clinic looks like."
+        }
+      ],
+
+      // Scene 8 — Partner dashboard. The dense data scene.
+      partnerdash: [
+        {
+          at: 'enter',
+          text: "Twelve months in. This is what Sudbury Eye Centre sees when they open their iris dashboard. Referrals made. Patients who had a real conversation. Concrete next steps booked. Members who became volunteers. Anonymized, PIPEDA-aligned, audited. This is what keeps a clinic director saying yes every year."
+        },
+        {
+          at: 'exit',
+          text: "Thirty-eight patients referred. Twenty-seven engaged. Four of them are now mentoring others. The clinic's patients got somewhere. That closes the loop."
+        }
+      ],
+
+      // Scene 9 — The loop. The whole flywheel.
+      loop: [
+        {
+          at: 'enter',
+          text: "Here's the whole picture. One client — Margaret — acquired in year one. By year two she's a volunteer reaching three new members. The clinic that sent her is referring another twenty. By year three, a single seed has compounded into fifteen hundred engaged Canadians. Toggle to CNIB scale and the flywheel speaks for itself."
+        },
+        {
+          at: 'exit',
+          text: "This is why iris isn't a referral tool. It's an acquisition engine with retention built into it. Retention IS the acquisition engine."
+        }
+      ],
+
+      // Scene 10 — The scoreboard. Commitments summary.
+      scoreboard: [
+        {
+          at: 'enter',
+          text: "Three audiences. One loop. Here's what iris commits to each of them, on the record, on-screen. If a single SLA misses, it shows up red in the dashboard. This is what a measurable navigator looks like — and this is the standard CNIB will be held to."
+        },
+        {
+          at: 'exit',
+          text: "That's iris. Now — anything you want to ask her? She's standing by."
         }
       ]
     }
