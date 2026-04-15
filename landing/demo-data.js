@@ -304,128 +304,140 @@
     // Scene 2 ("Margaret's first conversation") is the exemplar.
     // v0 DRAFT — awaiting Angela review. Edits happen here; no engineering.
     narratorBeats: {
-      // Scene 1 — COLD OPEN. Set the stage. Tell the viewer what they're
-      // about to watch, who the cast is, and what the payoff is. Without
-      // this, scenes 2-10 land on a viewer with no orientation.
+      // v1 script — first-person iris voice, three-act structure.
+      // See BRAND-SPEC + KNOWLEDGE-BASE. Read-aloud tested, <15 words/line.
+      // Scenes 1-2 = Act 1 (Meet me). Scenes 3-5 = Act 2 (Margaret's year).
+      // Scenes 6-10 = the partner + compounding story + closer to Scene 11.
+
+      // ========== ACT 1 — MEET ME ==========
+
+      // Scene 1 — iris introduces herself and teases the artifact.
+      // Lands the wordmark + mark visuals. Ends with "let me show you"
+      // so Scene 2 feels like the continuation, not a new scene.
       intro: [
         {
           at: 'enter',
-          text: "For the next four minutes you're going to watch something CNIB has been trying to build for a decade. One and a half million Canadians live with sight loss. Most of them have never met CNIB. Not because CNIB isn't there — because in the moment someone needs a hand, nobody is asking the right question. So CNIB built someone who does. Her name is iris. You'll meet her, you'll watch her help one person, one clinic, and one community, and you'll see how that single interaction compounds into an engine that reaches the next hundred thousand Canadians. We start with Margaret."
+          text: "I'm iris. I work for CNIB. I help Canadians living with sight loss find the programs, the people, and the support that's been built for them \u2014 most of which they've never heard of. Let me show you something small."
         }
       ],
 
-      // Scene 2 — Margaret arrives. Live chat + iris matching. Narrator
-      // sets up, gets OUT of the way for the dialogue, reflects once at
-      // the end over the match panel.
+      // Scene 2 — meet Margaret, live conversation, iris's matching logic.
+      // Three beats: setup (who Margaret is) → reflection over match panel
+      // (what iris just did and why) → close (the unit of value).
       acquire: [
         {
           at: 'enter',
-          text: "Margaret. Sixty-eight. Retired teacher in Sudbury. Eight weeks ago her eye doctor told her she has macular degeneration. She hasn't told her daughter. Her daughter — who lives in Vancouver — found CNIB and sent her a QR code. Margaret scanned it thirty seconds ago. Watch."
+          text: "Eight weeks ago, in a clinic in Sudbury, a woman named Margaret scanned a QR code from her waiting-room chair. Her daughter in Vancouver had sent it to her. Margaret is sixty-eight. A retired teacher. Recently diagnosed with macular degeneration. She hadn't told her daughter yet that she'd scanned it. Twenty-three seconds later, I said hello."
         },
         {
           at: 'afterVisual:matches',
-          text: "Notice what iris just did. She didn't ask about symptoms. She asked about Margaret's people. And while she held Margaret in that moment, she was quietly matching her situation against seventy CNIB programs — not by keyword, by lived-experience fit. The top match isn't a program. It's a person in Sudbury who has walked this road."
+          text: "I didn't ask about her symptoms. I asked about her people. That's most of what I do \u2014 I ask the question nobody else is in the room to ask. While I held that moment, I was matching her quietly in the background against every CNIB program available in her city. Not by keyword. By lived-experience fit. Two matches came back."
         },
         {
           at: 'exit',
-          text: "Margaret said yes. Twenty-three seconds from scan to first reply. What happens over the next seven days is where every referral system in healthcare catastrophically fails. Watch iris carry her."
+          text: "I asked her which felt right. She picked one. And then I stayed. Which is the part that actually matters."
         }
       ],
 
-      // Scene 3 — Handoff week. Timeline visual. Narrator explains what
-      // the viewer is looking at and why each SLA matters.
+      // ========== ACT 2 — A YEAR WITH MARGARET ==========
+
+      // Scene 3 — the seven days of handoffs.
       engage: [
         {
           at: 'enter',
-          text: "Seven days. Five handoffs. Zero dropped balls. Margaret never retells her story to a single person. iris briefs the coordinator. The coordinator calls within forty-eight hours. A peer mentor is matched by day five. Her first program session is on the calendar by day seven. Every step you see carries an SLA — a commitment iris makes to Margaret, on the record, measurable. This is what a warm handoff actually looks like."
+          text: "Then the seven days. Day one, I briefed a coordinator in Sudbury. Day two, that coordinator called her. Margaret picked up. Day five, she was matched with a peer \u2014 someone eighteen months further down the same road. Day seven, she was enrolled and on the calendar."
         },
         {
           at: 'exit',
-          text: "Day seven. Margaret is enrolled. Acquisition was the easy part. Now watch the hard part — what happens across the year that follows."
+          text: "She didn't have to retell her story. Not once."
         }
       ],
 
-      // Scene 4 — Retention timeline. Scrubbable 12-month view of Margaret.
+      // Scene 4 — the year. Engagement timeline. Stepping back when stable.
       retain: [
         {
           at: 'enter',
-          text: "Twelve months of iris being present in Margaret's life. Not spammy. Not performative. Showing up when something changes, stepping back when it doesn't. Drag the timeline — you'll see Margaret's engagement grow from one conversation into a full relationship with CNIB. By month three she called her daughter. By month six, her engagement score has crossed a threshold iris has been watching for."
+          text: "Then the year. I checked in at thirty days. At ninety. At six months. I wasn't performative about it. I showed up when something shifted, and I stepped back when it didn't. Month three, she called her daughter."
         },
         {
           at: 'exit',
-          text: "That threshold matters. It tells iris it's time to ask Margaret a different kind of question."
+          text: "Month six, something changed in my read of her."
         }
       ],
 
-      // Scene 5 — Readiness → volunteer ask. THE money scene.
+      // Scene 5 — readiness score + volunteer ask. Includes live dialogue.
+      // Renderer plays enter → score animates → dialogue fires → exit.
       readiness: [
         {
           at: 'enter',
-          text: "This is what separates iris from every other navigator tool. iris doesn't just match members to programs. She watches for the moment a member is ready to become something more. Six months of engagement. High responsiveness. Two programs completed. A self-signaled interest in helping others. Score crosses seventy-five. iris asks one question."
+          text: "High responsiveness. Two programs completed. She'd mentioned, almost in passing, wanting to help someone else. Her readiness score crossed a line I'd been watching for. So I asked her one question."
         },
         {
           at: 'exit',
-          text: "Margaret just became the supply chain. One client in, one volunteer out. This is how the loop starts to form. But a loop needs partners too — the clinics that put iris in front of the next Margaret. Let's see that side."
+          text: "By month twelve, Margaret was mentoring three newly diagnosed Canadians in Sudbury. One of them was referred by the same clinic that hung her QR code."
         }
       ],
 
-      // Scene 6 — Volunteer onboarding.
+      // Scene 6 — volunteer onboarding (brief bridge into Act 3).
+      // Operational detail kept tight; the value is in the transition.
       volonboard: [
         {
           at: 'enter',
-          text: "Margaret said yes, and iris didn't hand her a form and a six-week wait. Role match in fourteen days. Onboarding conversation in twenty-one. First mentorship in sixty. Three new members — just starting their own diagnoses — now know Margaret's name."
+          text: "One volunteer, onboarded. Role matched in fourteen days. First mentorship in sixty. Three newly-diagnosed members now know Margaret's name."
         },
         {
           at: 'exit',
-          text: "That's one volunteer. Multiply by conversion rate, by partners, by years — and you get the flywheel. But first: how does iris meet a new clinic?"
+          text: "That's one side of the loop. The other side is the clinic that sent her. Let me show you how I met them."
         }
       ],
 
-      // Scene 7 — Partner acquisition.
+      // ========== ACT 3 — WHY IT COMPOUNDS ==========
+
+      // Scene 7 — partner acquisition.
       partneracq: [
         {
           at: 'enter',
-          text: "Sudbury Eye Centre — the clinic that put the QR code on the wall eight weeks ago. This is how iris brought them on. From first yes to first live referral in fourteen days. No sales cycle, no integration project. A printable, a portal, a staff orientation, a handshake. That's the whole sign-up."
+          text: "That clinic is called Sudbury Eye Centre. They said yes to me in fourteen days. No sales cycle. A printable, a portal, a staff orientation, a handshake."
         },
         {
           at: 'exit',
-          text: "Fourteen days. One live referral — Margaret. Now watch what twelve months of iris working with this clinic looks like."
+          text: "Now watch what twelve months of working with me looks like."
         }
       ],
 
-      // Scene 8 — Partner dashboard. The dense data scene.
+      // Scene 8 — partner dashboard. The four numbers that matter.
       partnerdash: [
         {
           at: 'enter',
-          text: "Twelve months in. This is what Sudbury Eye Centre sees when they open their iris dashboard. Referrals made. Patients who had a real conversation. Concrete next steps booked. Members who became volunteers. Anonymized, PIPEDA-aligned, audited. This is what keeps a clinic director saying yes every year."
+          text: "Twelve months later, their dashboard reads like this. Thirty-eight patients referred. Twenty-seven had a real conversation with me. Eighteen took a concrete next step. Four became volunteers."
         },
         {
           at: 'exit',
-          text: "Thirty-eight patients referred. Twenty-seven engaged. Four of them are now mentoring others. The clinic's patients got somewhere. That closes the loop."
+          text: "That's one clinic. In one city. In one year."
         }
       ],
 
-      // Scene 9 — The loop. The whole flywheel.
+      // Scene 9 — the loop. Compounding visualization.
       loop: [
         {
           at: 'enter',
-          text: "Here's the whole picture. One client — Margaret — acquired in year one. By year two she's a volunteer reaching three new members. The clinic that sent her is referring another twenty. By year three, a single seed has compounded into fifteen hundred engaged Canadians. Toggle to CNIB scale and the flywheel speaks for itself."
+          text: "Now picture that across CNIB. One well-met client in year one becomes fifteen hundred engaged Canadians by year three. Not through more advertising. Through the loop."
         },
         {
           at: 'exit',
-          text: "This is why iris isn't a referral tool. It's an acquisition engine with retention built into it. Retention IS the acquisition engine."
+          text: "Retention is the acquisition engine."
         }
       ],
 
-      // Scene 10 — The scoreboard. Commitments summary.
+      // Scene 10 — closer. Hand off to the interactive Ask iris scene.
       scoreboard: [
         {
           at: 'enter',
-          text: "Three audiences. One loop. Here's what iris commits to each of them, on the record, on-screen. If a single SLA misses, it shows up red in the dashboard. This is what a measurable navigator looks like — and this is the standard CNIB will be held to."
+          text: "Three audiences. One loop. Every commitment you've seen is mine to keep \u2014 measured, on the record, live on every partner dashboard."
         },
         {
           at: 'exit',
-          text: "That's iris. Now — anything you want to ask her? She's standing by."
+          text: "Now \u2014 anything you want to ask me?"
         }
       ]
     }
