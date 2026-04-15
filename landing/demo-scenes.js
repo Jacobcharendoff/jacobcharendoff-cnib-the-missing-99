@@ -77,6 +77,21 @@
       '      <div class="s2-matches-list" id="s2MatchList"></div>',
       '    </aside>',
       '  </div>',
+      // Cold-open frame overlays the chat/match split while the narrator
+      // sets the scene ("This is Margaret... her daughter sent a QR code...").
+      // Hidden via .is-hidden right before iris says her first line.
+      '  <div class="s2-coldopen" id="s2ColdOpen" aria-hidden="true">',
+      '    <div class="s2-coldopen-card">',
+      '      <div class="s2-coldopen-avatar">M</div>',
+      '      <div class="s2-coldopen-name">Margaret</div>',
+      '      <div class="s2-coldopen-meta">',
+      '        <span><b>68</b> \u00b7 Sudbury, ON \u00b7 retired teacher</span>',
+      '        <span>Diagnosed <b>macular degeneration</b> \u00b7 8 weeks ago</span>',
+      '        <span>Hasn\u2019t told her daughter yet</span>',
+      '      </div>',
+      '      <div class="s2-coldopen-qr">Scanned CNIB QR \u00b7 30s ago</div>',
+      '    </div>',
+      '  </div>',
       '</div>'
     ].join('');
 
@@ -168,8 +183,13 @@
     }
 
     function playBeatFallback() {
-      // No voice available (or iris-chat.js hasn't loaded). Run the old
-      // 4.8s/bubble pacing so the scene still plays visually.
+      // No voice available (or iris-chat.js hasn't loaded). Hold the
+      // cold-open frame for a beat so the viewer sees Margaret's setup,
+      // then fade it out and run the old 4.8s/bubble visual pacing.
+      setTimeout(function(){
+        var coldOpen = stage.querySelector('#s2ColdOpen');
+        if (coldOpen) coldOpen.classList.add('is-hidden');
+      }, 3500);
       var i = 0;
       function next() {
         if (cancelled || !log.parentNode) return;
@@ -183,7 +203,7 @@
         i++;
         setTimeout(next, 4800);
       }
-      setTimeout(next, 400);
+      setTimeout(next, 4200);
     }
 
     // Helper that plays a beat (narrator OR dialogue) if the audio handle
@@ -221,10 +241,22 @@
       // ---- Interleaved playback ----
 
       // 1. Entry narrator — 'This is Margaret...'
+      //    While this plays, the cold-open card is visible: viewer sees
+      //    Margaret's name, age, location, diagnosis, QR-scan pill —
+      //    exactly what the narrator is describing. Visuals and script
+      //    are in sync instead of a chat header showing while the
+      //    narrator talks about a QR code.
       await playHandle(narratorHandles['enter'], beatByAt['enter'] && beatByAt['enter'].text);
       if (cancelled) return;
 
-      // 2. Full dialogue plays UNINTERRUPTED — 5 turns in sequence.
+      // 2. Transition: hide the cold-open card, chat/match split reveals.
+      //    Uses CSS fade-out on .is-hidden. 900ms transition runs in
+      //    parallel with renderBubble so iris's first line doesn't feel
+      //    like it starts in a vacuum.
+      var coldOpen = stage.querySelector('#s2ColdOpen');
+      if (coldOpen) coldOpen.classList.add('is-hidden');
+
+      // 3. Full dialogue plays UNINTERRUPTED — 5 turns in sequence.
       //    Narrator stays out of the way while iris + Margaret talk.
       //    The SLA timer flips on turn 0; the match panel starts
       //    'Narrowing' quietly on turn 3 so the visual primes for

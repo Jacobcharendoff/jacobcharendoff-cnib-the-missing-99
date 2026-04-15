@@ -394,6 +394,62 @@
 .s2-layout {
   width: 100%; max-width: 1240px;
   display: flex; flex-direction: column; gap: 18px;
+  position: relative;
+}
+
+/* ------- Cold-open frame (plays while narrator sets the scene) ------- */
+/* Overlays the chat/match split. Fades out when the dialogue begins. */
+.s2-coldopen {
+  position: absolute; inset: 0; z-index: 4;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(10,10,10,.85) 0%, rgba(10,10,10,.95) 70%);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  transition: opacity .9s cubic-bezier(.22,1,.36,1), visibility 0s linear .9s;
+  pointer-events: none;
+}
+.s2-coldopen.is-hidden { opacity: 0; visibility: hidden; }
+
+.s2-coldopen-card {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding: 36px 44px; border-radius: 16px;
+  background: rgba(20,20,20,.72);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,.45);
+  max-width: 460px; text-align: center;
+}
+.s2-coldopen-avatar {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,209,0,.3), rgba(255,180,60,.08));
+  border: 1px solid rgba(255,209,0,.22);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 300; color: var(--c-accent);
+  letter-spacing: -.01em;
+}
+.s2-coldopen-name {
+  font-size: 24px; font-weight: 400; color: #fff; letter-spacing: -.01em;
+  line-height: 1.1;
+}
+.s2-coldopen-meta {
+  display: flex; flex-direction: column; gap: 3px;
+  font-size: 13px; color: var(--c-fg-2); line-height: 1.45;
+}
+.s2-coldopen-meta b { color: #fff; font-weight: 500; }
+.s2-coldopen-qr {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 8px;
+  padding: 6px 12px; border-radius: 100px;
+  background: rgba(90,200,255,.08); border: 1px solid rgba(90,200,255,.22);
+  font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+  color: var(--c-cyan); font-weight: 700;
+}
+.s2-coldopen-qr::before {
+  content: ""; width: 10px; height: 10px;
+  background: var(--c-cyan); border-radius: 2px;
+  box-shadow: 0 0 6px rgba(90,200,255,.6);
+  animation: s2qrPulse 1.4s ease-in-out infinite;
+}
+@keyframes s2qrPulse {
+  0%, 100% { opacity: .4; }
+  50%      { opacity: 1; }
 }
 
 .s2-sla {
