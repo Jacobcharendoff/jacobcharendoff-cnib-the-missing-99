@@ -20,12 +20,16 @@
   // Caption follows what iris. is about to say (voice wiring in Phase E).
   // ================================================================
   window.demoSceneRenderers.intro = function(stage) {
-    // Scene 1 — cold open. Three stats reveal sequentially as the
-    // narrator names them. Executive sees the numbers on-screen, not
-    // just hears them. This is the first 'brain of iris' visible.
+    // Scene 1 — EXECUTIVE OVERVIEW. Narrator is ~60s. Visual layers in:
+    //   1. iris mark + wordmark (present from start)
+    //   2. Two stats (1.5M, <1%) as narrator names them
+    //   3. Three audience cards (clients, volunteers, partners) as
+    //      narrator names each — the outcome-first promises
+    //   4. Closing loop line — the thesis
+    // By the time Scene 2 starts, the viewer knows what's coming.
     stage.innerHTML = [
-      '<div class="s1-layout">',
-      '  <div class="s1-mark" aria-hidden="true">',
+      '<div class="s1-layout s1-overview">',
+      '  <div class="s1-mark s1-mark--small" aria-hidden="true">',
       '    <svg viewBox="0 0 400 400">',
       '      <circle class="im-r im-r1" cx="200" cy="200" r="195"/>',
       '      <circle class="im-r im-r1" cx="200" cy="200" r="170"/>',
@@ -40,10 +44,24 @@
       '  <h1 class="s1-wordmark prism">iris.</h1>',
       '  <p class="s1-lede">CNIB\u2019s engagement infrastructure.</p>',
       '  <div class="s1-stats">',
-      '    <div class="s1-stat" data-reveal="1"><span class="s1-stat-num">1.5M</span><span class="s1-stat-cap">Canadians living with sight loss</span></div>',
-      '    <div class="s1-stat" data-reveal="2"><span class="s1-stat-num">&lt;1%</span><span class="s1-stat-cap">actively engaged with CNIB today</span></div>',
-      '    <div class="s1-stat" data-reveal="3"><span class="s1-stat-num">3</span><span class="s1-stat-cap">audiences: clients, volunteers, partners</span></div>',
+      '    <div class="s1-stat" data-reveal="stat1"><span class="s1-stat-num">1.5M<span class="s1-stat-plus">+</span></span><span class="s1-stat-cap">Canadians living with sight loss</span></div>',
+      '    <div class="s1-stat" data-reveal="stat2"><span class="s1-stat-num">&lt;1%</span><span class="s1-stat-cap">actively engaged with CNIB today</span></div>',
       '  </div>',
+      '  <div class="s1-audiences">',
+      '    <div class="s1-aud" data-reveal="aud1">',
+      '      <span class="s1-aud-eye">For clients</span>',
+      '      <span class="s1-aud-promise">A real conversation in 30 seconds.<br/>A matched CNIB program in 5 turns.<br/>A relationship that lasts years, not weeks.</span>',
+      '    </div>',
+      '    <div class="s1-aud" data-reveal="aud2">',
+      '      <span class="s1-aud-eye">For volunteers</span>',
+      '      <span class="s1-aud-promise">Engaged clients become peer mentors.<br/>Each one reaches 3 more Canadians.<br/>The network grows from within.</span>',
+      '    </div>',
+      '    <div class="s1-aud" data-reveal="aud3">',
+      '      <span class="s1-aud-eye">For partners</span>',
+      '      <span class="s1-aud-promise">Clinics onboarded in 14 days.<br/>A live dashboard, every SLA visible.<br/>Every referral, every outcome.</span>',
+      '    </div>',
+      '  </div>',
+      '  <p class="s1-loop" data-reveal="loop">Three audiences. One compounding loop. <span class="s1-loop-accent">Retention becomes the acquisition engine.</span></p>',
       '</div>'
     ].join('');
 
@@ -78,15 +96,23 @@
       if (cancelled) return;
       showCaption(beat.text);
 
-      // Stat reveals keyed to narration. Numbers appear when narrator
-      // names them. Timing is approximate — narrator says "1.5 million"
-      // at ~3s, "less than one percent" at ~8s, "three audiences" at ~14s.
-      var statEls = stage.querySelectorAll('.s1-stat');
-      var revealTimings = [2800, 8200, 14000];
-      statEls.forEach(function(el, i) {
+      // Reveals keyed to the 60s executive overview. Each element
+      // appears approximately when the narrator names it, so viewer
+      // sees the promise on-screen as it's being spoken.
+      var reveals = [
+        { sel: '[data-reveal="stat1"]', t:  7500 },  // "1.5 million Canadians"
+        { sel: '[data-reveal="stat2"]', t: 11500 },  // "less than one percent"
+        { sel: '[data-reveal="aud1"]',  t: 19000 },  // "For clients..."
+        { sel: '[data-reveal="aud2"]',  t: 29500 },  // "For volunteers..."
+        { sel: '[data-reveal="aud3"]',  t: 38500 },  // "For partners..."
+        { sel: '[data-reveal="loop"]',  t: 49000 }   // "Three audiences. One loop."
+      ];
+      reveals.forEach(function(r) {
         setTimeout(function() {
-          if (!cancelled) el.classList.add('is-revealed');
-        }, revealTimings[i] || 0);
+          if (cancelled) return;
+          var el = stage.querySelector(r.sel);
+          if (el) el.classList.add('is-revealed');
+        }, r.t);
       });
 
       if (handle && typeof tour.play === 'function') {
