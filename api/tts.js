@@ -34,11 +34,11 @@ const OPENAI_VOICE_MAP = {
 // toward warmth and realness, including pacing (since gpt-4o-mini-tts
 // doesn't take a numeric speed param — you steer pace via the text).
 const OPENAI_INSTRUCTIONS = {
-  iris:     "Speak like a warm, caring friend on the phone — calm, present, unhurried but never sluggish. Conversational pace, lightly smiling. Real pauses at commas and periods. You are not reading; you are talking to one person you already like.",
-  narrator: "Speak like a thoughtful docent walking one person through a product demo. Warm but objective. Measured, grounded, never theatrical. Slight smile in the voice. You're explaining what the viewer is seeing and why it matters, one beat at a time. Real pauses between sentences. You believe what you're saying.",
-  margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle, slightly shaky, thoughtful. Speak slower than a normal conversational pace — take your time, let the thoughts land. Little sighs are okay.",
-  david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Steady conversational pace. Not dramatic.",
-  priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy, slightly faster than conversational pace, but trails off when the thought runs out. Real, unpolished.",
+  iris:     "Speak like a warm, caring friend on the phone — present, alert, lightly smiling. Natural, energetic conversational pace — never rushed, but never slow or measured. Brief real pauses at commas. Project clearly at a normal speaking volume. You are not reading; you are talking to one person you already like.",
+  narrator: "Speak like a confident product presenter walking one person through a live demo. Warm but objective. Brisk, conversational pace — never slow, never theatrical, never 'audiobook'. Slight smile in the voice. You're pointing things out as they happen on screen. Pauses are for effect, not tempo. Project at a clear, full speaking volume. You believe what you're saying and you're a little excited about it.",
+  margaret: "Speak like a 68-year-old woman who is trying to hold it together. Gentle and thoughtful — but speak at a clear, audible volume, projected naturally as if on a phone. Do NOT whisper or trail off. Slightly slower than normal conversational pace, with real but brief pauses. Little sighs are okay. You are heard, not muttered.",
+  david:    "Speak like a 42-year-old man holding it together in a hard moment. Controlled, slightly clipped, real. Natural conversational pace, projected at clear speaking volume. Not dramatic.",
+  priya:    "Speak like an exhausted mother who is still trying to be warm. Forward-leaning energy, natural pace, trails off only at the end of a thought. Projected clearly — not whispered. Real, unpolished.",
 };
 
 export default async function handler(req) {
