@@ -121,11 +121,13 @@
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   /* Top clears the .demo-top header (~64px tall).
-     Bottom clears the stacked controls + rail + progress bar
-       (~100px total at bottom:36px) with breathing room.
+     Bottom clears the caption strip (bottom:44px + up to ~140px tall
+     for multi-line narration) with breathing room. Long captions on
+     Scene 1 were clipping the bottom of the promise cards — bumped
+     to 200-240px so the viewer never loses content under the caption.
      Sides widened from 32 to clamp(32px,4vw,56px) so wide scenes
        (scoreboard, partnerdash) don't press the viewport edges. */
-  padding: clamp(20px,3vh,36px) clamp(32px,4vw,56px) clamp(130px,14vh,160px);
+  padding: clamp(20px,3vh,36px) clamp(32px,4vw,56px) clamp(200px,22vh,240px);
   /* Allow tall scenes to scroll internally rather than clip. On short
      viewports this keeps every card reachable. */
   overflow-y: auto;

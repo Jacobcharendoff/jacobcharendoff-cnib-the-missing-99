@@ -396,7 +396,7 @@
   // Each stage carries target-vs-actual SLA. Bottom callout = success signal.
   // ================================================================
   window.demoSceneRenderers.engage = function(stage) {
-    playSceneVO(stage, 'engage', { delay: 600 });
+    playSceneVO(stage, 'engage');
     var m = (data.margaret || {});
     var tl = m.handoffTimeline || [];
 
@@ -456,7 +456,7 @@
   // fills on the right; LTV factors tick up as Margaret's journey compounds.
   // ================================================================
   window.demoSceneRenderers.retain = function(stage) {
-    playSceneVO(stage, 'retain', { delay: 600 });
+    playSceneVO(stage, 'retain');
     var m = (data.margaret || {});
     var tl = m.retentionTimeline || [];
     var retention = (data.client && data.client.success) ? data.client.success.retentionAt24mProb : 0.84;
@@ -874,7 +874,7 @@
   // SLAs per stage. Terminates in an activation card.
   // ================================================================
   window.demoSceneRenderers.volonboard = function(stage) {
-    playSceneVO(stage, 'volonboard', { delay: 600 });
+    playSceneVO(stage, 'volonboard');
     var vsla = (data.volunteer && data.volunteer.sla) || {};
     var steps = [
       { label: 'Yes',                detail: 'Readiness invitation accepted', slaLabel: 'Day 0',   target: 0                                       },
@@ -935,7 +935,7 @@
   // "first referral live". Per-stage SLA actual vs target.
   // ================================================================
   window.demoSceneRenderers.partneracq = function(stage) {
-    playSceneVO(stage, 'partneracq', { delay: 600 });
+    playSceneVO(stage, 'partneracq');
     var c = (data.clinic || {});
     var stages = c.onboardingStages || [];
 
@@ -991,7 +991,7 @@
   // face to a clinic partner, 12 months into the relationship.
   // ================================================================
   window.demoSceneRenderers.partnerdash = function(stage) {
-    playSceneVO(stage, 'partnerdash', { delay: 600 });
+    playSceneVO(stage, 'partnerdash');
     var c = (data.clinic || {});
     var dash = c.dashboard || {};
 
@@ -1235,7 +1235,7 @@
   // the compounding math (C3b, next batch).
   // ================================================================
   window.demoSceneRenderers.loop = function(stage) {
-    playSceneVO(stage, 'loop', { delay: 600 });
+    playSceneVO(stage, 'loop');
     // `data` at module scope = window.demoData. loop lives at top level.
     var loop = (data && data.loop) || {};
     var comp = loop.compounding || {
@@ -1352,7 +1352,7 @@
   // the loop headlines (conv rate, velocity, compounding).
   // ================================================================
   window.demoSceneRenderers.scoreboard = function(stage) {
-    playSceneVO(stage, 'scoreboard', { delay: 600 });
+    playSceneVO(stage, 'scoreboard');
     // `data` at module scope = window.demoData. scoreboard is top-level.
     var board = (data && data.scoreboard) || {};
     var pillars = board.pillars || [];
