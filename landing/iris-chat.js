@@ -265,9 +265,13 @@
           irisIsSpeaking = false;
           resolve();
         };
-        audio.onplay = () => { if (window.__dismissConnecting) window.__dismissConnecting(); };
+        audio.onplay  = () => { if (window.__dismissConnecting) window.__dismissConnecting(); };
         audio.onended = cleanup;
         audio.onerror = cleanup;
+        // Mirrors the I2 fix in playElevenLabsChunk: stop() calls audio.pause()
+        // which doesn't fire 'ended'. Without onpause, clicking Next mid-narrator-
+        // beat leaves this promise wedged until the safety timer fires (~8s lag).
+        audio.onpause = () => { if (!audio.ended && !settled) cleanup(); };
         // Safety net: if audio never actually starts/ends (blocked, 0-duration,
         // weird blob), fall back to reading-time pacing rather than instant resolve.
         const safetyMs = computeReadMs(fallbackText) + 1500;
