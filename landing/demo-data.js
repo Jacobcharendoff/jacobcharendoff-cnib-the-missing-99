@@ -317,7 +317,7 @@
       intro: [
         {
           at: 'enter',
-          text: "I'm iris. I work for CNIB. I help Canadians living with sight loss find the programs, the people, and the support that's been built for them \u2014 most of which they've never heard of. Let me show you something small."
+          text: "I'm iris. I help Canadians living with sight loss find the programs, the people, and the support that's been built for them \u2014 most of which they've never heard of. Let me show you something small."
         }
       ],
 
