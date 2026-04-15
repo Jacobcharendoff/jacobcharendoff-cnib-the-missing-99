@@ -276,6 +276,25 @@
         velocity: '8-10mo client→volunteer · 2-3yr volunteer→partner-catalyst',
         compounding: '1,000 clients in Y1 → 1,500+ engaged by Y3'
       }
+    },
+
+    // =============================================================
+    // PART 3 — iris. voice-over scripts, one per scene
+    // =============================================================
+    // Short lines iris. speaks on mount. First person, her POV,
+    // her tone. No third-person narrator. Kept tight: 8-15s each so
+    // the viewer isn't waiting for her to finish before the visuals
+    // catch up. Scenes 2 and 5 have their own scripted dialogue so
+    // they are NOT included here — iris speaks inside those directly.
+    irisVO: {
+      intro:       "Hi. I'm iris. I work with CNIB. I help Canadians living with sight loss find their people, their programs, and their next step. Let me show you how.",
+      engage:      "Day zero, Margaret said yes. By day seven she's on a call with a Vision Mate in Sudbury. Here's what I did in between \u2014 no dropped handoffs, no retelling her story.",
+      retain:      "A year later, I'm still here. Not spammy, not performative. Just showing up when something changes, getting out of the way when it doesn't.",
+      volonboard:  "When someone's ready to give back, I don't make them fill out a form and wait. I find the right mentee, get training done, and stay with them.",
+      partneracq:  "This is how I meet a new clinic. Sudbury Eye Centre, from first yes to first live referral in fourteen days. No sales cycle, no integration project.",
+      partnerdash: "Twelve months in, here's what Sudbury sees. Real members, real outcomes, real dollars. Everything a clinic director needs to keep saying yes.",
+      loop:        "Watch what happens when I meet one person well. One becomes three. Three become a clinic. A clinic becomes a network. Retention is the acquisition engine.",
+      scoreboard:  "Three audiences. One loop. Here's what I promise each of them, and how you'll know I delivered."
     }
   };
 
