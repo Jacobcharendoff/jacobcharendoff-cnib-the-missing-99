@@ -85,12 +85,14 @@
       '        <circle class="dl-p"  cx="100" cy="100" r="12"/>',
       '      </svg>',
       '    </div>',
-      '    <p class="demo-loading-eye">iris.</p>',
-      '    <p class="demo-loading-title">Getting your walkthrough ready</p>',
+      '    <p class="demo-loading-eye">CNIB presents</p>',
+      '    <p class="demo-loading-title">iris<span class="demo-loading-title-dot">.</span></p>',
+      '    <p class="demo-loading-sub">A four-minute walkthrough.</p>',
+      '    <p class="demo-loading-hook">What it is. How it works. How success is measured.</p>',
       '    <div class="demo-loading-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">',
       '      <span class="demo-loading-fill" id="demoLoadingFill"></span>',
       '    </div>',
-      '    <p class="demo-loading-meta" id="demoLoadingMeta">Preloading voice\u2026</p>',
+      '    <p class="demo-loading-meta" id="demoLoadingMeta">Preparing\u2026</p>',
       '  </div>',
       '</div>',
       '<div class="demo-progress" id="demoProgress" aria-hidden="true"><span class="demo-progress-bar"></span></div>'
@@ -274,9 +276,9 @@
         fill.style.width = pct + '%';
         loading.querySelector('.demo-loading-bar').setAttribute('aria-valuenow', String(pct));
       }
-      if (meta) meta.textContent = 'Preloading voice \u2014 ' + p.loaded + ' of ' + p.total;
+      if (meta) meta.textContent = p.loaded + ' of ' + p.total + ' cues ready';
     }).then(function() {
-      if (meta) meta.textContent = 'Ready.';
+      if (meta) meta.textContent = 'Begin.';
       var elapsed = Date.now() - start;
       var wait = Math.max(0, MIN_SHOW_MS - elapsed);
       setTimeout(hideLoadingAndStart, wait);

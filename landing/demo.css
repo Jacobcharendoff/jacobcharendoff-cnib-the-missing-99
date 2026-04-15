@@ -224,12 +224,28 @@
 @keyframes dlBreathe { 0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.08)} }
 
 .demo-loading-eye {
-  font-size: var(--t-eye); letter-spacing: .2em; text-transform: uppercase;
+  font-size: var(--t-eye); letter-spacing: .28em; text-transform: uppercase;
   color: var(--c-fg-3); margin: 0;
 }
 .demo-loading-title {
-  font-size: var(--t-lead); color: var(--c-fg-1); margin: 0 0 6px;
+  font-size: clamp(60px, 8vw, 96px);
+  color: var(--c-fg-1); margin: 0;
+  font-weight: 400; letter-spacing: -0.03em; line-height: 1;
+  background: linear-gradient(105deg, #F59B3C 0%, #FFD100 32%, #E87CA0 64%, #B57BFF 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.demo-loading-title-dot {
+  color: var(--c-accent);
+  -webkit-text-fill-color: var(--c-accent);
+}
+.demo-loading-sub {
+  font-size: var(--t-lead); color: var(--c-fg-1); margin: 6px 0 0;
   font-weight: 500; letter-spacing: -0.01em;
+}
+.demo-loading-hook {
+  font-size: var(--t-body); color: var(--c-fg-2); margin: 0 0 12px;
+  max-width: 380px; line-height: 1.45;
 }
 .demo-loading-bar {
   width: 260px; height: 3px; border-radius: 999px;
