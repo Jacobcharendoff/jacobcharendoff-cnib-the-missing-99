@@ -83,7 +83,6 @@
       '  <button type="button" class="demo-btn" id="demoNext" aria-label="Next scene">',
       '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>',
       '  </button>',
-      '  <ol class="demo-rail" id="demoRail" role="tablist" aria-label="Scene progress"></ol>',
       '</footer>',
       '<div class="demo-progress" id="demoProgress" aria-hidden="true"><span class="demo-progress-bar"></span></div>'
     ].join('');
@@ -95,23 +94,11 @@
     btnNext    = root.querySelector('#demoNext');
     btnPause   = root.querySelector('#demoPause');
     btnClose   = root.querySelector('#demoClose');
-    rail       = root.querySelector('#demoRail');
     progress   = root.querySelector('#demoProgress');
 
-    // Build progress rail (one dot per scene)
-    SCENES.forEach(function(s, i) {
-      var li = document.createElement('li');
-      li.style.listStyle = 'none';
-      var dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'demo-rail-dot';
-      dot.setAttribute('role', 'tab');
-      dot.setAttribute('aria-label', 'Scene ' + (i+1) + ' — ' + s.label);
-      dot.dataset.index = String(i);
-      dot.addEventListener('click', function() { goTo(parseInt(dot.dataset.index, 10)); });
-      li.appendChild(dot);
-      rail.appendChild(li);
-    });
+    // No scene rail — a guided journey shouldn't offer 11 clickable jump-
+    // to-anywhere dots. That's a slide deck. The tour leads; viewer listens.
+    // Prev/Next are kept for pacing control only.
 
     btnPrev.addEventListener('click', function() { goTo(Math.max(0, current - 1)); });
     btnNext.addEventListener('click', function() { goTo(Math.min(SCENES.length - 1, current + 1)); });
@@ -173,12 +160,7 @@
     requestAnimationFrame(function() { block.dataset.state = 'active'; });
 
     // Update rail dot states
-    rail.querySelectorAll('.demo-rail-dot').forEach(function(d, idx) {
-      if (idx < i) d.dataset.state = 'past';
-      else if (idx === i) d.dataset.state = 'current';
-      else d.removeAttribute('data-state');
-      d.setAttribute('aria-selected', idx === i ? 'true' : 'false');
-    });
+    // (Rail dots removed — guided journey, not slide deck)
   }
 
   function goTo(i) {
@@ -197,13 +179,17 @@
   }
 
   function scheduleAdvance() {
+    // Hard-timer auto-advance removed. The SCENES[i].duration values were
+    // frozen before the docent orchestration existed (narrator beats +
+    // dialogue interleave can run 90+s, well past the original 45s budget).
+    // Any timer-based advance inevitably cuts narration mid-sentence.
+    //
+    // The tour now advances ONLY on viewer action (Next button / arrow key)
+    // or — eventually — when a scene signals its orchestration is complete
+    // via a 'demo:scene-done' event. Pause/play is effectively a no-op
+    // until that wiring lands, which is fine because there's no timer to
+    // pause anymore.
     if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
-    if (isPaused) return;
-    var s = SCENES[current];
-    if (!s || s.endScene || !s.duration) return; // last scene waits for user
-    advanceTimer = setTimeout(function() {
-      if (current < SCENES.length - 1) goTo(current + 1);
-    }, s.duration);
   }
 
   function togglePause() {

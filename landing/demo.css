@@ -200,33 +200,14 @@
 .demo-controls > #demoPause,
 .demo-controls > #demoNext { /* fallback if not wrapped */ }
 
-/* Progress rail: one dot per scene */
-.demo-rail {
-  display: flex; gap: 10px; align-items: center;
-  list-style: none; margin: 0; padding: 0;
-}
-.demo-rail-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: transparent;
-  border: 1.5px solid rgba(255,255,255,.22);
-  cursor: pointer; padding: 0;
-  transition: background .35s, border-color .35s, transform .25s, box-shadow .35s;
-}
-.demo-rail-dot:hover { transform: scale(1.25); border-color: rgba(255,255,255,.5); }
-.demo-rail-dot[data-state="past"] {
-  background: rgba(255,209,0,.42); border-color: rgba(255,209,0,.6);
-}
-.demo-rail-dot[data-state="current"] {
-  background: var(--c-accent); border-color: var(--c-accent);
-  transform: scale(1.35); box-shadow: 0 0 12px rgba(255,209,0,.55);
-}
-.demo-rail-dot:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 4px; }
+/* (Scene-rail rules removed — guided journey, not slide deck. Prev/Next
+   buttons remain for viewer pacing control.) */
 
 /* ================================================================
    Reduced motion + responsive
    ================================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .demo, .demo-backdrop, .demo-scene, .demo-rail-dot {
+  .demo, .demo-backdrop, .demo-scene {
     transition: opacity .25s linear !important;
     transform: none !important;
   }
@@ -239,7 +220,6 @@
   .demo-controls { bottom: 26px; gap: 14px; }
   .demo-btn { width: 38px; height: 38px; }
   .demo-btn--play { width: 46px; height: 46px; }
-  .demo-rail { gap: 8px; }
   .demo-placeholder-title { font-size: clamp(26px, 8vw, 38px); }
 }
 
