@@ -183,6 +183,14 @@
 
   function goTo(i) {
     if (i < 0 || i >= SCENES.length) return;
+    // Hard-stop any in-flight audio BEFORE swapping scenes. Relying on
+    // DOMNodeRemoved listeners inside scene renderers is unreliable
+    // (the event is deprecated + fires asynchronously in some browsers),
+    // which caused Scene 1's iris VO to bleed into Scene 2's narrator.
+    // The engine knows when scenes change — it should drive the stop.
+    if (window.irisTour && typeof window.irisTour.stop === 'function') {
+      try { window.irisTour.stop(); } catch(e) {}
+    }
     current = i;
     renderScene(i);
     scheduleAdvance();
