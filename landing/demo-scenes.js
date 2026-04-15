@@ -52,12 +52,13 @@
                      (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
     if (!voiceReady) return;
 
+    var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
     var cancelled = false;
-    stage.addEventListener('DOMNodeRemoved', function once() {
+    var onTeardown = function() {
       cancelled = true;
-      if (tour && typeof tour.stop === 'function') tour.stop();
-      stage.removeEventListener('DOMNodeRemoved', once);
-    });
+      document.removeEventListener('demo:scene-teardown', onTeardown);
+    };
+    document.addEventListener('demo:scene-teardown', onTeardown);
 
     (async function() {
       var beat = beats[0];
@@ -66,7 +67,7 @@
       await new Promise(function(r){ setTimeout(r, 800); }); // let mark animate in
       if (cancelled) return;
       await tour.play(handle, beat.text);
-      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
+      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
     })();
   };
 
@@ -148,12 +149,13 @@
                      typeof tour.play === 'function' &&
                      (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
 
+    var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
     var cancelled = false;
-    stage.addEventListener('DOMNodeRemoved', function once() {
+    var onTeardown = function() {
       cancelled = true;
-      if (tour && typeof tour.stop === 'function') tour.stop();
-      stage.removeEventListener('DOMNodeRemoved', once);
-    });
+      document.removeEventListener('demo:scene-teardown', onTeardown);
+    };
+    document.addEventListener('demo:scene-teardown', onTeardown);
 
     function renderBubble(turn) {
       if (!log.parentNode) return null;
@@ -225,7 +227,7 @@
           matchStat.textContent = 'Narrowing\u2026';
           setTimeout(function(){
             if (!cancelled) populateMatches().then(function() {
-              if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
+              if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
             });
           }, 1200);
           return;
@@ -318,7 +320,7 @@
 
       // 5. Exit narrator — bridges to Scene 3
       await playHandle(narratorHandles['exit'], beatByAt['exit'] && beatByAt['exit'].text);
-      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
+      if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
     }
 
     orchestrate();
@@ -507,16 +509,17 @@
     var tour = window.irisTour;
     if (!tour || typeof tour.speak !== 'function') return;
     if (typeof tour.isVoiceEnabled === 'function' && !tour.isVoiceEnabled()) return;
+    var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
     var cancelled = false;
-    stage.addEventListener('DOMNodeRemoved', function once() {
+    var onTeardown = function() {
       cancelled = true;
-      if (typeof tour.stop === 'function') tour.stop();
-      stage.removeEventListener('DOMNodeRemoved', once);
-    });
+      document.removeEventListener('demo:scene-teardown', onTeardown);
+    };
+    document.addEventListener('demo:scene-teardown', onTeardown);
     setTimeout(function() {
       if (cancelled) return;
       tour.speak(line, 'iris').then(function() {
-        if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done'));
+        if (!cancelled) document.dispatchEvent(new CustomEvent('demo:scene-done', { detail: { gen: myGen } }));
       });
     }, delay);
   }
@@ -651,12 +654,13 @@
     var tour    = window.irisTour;
     var voiceOn = tour && typeof tour.speak === 'function' &&
                   (typeof tour.isVoiceEnabled !== 'function' || tour.isVoiceEnabled());
+    var myGen = (window.demoCurrentGen && window.demoCurrentGen()) || 0;
     var cancelled = false;
-    stage.addEventListener('DOMNodeRemoved', function once() {
+    var onTeardown = function() {
       cancelled = true;
-      if (tour && typeof tour.stop === 'function') tour.stop();
-      stage.removeEventListener('DOMNodeRemoved', once);
-    });
+      document.removeEventListener('demo:scene-teardown', onTeardown);
+    };
+    document.addEventListener('demo:scene-teardown', onTeardown);
 
     function showBubble(t) {
       if (!chatEl.parentNode) return;
