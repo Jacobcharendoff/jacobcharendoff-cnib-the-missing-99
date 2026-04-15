@@ -224,6 +224,64 @@
 }
 
 /* ================================================================
+   Loading screen — pre-tour audio preload
+   Shown between open() and Scene 1 mount while demoPreload() walks
+   ~18 voice lines in parallel. Calm, deliberate, iris-branded.
+   Fades out on resolve; Scene 1 mounts into a warm-cache runtime.
+   ================================================================ */
+.demo-loading {
+  position: absolute; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(255,209,0,.06), transparent 70%), var(--bg-base);
+  opacity: 1;
+  transition: opacity .55s ease;
+  pointer-events: auto;
+}
+.demo-loading.is-hidden { opacity: 0; pointer-events: none; }
+.demo-loading-inner {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 18px; max-width: 420px; padding: 0 24px; text-align: center;
+}
+.demo-loading-mark { width: 108px; height: 108px; }
+.demo-loading-mark svg { width: 100%; height: 100%; }
+.demo-loading-mark .dl-r {
+  fill: none; stroke: rgba(255,209,0,.55); stroke-width: 1.25;
+  transform-origin: center; animation: dlPulse 2.4s ease-in-out infinite;
+}
+.demo-loading-mark .dl-r2 { stroke: rgba(245,155,60,.55); animation-delay: .25s; }
+.demo-loading-mark .dl-r3 { stroke: rgba(232,124,160,.55); animation-delay: .5s; }
+.demo-loading-mark .dl-p  { fill: var(--c-accent); animation: dlBreathe 2.2s ease-in-out infinite; }
+@keyframes dlPulse { 0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.03);opacity:.9} }
+@keyframes dlBreathe { 0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.08)} }
+
+.demo-loading-eye {
+  font-size: var(--t-eye); letter-spacing: .2em; text-transform: uppercase;
+  color: var(--c-fg-3); margin: 0;
+}
+.demo-loading-title {
+  font-size: var(--t-lead); color: var(--c-fg-1); margin: 0 0 6px;
+  font-weight: 500; letter-spacing: -0.01em;
+}
+.demo-loading-bar {
+  width: 260px; height: 3px; border-radius: 999px;
+  background: rgba(255,255,255,.08); overflow: hidden; position: relative;
+}
+.demo-loading-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+  background: linear-gradient(90deg, var(--c-amber), var(--c-accent), var(--c-rose));
+  border-radius: 999px;
+  transition: width .35s ease;
+  box-shadow: 0 0 12px rgba(255,209,0,.45);
+}
+.demo-loading-meta {
+  font-size: var(--t-meta); color: var(--c-fg-3); margin: 0;
+  min-height: 1.3em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-loading-mark .dl-r, .demo-loading-mark .dl-p { animation: none; }
+}
+
+/* ================================================================
    SCENE 1 — What is iris.
    Chromatic iris mark · prismatic wordmark · one-line thesis.
    Simple, confident opening. Voice narration lands over this.
