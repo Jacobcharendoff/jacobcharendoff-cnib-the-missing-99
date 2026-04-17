@@ -1,0 +1,1550 @@
+diff --git a/src/app/about/page.tsx b/src/app/about/page.tsx
+index 7d8d7e6..eed670f 100644
+--- a/src/app/about/page.tsx
++++ b/src/app/about/page.tsx
+@@ -1,5 +1,6 @@
+ import Link from "next/link";
+ import type { Metadata } from "next";
++import ParallaxSection from "@/components/ParallaxSection";
+ 
+ export const metadata: Metadata = {
+   title: "About | Venture Studio",
+@@ -53,13 +54,17 @@ export default function AboutPage() {
+       </section>
+ 
+       {/* ── Stats ─────────────────────────────────────────────── */}
+-      <section className="section-yellow" aria-label="Career highlights">
+-        <div className="content-max py-12 sm:py-16">
+-          <div className="stat-grid text-center">
++      <section className="section-yellow relative overflow-hidden" aria-label="Career highlights">
++        <div
++          className="absolute inset-0 dot-grid-bg-light pointer-events-none opacity-40"
++          aria-hidden="true"
++        />
++        <div className="content-max py-12 sm:py-16 relative z-10">
++          <div className="stat-grid-dark text-center">
+             {highlights.map((h) => (
+               <div key={h.label}>
+                 <p className="stat-number text-cnib-black">{h.value}</p>
+-                <p className="stat-label text-cnib-black/70 mt-2">{h.label}</p>
++                <p className="stat-label text-cnib-black/70 mt-3">{h.label}</p>
+               </div>
+             ))}
+           </div>
+@@ -67,33 +72,63 @@ export default function AboutPage() {
+       </section>
+ 
+       {/* ── Story ─────────────────────────────────────────────── */}
+-      <section className="section-padding bg-white" aria-label="Jacob's story">
++      <section className="section-padding bg-white overflow-hidden" aria-label="Jacob's story">
+         <div className="content-narrow">
+-          <h2 className="section-heading text-cnib-black mb-10">
+-            Turning adversity into opportunity
+-          </h2>
++          <ParallaxSection offset={30}>
++            <h2 className="section-heading text-cnib-black mb-10">
++              Turning adversity into opportunity
++            </h2>
++          </ParallaxSection>
+           <div className="relative">
+             <div className="absolute -left-4 top-0 bottom-0 w-1 bg-cnib-yellow rounded-full hidden sm:block" aria-hidden="true" />
+             <div className="sm:pl-8 space-y-6 body-large text-text-secondary">
+-              <p>
+-                Jacob has built businesses across industries — from luxury
+-                hospitality in the mountains of Peru to boutique eCommerce brands
+-                trusted by global music retailers, to AI-powered healthtech
+-                platforms that personalize care.
+-              </p>
+-              <p>
+-                His journey is raw, real, and full of hard-won lessons. Over the
+-                past decade, he&rsquo;s taken impossible ideas and turned them into
+-                revenue-generating ventures with global reach and seven-figure
+-                exits.
+-              </p>
+-              <p>
+-                Along the way, he&rsquo;s led remote teams, built from the ground
+-                up, and learned how to create clarity in chaos. His unique
+-                perspective — shaped by a lifelong visual impairment — has allowed
+-                him to think differently, innovate beyond limitations, and inspire
+-                others to take bold action.
+-              </p>
++              {/* Timeline-style dots for each paragraph */}
++              <div className="relative">
++                <span
++                  className="absolute -left-[2.1rem] top-3 w-3 h-3 rounded-full bg-cnib-yellow hidden sm:block"
++                  style={{ boxShadow: "0 0 10px rgba(255,241,0,0.5)" }}
++                  aria-hidden="true"
++                />
++                <p>
++                  Jacob has built businesses across industries — from luxury
++                  hospitality in the mountains of Peru to boutique eCommerce
++                  brands trusted by global music retailers, to AI-powered
++                  healthtech platforms that personalize care.
++                </p>
++              </div>
++              <div className="relative">
++                <span
++                  className="absolute -left-[2.1rem] top-3 w-3 h-3 rounded-full hidden sm:block"
++                  style={{
++                    background: "var(--cnib-yellow-dim)",
++                    boxShadow: "0 0 8px rgba(255,241,0,0.3)",
++                  }}
++                  aria-hidden="true"
++                />
++                <p>
++                  His journey is raw, real, and full of hard-won lessons. Over
++                  the past decade, he&rsquo;s taken impossible ideas and turned
++                  them into revenue-generating ventures with global reach and
++                  seven-figure exits.
++                </p>
++              </div>
++              <div className="relative">
++                <span
++                  className="absolute -left-[2.1rem] top-3 w-3 h-3 rounded-full hidden sm:block"
++                  style={{
++                    background: "var(--cnib-yellow-dim)",
++                    boxShadow: "0 0 8px rgba(255,241,0,0.3)",
++                  }}
++                  aria-hidden="true"
++                />
++                <p>
++                  Along the way, he&rsquo;s led remote teams, built from the
++                  ground up, and learned how to create clarity in chaos. His
++                  unique perspective — shaped by a lifelong visual impairment —
++                  has allowed him to think differently, innovate beyond
++                  limitations, and inspire others to take bold action.
++                </p>
++              </div>
+             </div>
+           </div>
+         </div>
+diff --git a/src/app/globals.css b/src/app/globals.css
+index e66550a..7629fb3 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -345,25 +345,90 @@ body {
+ /* ── Glass Card ──────────────────────────────────────────────── */
+ 
+ .glass-card {
+-  background: rgba(255, 255, 255, 0.03);
+-  backdrop-filter: blur(12px);
+-  -webkit-backdrop-filter: blur(12px);
+-  border: 1px solid rgba(255, 255, 255, 0.06);
++  position: relative;
++  background: linear-gradient(
++    180deg,
++    rgba(255, 255, 255, 0.045) 0%,
++    rgba(255, 255, 255, 0.02) 100%
++  );
++  backdrop-filter: blur(24px) saturate(140%);
++  -webkit-backdrop-filter: blur(24px) saturate(140%);
++  border: 1px solid transparent;
++  background-clip: padding-box;
+   border-radius: var(--radius-lg);
+   padding: clamp(1.5rem, 3vw, 2.5rem);
+-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
++  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
++    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
++    background 0.4s cubic-bezier(0.16, 1, 0.3, 1);
++  overflow: hidden;
++  isolation: isolate;
++}
++
++/* Gradient border using pseudo-element to avoid clipping backdrop-filter */
++.glass-card::before {
++  content: "";
++  position: absolute;
++  inset: 0;
++  border-radius: inherit;
++  padding: 1px;
++  background: linear-gradient(
++    135deg,
++    rgba(255, 255, 255, 0.1) 0%,
++    rgba(255, 255, 255, 0.05) 40%,
++    rgba(255, 255, 255, 0.02) 100%
++  );
++  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
++  -webkit-mask-composite: xor;
++  mask-composite: exclude;
++  pointer-events: none;
++  transition: background 0.4s ease;
++  z-index: 0;
++}
++
++.glass-card > * {
++  position: relative;
++  z-index: 1;
+ }
+ 
+ .glass-card:hover {
+-  background: rgba(255, 255, 255, 0.06);
+-  border-color: rgba(255, 241, 0, 0.2);
++  background: linear-gradient(
++    180deg,
++    rgba(255, 255, 255, 0.075) 0%,
++    rgba(255, 255, 255, 0.03) 100%
++  );
+   transform: translateY(-4px);
+-  box-shadow: var(--shadow-glow);
++  box-shadow:
++    0 12px 40px rgba(0, 0, 0, 0.3),
++    0 0 40px rgba(255, 241, 0, 0.12),
++    0 0 80px rgba(255, 241, 0, 0.04);
++}
++
++.glass-card:hover::before {
++  background: linear-gradient(
++    135deg,
++    rgba(255, 241, 0, 0.35) 0%,
++    rgba(255, 255, 255, 0.1) 40%,
++    rgba(255, 255, 255, 0.04) 100%
++  );
++}
++
++.glass-card:focus-within::before {
++  background: linear-gradient(
++    135deg,
++    rgba(255, 241, 0, 0.45) 0%,
++    rgba(255, 255, 255, 0.12) 40%,
++    rgba(255, 255, 255, 0.05) 100%
++  );
+ }
+ 
+ .glass-card:focus-within {
+-  border-color: rgba(255, 241, 0, 0.3);
+-  box-shadow: var(--shadow-glow);
++  box-shadow:
++    0 12px 40px rgba(0, 0, 0, 0.3),
++    0 0 40px rgba(255, 241, 0, 0.18);
++}
++
++.glass-card:active {
++  transform: translateY(-2px) scale(0.995);
+ }
+ 
+ /* ── Premium Card (light backgrounds) ────────────────────────── */
+@@ -436,6 +501,51 @@ body {
+   gap: clamp(2rem, 5vw, 4rem);
+ }
+ 
++.stat-grid-dark {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
++  gap: 0;
++}
++
++.stat-grid-dark > * {
++  position: relative;
++  padding: 1rem clamp(1rem, 3vw, 2.5rem);
++}
++
++.stat-grid-dark > * + *::before {
++  content: "";
++  position: absolute;
++  left: 0;
++  top: 20%;
++  bottom: 20%;
++  width: 1px;
++  background: linear-gradient(
++    to bottom,
++    transparent 0%,
++    rgba(10, 10, 10, 0.15) 50%,
++    transparent 100%
++  );
++}
++
++/* On dark sections, divider should use white tint */
++.mesh-gradient-dark .stat-grid-dark > * + *::before,
++.section-dark .stat-grid-dark > * + *::before,
++.section-charcoal .stat-grid-dark > * + *::before {
++  background: linear-gradient(
++    to bottom,
++    transparent 0%,
++    rgba(255, 255, 255, 0.12) 50%,
++    transparent 100%
++  );
++}
++
++/* Hide dividers when wrapping (each row starts fresh). */
++@media (max-width: 640px) {
++  .stat-grid-dark > * + *::before {
++    display: none;
++  }
++}
++
+ /* ── Button Styles ───────────────────────────────────────────── */
+ 
+ .btn-primary {
+@@ -445,36 +555,51 @@ body {
+   gap: 0.5rem;
+   padding: 1rem 2.25rem;
+   min-height: 48px;
+-  background: var(--cnib-yellow);
++  background: linear-gradient(135deg, var(--cnib-yellow) 0%, var(--cnib-yellow-soft) 50%, var(--cnib-yellow) 100%);
++  background-size: 200% 100%;
++  background-position: 0% 50%;
+   color: var(--cnib-black);
+   font-weight: 700;
+   font-size: 0.9375rem;
+   border-radius: 100px;
+   text-decoration: none;
+-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
++  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
++    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
++    background-position 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+   border: none;
+   cursor: pointer;
+   letter-spacing: -0.01em;
+   position: relative;
+   overflow: hidden;
++  will-change: transform;
+ }
+ 
+ .btn-primary::after {
+   content: "";
+   position: absolute;
+   inset: 0;
+-  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+-  opacity: 0;
+-  transition: opacity 0.3s ease;
++  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
++  transform: translateX(-100%);
++  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
++  pointer-events: none;
+ }
+ 
+ .btn-primary:hover {
+-  transform: translateY(-2px);
+-  box-shadow: 0 4px 20px rgba(255, 241, 0, 0.35), 0 8px 30px rgba(255, 241, 0, 0.15);
++  transform: translateY(-2px) scale(1.02);
++  background-position: 100% 50%;
++  box-shadow:
++    0 6px 24px rgba(255, 241, 0, 0.45),
++    0 12px 40px rgba(255, 241, 0, 0.2),
++    0 0 0 1px rgba(255, 241, 0, 0.3);
+ }
+ 
+ .btn-primary:hover::after {
+-  opacity: 1;
++  transform: translateX(100%);
++}
++
++.btn-primary:active {
++  transform: translateY(-1px) scale(0.98);
++  transition-duration: 0.1s;
+ }
+ 
+ .btn-secondary {
+@@ -484,23 +609,35 @@ body {
+   gap: 0.5rem;
+   padding: 1rem 2.25rem;
+   min-height: 48px;
+-  background: transparent;
++  background: rgba(255, 255, 255, 0.02);
+   color: var(--text-on-dark);
+   font-weight: 600;
+   font-size: 0.9375rem;
+   border-radius: 100px;
+   text-decoration: none;
+-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
++  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
++    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
++    color 0.3s ease,
++    background 0.3s ease,
++    border-color 0.3s ease;
+   border: 1.5px solid rgba(255, 255, 255, 0.25);
+   cursor: pointer;
+   letter-spacing: -0.01em;
++  backdrop-filter: blur(12px);
++  -webkit-backdrop-filter: blur(12px);
+ }
+ 
+ .btn-secondary:hover {
+   border-color: var(--cnib-yellow);
+   color: var(--cnib-yellow);
+-  transform: translateY(-2px);
+-  box-shadow: 0 0 20px rgba(255, 241, 0, 0.1);
++  background: rgba(255, 241, 0, 0.05);
++  transform: translateY(-2px) scale(1.02);
++  box-shadow: 0 4px 20px rgba(255, 241, 0, 0.15);
++}
++
++.btn-secondary:active {
++  transform: translateY(-1px) scale(0.98);
++  transition-duration: 0.1s;
+ }
+ 
+ .btn-dark {
+@@ -510,22 +647,35 @@ body {
+   gap: 0.5rem;
+   padding: 1rem 2.25rem;
+   min-height: 48px;
+-  background: var(--cnib-black);
++  background: linear-gradient(135deg, var(--cnib-black) 0%, var(--cnib-charcoal) 50%, var(--cnib-black) 100%);
++  background-size: 200% 100%;
++  background-position: 0% 50%;
+   color: var(--cnib-white);
+   font-weight: 700;
+   font-size: 0.9375rem;
+   border-radius: 100px;
+   text-decoration: none;
+-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
++  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
++    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
++    background-position 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+   border: none;
+   cursor: pointer;
+   letter-spacing: -0.01em;
++  position: relative;
++  overflow: hidden;
+ }
+ 
+ .btn-dark:hover {
+-  background: var(--cnib-dark);
+-  transform: translateY(-2px);
+-  box-shadow: var(--shadow-medium);
++  transform: translateY(-2px) scale(1.02);
++  background-position: 100% 50%;
++  box-shadow:
++    0 6px 24px rgba(0, 0, 0, 0.3),
++    0 0 0 1px rgba(255, 241, 0, 0.15);
++}
++
++.btn-dark:active {
++  transform: translateY(-1px) scale(0.98);
++  transition-duration: 0.1s;
+ }
+ 
+ /* ── Badge ───────────────────────────────────────────────────── */
+@@ -654,3 +804,301 @@ body {
+ .pulse-glow {
+   animation: pulse-glow 3s ease-in-out infinite;
+ }
++
++/* ── Phase number accent ring ────────────────────────────────── */
++
++.phase-num-ring {
++  position: relative;
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  padding: 0.35rem 0.9rem;
++  border-radius: 14px;
++  isolation: isolate;
++}
++
++.phase-num-ring::before {
++  content: "";
++  position: absolute;
++  inset: 0;
++  border-radius: inherit;
++  background: radial-gradient(
++    ellipse at center,
++    rgba(255, 241, 0, 0.14) 0%,
++    rgba(255, 241, 0, 0.04) 50%,
++    transparent 80%
++  );
++  z-index: -1;
++}
++
++.phase-num-ring::after {
++  content: "";
++  position: absolute;
++  inset: 0;
++  border-radius: inherit;
++  border: 1px solid rgba(255, 241, 0, 0.18);
++  z-index: -1;
++  transition: border-color 0.4s ease, box-shadow 0.4s ease;
++}
++
++.group:hover .phase-num-ring::after,
++.group:focus-visible .phase-num-ring::after {
++  border-color: rgba(255, 241, 0, 0.45);
++  box-shadow: 0 0 16px rgba(255, 241, 0, 0.18);
++}
++
++/* ── Dot grid pattern (subtle depth) ─────────────────────────── */
++
++.dot-grid-bg {
++  background-image: radial-gradient(
++    rgba(255, 255, 255, 0.045) 1px,
++    transparent 1.5px
++  );
++  background-size: 28px 28px;
++  background-position: 0 0;
++}
++
++.dot-grid-bg-light {
++  background-image: radial-gradient(
++    rgba(10, 10, 10, 0.05) 1px,
++    transparent 1.5px
++  );
++  background-size: 28px 28px;
++}
++
++/* ── Drifting particle dots (decorative hero backdrop) ───────── */
++
++@keyframes drift-slow {
++  0% { transform: translate3d(0, 0, 0); }
++  50% { transform: translate3d(14px, -10px, 0); }
++  100% { transform: translate3d(0, 0, 0); }
++}
++
++.drift-dots {
++  background-image: radial-gradient(
++    rgba(255, 241, 0, 0.08) 1px,
++    transparent 1.6px
++  );
++  background-size: 44px 44px;
++  animation: drift-slow 22s ease-in-out infinite;
++  will-change: transform;
++}
++
++/* ── Section dividers (yellow → transparent) ─────────────────── */
++
++.divider-fade-down {
++  height: 1px;
++  border: none;
++  background: linear-gradient(
++    180deg,
++    transparent 0%,
++    rgba(255, 241, 0, 0.5) 50%,
++    transparent 100%
++  );
++  width: 2px;
++  height: 140px;
++  margin: 0 auto;
++}
++
++.divider-fade-right {
++  height: 1px;
++  border: none;
++  background: linear-gradient(
++    90deg,
++    transparent 0%,
++    rgba(255, 241, 0, 0.5) 50%,
++    transparent 100%
++  );
++  margin: 0;
++  width: 100%;
++}
++
++/* ── Cursor proximity glow (CSS custom property driven) ──────── */
++
++.cursor-glow {
++  position: relative;
++  isolation: isolate;
++}
++
++.cursor-glow::before {
++  content: "";
++  position: absolute;
++  inset: 0;
++  pointer-events: none;
++  background: radial-gradient(
++    320px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
++    rgba(255, 241, 0, 0.07),
++    transparent 70%
++  );
++  opacity: 0;
++  transition: opacity 0.4s ease;
++  z-index: 0;
++}
++
++.cursor-glow:hover::before,
++.cursor-glow.is-hovered::before {
++  opacity: 1;
++}
++
++.cursor-glow > * {
++  position: relative;
++  z-index: 1;
++}
++
++/* ── Progress bar (animated fill) ────────────────────────────── */
++
++.progress-bar-track {
++  width: 100%;
++  height: 8px;
++  border-radius: 100px;
++  background: rgba(255, 255, 255, 0.08);
++  overflow: hidden;
++  position: relative;
++}
++
++.progress-bar-fill {
++  height: 100%;
++  border-radius: 100px;
++  background: linear-gradient(
++    90deg,
++    var(--cnib-yellow-dim) 0%,
++    var(--cnib-yellow) 50%,
++    var(--cnib-yellow-soft) 100%
++  );
++  background-size: 200% 100%;
++  animation: shimmer 4s ease-in-out infinite;
++  position: relative;
++  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
++}
++
++.progress-bar-fill[data-complete="true"] {
++  box-shadow:
++    0 0 16px rgba(255, 241, 0, 0.5),
++    0 0 32px rgba(255, 241, 0, 0.25);
++  animation: shimmer 4s ease-in-out infinite,
++    pulse-glow-bar 2.2s ease-in-out infinite;
++}
++
++@keyframes pulse-glow-bar {
++  0%, 100% {
++    filter: brightness(1);
++  }
++  50% {
++    filter: brightness(1.18);
++  }
++}
++
++/* ── Category pill filter ────────────────────────────────────── */
++
++.filter-pill {
++  display: inline-flex;
++  align-items: center;
++  padding: 0.5rem 1rem;
++  min-height: 36px;
++  border-radius: 100px;
++  background: rgba(10, 10, 10, 0.04);
++  border: 1px solid rgba(10, 10, 10, 0.08);
++  color: var(--text-secondary);
++  font-weight: 600;
++  font-size: 0.8125rem;
++  letter-spacing: 0.02em;
++  cursor: pointer;
++  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
++}
++
++.filter-pill:hover {
++  border-color: var(--cnib-black);
++  color: var(--cnib-black);
++  transform: translateY(-1px);
++}
++
++.filter-pill[data-active="true"] {
++  background: var(--cnib-black);
++  border-color: var(--cnib-black);
++  color: var(--cnib-yellow);
++}
++
++/* ── Noise overlay for premium dark sections ─────────────────── */
++
++.noise-subtle::after {
++  content: "";
++  position: absolute;
++  inset: 0;
++  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
++  background-size: 220px 220px;
++  opacity: 0.5;
++  mix-blend-mode: overlay;
++  pointer-events: none;
++  z-index: 0;
++}
++
++/* ── Navigation link underline indicator ─────────────────────── */
++
++.nav-link-wrap {
++  position: relative;
++  display: inline-flex;
++}
++
++.nav-link-indicator {
++  position: absolute;
++  bottom: 2px;
++  height: 2px;
++  background: var(--cnib-yellow);
++  border-radius: 2px;
++  box-shadow: 0 0 8px rgba(255, 241, 0, 0.45);
++  pointer-events: none;
++}
++
++/* ── Quote mark decoration ───────────────────────────────────── */
++
++.quote-mark {
++  position: absolute;
++  font-family: Georgia, "Times New Roman", serif;
++  font-size: 10rem;
++  line-height: 1;
++  color: var(--cnib-yellow);
++  opacity: 0.12;
++  pointer-events: none;
++  user-select: none;
++}
++
++/* ── Mobile-only decorative ring ─────────────────────────────── */
++
++.mobile-ring-decor {
++  position: absolute;
++  pointer-events: none;
++  width: 320px;
++  height: 320px;
++  right: -160px;
++  top: 0;
++  border-radius: 50%;
++  background: radial-gradient(
++    circle at center,
++    rgba(255, 241, 0, 0.08) 0%,
++    rgba(255, 241, 0, 0.02) 40%,
++    transparent 70%
++  );
++  opacity: 0.7;
++}
++
++.mobile-ring-decor::before {
++  content: "";
++  position: absolute;
++  inset: 80px;
++  border: 1px solid rgba(255, 241, 0, 0.14);
++  border-radius: 50%;
++}
++
++.mobile-ring-decor::after {
++  content: "";
++  position: absolute;
++  inset: 120px;
++  border: 1px solid rgba(255, 241, 0, 0.08);
++  border-radius: 50%;
++}
++
++@media (min-width: 1024px) {
++  .mobile-ring-decor {
++    display: none;
++  }
++}
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 05bf3a0..2cfbad1 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -3,6 +3,7 @@ import "./globals.css";
+ import Header from "@/components/Header";
+ import Footer from "@/components/Footer";
+ import Providers from "@/components/Providers";
++import PageTransition from "@/components/PageTransition";
+ 
+ export const metadata: Metadata = {
+   title: "Venture Studio | Powered by CNIB",
+@@ -33,7 +34,7 @@ export default function RootLayout({
+         <Providers>
+           <Header />
+           <main id="main-content" className="flex-1" tabIndex={-1}>
+-            {children}
++            <PageTransition>{children}</PageTransition>
+           </main>
+           <Footer />
+         </Providers>
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index e47aa7b..2a9571b 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -5,6 +5,7 @@ import ProgressWidget from "@/components/ProgressWidget";
+ import HeroVisual from "@/components/HeroVisual";
+ import PhaseIcon from "@/components/PhaseIcon";
+ import AnimatedCounter from "@/components/AnimatedCounter";
++import CursorGlow from "@/components/CursorGlow";
+ 
+ export default function Home() {
+   const availableCount = getAvailableModules().length;
+@@ -12,7 +13,8 @@ export default function Home() {
+   return (
+     <>
+       {/* ── Hero ────────────────────────────────────────────────── */}
+-      <section className="mesh-gradient-hero relative overflow-hidden min-h-[100svh] flex items-center">
++      <section className="mesh-gradient-hero cursor-glow noise-subtle relative overflow-hidden min-h-[100svh] flex items-center">
++        <CursorGlow />
+         {/* Decorative grid */}
+         <div
+           className="absolute inset-0 pointer-events-none"
+@@ -24,6 +26,15 @@ export default function Home() {
+           aria-hidden="true"
+         />
+ 
++        {/* Drifting dot particle layer */}
++        <div
++          className="absolute inset-0 drift-dots pointer-events-none opacity-70"
++          aria-hidden="true"
++        />
++
++        {/* Mobile-only decorative ring (iris rings hidden on mobile) */}
++        <div className="mobile-ring-decor" aria-hidden="true" />
++
+         {/* Animated iris rings */}
+         <HeroVisual />
+ 
+@@ -88,9 +99,13 @@ export default function Home() {
+       </section>
+ 
+       {/* ── Stats Bar ───────────────────────────────────────────── */}
+-      <section className="section-yellow" aria-label="Program highlights">
+-        <div className="content-max py-12 sm:py-16">
+-          <Stagger className="stat-grid text-center" staggerDelay={0.08}>
++      <section className="section-yellow relative overflow-hidden" aria-label="Program highlights">
++        <div
++          className="absolute inset-0 dot-grid-bg-light pointer-events-none opacity-40"
++          aria-hidden="true"
++        />
++        <div className="content-max py-14 sm:py-20 relative z-10">
++          <Stagger className="stat-grid-dark text-center" staggerDelay={0.08}>
+             {[
+               { value: "18", label: "Modules" },
+               { value: "6", label: "Phases" },
+@@ -101,7 +116,7 @@ export default function Home() {
+                 <p className="stat-number text-cnib-black">
+                   <AnimatedCounter value={stat.value} />
+                 </p>
+-                <p className="stat-label text-cnib-black/70 mt-2">{stat.label}</p>
++                <p className="stat-label text-cnib-black/70 mt-3">{stat.label}</p>
+               </StaggerItem>
+             ))}
+           </Stagger>
+@@ -161,7 +176,7 @@ export default function Home() {
+       </section>
+ 
+       {/* ── The 6 Phases ────────────────────────────────────── */}
+-      <section className="mesh-gradient-dark section-padding relative overflow-hidden" aria-label="Program phases">
++      <section className="mesh-gradient-dark noise-subtle section-padding relative overflow-hidden" aria-label="Program phases">
+         <div
+           className="absolute inset-0 pointer-events-none"
+           style={{
+@@ -171,6 +186,10 @@ export default function Home() {
+           }}
+           aria-hidden="true"
+         />
++        <div
++          className="absolute inset-0 pointer-events-none dot-grid-bg opacity-50"
++          aria-hidden="true"
++        />
+ 
+         <div className="content-max relative z-10">
+           <FadeIn className="text-center mb-20">
+@@ -201,7 +220,7 @@ export default function Home() {
+                     <div className="flex items-center justify-between mb-6">
+                       <div className="flex items-center gap-3">
+                         <PhaseIcon phase={p.id} size={36} className="text-cnib-yellow" />
+-                        <span className="text-cnib-yellow font-bold text-3xl font-mono tracking-tighter">
++                        <span className="phase-num-ring text-cnib-yellow font-bold text-2xl font-mono tracking-tighter leading-none">
+                           {String(p.number).padStart(2, "0")}
+                         </span>
+                       </div>
+@@ -276,8 +295,23 @@ export default function Home() {
+       </section>
+ 
+       {/* ── Meet Your Instructor ────────────────────────────── */}
+-      <section className="section-padding bg-white" aria-label="Meet your instructor">
+-        <div className="content-narrow">
++      <section className="section-padding bg-white relative" aria-label="Meet your instructor">
++        {/* Decorative quote mark */}
++        <svg
++          className="absolute left-6 top-16 pointer-events-none opacity-[0.06] hidden md:block"
++          width="220"
++          height="180"
++          viewBox="0 0 220 180"
++          fill="none"
++          aria-hidden="true"
++        >
++          <path
++            d="M0 140V100C0 50 30 15 80 0L95 25C65 40 50 60 50 90H85V140H0ZM125 140V100C125 50 155 15 205 0L220 25C190 40 175 60 175 90H210V140H125Z"
++            fill="var(--cnib-yellow-dim)"
++          />
++        </svg>
++
++        <div className="content-narrow relative">
+           <FadeIn className="text-center mb-12">
+             <p className="caption text-cnib-yellow-on-light mb-6">Your instructor</p>
+             <h2 className="section-heading text-cnib-black mb-8">
+@@ -314,7 +348,12 @@ export default function Home() {
+       </section>
+ 
+       {/* ── CTA ───────────────────────────────────────────────────── */}
+-      <section className="mesh-gradient-dark section-padding relative overflow-hidden" aria-label="Call to action">
++      <section className="mesh-gradient-dark cursor-glow noise-subtle section-padding relative overflow-hidden" aria-label="Call to action">
++        <CursorGlow />
++        <div
++          className="absolute inset-0 pointer-events-none dot-grid-bg opacity-60"
++          aria-hidden="true"
++        />
+         <div
+           className="absolute inset-0 pointer-events-none"
+           style={{
+diff --git a/src/app/progress/page.tsx b/src/app/progress/page.tsx
+index 4c84eaa..959f5c4 100644
+--- a/src/app/progress/page.tsx
++++ b/src/app/progress/page.tsx
+@@ -145,8 +145,7 @@ function CheckIcon({ checked }: { checked: boolean }) {
+ function PhaseBar({ percent, label }: { percent: number; label: string }) {
+   return (
+     <div
+-      className="w-full h-1.5 rounded-full overflow-hidden"
+-      style={{ background: "rgba(255,255,255,0.08)" }}
++      className="progress-bar-track"
+       role="progressbar"
+       aria-valuenow={percent}
+       aria-valuemin={0}
+@@ -154,11 +153,9 @@ function PhaseBar({ percent, label }: { percent: number; label: string }) {
+       aria-label={label}
+     >
+       <div
+-        className="h-full rounded-full transition-all duration-500"
+-        style={{
+-          width: `${percent}%`,
+-          background: percent === 100 ? "var(--cnib-yellow)" : "var(--cnib-yellow-dim)",
+-        }}
++        className="progress-bar-fill"
++        data-complete={percent === 100 ? "true" : "false"}
++        style={{ width: `${percent}%` }}
+       />
+     </div>
+   );
+@@ -334,6 +331,18 @@ export default function ProgressPage() {
+             )}
+ 
+             <div className="content-max relative z-10">
++              {/* Journey connector line (between phases) */}
++              {idx > 0 && (
++                <div
++                  className="absolute left-1/2 -translate-x-1/2 -top-8 w-[2px] h-16 hidden lg:block"
++                  style={{
++                    background:
++                      "linear-gradient(180deg, transparent 0%, rgba(255,241,0,0.4) 50%, transparent 100%)",
++                  }}
++                  aria-hidden="true"
++                />
++              )}
++
+               {/* Phase header */}
+               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                 <div>
+diff --git a/src/app/themes/page.tsx b/src/app/themes/page.tsx
+index fb21c3d..3cf99bd 100644
+--- a/src/app/themes/page.tsx
++++ b/src/app/themes/page.tsx
+@@ -3,6 +3,7 @@ import type { Metadata } from "next";
+ import { phases, getModulesByPhase, getAvailableModules } from "@/data/modules";
+ import { FadeIn, Stagger, StaggerItem } from "@/components/Animate";
+ import ModuleComplete from "@/components/ModuleComplete";
++import PhaseIcon from "@/components/PhaseIcon";
+ 
+ export const metadata: Metadata = {
+   title: "Themes | Venture Studio",
+@@ -87,8 +88,13 @@ export default function ThemesPage() {
+                   >
+                     {String(phase.number).padStart(2, "0")}
+                   </span>
+-                  <div className="pt-2 sm:pt-6">
++                  <div className="pt-2 sm:pt-6 flex-1">
+                     <div className="flex items-center gap-3 mb-3">
++                      <PhaseIcon
++                        phase={phase.id}
++                        size={28}
++                        className={isDark ? "text-cnib-yellow" : "text-cnib-yellow-on-light"}
++                      />
+                       {isDark && <span className="glow-dot" aria-hidden="true" />}
+                       <span className={`eyebrow ${isDark ? "text-cnib-yellow" : "text-cnib-yellow-on-light"}`}>
+                         Phase {phase.number}
+@@ -107,6 +113,24 @@ export default function ThemesPage() {
+                     >
+                       {phase.tagline}
+                     </p>
++                    {/* Journey progress line */}
++                    <div
++                      className="mt-6 h-[2px] rounded-full overflow-hidden max-w-xs"
++                      style={{
++                        background: isDark ? "rgba(255,255,255,0.08)" : "rgba(10,10,10,0.06)",
++                      }}
++                      aria-hidden="true"
++                    >
++                      <div
++                        className="h-full rounded-full"
++                        style={{
++                          width: `${(phase.number / phases.length) * 100}%`,
++                          background: isDark
++                            ? "linear-gradient(90deg, var(--cnib-yellow-dim) 0%, var(--cnib-yellow) 100%)"
++                            : "linear-gradient(90deg, var(--cnib-yellow-on-light) 0%, var(--cnib-yellow-dim) 100%)",
++                        }}
++                      />
++                    </div>
+                   </div>
+                 </div>
+               </FadeIn>
+diff --git a/src/app/toolkit/page.tsx b/src/app/toolkit/page.tsx
+index 13e1acb..527f1b1 100644
+--- a/src/app/toolkit/page.tsx
++++ b/src/app/toolkit/page.tsx
+@@ -1,6 +1,7 @@
+ import Link from "next/link";
+ import type { Metadata } from "next";
+ import { getAvailableModules } from "@/data/modules";
++import ToolkitFilter from "@/components/ToolkitFilter";
+ 
+ export const metadata: Metadata = {
+   title: "Toolkit | Venture Studio",
+@@ -43,13 +44,6 @@ const toolkitResources = [
+   },
+ ];
+ 
+-const typeLabels: Record<string, string> = {
+-  worksheet: "Worksheet",
+-  guide: "Guide",
+-  template: "Template",
+-  podcast: "Podcast",
+-};
+-
+ export default function ToolkitPage() {
+   return (
+     <>
+@@ -84,50 +78,14 @@ export default function ToolkitPage() {
+       {/* ── Worksheets & Guides ───────────────────────────────── */}
+       <section className="section-padding bg-white" aria-label="Downloadable resources">
+         <div className="content-max">
+-          <div className="mb-16">
++          <div className="mb-10">
+             <p className="caption text-cnib-yellow-on-light mb-3">Downloads</p>
+             <h2 className="section-heading text-cnib-black">
+               Worksheets &amp; Guides
+             </h2>
+           </div>
+ 
+-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+-            {toolkitResources.map((resource) => (
+-              <div
+-                key={resource.id}
+-                className="premium-card flex flex-col"
+-              >
+-                <div className="flex items-center gap-3 mb-5">
+-                  <span className="badge">{typeLabels[resource.type]}</span>
+-                  <span className="text-xs text-text-muted font-medium">{resource.format}</span>
+-                </div>
+-                <h3 className="text-lg font-bold text-cnib-black mb-3">
+-                  {resource.title}
+-                </h3>
+-                <p className="text-sm text-text-secondary leading-relaxed mb-6 flex-1">
+-                  {resource.description}
+-                </p>
+-                <div className="flex items-center gap-4">
+-                  <a
+-                    href={resource.downloadUrl}
+-                    download={resource.fileName}
+-                    className="btn-primary text-sm py-2.5 px-6"
+-                    aria-label={`Download ${resource.title} (${resource.format})`}
+-                  >
+-                    Download
+-                  </a>
+-                  {resource.relatedModule && (
+-                    <Link
+-                      href={`/themes/${resource.relatedModule}`}
+-                      className="text-sm text-cnib-blue hover:text-cnib-black focus-visible:text-cnib-black no-underline transition-colors font-medium"
+-                    >
+-                      View module <span aria-hidden="true">&rarr;</span>
+-                    </Link>
+-                  )}
+-                </div>
+-              </div>
+-            ))}
+-          </div>
++          <ToolkitFilter resources={toolkitResources} />
+         </div>
+       </section>
+ 
+diff --git a/src/components/CursorGlow.tsx b/src/components/CursorGlow.tsx
+new file mode 100644
+index 0000000..08a7ad9
+--- /dev/null
++++ b/src/components/CursorGlow.tsx
+@@ -0,0 +1,73 @@
++"use client";
++
++import { useEffect, useRef, type ReactNode } from "react";
++
++interface CursorGlowProps {
++  children?: ReactNode;
++  /** CSS selector for the target; if omitted, uses the closest ancestor with class `cursor-glow`. */
++  targetSelector?: string;
++}
++
++/**
++ * Non-rendering tracker that attaches a low-cost mousemove listener to a
++ * target element and updates `--cursor-x` / `--cursor-y` CSS custom
++ * properties consumed by `.cursor-glow::before`. Respects reduced motion
++ * and no-hover (touch) devices.
++ */
++export default function CursorGlow({
++  children,
++  targetSelector,
++}: CursorGlowProps) {
++  const anchorRef = useRef<HTMLSpanElement>(null);
++
++  useEffect(() => {
++    const anchor = anchorRef.current;
++    if (!anchor) return;
++
++    const target: HTMLElement | null = targetSelector
++      ? document.querySelector(targetSelector)
++      : anchor.closest<HTMLElement>(".cursor-glow");
++    if (!target) return;
++
++    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
++    if (window.matchMedia("(hover: none)").matches) return;
++
++    let rafId: number | null = null;
++    let pendingX = 50;
++    let pendingY = 50;
++
++    const apply = () => {
++      target.style.setProperty("--cursor-x", `${pendingX}%`);
++      target.style.setProperty("--cursor-y", `${pendingY}%`);
++      rafId = null;
++    };
++
++    const handleMove = (e: MouseEvent) => {
++      const rect = target.getBoundingClientRect();
++      pendingX = ((e.clientX - rect.left) / rect.width) * 100;
++      pendingY = ((e.clientY - rect.top) / rect.height) * 100;
++      if (rafId === null) rafId = requestAnimationFrame(apply);
++    };
++
++    const handleEnter = () => target.classList.add("is-hovered");
++    const handleLeave = () => target.classList.remove("is-hovered");
++
++    target.addEventListener("mousemove", handleMove);
++    target.addEventListener("mouseenter", handleEnter);
++    target.addEventListener("mouseleave", handleLeave);
++
++    return () => {
++      target.removeEventListener("mousemove", handleMove);
++      target.removeEventListener("mouseenter", handleEnter);
++      target.removeEventListener("mouseleave", handleLeave);
++      if (rafId !== null) cancelAnimationFrame(rafId);
++    };
++  }, [targetSelector]);
++
++  return (
++    <>
++      <span ref={anchorRef} aria-hidden="true" className="sr-only" />
++      {children}
++    </>
++  );
++}
+diff --git a/src/components/Header.tsx b/src/components/Header.tsx
+index 5797cb6..4d39a48 100644
+--- a/src/components/Header.tsx
++++ b/src/components/Header.tsx
+@@ -3,6 +3,7 @@
+ import Link from "next/link";
+ import { useState, useRef, useEffect, useCallback } from "react";
+ import { usePathname } from "next/navigation";
++import { motion, AnimatePresence } from "framer-motion";
+ 
+ const navLinks = [
+   { href: "/", label: "Home" },
+@@ -21,7 +22,6 @@ export default function Header() {
+   const isActive = (href: string) =>
+     href === "/" ? pathname === "/" : pathname.startsWith(href);
+ 
+-  /* Close menu on Escape — return focus to trigger button */
+   const handleKeyDown = useCallback(
+     (e: KeyboardEvent) => {
+       if (e.key === "Escape" && menuOpen) {
+@@ -37,7 +37,6 @@ export default function Header() {
+     return () => document.removeEventListener("keydown", handleKeyDown);
+   }, [handleKeyDown]);
+ 
+-  /* Focus first link when mobile menu opens */
+   useEffect(() => {
+     if (menuOpen && menuRef.current) {
+       const firstLink = menuRef.current.querySelector("a");
+@@ -45,18 +44,28 @@ export default function Header() {
+     }
+   }, [menuOpen]);
+ 
+-  /* Close menu on route change */
+   useEffect(() => {
+     setMenuOpen(false);
+   }, [pathname]);
+ 
++  /* Lock body scroll when mobile menu is open */
++  useEffect(() => {
++    if (menuOpen) {
++      const prev = document.body.style.overflow;
++      document.body.style.overflow = "hidden";
++      return () => {
++        document.body.style.overflow = prev;
++      };
++    }
++  }, [menuOpen]);
++
+   return (
+     <header
+       className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06]"
+       style={{
+-        background: "rgba(10, 10, 10, 0.85)",
+-        backdropFilter: "blur(20px) saturate(180%)",
+-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
++        background: "rgba(10, 10, 10, 0.78)",
++        backdropFilter: "blur(24px) saturate(180%)",
++        WebkitBackdropFilter: "blur(24px) saturate(180%)",
+       }}
+       role="banner"
+     >
+@@ -68,7 +77,7 @@ export default function Header() {
+             className="flex items-center gap-2.5 no-underline group"
+             aria-label="Venture Studio home"
+           >
+-            <span className="text-cnib-yellow font-bold text-lg tracking-tight">
++            <span className="text-cnib-yellow font-bold text-lg tracking-tight transition-transform group-hover:scale-[1.03] origin-left">
+               Venture Studio
+             </span>
+             <span
+@@ -84,21 +93,40 @@ export default function Header() {
+             className="hidden md:flex items-center gap-0.5"
+             aria-label="Main navigation"
+           >
+-            {navLinks.map((link) => (
+-              <Link
+-                key={link.href}
+-                href={link.href}
+-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors no-underline nav-link ${
+-                  isActive(link.href) ? "nav-link-active" : ""
+-                }`}
+-                aria-current={isActive(link.href) ? "page" : undefined}
+-              >
+-                {link.label}
+-              </Link>
+-            ))}
++            {navLinks.map((link) => {
++              const active = isActive(link.href);
++              return (
++                <Link
++                  key={link.href}
++                  href={link.href}
++                  className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-colors no-underline nav-link ${
++                    active ? "nav-link-active" : ""
++                  }`}
++                  aria-current={active ? "page" : undefined}
++                >
++                  {link.label}
++                  {active && (
++                    <motion.span
++                      layoutId="nav-underline"
++                      className="absolute left-3 right-3 -bottom-[1px] h-[2px] rounded-full"
++                      style={{
++                        background: "var(--cnib-yellow)",
++                        boxShadow: "0 0 10px rgba(255,241,0,0.55)",
++                      }}
++                      transition={{
++                        type: "spring",
++                        stiffness: 380,
++                        damping: 34,
++                      }}
++                      aria-hidden="true"
++                    />
++                  )}
++                </Link>
++              );
++            })}
+           </nav>
+ 
+-          {/* Mobile menu button — 44×44 minimum touch target */}
++          {/* Mobile menu button */}
+           <button
+             ref={menuButtonRef}
+             className="md:hidden p-2.5 rounded-lg transition-colors text-white flex items-center justify-center"
+@@ -137,32 +165,77 @@ export default function Header() {
+             </svg>
+           </button>
+         </div>
++      </div>
+ 
+-        {/* Mobile Nav */}
++      {/* Mobile Nav — slide in from right with backdrop */}
++      <AnimatePresence>
+         {menuOpen && (
+-          <nav
+-            ref={menuRef}
+-            id="mobile-menu"
+-            className="md:hidden pb-4 border-t border-white/[0.06] pt-3"
+-            aria-label="Mobile navigation"
+-          >
+-            {navLinks.map((link) => (
+-              <Link
+-                key={link.href}
+-                href={link.href}
+-                className={`flex items-center px-4 py-3 text-base font-medium rounded-lg transition-colors no-underline nav-link ${
+-                  isActive(link.href) ? "nav-link-active" : ""
+-                }`}
+-                style={{ minHeight: 44 }}
+-                aria-current={isActive(link.href) ? "page" : undefined}
+-                onClick={() => setMenuOpen(false)}
+-              >
+-                {link.label}
+-              </Link>
+-            ))}
+-          </nav>
++          <>
++            <motion.div
++              initial={{ opacity: 0 }}
++              animate={{ opacity: 1 }}
++              exit={{ opacity: 0 }}
++              transition={{ duration: 0.25 }}
++              className="md:hidden fixed inset-0 top-16 z-40"
++              style={{
++                background: "rgba(10, 10, 10, 0.6)",
++                backdropFilter: "blur(6px)",
++                WebkitBackdropFilter: "blur(6px)",
++              }}
++              aria-hidden="true"
++              onClick={() => setMenuOpen(false)}
++            />
++            <motion.nav
++              ref={menuRef}
++              id="mobile-menu"
++              className="md:hidden fixed top-16 right-0 bottom-0 w-[80%] max-w-sm z-50 flex flex-col gap-1 px-4 py-6 border-l border-white/[0.08]"
++              style={{
++                background: "rgba(10, 10, 10, 0.92)",
++                backdropFilter: "blur(24px) saturate(180%)",
++                WebkitBackdropFilter: "blur(24px) saturate(180%)",
++              }}
++              aria-label="Mobile navigation"
++              initial={{ x: "100%" }}
++              animate={{ x: 0 }}
++              exit={{ x: "100%" }}
++              transition={{
++                type: "spring",
++                stiffness: 360,
++                damping: 32,
++              }}
++            >
++              {navLinks.map((link, idx) => {
++                const active = isActive(link.href);
++                return (
++                  <motion.div
++                    key={link.href}
++                    initial={{ opacity: 0, x: 20 }}
++                    animate={{ opacity: 1, x: 0 }}
++                    transition={{ delay: 0.05 + idx * 0.04, duration: 0.3 }}
++                  >
++                    <Link
++                      href={link.href}
++                      className={`flex items-center px-4 py-3 text-base font-medium rounded-lg transition-colors no-underline nav-link ${
++                        active ? "nav-link-active" : ""
++                      }`}
++                      style={{
++                        minHeight: 44,
++                        background: active
++                          ? "rgba(255, 241, 0, 0.08)"
++                          : "transparent",
++                      }}
++                      aria-current={active ? "page" : undefined}
++                      onClick={() => setMenuOpen(false)}
++                    >
++                      {link.label}
++                    </Link>
++                  </motion.div>
++                );
++              })}
++            </motion.nav>
++          </>
+         )}
+-      </div>
++      </AnimatePresence>
+     </header>
+   );
+ }
+diff --git a/src/components/PageTransition.tsx b/src/components/PageTransition.tsx
+new file mode 100644
+index 0000000..c3679c1
+--- /dev/null
++++ b/src/components/PageTransition.tsx
+@@ -0,0 +1,24 @@
++"use client";
++
++import { usePathname } from "next/navigation";
++import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
++import type { ReactNode } from "react";
++
++export default function PageTransition({ children }: { children: ReactNode }) {
++  const pathname = usePathname();
++  const reduced = useReducedMotion();
++
++  return (
++    <AnimatePresence mode="wait" initial={false}>
++      <motion.div
++        key={pathname}
++        initial={{ opacity: 0, y: reduced ? 0 : 8 }}
++        animate={{ opacity: 1, y: 0 }}
++        exit={{ opacity: 0, y: reduced ? 0 : -8 }}
++        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
++      >
++        {children}
++      </motion.div>
++    </AnimatePresence>
++  );
++}
+diff --git a/src/components/ParallaxSection.tsx b/src/components/ParallaxSection.tsx
+new file mode 100644
+index 0000000..2fae540
+--- /dev/null
++++ b/src/components/ParallaxSection.tsx
+@@ -0,0 +1,36 @@
++"use client";
++
++import { useRef, type ReactNode } from "react";
++import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
++
++interface ParallaxSectionProps {
++  children: ReactNode;
++  className?: string;
++  offset?: number;
++}
++
++export default function ParallaxSection({
++  children,
++  className,
++  offset = 60,
++}: ParallaxSectionProps) {
++  const ref = useRef<HTMLDivElement>(null);
++  const prefersReducedMotion = useReducedMotion();
++
++  const { scrollYProgress } = useScroll({
++    target: ref,
++    offset: ["start end", "end start"],
++  });
++
++  const y = useTransform(
++    scrollYProgress,
++    [0, 1],
++    prefersReducedMotion ? [0, 0] : [offset, -offset]
++  );
++
++  return (
++    <div ref={ref} className={className}>
++      <motion.div style={{ y, willChange: "transform" }}>{children}</motion.div>
++    </div>
++  );
++}
+diff --git a/src/components/ToolkitFilter.tsx b/src/components/ToolkitFilter.tsx
+new file mode 100644
+index 0000000..c82cc1f
+--- /dev/null
++++ b/src/components/ToolkitFilter.tsx
+@@ -0,0 +1,115 @@
++"use client";
++
++import { useState, useMemo } from "react";
++import Link from "next/link";
++import { motion, AnimatePresence } from "framer-motion";
++
++interface Resource {
++  id: string;
++  title: string;
++  description: string;
++  type: "worksheet" | "guide" | "template" | "podcast";
++  format: string;
++  fileName: string;
++  downloadUrl: string;
++  relatedModule?: string;
++}
++
++const typeLabels: Record<string, string> = {
++  all: "All",
++  worksheet: "Worksheets",
++  guide: "Guides",
++  template: "Templates",
++  podcast: "Podcasts",
++};
++
++export default function ToolkitFilter({ resources }: { resources: Resource[] }) {
++  const [active, setActive] = useState<string>("all");
++
++  const filters = useMemo(() => {
++    const present = new Set<string>(resources.map((r) => r.type));
++    return ["all", ...["worksheet", "guide", "template", "podcast"].filter((t) =>
++      present.has(t as Resource["type"])
++    )];
++  }, [resources]);
++
++  const visible =
++    active === "all" ? resources : resources.filter((r) => r.type === active);
++
++  return (
++    <>
++      <div
++        className="flex flex-wrap gap-2 mb-10"
++        role="tablist"
++        aria-label="Filter resources by type"
++      >
++        {filters.map((f) => (
++          <button
++            key={f}
++            className="filter-pill"
++            data-active={active === f ? "true" : "false"}
++            onClick={() => setActive(f)}
++            role="tab"
++            aria-selected={active === f}
++            aria-controls="filtered-resources"
++          >
++            {typeLabels[f]}
++          </button>
++        ))}
++      </div>
++
++      <motion.div
++        id="filtered-resources"
++        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
++        layout
++      >
++        <AnimatePresence mode="popLayout">
++          {visible.map((resource) => (
++            <motion.div
++              key={resource.id}
++              layout
++              initial={{ opacity: 0, y: 16 }}
++              animate={{ opacity: 1, y: 0 }}
++              exit={{ opacity: 0, y: -8, scale: 0.96 }}
++              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
++              className="premium-card flex flex-col group"
++            >
++              <div className="flex items-center gap-3 mb-5">
++                <span className="badge">
++                  {typeLabels[resource.type].replace(/s$/, "")}
++                </span>
++                <span className="text-xs text-text-muted font-medium">
++                  {resource.format}
++                </span>
++              </div>
++              <h3 className="text-lg font-bold text-cnib-black mb-3 transition-colors group-hover:text-cnib-blue">
++                {resource.title}
++              </h3>
++              <p className="text-sm text-text-secondary leading-relaxed mb-6 flex-1">
++                {resource.description}
++              </p>
++              <div className="flex items-center gap-4">
++                <a
++                  href={resource.downloadUrl}
++                  download={resource.fileName}
++                  className="btn-primary text-sm py-2.5 px-6"
++                  aria-label={`Download ${resource.title} (${resource.format})`}
++                >
++                  Download
++                </a>
++                {resource.relatedModule && (
++                  <Link
++                    href={`/themes/${resource.relatedModule}`}
++                    className="text-sm text-cnib-blue hover:text-cnib-black focus-visible:text-cnib-black no-underline transition-colors font-medium"
++                  >
++                    View module <span aria-hidden="true">&rarr;</span>
++                  </Link>
++                )}
++              </div>
++            </motion.div>
++          ))}
++        </AnimatePresence>
++      </motion.div>
++    </>
++  );
++}

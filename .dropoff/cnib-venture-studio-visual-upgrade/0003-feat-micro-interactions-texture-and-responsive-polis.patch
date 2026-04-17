@@ -1,0 +1,206 @@
+From 5a0901394bd91e8cbb9312cc9f9daa2c54e3f4b6 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 17 Apr 2026 19:12:44 +0000
+Subject: [PATCH 3/3] feat: micro-interactions, texture, and responsive polish
+
+- CursorGlow: non-rendering client tracker that attaches mousemove to its .cursor-glow ancestor and updates --cursor-x/--cursor-y CSS vars via rAF. Respects reduced motion + no-hover.
+- PageTransition: AnimatePresence wrapping layout children, keyed on pathname, fade + 8px y translate (0 if reduced).
+- Home hero + CTA: CursorGlow tracker installed, noise-subtle overlay, dot-grid-bg pattern on CTA and phases sections for depth.
+---
+ src/app/layout.tsx                |  3 +-
+ src/app/page.tsx                  | 17 +++++--
+ src/components/CursorGlow.tsx     | 73 +++++++++++++++++++++++++++++++
+ src/components/PageTransition.tsx | 24 ++++++++++
+ 4 files changed, 113 insertions(+), 4 deletions(-)
+ create mode 100644 src/components/CursorGlow.tsx
+ create mode 100644 src/components/PageTransition.tsx
+
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 05bf3a0..2cfbad1 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -3,6 +3,7 @@ import "./globals.css";
+ import Header from "@/components/Header";
+ import Footer from "@/components/Footer";
+ import Providers from "@/components/Providers";
++import PageTransition from "@/components/PageTransition";
+ 
+ export const metadata: Metadata = {
+   title: "Venture Studio | Powered by CNIB",
+@@ -33,7 +34,7 @@ export default function RootLayout({
+         <Providers>
+           <Header />
+           <main id="main-content" className="flex-1" tabIndex={-1}>
+-            {children}
++            <PageTransition>{children}</PageTransition>
+           </main>
+           <Footer />
+         </Providers>
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 642cbc0..2a9571b 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -5,6 +5,7 @@ import ProgressWidget from "@/components/ProgressWidget";
+ import HeroVisual from "@/components/HeroVisual";
+ import PhaseIcon from "@/components/PhaseIcon";
+ import AnimatedCounter from "@/components/AnimatedCounter";
++import CursorGlow from "@/components/CursorGlow";
+ 
+ export default function Home() {
+   const availableCount = getAvailableModules().length;
+@@ -12,7 +13,8 @@ export default function Home() {
+   return (
+     <>
+       {/* ── Hero ────────────────────────────────────────────────── */}
+-      <section className="mesh-gradient-hero cursor-glow relative overflow-hidden min-h-[100svh] flex items-center">
++      <section className="mesh-gradient-hero cursor-glow noise-subtle relative overflow-hidden min-h-[100svh] flex items-center">
++        <CursorGlow />
+         {/* Decorative grid */}
+         <div
+           className="absolute inset-0 pointer-events-none"
+@@ -174,7 +176,7 @@ export default function Home() {
+       </section>
+ 
+       {/* ── The 6 Phases ────────────────────────────────────── */}
+-      <section className="mesh-gradient-dark section-padding relative overflow-hidden" aria-label="Program phases">
++      <section className="mesh-gradient-dark noise-subtle section-padding relative overflow-hidden" aria-label="Program phases">
+         <div
+           className="absolute inset-0 pointer-events-none"
+           style={{
+@@ -184,6 +186,10 @@ export default function Home() {
+           }}
+           aria-hidden="true"
+         />
++        <div
++          className="absolute inset-0 pointer-events-none dot-grid-bg opacity-50"
++          aria-hidden="true"
++        />
+ 
+         <div className="content-max relative z-10">
+           <FadeIn className="text-center mb-20">
+@@ -342,7 +348,12 @@ export default function Home() {
+       </section>
+ 
+       {/* ── CTA ───────────────────────────────────────────────────── */}
+-      <section className="mesh-gradient-dark section-padding relative overflow-hidden" aria-label="Call to action">
++      <section className="mesh-gradient-dark cursor-glow noise-subtle section-padding relative overflow-hidden" aria-label="Call to action">
++        <CursorGlow />
++        <div
++          className="absolute inset-0 pointer-events-none dot-grid-bg opacity-60"
++          aria-hidden="true"
++        />
+         <div
+           className="absolute inset-0 pointer-events-none"
+           style={{
+diff --git a/src/components/CursorGlow.tsx b/src/components/CursorGlow.tsx
+new file mode 100644
+index 0000000..08a7ad9
+--- /dev/null
++++ b/src/components/CursorGlow.tsx
+@@ -0,0 +1,73 @@
++"use client";
++
++import { useEffect, useRef, type ReactNode } from "react";
++
++interface CursorGlowProps {
++  children?: ReactNode;
++  /** CSS selector for the target; if omitted, uses the closest ancestor with class `cursor-glow`. */
++  targetSelector?: string;
++}
++
++/**
++ * Non-rendering tracker that attaches a low-cost mousemove listener to a
++ * target element and updates `--cursor-x` / `--cursor-y` CSS custom
++ * properties consumed by `.cursor-glow::before`. Respects reduced motion
++ * and no-hover (touch) devices.
++ */
++export default function CursorGlow({
++  children,
++  targetSelector,
++}: CursorGlowProps) {
++  const anchorRef = useRef<HTMLSpanElement>(null);
++
++  useEffect(() => {
++    const anchor = anchorRef.current;
++    if (!anchor) return;
++
++    const target: HTMLElement | null = targetSelector
++      ? document.querySelector(targetSelector)
++      : anchor.closest<HTMLElement>(".cursor-glow");
++    if (!target) return;
++
++    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
++    if (window.matchMedia("(hover: none)").matches) return;
++
++    let rafId: number | null = null;
++    let pendingX = 50;
++    let pendingY = 50;
++
++    const apply = () => {
++      target.style.setProperty("--cursor-x", `${pendingX}%`);
++      target.style.setProperty("--cursor-y", `${pendingY}%`);
++      rafId = null;
++    };
++
++    const handleMove = (e: MouseEvent) => {
++      const rect = target.getBoundingClientRect();
++      pendingX = ((e.clientX - rect.left) / rect.width) * 100;
++      pendingY = ((e.clientY - rect.top) / rect.height) * 100;
++      if (rafId === null) rafId = requestAnimationFrame(apply);
++    };
++
++    const handleEnter = () => target.classList.add("is-hovered");
++    const handleLeave = () => target.classList.remove("is-hovered");
++
++    target.addEventListener("mousemove", handleMove);
++    target.addEventListener("mouseenter", handleEnter);
++    target.addEventListener("mouseleave", handleLeave);
++
++    return () => {
++      target.removeEventListener("mousemove", handleMove);
++      target.removeEventListener("mouseenter", handleEnter);
++      target.removeEventListener("mouseleave", handleLeave);
++      if (rafId !== null) cancelAnimationFrame(rafId);
++    };
++  }, [targetSelector]);
++
++  return (
++    <>
++      <span ref={anchorRef} aria-hidden="true" className="sr-only" />
++      {children}
++    </>
++  );
++}
+diff --git a/src/components/PageTransition.tsx b/src/components/PageTransition.tsx
+new file mode 100644
+index 0000000..c3679c1
+--- /dev/null
++++ b/src/components/PageTransition.tsx
+@@ -0,0 +1,24 @@
++"use client";
++
++import { usePathname } from "next/navigation";
++import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
++import type { ReactNode } from "react";
++
++export default function PageTransition({ children }: { children: ReactNode }) {
++  const pathname = usePathname();
++  const reduced = useReducedMotion();
++
++  return (
++    <AnimatePresence mode="wait" initial={false}>
++      <motion.div
++        key={pathname}
++        initial={{ opacity: 0, y: reduced ? 0 : 8 }}
++        animate={{ opacity: 1, y: 0 }}
++        exit={{ opacity: 0, y: reduced ? 0 : -8 }}
++        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
++      >
++        {children}
++      </motion.div>
++    </AnimatePresence>
++  );
++}
+-- 
+2.43.0
+
