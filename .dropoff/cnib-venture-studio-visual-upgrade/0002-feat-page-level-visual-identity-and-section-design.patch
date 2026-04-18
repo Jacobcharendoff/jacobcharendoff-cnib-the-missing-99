@@ -1,7 +1,7 @@
 From ae90e80fecd175bd6c5ffa7c9c495791e02baba6 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Fri, 17 Apr 2026 19:10:26 +0000
-Subject: [PATCH 2/3] feat: page-level visual identity and section design
+Subject: [PATCH 2/4] feat: page-level visual identity and section design
 
 Home: drifting dot particle layer in hero, mobile-only decorative ring, decorative quote-mark SVG behind instructor section, cursor-glow on hero.
 Themes: PhaseIcon next to each phase header + journey progress bar showing position (1/6, 2/6 ...).
