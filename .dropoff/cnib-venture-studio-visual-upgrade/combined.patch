@@ -6739,7 +6739,7 @@ index 7d8d7e6..d2eb39f 100644
            </div>
          </div>
 diff --git a/src/app/globals.css b/src/app/globals.css
-index e66550a..a24485c 100644
+index e66550a..20e5fce 100644
 --- a/src/app/globals.css
 +++ b/src/app/globals.css
 @@ -6,31 +6,35 @@
@@ -7182,7 +7182,7 @@ index e66550a..a24485c 100644
    transform: translateY(-3px);
  }
  
-@@ -647,10 +801,605 @@ body {
+@@ -647,10 +801,718 @@ body {
  /* ── Pulse glow for CTAs ─────────────────────────────────────── */
  
  @keyframes pulse-glow {
@@ -7750,6 +7750,119 @@ index e66550a..a24485c 100644
 +  }
 +}
 +
++/* ── Bento grid tiles (aceternity-inspired, reimplemented) ───── */
++/* Three variants:                                                */
++/*   bento-tile-hero   — cream on warm, primary tile              */
++/*   bento-tile-dark   — midnight on warm, sidebar tile           */
++/*   bento-tile-accent — amber-washed banner                      */
++/* All share: rounded corners, soft shadow, subtle hover lift,    */
++/* decorative oversized numeral via .bento-num.                   */
++
++.bento-tile {
++  position: relative;
++  overflow: hidden;
++  padding: clamp(1.5rem, 3vw, 2.5rem);
++  border-radius: var(--radius-lg);
++  border: 1px solid var(--border-light);
++  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
++              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
++              border-color 0.4s ease;
++  isolation: isolate;
++}
++
++.bento-tile:hover,
++.bento-tile:focus-within {
++  transform: translateY(-4px);
++  box-shadow: var(--shadow-card-hover);
++}
++
++.bento-tile-hero {
++  background:
++    radial-gradient(ellipse 70% 60% at 100% 0%, rgba(212, 165, 116, 0.18) 0%, transparent 55%),
++    var(--cnib-white);
++}
++
++.bento-tile-hero::before {
++  content: "";
++  position: absolute;
++  inset: 0;
++  background-image: radial-gradient(rgba(176, 133, 82, 0.08) 1px, transparent 1.5px);
++  background-size: 22px 22px;
++  opacity: 0.6;
++  pointer-events: none;
++  z-index: 0;
++}
++
++.bento-tile-dark {
++  background:
++    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(212, 165, 116, 0.12) 0%, transparent 60%),
++    linear-gradient(180deg, var(--cnib-charcoal) 0%, var(--cnib-black) 100%);
++  border-color: rgba(212, 165, 116, 0.22);
++  color: var(--cnib-cream);
++}
++
++.bento-tile-dark:hover,
++.bento-tile-dark:focus-within {
++  border-color: rgba(212, 165, 116, 0.45);
++  box-shadow:
++    0 12px 40px rgba(0, 0, 0, 0.3),
++    0 0 40px rgba(212, 165, 116, 0.15);
++}
++
++.bento-tile-accent {
++  background:
++    radial-gradient(ellipse 40% 100% at 90% 50%, rgba(212, 165, 116, 0.35) 0%, transparent 60%),
++    linear-gradient(120deg, var(--cnib-warm) 0%, #FAF4E8 100%);
++  border-color: rgba(176, 133, 82, 0.25);
++}
++
++/* Oversized decorative numeral — typographic scenery for bento tiles */
++.bento-num {
++  position: absolute;
++  top: -0.15em;
++  right: -0.08em;
++  font-family: var(--font-display);
++  font-size: clamp(7rem, 16vw, 14rem);
++  font-weight: 800;
++  line-height: 0.85;
++  letter-spacing: -0.08em;
++  color: transparent;
++  -webkit-text-stroke: 1.5px rgba(176, 133, 82, 0.18);
++  pointer-events: none;
++  user-select: none;
++  z-index: 0;
++}
++
++.bento-num-dark {
++  -webkit-text-stroke: 1.5px rgba(212, 165, 116, 0.2);
++}
++
++.bento-num-accent {
++  -webkit-text-stroke: 0;
++  color: rgba(176, 133, 82, 0.14);
++}
++
++/* Animated waveform bars inside bento-tile-dark */
++@keyframes bento-wave {
++  0%, 100% { transform: scaleY(1); opacity: 0.55; }
++  50%      { transform: scaleY(0.35); opacity: 1; }
++}
++
++.bento-wave-bar {
++  background: var(--cnib-yellow);
++  transform-origin: bottom;
++  animation: bento-wave 2.2s ease-in-out infinite;
++  opacity: 0.8;
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .bento-wave-bar {
++    animation: none;
++    opacity: 0.8;
++    transform: scaleY(0.65);
++  }
++}
++
 +/* ── Index tag (small pinned-label feel for section eyebrows) ── */
 +
 +.index-tag {
@@ -7812,18 +7925,21 @@ index 05bf3a0..2cfbad1 100644
            <Footer />
          </Providers>
 diff --git a/src/app/page.tsx b/src/app/page.tsx
-index e47aa7b..0b5f291 100644
+index e47aa7b..ea9664e 100644
 --- a/src/app/page.tsx
 +++ b/src/app/page.tsx
-@@ -5,6 +5,7 @@ import ProgressWidget from "@/components/ProgressWidget";
+@@ -5,6 +5,10 @@ import ProgressWidget from "@/components/ProgressWidget";
  import HeroVisual from "@/components/HeroVisual";
  import PhaseIcon from "@/components/PhaseIcon";
  import AnimatedCounter from "@/components/AnimatedCounter";
 +import CursorGlow from "@/components/CursorGlow";
++import SpotlightCard from "@/components/SpotlightCard";
++import BackgroundBeams from "@/components/BackgroundBeams";
++import TextGenerate from "@/components/TextGenerate";
  
  export default function Home() {
    const availableCount = getAvailableModules().length;
-@@ -12,7 +13,8 @@ export default function Home() {
+@@ -12,7 +16,8 @@ export default function Home() {
    return (
      <>
        {/* ── Hero ────────────────────────────────────────────────── */}
@@ -7833,7 +7949,7 @@ index e47aa7b..0b5f291 100644
          {/* Decorative grid */}
          <div
            className="absolute inset-0 pointer-events-none"
-@@ -24,6 +26,15 @@ export default function Home() {
+@@ -24,6 +29,18 @@ export default function Home() {
            aria-hidden="true"
          />
  
@@ -7843,13 +7959,16 @@ index e47aa7b..0b5f291 100644
 +          aria-hidden="true"
 +        />
 +
++        {/* Aceternity-inspired animated light beams — sit behind iris */}
++        <BackgroundBeams />
++
 +        {/* Mobile-only decorative ring (iris rings hidden on mobile) */}
 +        <div className="mobile-ring-decor" aria-hidden="true" />
 +
          {/* Animated iris rings */}
          <HeroVisual />
  
-@@ -36,11 +47,10 @@ export default function Home() {
+@@ -36,22 +53,23 @@ export default function Home() {
          <div className="content-max relative z-10 py-32 sm:py-40">
            <div className="max-w-5xl">
              <FadeIn delay={0.1}>
@@ -7865,16 +7984,28 @@ index e47aa7b..0b5f291 100644
                </div>
              </FadeIn>
  
-@@ -49,7 +59,7 @@ export default function Home() {
-                 Turn your idea
-                 <br />
-                 into your{" "}
+-            <FadeIn delay={0.2}>
+-              <h1 className="hero-heading text-white mb-8">
+-                Turn your idea
+-                <br />
+-                into your{" "}
 -                <span className="text-cnib-yellow">first dollar.</span>
-+                <span className="text-cnib-yellow scribble-underline">first dollar.</span>
-               </h1>
-             </FadeIn>
+-              </h1>
+-            </FadeIn>
++            <TextGenerate
++              as="h1"
++              className="hero-heading text-white mb-8"
++              words="Turn your idea into your first dollar."
++              stagger={0.07}
++              highlightIndices={{
++                5: "text-cnib-yellow scribble-underline",
++                6: "text-cnib-yellow scribble-underline",
++              }}
++            />
  
-@@ -79,18 +89,25 @@ export default function Home() {
+             <FadeIn delay={0.35}>
+               <p className="body-large max-w-2xl mb-14" style={{ color: "var(--text-on-dark-muted)" }}>
+@@ -79,18 +97,25 @@ export default function Home() {
            </div>
          </div>
  
@@ -7906,7 +8037,7 @@ index e47aa7b..0b5f291 100644
              {[
                { value: "18", label: "Modules" },
                { value: "6", label: "Phases" },
-@@ -101,7 +118,7 @@ export default function Home() {
+@@ -101,7 +126,7 @@ export default function Home() {
                  <p className="stat-number text-cnib-black">
                    <AnimatedCounter value={stat.value} />
                  </p>
@@ -7915,7 +8046,7 @@ index e47aa7b..0b5f291 100644
                </StaggerItem>
              ))}
            </Stagger>
-@@ -109,13 +126,16 @@ export default function Home() {
+@@ -109,13 +134,16 @@ export default function Home() {
        </section>
  
        {/* ── Who This Is For ─────────────────────────────────── */}
@@ -7937,7 +8068,7 @@ index e47aa7b..0b5f291 100644
              </h2>
              <p className="body-large text-text-secondary mb-16">
                You don&rsquo;t need a business degree. You don&rsquo;t need
-@@ -124,33 +144,47 @@ export default function Home() {
+@@ -124,33 +152,47 @@ export default function Home() {
              </p>
            </FadeIn>
  
@@ -7991,7 +8122,7 @@ index e47aa7b..0b5f291 100644
                      {item.desc}
                    </p>
                  </div>
-@@ -161,22 +195,37 @@ export default function Home() {
+@@ -161,22 +203,37 @@ export default function Home() {
        </section>
  
        {/* ── The 6 Phases ────────────────────────────────────── */}
@@ -8038,7 +8169,7 @@ index e47aa7b..0b5f291 100644
                <br />
                <span style={{ color: "var(--text-on-dark-muted)" }}>One clear path.</span>
              </h2>
-@@ -186,33 +235,56 @@ export default function Home() {
+@@ -186,42 +243,67 @@ export default function Home() {
              </p>
            </FadeIn>
  
@@ -8064,50 +8195,60 @@ index e47aa7b..0b5f291 100644
                    <Link
                      href={`/themes#${p.id}`}
 -                    className="glass-card no-underline group block h-full"
-+                    className="glass-card no-underline group block h-full relative"
++                    className="no-underline group block h-full"
                    >
 -                    <div className="flex items-center justify-between mb-6">
 -                      <div className="flex items-center gap-3">
 -                        <PhaseIcon phase={p.id} size={36} className="text-cnib-yellow" />
 -                        <span className="text-cnib-yellow font-bold text-3xl font-mono tracking-tighter">
 -                          {String(p.number).padStart(2, "0")}
-+                    {/* Oversized ghost numeral — typographic scenery */}
-+                    <span className="ghost-num" aria-hidden="true">
-+                      {String(p.number).padStart(2, "0")}
-+                    </span>
-+                    <div className="flex items-center justify-between mb-6 relative">
-+                      <div className="flex items-center gap-4">
-+                        <span className="pictograph" aria-hidden="true">
-+                          <PhaseIcon phase={p.id} size={32} className="text-cnib-yellow" />
++                    <SpotlightCard>
++                      {/* Oversized ghost numeral — typographic scenery */}
++                      <span className="ghost-num" aria-hidden="true">
++                        {String(p.number).padStart(2, "0")}
++                      </span>
++                      <div className="flex items-center justify-between mb-6 relative">
++                        <div className="flex items-center gap-4">
++                          <span className="pictograph" aria-hidden="true">
++                            <PhaseIcon phase={p.id} size={32} className="text-cnib-yellow" />
++                          </span>
++                          {/* Star node — part of the constellation motif */}
++                          <span
++                            className="inline-block rounded-full"
++                            style={{
++                              width: "8px",
++                              height: "8px",
++                              background: "var(--cnib-yellow)",
++                              boxShadow:
++                                "0 0 0 3px rgba(212,165,116,0.15), 0 0 10px rgba(212,165,116,0.55)",
++                            }}
++                            aria-hidden="true"
++                          />
++                        </div>
++                        <span className="eyebrow" style={{ color: "var(--text-on-dark-muted)" }}>
++                          {available}/{phaseModules.length}
                          </span>
-+                        {/* Star node — part of the constellation motif */}
-+                        <span
-+                          className="inline-block rounded-full"
-+                          style={{
-+                            width: "8px",
-+                            height: "8px",
-+                            background: "var(--cnib-yellow)",
-+                            boxShadow:
-+                              "0 0 0 3px rgba(212,165,116,0.15), 0 0 10px rgba(212,165,116,0.55)",
-+                          }}
-+                          aria-hidden="true"
-+                        />
                        </div>
-                       <span className="eyebrow" style={{ color: "var(--text-on-dark-muted)" }}>
+-                      <span className="eyebrow" style={{ color: "var(--text-on-dark-muted)" }}>
 -                        {available}/{phaseModules.length} modules
-+                        {available}/{phaseModules.length}
-                       </span>
-                     </div>
+-                      </span>
+-                    </div>
 -                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cnib-yellow transition-colors">
-+                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cnib-yellow transition-colors relative">
-                       {p.name}
-                     </h3>
+-                      {p.name}
+-                    </h3>
 -                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-on-dark-muted)" }}>
-+                    <p className="text-sm leading-relaxed relative" style={{ color: "var(--text-on-dark-muted)" }}>
-                       {p.tagline}
-                     </p>
+-                      {p.tagline}
+-                    </p>
++                      <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cnib-yellow transition-colors relative">
++                        {p.name}
++                      </h3>
++                      <p className="text-sm leading-relaxed relative" style={{ color: "var(--text-on-dark-muted)" }}>
++                        {p.tagline}
++                      </p>
++                    </SpotlightCard>
                    </Link>
-@@ -221,7 +293,7 @@ export default function Home() {
+                 </StaggerItem>
+               );
              })}
            </Stagger>
  
@@ -8116,7 +8257,180 @@ index e47aa7b..0b5f291 100644
              <Link href="/themes" className="btn-primary">
                View all {availableCount} modules
              </Link>
-@@ -276,8 +348,23 @@ export default function Home() {
+@@ -229,55 +311,164 @@ export default function Home() {
+         </div>
+       </section>
+ 
+-      {/* ── How It Works ────────────────────────────────────── */}
++      {/* ── How It Works (Bento grid) ───────────────────────── */}
+       <section className="section-warm section-padding" aria-label="How the program works">
+         <div className="content-max">
+           <FadeIn className="text-center mb-20">
+-            <p className="caption text-cnib-yellow-on-light mb-6">How it works</p>
++            <div className="mb-6 flex justify-center">
++              <span className="index-tag">How it works</span>
++            </div>
+             <h2 className="section-heading text-cnib-black">
+-              Built around your life,
++              Built around your{" "}
++              <span className="marker-ink">life</span>,
+               <br />
+               not around a classroom.
+             </h2>
+           </FadeIn>
+ 
+-          <Stagger className="grid grid-cols-1 md:grid-cols-3 gap-12" staggerDelay={0.15}>
+-            {[
+-              {
+-                num: "01",
+-                title: "Live sessions, every two weeks",
+-                desc: "90-minute bi-weekly sessions with real-world case studies, live discussion, and hands-on assignments. October through May.",
+-              },
+-              {
+-                num: "02",
+-                title: "Worksheets & podcasts per module",
+-                desc: "Every module comes with a practical worksheet in accessible .docx format, plus podcast episodes that walk through each concept.",
+-              },
+-              {
+-                num: "03",
+-                title: "Pitch to a live panel",
+-                desc: "The program ends with a Final Pitch Showcase \u2014 your chance to present your business to mentors and business leaders.",
+-              },
+-            ].map((item) => (
+-              <StaggerItem key={item.num}>
+-                <span className="number-accent block mb-4" aria-hidden="true">
+-                  {item.num}
++          {/* Bento grid: 3 rows × 3 cols on md+; first card spans 2 cols + 2 rows,
++              second card spans 1 col + 2 rows, third card spans 3 cols + 1 row. */}
++          <Stagger
++            className="grid gap-5 md:gap-6 md:grid-cols-3 md:grid-rows-[minmax(180px,auto)_minmax(180px,auto)_minmax(180px,auto)]"
++            staggerDelay={0.12}
++          >
++            {/* Tile 1 — sessions (hero tile, largest) */}
++            <StaggerItem className="md:col-span-2 md:row-span-2">
++              <div className="bento-tile bento-tile-hero group h-full">
++                <span className="bento-num" aria-hidden="true">01</span>
++                <div className="relative z-[1]">
++                  <span className="eyebrow text-cnib-yellow-on-light block mb-3">
++                    Chapter 01
++                  </span>
++                  <h3 className="text-2xl md:text-3xl font-bold text-cnib-black mb-4 leading-tight">
++                    Live sessions,{" "}
++                    <span className="marker-ink">every two weeks</span>.
++                  </h3>
++                  <p className="text-text-secondary leading-relaxed max-w-md">
++                    90-minute bi-weekly sessions with real-world case studies,
++                    live discussion, and hands-on assignments. October through
++                    May.
++                  </p>
++                  <div
++                    className="mt-6 flex items-center gap-2 text-cnib-yellow-on-light font-semibold text-sm"
++                    aria-hidden="true"
++                  >
++                    <span>Oct</span>
++                    <span className="h-px w-10 bg-cnib-yellow-on-light/40" />
++                    <span>May</span>
++                  </div>
++                </div>
++              </div>
++            </StaggerItem>
++
++            {/* Tile 2 — worksheets + podcasts (tall sidebar) */}
++            <StaggerItem className="md:row-span-2">
++              <div className="bento-tile bento-tile-dark group h-full">
++                <span className="bento-num bento-num-dark" aria-hidden="true">
++                  02
+                 </span>
+-                <h3 className="text-xl font-bold text-cnib-black mb-4">
+-                  {item.title}
+-                </h3>
+-                <p className="text-text-secondary leading-relaxed">
+-                  {item.desc}
+-                </p>
+-              </StaggerItem>
+-            ))}
++                <div className="relative z-[1] h-full flex flex-col">
++                  <span className="eyebrow text-cnib-yellow block mb-3">
++                    Chapter 02
++                  </span>
++                  <h3 className="text-xl font-bold text-white mb-4 leading-tight">
++                    Worksheets &amp; podcasts per module.
++                  </h3>
++                  <p
++                    className="text-sm leading-relaxed mb-auto"
++                    style={{ color: "var(--text-on-dark-muted)" }}
++                  >
++                    Every module ships with an accessible .docx worksheet and
++                    podcast episodes that walk through each concept.
++                  </p>
++                  {/* Decorative "waveform" bars */}
++                  <div
++                    className="mt-6 flex items-end gap-1 h-10"
++                    aria-hidden="true"
++                  >
++                    {[40, 70, 30, 90, 55, 80, 45, 65, 35, 75, 50].map((h, i) => (
++                      <span
++                        key={i}
++                        className="block flex-1 rounded-sm bento-wave-bar"
++                        style={{
++                          height: `${h}%`,
++                          animationDelay: `${i * 0.09}s`,
++                        }}
++                      />
++                    ))}
++                  </div>
++                </div>
++              </div>
++            </StaggerItem>
++
++            {/* Tile 3 — pitch showcase (wide banner) */}
++            <StaggerItem className="md:col-span-3">
++              <div className="bento-tile bento-tile-accent group h-full">
++                <span className="bento-num bento-num-accent" aria-hidden="true">
++                  03
++                </span>
++                <div className="relative z-[1] flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
++                  <div className="flex-1">
++                    <span className="eyebrow text-cnib-yellow-on-light block mb-3">
++                      Chapter 03 · Finale
++                    </span>
++                    <h3 className="text-2xl md:text-3xl font-bold text-cnib-black mb-3 leading-tight">
++                      Pitch to a{" "}
++                      <span className="marker-ink">live panel</span>.
++                    </h3>
++                    <p className="text-text-secondary leading-relaxed max-w-2xl">
++                      The program ends with a Final Pitch Showcase &mdash; your
++                      chance to present your business to mentors and business
++                      leaders.
++                    </p>
++                  </div>
++                  {/* Decorative spotlight-stage icon */}
++                  <svg
++                    className="w-24 h-24 md:w-32 md:h-32 shrink-0 opacity-80"
++                    viewBox="0 0 120 120"
++                    fill="none"
++                    aria-hidden="true"
++                  >
++                    <defs>
++                      <radialGradient id="stage-glow" cx="50%" cy="30%" r="55%">
++                        <stop offset="0%" stopColor="#D4A574" stopOpacity="0.85" />
++                        <stop offset="60%" stopColor="#D4A574" stopOpacity="0.25" />
++                        <stop offset="100%" stopColor="#D4A574" stopOpacity="0" />
++                      </radialGradient>
++                    </defs>
++                    <path
++                      d="M30 20 L90 20 L70 70 L50 70 Z"
++                      fill="url(#stage-glow)"
++                    />
++                    <circle cx="60" cy="85" r="8" fill="#0E1420" />
++                    <rect x="54" y="92" width="12" height="20" rx="2" fill="#0E1420" />
++                    <rect x="15" y="108" width="90" height="3" rx="1.5" fill="#0E1420" opacity="0.55" />
++                  </svg>
++                </div>
++              </div>
++            </StaggerItem>
+           </Stagger>
+         </div>
        </section>
  
        {/* ── Meet Your Instructor ────────────────────────────── */}
@@ -8142,7 +8456,7 @@ index e47aa7b..0b5f291 100644
            <FadeIn className="text-center mb-12">
              <p className="caption text-cnib-yellow-on-light mb-6">Your instructor</p>
              <h2 className="section-heading text-cnib-black mb-8">
-@@ -314,20 +401,27 @@ export default function Home() {
+@@ -314,20 +505,27 @@ export default function Home() {
        </section>
  
        {/* ── CTA ───────────────────────────────────────────────────── */}
@@ -8411,6 +8725,95 @@ index b5dc9ff..e74c3c3 100644
        whileInView={{ opacity: 1, x: 0 }}
        viewport={{ once: true, margin: "-40px" }}
        transition={{ duration: 0.6, delay, ease }}
+diff --git a/src/components/BackgroundBeams.tsx b/src/components/BackgroundBeams.tsx
+new file mode 100644
+index 0000000..e33b0db
+--- /dev/null
++++ b/src/components/BackgroundBeams.tsx
+@@ -0,0 +1,83 @@
++"use client";
++
++import { motion, useReducedMotion } from "framer-motion";
++import { useId } from "react";
++
++/**
++ * Aceternity-style background beams, reimplemented with framer-motion.
++ * Renders a set of diagonal SVG paths whose stroke-dashoffset travels
++ * from 0 → length, producing a subtle "beams of light" sweep behind
++ * the hero content. Intentionally low-opacity so it complements the
++ * iris rings in HeroVisual rather than competing with them.
++ *
++ * Fully decorative — aria-hidden. Freezes to a static frame under
++ * prefers-reduced-motion (motion config reduces duration globally,
++ * but we explicitly bail on the animate prop to be safe).
++ */
++export default function BackgroundBeams() {
++  const gradId = useId();
++  const reducedMotion = useReducedMotion();
++
++  // Six subtly different paths — all vaguely diagonal, staggered.
++  const paths = [
++    "M-200 -180 C 120 60, 320 220, 900 420",
++    "M-140 -60 C 180 160, 420 280, 960 520",
++    "M-240 40 C 140 240, 460 380, 1020 560",
++    "M-80 120 C 220 300, 560 440, 1080 640",
++    "M-320 240 C 160 380, 520 520, 1120 700",
++    "M-60 360 C 240 480, 620 600, 1160 820",
++  ];
++
++  return (
++    <div
++      aria-hidden="true"
++      className="absolute inset-0 pointer-events-none overflow-hidden"
++    >
++      <svg
++        className="absolute inset-0 w-full h-full"
++        viewBox="0 0 1000 800"
++        preserveAspectRatio="xMidYMid slice"
++        fill="none"
++      >
++        <defs>
++          <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
++            <stop offset="0%" stopColor="#D4A574" stopOpacity="0" />
++            <stop offset="40%" stopColor="#D4A574" stopOpacity="0.55" />
++            <stop offset="60%" stopColor="#E8C49A" stopOpacity="0.7" />
++            <stop offset="100%" stopColor="#D4A574" stopOpacity="0" />
++          </linearGradient>
++        </defs>
++
++        {paths.map((d, i) => (
++          <motion.path
++            key={i}
++            d={d}
++            stroke={`url(#${gradId})`}
++            strokeWidth={1.2}
++            strokeLinecap="round"
++            initial={{ pathLength: 0, opacity: 0 }}
++            animate={
++              reducedMotion
++                ? { pathLength: 1, opacity: 0.5 }
++                : {
++                    pathLength: [0, 1, 1],
++                    opacity: [0, 0.65, 0],
++                  }
++            }
++            transition={
++              reducedMotion
++                ? { duration: 0 }
++                : {
++                    duration: 6 + i * 0.4,
++                    repeat: Infinity,
++                    repeatDelay: 1.5,
++                    delay: i * 0.8,
++                    ease: "easeInOut",
++                  }
++            }
++          />
++        ))}
++      </svg>
++    </div>
++  );
++}
 diff --git a/src/components/CursorGlow.tsx b/src/components/CursorGlow.tsx
 new file mode 100644
 index 0000000..08a7ad9
@@ -8815,6 +9218,171 @@ index 8a13cc3..686f252 100644
          minHeight: 48,
        }}
        aria-label={`${completed.length} of ${total} modules done — ${percent}% complete. View your progress.`}
+diff --git a/src/components/SpotlightCard.tsx b/src/components/SpotlightCard.tsx
+new file mode 100644
+index 0000000..6235ebb
+--- /dev/null
++++ b/src/components/SpotlightCard.tsx
+@@ -0,0 +1,75 @@
++"use client";
++
++import { useRef, useState, type ReactNode, type CSSProperties } from "react";
++import { motion, useReducedMotion } from "framer-motion";
++
++interface SpotlightCardProps {
++  children: ReactNode;
++  className?: string;
++  /** Tailwind / CSS size of the spotlight circle. Default 420px. */
++  spotlightSize?: number;
++  /** RGBA color string inside rgba(...) for the spotlight. */
++  spotlightColor?: string;
++}
++
++/**
++ * Aceternity-style spotlight card: a radial gradient follows the
++ * cursor inside the card boundary. Reimplemented from scratch —
++ * no external package — using local mouse tracking + a motion.div
++ * overlay that animates its position via CSS custom properties.
++ *
++ * Wraps existing .glass-card styling. The spotlight renders as a
++ * pseudo-layer; card content sits above via z-index.
++ */
++export default function SpotlightCard({
++  children,
++  className = "",
++  spotlightSize = 420,
++  spotlightColor = "rgba(212, 165, 116, 0.22)",
++}: SpotlightCardProps) {
++  const ref = useRef<HTMLDivElement>(null);
++  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
++  const [opacity, setOpacity] = useState(0);
++  const reducedMotion = useReducedMotion();
++
++  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
++    if (reducedMotion) return;
++    const el = ref.current;
++    if (!el) return;
++    const rect = el.getBoundingClientRect();
++    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
++  };
++
++  return (
++    <div
++      ref={ref}
++      onMouseMove={handleMove}
++      onMouseEnter={() => !reducedMotion && setOpacity(1)}
++      onMouseLeave={() => setOpacity(0)}
++      onFocus={() => !reducedMotion && setOpacity(1)}
++      onBlur={() => setOpacity(0)}
++      className={`glass-card relative group block h-full ${className}`}
++      style={
++        {
++          "--spot-size": `${spotlightSize}px`,
++          "--spot-color": spotlightColor,
++        } as CSSProperties
++      }
++    >
++      {/* Spotlight layer — sits between card bg and content */}
++      <motion.div
++        aria-hidden="true"
++        className="pointer-events-none absolute inset-0 rounded-[inherit]"
++        style={{
++          background: pos
++            ? `radial-gradient(var(--spot-size) circle at ${pos.x}px ${pos.y}px, var(--spot-color), transparent 70%)`
++            : "transparent",
++          zIndex: 0,
++        }}
++        animate={{ opacity }}
++        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
++      />
++      <div className="relative z-[1]">{children}</div>
++    </div>
++  );
++}
+diff --git a/src/components/TextGenerate.tsx b/src/components/TextGenerate.tsx
+new file mode 100644
+index 0000000..a091496
+--- /dev/null
++++ b/src/components/TextGenerate.tsx
+@@ -0,0 +1,78 @@
++"use client";
++
++import { motion, useReducedMotion } from "framer-motion";
++import type { ReactNode } from "react";
++
++interface TextGenerateProps {
++  /** The text to animate. Will be split on whitespace. */
++  words: string;
++  /** Per-word delay in seconds. */
++  stagger?: number;
++  /** Optional highlight class applied to specific words (by index). */
++  highlightIndices?: Record<number, string>;
++  className?: string;
++  as?: "h1" | "h2" | "h3" | "p" | "span";
++  /** Extra children rendered after the animated words (e.g. punctuation). */
++  trailing?: ReactNode;
++}
++
++/**
++ * Aceternity-style "text generate effect" — each word appears with a
++ * blur-to-sharp fade, staggered. Reimplemented here with framer-motion.
++ * Respects prefers-reduced-motion (resolves instantly to final state
++ * via MotionConfig reducedMotion="user" in Providers.tsx, plus an
++ * explicit fallback variant here).
++ *
++ * We split on whitespace (not characters) — whole-word motion feels
++ * premium; per-letter feels jittery at this size.
++ */
++export default function TextGenerate({
++  words,
++  stagger = 0.08,
++  highlightIndices = {},
++  className = "",
++  as: Tag = "h1",
++  trailing,
++}: TextGenerateProps) {
++  const reducedMotion = useReducedMotion();
++  const tokens = words.split(/(\s+)/); // keep whitespace tokens
++
++  let wordCount = -1;
++
++  return (
++    <Tag className={className}>
++      <span className="sr-only">{words}</span>
++      <span aria-hidden="true">
++        {tokens.map((tok, i) => {
++          if (/^\s+$/.test(tok)) {
++            return <span key={i}>{tok}</span>;
++          }
++          wordCount += 1;
++          const highlight = highlightIndices[wordCount];
++          const idx = wordCount;
++          return (
++            <motion.span
++              key={i}
++              className={`inline-block ${highlight ?? ""}`}
++              initial={
++                reducedMotion
++                  ? { opacity: 1, filter: "blur(0px)", y: 0 }
++                  : { opacity: 0, filter: "blur(10px)", y: 8 }
++              }
++              whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
++              viewport={{ once: true, margin: "-80px" }}
++              transition={{
++                duration: 0.7,
++                delay: idx * stagger,
++                ease: [0.16, 1, 0.3, 1],
++              }}
++            >
++              {tok}
++            </motion.span>
++          );
++        })}
++        {trailing}
++      </span>
++    </Tag>
++  );
++}
 diff --git a/src/components/ToolkitFilter.tsx b/src/components/ToolkitFilter.tsx
 new file mode 100644
 index 0000000..c82cc1f

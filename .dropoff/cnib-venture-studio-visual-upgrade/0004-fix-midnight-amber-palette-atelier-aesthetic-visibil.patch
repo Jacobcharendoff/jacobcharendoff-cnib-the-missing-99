@@ -1,7 +1,7 @@
 From 86c555c8236c98b3b00e0b9d72f2786611bb11dc Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Sat, 18 Apr 2026 15:36:29 +0000
-Subject: [PATCH 4/4] fix: midnight+amber palette, atelier aesthetic,
+Subject: [PATCH 4/5] fix: midnight+amber palette, atelier aesthetic,
  visibility bumps
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

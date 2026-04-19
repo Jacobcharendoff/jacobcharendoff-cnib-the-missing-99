@@ -12,16 +12,18 @@ phase icons, counter animation").
 - `0002-feat-page-level-visual-identity-and-section-design.patch` — Layer 3
 - `0003-feat-micro-interactions-texture-and-responsive-polis.patch` — Layer 4
 - `0004-fix-midnight-amber-palette-atelier-aesthetic-visibil.patch` — **palette pivot + atelier aesthetic + visibility fixes**
-- `combined.patch` — all four patches as a single diff (no commit history)
+- `0005-feat-aceternity-inspired-premium-animation-component.patch` — **SpotlightCard, BackgroundBeams, TextGenerate, Bento grid**
+- `combined.patch` — all five patches as a single diff (no commit history)
 
-## Apply as four commits (preferred)
+## Apply as five commits (preferred)
 
 ```bash
 git clone https://github.com/Jacobcharendoff/cnib-venture-studio.git
 cd cnib-venture-studio
 git checkout -b claude/setup-cnib-venture-studio-iPF6J 3876cb2
 git am /path/to/0001-*.patch /path/to/0002-*.patch \
-       /path/to/0003-*.patch /path/to/0004-*.patch
+       /path/to/0003-*.patch /path/to/0004-*.patch \
+       /path/to/0005-*.patch
 npm install
 npx next build    # verify
 git push -u origin claude/setup-cnib-venture-studio-iPF6J
@@ -114,9 +116,37 @@ Home page applications (`src/app/page.tsx`):
   "18 modules"
 - CTA: `marker-ink` on "first sale"
 
+### Layer 5 (commit `0005`) — aceternity-inspired components
+Four interaction patterns inspired by ui.aceternity.com, reimplemented
+from scratch with `framer-motion` + Tailwind v4. **No external packages
+installed.**
+
+- `SpotlightCard` (`src/components/SpotlightCard.tsx`): per-card
+  cursor-follow radial gradient. Mouse position captured via local
+  `useState` + `getBoundingClientRect`, rendered as a motion.div
+  overlay animated on enter/leave. Wraps every phase card. Respects
+  `useReducedMotion` (no spotlight on reduced motion / touch).
+- `BackgroundBeams` (`src/components/BackgroundBeams.tsx`): six
+  diagonal SVG paths with `motion.path` animating `pathLength` 0→1 +
+  opacity fade, staggered delays, amber linear-gradient stroke.
+  Placed in the hero behind `HeroVisual` — low opacity so it
+  complements rather than competes with the iris rings.
+- `TextGenerate` (`src/components/TextGenerate.tsx`): hero heading
+  effect — words fade in with `filter: blur(10px) → blur(0px)`,
+  staggered per word. Splits on whitespace (per-letter feels jittery
+  at display sizes). Includes `sr-only` mirror of full text for
+  screen readers + `aria-hidden` on animated spans.
+- Bento grid for "How it works" (`src/app/page.tsx` + `.bento-tile`,
+  `.bento-num`, `.bento-wave-bar` utilities in globals.css):
+  asymmetric 3-tile layout — hero tile (col-span-2 row-span-2),
+  tall sidebar (row-span-2), wide banner (col-span-3). Each tile has
+  distinct background treatment, oversized ghost numeral, and
+  unique decorative element (Oct–May range, animated waveform bars,
+  spotlight-stage SVG). Animated waveform pauses under reduced motion.
+
 ## Build verification
 
-All four layers build cleanly (`npx next build`, Next.js 16.2.4 +
+All five layers build cleanly (`npx next build`, Next.js 16.2.4 +
 Turbopack). No TypeScript errors, no unused imports, no hydration
 mismatches.
 

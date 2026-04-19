@@ -1,0 +1,727 @@
+From ea2af6ee4a409a54ac8ba2ace2aeb0e3d338635f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 19 Apr 2026 21:19:09 +0000
+Subject: [PATCH 5/5] feat: aceternity-inspired premium animation components
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Four new Aceternity-UI-inspired interactions, reimplemented from
+scratch using our existing stack (framer-motion, Tailwind v4). No
+external packages installed.
+
+Components
+- SpotlightCard: per-card cursor-follow radial gradient. Tracks
+  mousemove on the card element, writes rgba(212,165,116,0.22)
+  radial overlay at the cursor position, animates opacity on
+  enter/leave. Used to wrap every phase card on the home page.
+- BackgroundBeams: 6 diagonal SVG paths with animated pathLength
+  and fade opacity, staggered delays, amber stroke gradient.
+  Sits behind HeroVisual; intentionally low opacity so it
+  complements the iris rings rather than competing.
+- TextGenerate: word-by-word blur→sharp stagger (filter: blur(10px)
+  → blur(0)). Splits on whitespace (not per-letter, which looks
+  jittery at display sizes). Accessibility-first: sr-only mirror
+  of the full text + aria-hidden on the animated spans.
+- Bento grid layout for "How it works": 3-tile grid with hero
+  tile (col-span-2 row-span-2), tall sidebar tile (row-span-2),
+  wide banner tile (col-span-3). Distinct backgrounds per tile:
+  cream-radial, dark-amber-glow, amber-wash. Oversized numerals
+  per tile, animated waveform bars in the dark tile, decorative
+  spotlight-stage SVG in the banner tile.
+
+All four respect prefers-reduced-motion (via MotionConfig plus
+explicit useReducedMotion fallbacks where animate props are
+conditional). All decorative elements aria-hidden. Amber on dark
+passes WCAG AA; amber-on-light uses --cnib-yellow-on-light (#6B4F2A)
+for body text contrast.
+---
+ src/app/globals.css                | 113 +++++++++++++
+ src/app/page.tsx                   | 246 ++++++++++++++++++++---------
+ src/components/BackgroundBeams.tsx |  83 ++++++++++
+ src/components/SpotlightCard.tsx   |  75 +++++++++
+ src/components/TextGenerate.tsx    |  78 +++++++++
+ 5 files changed, 524 insertions(+), 71 deletions(-)
+ create mode 100644 src/components/BackgroundBeams.tsx
+ create mode 100644 src/components/SpotlightCard.tsx
+ create mode 100644 src/components/TextGenerate.tsx
+
+diff --git a/src/app/globals.css b/src/app/globals.css
+index a24485c..20e5fce 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -1363,6 +1363,119 @@ body {
+   }
+ }
+ 
++/* ── Bento grid tiles (aceternity-inspired, reimplemented) ───── */
++/* Three variants:                                                */
++/*   bento-tile-hero   — cream on warm, primary tile              */
++/*   bento-tile-dark   — midnight on warm, sidebar tile           */
++/*   bento-tile-accent — amber-washed banner                      */
++/* All share: rounded corners, soft shadow, subtle hover lift,    */
++/* decorative oversized numeral via .bento-num.                   */
++
++.bento-tile {
++  position: relative;
++  overflow: hidden;
++  padding: clamp(1.5rem, 3vw, 2.5rem);
++  border-radius: var(--radius-lg);
++  border: 1px solid var(--border-light);
++  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
++              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
++              border-color 0.4s ease;
++  isolation: isolate;
++}
++
++.bento-tile:hover,
++.bento-tile:focus-within {
++  transform: translateY(-4px);
++  box-shadow: var(--shadow-card-hover);
++}
++
++.bento-tile-hero {
++  background:
++    radial-gradient(ellipse 70% 60% at 100% 0%, rgba(212, 165, 116, 0.18) 0%, transparent 55%),
++    var(--cnib-white);
++}
++
++.bento-tile-hero::before {
++  content: "";
++  position: absolute;
++  inset: 0;
++  background-image: radial-gradient(rgba(176, 133, 82, 0.08) 1px, transparent 1.5px);
++  background-size: 22px 22px;
++  opacity: 0.6;
++  pointer-events: none;
++  z-index: 0;
++}
++
++.bento-tile-dark {
++  background:
++    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(212, 165, 116, 0.12) 0%, transparent 60%),
++    linear-gradient(180deg, var(--cnib-charcoal) 0%, var(--cnib-black) 100%);
++  border-color: rgba(212, 165, 116, 0.22);
++  color: var(--cnib-cream);
++}
++
++.bento-tile-dark:hover,
++.bento-tile-dark:focus-within {
++  border-color: rgba(212, 165, 116, 0.45);
++  box-shadow:
++    0 12px 40px rgba(0, 0, 0, 0.3),
++    0 0 40px rgba(212, 165, 116, 0.15);
++}
++
++.bento-tile-accent {
++  background:
++    radial-gradient(ellipse 40% 100% at 90% 50%, rgba(212, 165, 116, 0.35) 0%, transparent 60%),
++    linear-gradient(120deg, var(--cnib-warm) 0%, #FAF4E8 100%);
++  border-color: rgba(176, 133, 82, 0.25);
++}
++
++/* Oversized decorative numeral — typographic scenery for bento tiles */
++.bento-num {
++  position: absolute;
++  top: -0.15em;
++  right: -0.08em;
++  font-family: var(--font-display);
++  font-size: clamp(7rem, 16vw, 14rem);
++  font-weight: 800;
++  line-height: 0.85;
++  letter-spacing: -0.08em;
++  color: transparent;
++  -webkit-text-stroke: 1.5px rgba(176, 133, 82, 0.18);
++  pointer-events: none;
++  user-select: none;
++  z-index: 0;
++}
++
++.bento-num-dark {
++  -webkit-text-stroke: 1.5px rgba(212, 165, 116, 0.2);
++}
++
++.bento-num-accent {
++  -webkit-text-stroke: 0;
++  color: rgba(176, 133, 82, 0.14);
++}
++
++/* Animated waveform bars inside bento-tile-dark */
++@keyframes bento-wave {
++  0%, 100% { transform: scaleY(1); opacity: 0.55; }
++  50%      { transform: scaleY(0.35); opacity: 1; }
++}
++
++.bento-wave-bar {
++  background: var(--cnib-yellow);
++  transform-origin: bottom;
++  animation: bento-wave 2.2s ease-in-out infinite;
++  opacity: 0.8;
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .bento-wave-bar {
++    animation: none;
++    opacity: 0.8;
++    transform: scaleY(0.65);
++  }
++}
++
+ /* ── Index tag (small pinned-label feel for section eyebrows) ── */
+ 
+ .index-tag {
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 0b5f291..ea9664e 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -6,6 +6,9 @@ import HeroVisual from "@/components/HeroVisual";
+ import PhaseIcon from "@/components/PhaseIcon";
+ import AnimatedCounter from "@/components/AnimatedCounter";
+ import CursorGlow from "@/components/CursorGlow";
++import SpotlightCard from "@/components/SpotlightCard";
++import BackgroundBeams from "@/components/BackgroundBeams";
++import TextGenerate from "@/components/TextGenerate";
+ 
+ export default function Home() {
+   const availableCount = getAvailableModules().length;
+@@ -32,6 +35,9 @@ export default function Home() {
+           aria-hidden="true"
+         />
+ 
++        {/* Aceternity-inspired animated light beams — sit behind iris */}
++        <BackgroundBeams />
++
+         {/* Mobile-only decorative ring (iris rings hidden on mobile) */}
+         <div className="mobile-ring-decor" aria-hidden="true" />
+ 
+@@ -54,14 +60,16 @@ export default function Home() {
+               </div>
+             </FadeIn>
+ 
+-            <FadeIn delay={0.2}>
+-              <h1 className="hero-heading text-white mb-8">
+-                Turn your idea
+-                <br />
+-                into your{" "}
+-                <span className="text-cnib-yellow scribble-underline">first dollar.</span>
+-              </h1>
+-            </FadeIn>
++            <TextGenerate
++              as="h1"
++              className="hero-heading text-white mb-8"
++              words="Turn your idea into your first dollar."
++              stagger={0.07}
++              highlightIndices={{
++                5: "text-cnib-yellow scribble-underline",
++                6: "text-cnib-yellow scribble-underline",
++              }}
++            />
+ 
+             <FadeIn delay={0.35}>
+               <p className="body-large max-w-2xl mb-14" style={{ color: "var(--text-on-dark-muted)" }}>
+@@ -253,40 +261,42 @@ export default function Home() {
+                 <StaggerItem key={p.id} className={tiltClass}>
+                   <Link
+                     href={`/themes#${p.id}`}
+-                    className="glass-card no-underline group block h-full relative"
++                    className="no-underline group block h-full"
+                   >
+-                    {/* Oversized ghost numeral — typographic scenery */}
+-                    <span className="ghost-num" aria-hidden="true">
+-                      {String(p.number).padStart(2, "0")}
+-                    </span>
+-                    <div className="flex items-center justify-between mb-6 relative">
+-                      <div className="flex items-center gap-4">
+-                        <span className="pictograph" aria-hidden="true">
+-                          <PhaseIcon phase={p.id} size={32} className="text-cnib-yellow" />
++                    <SpotlightCard>
++                      {/* Oversized ghost numeral — typographic scenery */}
++                      <span className="ghost-num" aria-hidden="true">
++                        {String(p.number).padStart(2, "0")}
++                      </span>
++                      <div className="flex items-center justify-between mb-6 relative">
++                        <div className="flex items-center gap-4">
++                          <span className="pictograph" aria-hidden="true">
++                            <PhaseIcon phase={p.id} size={32} className="text-cnib-yellow" />
++                          </span>
++                          {/* Star node — part of the constellation motif */}
++                          <span
++                            className="inline-block rounded-full"
++                            style={{
++                              width: "8px",
++                              height: "8px",
++                              background: "var(--cnib-yellow)",
++                              boxShadow:
++                                "0 0 0 3px rgba(212,165,116,0.15), 0 0 10px rgba(212,165,116,0.55)",
++                            }}
++                            aria-hidden="true"
++                          />
++                        </div>
++                        <span className="eyebrow" style={{ color: "var(--text-on-dark-muted)" }}>
++                          {available}/{phaseModules.length}
+                         </span>
+-                        {/* Star node — part of the constellation motif */}
+-                        <span
+-                          className="inline-block rounded-full"
+-                          style={{
+-                            width: "8px",
+-                            height: "8px",
+-                            background: "var(--cnib-yellow)",
+-                            boxShadow:
+-                              "0 0 0 3px rgba(212,165,116,0.15), 0 0 10px rgba(212,165,116,0.55)",
+-                          }}
+-                          aria-hidden="true"
+-                        />
+                       </div>
+-                      <span className="eyebrow" style={{ color: "var(--text-on-dark-muted)" }}>
+-                        {available}/{phaseModules.length}
+-                      </span>
+-                    </div>
+-                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cnib-yellow transition-colors relative">
+-                      {p.name}
+-                    </h3>
+-                    <p className="text-sm leading-relaxed relative" style={{ color: "var(--text-on-dark-muted)" }}>
+-                      {p.tagline}
+-                    </p>
++                      <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cnib-yellow transition-colors relative">
++                        {p.name}
++                      </h3>
++                      <p className="text-sm leading-relaxed relative" style={{ color: "var(--text-on-dark-muted)" }}>
++                        {p.tagline}
++                      </p>
++                    </SpotlightCard>
+                   </Link>
+                 </StaggerItem>
+               );
+@@ -301,48 +311,142 @@ export default function Home() {
+         </div>
+       </section>
+ 
+-      {/* ── How It Works ────────────────────────────────────── */}
++      {/* ── How It Works (Bento grid) ───────────────────────── */}
+       <section className="section-warm section-padding" aria-label="How the program works">
+         <div className="content-max">
+           <FadeIn className="text-center mb-20">
+-            <p className="caption text-cnib-yellow-on-light mb-6">How it works</p>
++            <div className="mb-6 flex justify-center">
++              <span className="index-tag">How it works</span>
++            </div>
+             <h2 className="section-heading text-cnib-black">
+-              Built around your life,
++              Built around your{" "}
++              <span className="marker-ink">life</span>,
+               <br />
+               not around a classroom.
+             </h2>
+           </FadeIn>
+ 
+-          <Stagger className="grid grid-cols-1 md:grid-cols-3 gap-12" staggerDelay={0.15}>
+-            {[
+-              {
+-                num: "01",
+-                title: "Live sessions, every two weeks",
+-                desc: "90-minute bi-weekly sessions with real-world case studies, live discussion, and hands-on assignments. October through May.",
+-              },
+-              {
+-                num: "02",
+-                title: "Worksheets & podcasts per module",
+-                desc: "Every module comes with a practical worksheet in accessible .docx format, plus podcast episodes that walk through each concept.",
+-              },
+-              {
+-                num: "03",
+-                title: "Pitch to a live panel",
+-                desc: "The program ends with a Final Pitch Showcase \u2014 your chance to present your business to mentors and business leaders.",
+-              },
+-            ].map((item) => (
+-              <StaggerItem key={item.num}>
+-                <span className="number-accent block mb-4" aria-hidden="true">
+-                  {item.num}
++          {/* Bento grid: 3 rows × 3 cols on md+; first card spans 2 cols + 2 rows,
++              second card spans 1 col + 2 rows, third card spans 3 cols + 1 row. */}
++          <Stagger
++            className="grid gap-5 md:gap-6 md:grid-cols-3 md:grid-rows-[minmax(180px,auto)_minmax(180px,auto)_minmax(180px,auto)]"
++            staggerDelay={0.12}
++          >
++            {/* Tile 1 — sessions (hero tile, largest) */}
++            <StaggerItem className="md:col-span-2 md:row-span-2">
++              <div className="bento-tile bento-tile-hero group h-full">
++                <span className="bento-num" aria-hidden="true">01</span>
++                <div className="relative z-[1]">
++                  <span className="eyebrow text-cnib-yellow-on-light block mb-3">
++                    Chapter 01
++                  </span>
++                  <h3 className="text-2xl md:text-3xl font-bold text-cnib-black mb-4 leading-tight">
++                    Live sessions,{" "}
++                    <span className="marker-ink">every two weeks</span>.
++                  </h3>
++                  <p className="text-text-secondary leading-relaxed max-w-md">
++                    90-minute bi-weekly sessions with real-world case studies,
++                    live discussion, and hands-on assignments. October through
++                    May.
++                  </p>
++                  <div
++                    className="mt-6 flex items-center gap-2 text-cnib-yellow-on-light font-semibold text-sm"
++                    aria-hidden="true"
++                  >
++                    <span>Oct</span>
++                    <span className="h-px w-10 bg-cnib-yellow-on-light/40" />
++                    <span>May</span>
++                  </div>
++                </div>
++              </div>
++            </StaggerItem>
++
++            {/* Tile 2 — worksheets + podcasts (tall sidebar) */}
++            <StaggerItem className="md:row-span-2">
++              <div className="bento-tile bento-tile-dark group h-full">
++                <span className="bento-num bento-num-dark" aria-hidden="true">
++                  02
+                 </span>
+-                <h3 className="text-xl font-bold text-cnib-black mb-4">
+-                  {item.title}
+-                </h3>
+-                <p className="text-text-secondary leading-relaxed">
+-                  {item.desc}
+-                </p>
+-              </StaggerItem>
+-            ))}
++                <div className="relative z-[1] h-full flex flex-col">
++                  <span className="eyebrow text-cnib-yellow block mb-3">
++                    Chapter 02
++                  </span>
++                  <h3 className="text-xl font-bold text-white mb-4 leading-tight">
++                    Worksheets &amp; podcasts per module.
++                  </h3>
++                  <p
++                    className="text-sm leading-relaxed mb-auto"
++                    style={{ color: "var(--text-on-dark-muted)" }}
++                  >
++                    Every module ships with an accessible .docx worksheet and
++                    podcast episodes that walk through each concept.
++                  </p>
++                  {/* Decorative "waveform" bars */}
++                  <div
++                    className="mt-6 flex items-end gap-1 h-10"
++                    aria-hidden="true"
++                  >
++                    {[40, 70, 30, 90, 55, 80, 45, 65, 35, 75, 50].map((h, i) => (
++                      <span
++                        key={i}
++                        className="block flex-1 rounded-sm bento-wave-bar"
++                        style={{
++                          height: `${h}%`,
++                          animationDelay: `${i * 0.09}s`,
++                        }}
++                      />
++                    ))}
++                  </div>
++                </div>
++              </div>
++            </StaggerItem>
++
++            {/* Tile 3 — pitch showcase (wide banner) */}
++            <StaggerItem className="md:col-span-3">
++              <div className="bento-tile bento-tile-accent group h-full">
++                <span className="bento-num bento-num-accent" aria-hidden="true">
++                  03
++                </span>
++                <div className="relative z-[1] flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
++                  <div className="flex-1">
++                    <span className="eyebrow text-cnib-yellow-on-light block mb-3">
++                      Chapter 03 · Finale
++                    </span>
++                    <h3 className="text-2xl md:text-3xl font-bold text-cnib-black mb-3 leading-tight">
++                      Pitch to a{" "}
++                      <span className="marker-ink">live panel</span>.
++                    </h3>
++                    <p className="text-text-secondary leading-relaxed max-w-2xl">
++                      The program ends with a Final Pitch Showcase &mdash; your
++                      chance to present your business to mentors and business
++                      leaders.
++                    </p>
++                  </div>
++                  {/* Decorative spotlight-stage icon */}
++                  <svg
++                    className="w-24 h-24 md:w-32 md:h-32 shrink-0 opacity-80"
++                    viewBox="0 0 120 120"
++                    fill="none"
++                    aria-hidden="true"
++                  >
++                    <defs>
++                      <radialGradient id="stage-glow" cx="50%" cy="30%" r="55%">
++                        <stop offset="0%" stopColor="#D4A574" stopOpacity="0.85" />
++                        <stop offset="60%" stopColor="#D4A574" stopOpacity="0.25" />
++                        <stop offset="100%" stopColor="#D4A574" stopOpacity="0" />
++                      </radialGradient>
++                    </defs>
++                    <path
++                      d="M30 20 L90 20 L70 70 L50 70 Z"
++                      fill="url(#stage-glow)"
++                    />
++                    <circle cx="60" cy="85" r="8" fill="#0E1420" />
++                    <rect x="54" y="92" width="12" height="20" rx="2" fill="#0E1420" />
++                    <rect x="15" y="108" width="90" height="3" rx="1.5" fill="#0E1420" opacity="0.55" />
++                  </svg>
++                </div>
++              </div>
++            </StaggerItem>
+           </Stagger>
+         </div>
+       </section>
+diff --git a/src/components/BackgroundBeams.tsx b/src/components/BackgroundBeams.tsx
+new file mode 100644
+index 0000000..e33b0db
+--- /dev/null
++++ b/src/components/BackgroundBeams.tsx
+@@ -0,0 +1,83 @@
++"use client";
++
++import { motion, useReducedMotion } from "framer-motion";
++import { useId } from "react";
++
++/**
++ * Aceternity-style background beams, reimplemented with framer-motion.
++ * Renders a set of diagonal SVG paths whose stroke-dashoffset travels
++ * from 0 → length, producing a subtle "beams of light" sweep behind
++ * the hero content. Intentionally low-opacity so it complements the
++ * iris rings in HeroVisual rather than competing with them.
++ *
++ * Fully decorative — aria-hidden. Freezes to a static frame under
++ * prefers-reduced-motion (motion config reduces duration globally,
++ * but we explicitly bail on the animate prop to be safe).
++ */
++export default function BackgroundBeams() {
++  const gradId = useId();
++  const reducedMotion = useReducedMotion();
++
++  // Six subtly different paths — all vaguely diagonal, staggered.
++  const paths = [
++    "M-200 -180 C 120 60, 320 220, 900 420",
++    "M-140 -60 C 180 160, 420 280, 960 520",
++    "M-240 40 C 140 240, 460 380, 1020 560",
++    "M-80 120 C 220 300, 560 440, 1080 640",
++    "M-320 240 C 160 380, 520 520, 1120 700",
++    "M-60 360 C 240 480, 620 600, 1160 820",
++  ];
++
++  return (
++    <div
++      aria-hidden="true"
++      className="absolute inset-0 pointer-events-none overflow-hidden"
++    >
++      <svg
++        className="absolute inset-0 w-full h-full"
++        viewBox="0 0 1000 800"
++        preserveAspectRatio="xMidYMid slice"
++        fill="none"
++      >
++        <defs>
++          <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
++            <stop offset="0%" stopColor="#D4A574" stopOpacity="0" />
++            <stop offset="40%" stopColor="#D4A574" stopOpacity="0.55" />
++            <stop offset="60%" stopColor="#E8C49A" stopOpacity="0.7" />
++            <stop offset="100%" stopColor="#D4A574" stopOpacity="0" />
++          </linearGradient>
++        </defs>
++
++        {paths.map((d, i) => (
++          <motion.path
++            key={i}
++            d={d}
++            stroke={`url(#${gradId})`}
++            strokeWidth={1.2}
++            strokeLinecap="round"
++            initial={{ pathLength: 0, opacity: 0 }}
++            animate={
++              reducedMotion
++                ? { pathLength: 1, opacity: 0.5 }
++                : {
++                    pathLength: [0, 1, 1],
++                    opacity: [0, 0.65, 0],
++                  }
++            }
++            transition={
++              reducedMotion
++                ? { duration: 0 }
++                : {
++                    duration: 6 + i * 0.4,
++                    repeat: Infinity,
++                    repeatDelay: 1.5,
++                    delay: i * 0.8,
++                    ease: "easeInOut",
++                  }
++            }
++          />
++        ))}
++      </svg>
++    </div>
++  );
++}
+diff --git a/src/components/SpotlightCard.tsx b/src/components/SpotlightCard.tsx
+new file mode 100644
+index 0000000..6235ebb
+--- /dev/null
++++ b/src/components/SpotlightCard.tsx
+@@ -0,0 +1,75 @@
++"use client";
++
++import { useRef, useState, type ReactNode, type CSSProperties } from "react";
++import { motion, useReducedMotion } from "framer-motion";
++
++interface SpotlightCardProps {
++  children: ReactNode;
++  className?: string;
++  /** Tailwind / CSS size of the spotlight circle. Default 420px. */
++  spotlightSize?: number;
++  /** RGBA color string inside rgba(...) for the spotlight. */
++  spotlightColor?: string;
++}
++
++/**
++ * Aceternity-style spotlight card: a radial gradient follows the
++ * cursor inside the card boundary. Reimplemented from scratch —
++ * no external package — using local mouse tracking + a motion.div
++ * overlay that animates its position via CSS custom properties.
++ *
++ * Wraps existing .glass-card styling. The spotlight renders as a
++ * pseudo-layer; card content sits above via z-index.
++ */
++export default function SpotlightCard({
++  children,
++  className = "",
++  spotlightSize = 420,
++  spotlightColor = "rgba(212, 165, 116, 0.22)",
++}: SpotlightCardProps) {
++  const ref = useRef<HTMLDivElement>(null);
++  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
++  const [opacity, setOpacity] = useState(0);
++  const reducedMotion = useReducedMotion();
++
++  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
++    if (reducedMotion) return;
++    const el = ref.current;
++    if (!el) return;
++    const rect = el.getBoundingClientRect();
++    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
++  };
++
++  return (
++    <div
++      ref={ref}
++      onMouseMove={handleMove}
++      onMouseEnter={() => !reducedMotion && setOpacity(1)}
++      onMouseLeave={() => setOpacity(0)}
++      onFocus={() => !reducedMotion && setOpacity(1)}
++      onBlur={() => setOpacity(0)}
++      className={`glass-card relative group block h-full ${className}`}
++      style={
++        {
++          "--spot-size": `${spotlightSize}px`,
++          "--spot-color": spotlightColor,
++        } as CSSProperties
++      }
++    >
++      {/* Spotlight layer — sits between card bg and content */}
++      <motion.div
++        aria-hidden="true"
++        className="pointer-events-none absolute inset-0 rounded-[inherit]"
++        style={{
++          background: pos
++            ? `radial-gradient(var(--spot-size) circle at ${pos.x}px ${pos.y}px, var(--spot-color), transparent 70%)`
++            : "transparent",
++          zIndex: 0,
++        }}
++        animate={{ opacity }}
++        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
++      />
++      <div className="relative z-[1]">{children}</div>
++    </div>
++  );
++}
+diff --git a/src/components/TextGenerate.tsx b/src/components/TextGenerate.tsx
+new file mode 100644
+index 0000000..a091496
+--- /dev/null
++++ b/src/components/TextGenerate.tsx
+@@ -0,0 +1,78 @@
++"use client";
++
++import { motion, useReducedMotion } from "framer-motion";
++import type { ReactNode } from "react";
++
++interface TextGenerateProps {
++  /** The text to animate. Will be split on whitespace. */
++  words: string;
++  /** Per-word delay in seconds. */
++  stagger?: number;
++  /** Optional highlight class applied to specific words (by index). */
++  highlightIndices?: Record<number, string>;
++  className?: string;
++  as?: "h1" | "h2" | "h3" | "p" | "span";
++  /** Extra children rendered after the animated words (e.g. punctuation). */
++  trailing?: ReactNode;
++}
++
++/**
++ * Aceternity-style "text generate effect" — each word appears with a
++ * blur-to-sharp fade, staggered. Reimplemented here with framer-motion.
++ * Respects prefers-reduced-motion (resolves instantly to final state
++ * via MotionConfig reducedMotion="user" in Providers.tsx, plus an
++ * explicit fallback variant here).
++ *
++ * We split on whitespace (not characters) — whole-word motion feels
++ * premium; per-letter feels jittery at this size.
++ */
++export default function TextGenerate({
++  words,
++  stagger = 0.08,
++  highlightIndices = {},
++  className = "",
++  as: Tag = "h1",
++  trailing,
++}: TextGenerateProps) {
++  const reducedMotion = useReducedMotion();
++  const tokens = words.split(/(\s+)/); // keep whitespace tokens
++
++  let wordCount = -1;
++
++  return (
++    <Tag className={className}>
++      <span className="sr-only">{words}</span>
++      <span aria-hidden="true">
++        {tokens.map((tok, i) => {
++          if (/^\s+$/.test(tok)) {
++            return <span key={i}>{tok}</span>;
++          }
++          wordCount += 1;
++          const highlight = highlightIndices[wordCount];
++          const idx = wordCount;
++          return (
++            <motion.span
++              key={i}
++              className={`inline-block ${highlight ?? ""}`}
++              initial={
++                reducedMotion
++                  ? { opacity: 1, filter: "blur(0px)", y: 0 }
++                  : { opacity: 0, filter: "blur(10px)", y: 8 }
++              }
++              whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
++              viewport={{ once: true, margin: "-80px" }}
++              transition={{
++                duration: 0.7,
++                delay: idx * stagger,
++                ease: [0.16, 1, 0.3, 1],
++              }}
++            >
++              {tok}
++            </motion.span>
++          );
++        })}
++        {trailing}
++      </span>
++    </Tag>
++  );
++}
+-- 
+2.43.0
+

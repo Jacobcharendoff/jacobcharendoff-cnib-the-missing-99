@@ -1,7 +1,7 @@
 From 5a0901394bd91e8cbb9312cc9f9daa2c54e3f4b6 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Fri, 17 Apr 2026 19:12:44 +0000
-Subject: [PATCH 3/4] feat: micro-interactions, texture, and responsive polish
+Subject: [PATCH 3/5] feat: micro-interactions, texture, and responsive polish
 
 - CursorGlow: non-rendering client tracker that attaches mousemove to its .cursor-glow ancestor and updates --cursor-x/--cursor-y CSS vars via rAF. Respects reduced motion + no-hover.
 - PageTransition: AnimatePresence wrapping layout children, keyed on pathname, fade + 8px y translate (0 if reduced).
